@@ -7,6 +7,7 @@ interface ContactPayload {
   email: string;
   subject: string;
   message: string;
+  website?: string;  // honeypot field — must be empty for real users
 }
 
 function isValidEmail(email: string): boolean {
@@ -16,6 +17,9 @@ function isValidEmail(email: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as Partial<ContactPayload>;
+
+    // Honeypot check — bots fill this field, real users don't see it
+    if (body.website) return NextResponse.json({ success: true });
 
     if (!body.name?.trim()) {
       return NextResponse.json({ success: false, error: 'Name is required' }, { status: 400 });

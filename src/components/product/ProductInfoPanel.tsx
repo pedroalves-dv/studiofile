@@ -44,7 +44,8 @@ export function ProductInfoPanel({
   const onSale = compareAtPrice ? isOnSale(price, compareAtPrice) : false;
   const discountPercent = onSale && compareAtPrice ? getDiscountPercent(price, compareAtPrice) : 0;
 
-  const maxQty = selectedVariant.quantityAvailable > 0 ? selectedVariant.quantityAvailable : 1;
+  // null = inventory tracking disabled = treat as no upper limit
+  const maxQty = selectedVariant.quantityAvailable ?? 999;
 
   const handleVariantChange = useCallback((variant: ShopifyProductVariant) => {
     setSelectedVariant(variant);

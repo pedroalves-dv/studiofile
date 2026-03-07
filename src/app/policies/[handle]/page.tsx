@@ -16,6 +16,10 @@ function isPolicyHandle(handle: string): handle is PolicyHandle {
   return VALID_HANDLES.includes(handle as PolicyHandle);
 }
 
+export async function generateStaticParams() {
+  return VALID_HANDLES.map((handle) => ({ handle }));
+}
+
 interface PolicyPageProps {
   params: Promise<{ handle: string }>;
 }
@@ -48,7 +52,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
     <main id="main-content" className="section-padding">
       <div className="container-narrow">
         <div className="mb-10">
-          <Breadcrumb items={[{ label: policy.title }]} />
+          <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: policy.title }]} />
         </div>
 
         <header className="mb-12 pb-8 border-b border-border">

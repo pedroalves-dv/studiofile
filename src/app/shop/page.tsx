@@ -3,10 +3,10 @@ import { Suspense } from 'react';
 import { getProducts } from '@/lib/shopify/products';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { PageWrapper } from '@/components/layout/PageWrapper';
-import { SortSelect } from '@/components/shop/SortSelect';
-import { FilterPanel } from '@/components/shop/FilterPanel';
-import { ProductGrid } from '@/components/shop/ProductGrid';
-import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { SortSelect } from '@/components/search/SortSelect';
+import { FilterPanel } from '@/components/search/FilterPanel';
+import { ProductGrid } from '@/components/product/ProductGrid';
+import { SkeletonCard } from '@/components/common/SkeletonCard';
 
 export const metadata: Metadata = {
   title: 'Shop — Studiofile',
@@ -32,12 +32,13 @@ function ProductGridSkeleton() {
 
 async function ShopContent({ searchParams }: ShopPageProps) {
   const params = await searchParams;
-  let products = [];
+  type SortKey = 'TITLE' | 'PRICE' | 'BEST_SELLING' | 'CREATED' | 'RELEVANCE';
+  let products: import('@/lib/shopify/types').ShopifyProduct[] = [];
   let error = null;
 
   try {
-    // Parse sort parameter
-    let sortKey = 'BEST_SELLING';
+    // Parse sort parameter — SortSelect sends PRICE with a separate reverse param
+    let sortKey: SortKey = 'BEST_SELLING';
     let reverse = false;
 
     const sortParam = params.sort as string | undefined;
@@ -46,19 +47,21 @@ async function ShopContent({ searchParams }: ShopPageProps) {
       reverse = params.reverse === 'true';
     } else if (sortParam === 'CREATED') {
       sortKey = 'CREATED';
-    } else if (sortParam && ['TITLE', 'RELEVANCE'].includes(sortParam)) {
-      sortKey = sortParam as any;
+    } else if (sortParam === 'TITLE') {
+      sortKey = 'TITLE';
+    } else if (sortParam === 'RELEVANCE') {
+      sortKey = 'RELEVANCE';
     }
 
     const result = await getProducts({
       first: 24,
       after: (params.cursor as string) || undefined,
-      sortKey: sortKey as any,
+      sortKey,
       reverse,
       query: (params.q as string) || undefined,
     });
 
-    products = result.edges.map((edge: any) => edge.node);
+    products = result.edges.map((edge) => edge.node);
   } catch (err) {
     console.error('Failed to fetch products:', err);
     error = true;

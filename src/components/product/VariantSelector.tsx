@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { ShopifyProductVariant } from '@/lib/shopify/types';
 import { cn } from '@/lib/utils/cn';
 
@@ -15,6 +16,7 @@ export function VariantSelector({
   selectedVariant,
   onVariantChange,
 }: VariantSelectorProps) {
+  const router = useRouter();
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(
     Object.fromEntries(selectedVariant.selectedOptions.map((o) => [o.name, o.value]))
   );
@@ -40,7 +42,11 @@ export function VariantSelector({
     const match = variants.find((v) =>
       v.selectedOptions.every((o) => newOptions[o.name] === o.value)
     );
-    if (match) onVariantChange(match);
+    if (match) {
+      onVariantChange(match);
+      // Sync selected variant to URL so it can be shared
+      router.replace(`?variant=${encodeURIComponent(match.id)}`, { scroll: false });
+    }
   };
 
   // Check whether a given option value is available given current selections for other options

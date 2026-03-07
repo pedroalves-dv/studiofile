@@ -21,7 +21,7 @@ export interface ShopifyProductVariant {
   id: string;
   title: string;
   availableForSale: boolean;
-  quantityAvailable: number;
+  quantityAvailable: number | null;  // null = inventory tracking disabled = treat as unlimited
   selectedOptions: Array<{
     name: string;
     value: string;
@@ -76,7 +76,7 @@ export interface ShopifyCartMerchandise {
   id: string;
   title: string;
   availableForSale: boolean;
-  quantityAvailable: number;
+  quantityAvailable: number | null;  // null = inventory tracking disabled
   selectedOptions: Array<{ name: string; value: string }>;
   price: MoneyV2;
   compareAtPrice: MoneyV2 | null;

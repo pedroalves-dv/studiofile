@@ -1,13 +1,14 @@
+import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { getCollectionWithPagination } from '@/lib/shopify/collections';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { PageWrapper } from '@/components/layout/PageWrapper';
-import { SortSelect } from '@/components/shop/SortSelect';
-import { FilterPanel } from '@/components/shop/FilterPanel';
-import { ProductGrid } from '@/components/shop/ProductGrid';
-import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { SortSelect } from '@/components/search/SortSelect';
+import { FilterPanel } from '@/components/search/FilterPanel';
+import { ProductGrid } from '@/components/product/ProductGrid';
+import { SkeletonCard } from '@/components/common/SkeletonCard';
 
 interface CollectionPageProps {
   params: Promise<{ handle: string }>;
@@ -106,7 +107,7 @@ export default async function CollectionPage(props: CollectionPageProps) {
     error = true;
   }
 
-  if (error || !collection) {
+  if (error) {
     return (
       <PageWrapper>
         <Breadcrumb
@@ -117,17 +118,14 @@ export default async function CollectionPage(props: CollectionPageProps) {
         />
         <section className="section-padding">
           <div className="max-w-7xl mx-auto py-20 text-center">
-            <h1 className="font-display text-2xl text-ink mb-4">
-              Collection not found
-            </h1>
-            <p className="text-ink/60">
-              We couldn't find the collection you're looking for.
-            </p>
+            <p className="text-ink/60">Unable to load collection at this time.</p>
           </div>
         </section>
       </PageWrapper>
     );
   }
+
+  if (!collection) notFound();
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },

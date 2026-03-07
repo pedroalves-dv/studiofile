@@ -84,7 +84,7 @@ async function Hero() {
               Objects made <br />
               to last.
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 max-w-md">
+            <p className="text-lg text-muted mb-8 max-w-md">
               Modular, functional home decor and furniture crafted through precision 3D printing. Designed in Paris, made to order.
             </p>
             <div className="flex gap-4 flex-wrap">

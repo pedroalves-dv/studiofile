@@ -28,26 +28,31 @@ Build each section as a separate Server Component in `components/home/` for clar
 Keep styles minimal — use design tokens and utility classes. You will refine visuals in the browser.
 
 **1. Hero** — full viewport height, two-column layout (stacked on mobile)
+
 - Left: editorial heading (Cormorant Garamond display font), subtext, two CTAs using `Button`
   component: "Shop All" → `/shop` (primary), "View Collections" → `/collections` (ghost)
 - Right: featured product image using `next/image` with `priority` flag (above the fold)
 - Placeholder text for heading: `"Objects made to last."` — this will be customised later
 
 **2. Marquee** — full-width scrolling text strip
+
 - Text: `"3D-PRINTED · MADE TO ORDER · DESIGNED IN PARIS · MODULAR OBJECTS · "` — repeated twice
   in the DOM so the loop is seamless
 - CSS animation only — add `@keyframes marquee` to `globals.css`:
+  
   ```css
   @keyframes marquee {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }  /* -50% because text is duplicated */
   }
   ```
+
 - Apply: `animation: marquee 20s linear infinite`
 - `text-label` class, thin `border-y border-stroke`, `overflow-hidden`
 - Respect reduced motion: wrap in `@media (prefers-reduced-motion: no-preference)` or pause animation
 
-**3. Featured Products — "Selected Works"**
+**3. Featured Products** — "Selected Works"
+
 - 4 products from `featuredProducts`
 - Wrap in `<Suspense fallback={<div className="grid grid-cols-2 md:grid-cols-4 gap-4">{Array(4).fill(0).map((_, i) => <SkeletonCard key={i} />)}</div>}>`
 - Use `ProductCard` component (built in Phase 4.3)
@@ -55,28 +60,33 @@ Keep styles minimal — use design tokens and utility classes. You will refine v
   Keep the grid class-based so you can adjust the layout visually later.
 - "View All" link → `/shop`
 
-**4. Brand Story**
+**4. Brand Story** — "Shop by Collection"
+
 - Static content — two paragraphs of studio copy (placeholder text is fine, will be updated)
 - Split layout: left side accent element, right side text + "About the Studio" → `/about` link
 - No data fetching required
 
-**5. Collections Grid — "Shop by Collection"**
+**5. Collections Grid** — "Shop by Collection"
+
 - 3 collections from `featuredCollections`
 - Each card: full-bleed image, collection name overlaid, `Link` to `/collections/[handle]`
 - If collection has no image: render a solid `bg-stone-100` placeholder
 - Wrap in `<Suspense fallback={...skeleton...}>`
 
-**6. Process — "How It Works"**
+**6. Process** — "How It Works"
+
 - Static content — 3 steps: "Designed in-studio", "Printed to order", "Shipped to you"
 - Each step: step number in `text-label` style, heading, short description
 - No data fetching
 
-**7. Newsletter Callout**
+**7. Newsletter Callout** — "Ask us anything"
+
 - Inverted section: `bg-ink text-canvas`
 - Heading, email `Input` component, Subscribe `Button` — UI only, no action wired
 - `aria-label="Email address"` on input
 
 ### Notes
+
 - All `next/image` components need explicit `width`, `height` or `fill` + a sized parent
 - Use `priority` on the hero image only — lazy load everything else
 
@@ -103,6 +113,7 @@ const collections = await getCollections()
 ### Collection card
 
 Each card is a `<Link href={/collections/${collection.handle}}>` wrapping:
+
 - Image container with `overflow-hidden` (required — without this, hover scale bleeds outside)
   - `next/image` with `fill` layout inside a sized parent (`aspect-[3/4]` or similar)
   - CSS transition: `transition-transform duration-500` + `group-hover:scale-[1.02]` on the image
@@ -118,6 +129,7 @@ Empty state (no collections): simple centered message, "Coming soon. Check back 
 ## Prompt 4.3 — Shop / Collection Page with Filtering, Sorting & Pagination
 
 Build:
+
 - `app/shop/page.tsx` — all products
 - `app/collections/[handle]/page.tsx` — products in a specific collection
 
@@ -125,7 +137,7 @@ Both are Server Components. All filter and sort state lives in URL search params
 
 ### URL schema
 
-```
+```text
 ?sort=PRICE_ASC | PRICE_DESC | BEST_SELLING | CREATED_AT | TITLE
 ?filter=available | type:[value] | tag:[value]
 ?cursor=XXXX
@@ -162,6 +174,7 @@ function parseFilters(filterParams: string | string[] | undefined): ProductFilte
 ### components/search/SortSelect.tsx (client)
 
 Dropdown `<select>` for sort options. On change:
+
 ```ts
 const params = new URLSearchParams(searchParams)
 params.set('sort', value)
@@ -174,6 +187,7 @@ Options: Price: Low to High, Price: High to Low, Best Selling, Newest, A–Z
 ### components/search/FilterPanel.tsx (client)
 
 Accepts available filter options as props (derived from current product set):
+
 ```ts
 interface FilterPanelProps {
   availableTypes: string[]
@@ -206,6 +220,7 @@ interface ProductGridProps {
 ### components/product/ProductCard.tsx
 
 Build this here if not already built:
+
 ```ts
 interface ProductCardProps {
   product: ShopifyProduct
@@ -224,6 +239,7 @@ interface ProductCardProps {
 ### Pagination
 
 Use "Load more" button approach (simpler than infinite scroll, easier to debug):
+
 - Server renders first 24 products
 - "Load more" button links to same page with `?cursor={pageInfo.endCursor}`
 - Next.js navigates to the new URL, server fetches next 24 and appends
@@ -236,6 +252,7 @@ Use "Load more" button approach (simpler than infinite scroll, easier to debug):
 ### Collection page extras
 
 `app/collections/[handle]/page.tsx`:
+
 - `notFound()` if collection not found
 - Full-width banner: collection image (if exists) + collection title + description below
 - `Breadcrumb`: `[{ label: 'Home', href: '/' }, { label: 'Collections', href: '/collections' }, { label: collection.title }]`
@@ -261,6 +278,7 @@ const recommendations = await getProductRecommendations(product.id)
 ```
 
 `generateMetadata`:
+
 ```ts
 export async function generateMetadata({ params }): Promise<Metadata> {
   const product = await getProduct(params.handle)
@@ -270,6 +288,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 ```
 
 Product JSON-LD (include in page as `<script type="application/ld+json">`):
+
 ```json
 {
   "@context": "https://schema.org",
@@ -342,9 +361,10 @@ interface StockIndicatorProps {
 
 Two-column grid on desktop, stacked on mobile:
 
-**Left — ImageGallery**
+**Left** — ImageGallery
 
-**Right — product info panel:**
+**Right** — product info panel:
+
 - `Breadcrumb`: Home › Collections › [collection] › [product title] (if product has a collection,
   otherwise Home › Shop › [product title])
 - Product type tag: `text-label text-muted`
@@ -368,23 +388,28 @@ Two-column grid on desktop, stacked on mobile:
 - Custom order note: static text, styled as a subtle info box
 - Trust badges row: static text/icons, no interaction
 
-**Section 2 — Product description:**
+**Section 2** — Product description:
+
 ```tsx
 <div
   className="prose prose-stone max-w-none"
   dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
 />
 ```
+
 Shopify sanitizes `descriptionHtml` server-side — no additional sanitization needed.
 Add Tailwind typography plugin (`@tailwindcss/typography`) if not already installed.
 
-**Section 3 — Image gallery strip:**
+**Section 3** — Image gallery strip:
+
 - Horizontal scrollable row of all product images
 - `overflow-x-auto`, `scroll-snap-type: x mandatory`
 - Each image: `scroll-snap-align: start`, click opens `ImageZoom`
 
-**Section 4 — Related Products:**
+**Section 4** — Related Products:
+
 - Rendered by `RelatedProducts` component (built in Phase 8 — stub here):
+  
 ```tsx
 // Stub until Phase 8:
 export function RelatedProducts({ products }: { products: ShopifyProduct[] }) {
@@ -431,6 +456,7 @@ export async function generateMetadata(): Promise<Metadata> {
 ```
 
 Sections (structure over style — you will refine visually):
+
 1. Hero area with heading "About"
 2. Studio story: 2-column, long-form text left, image placeholder right
 3. Process steps: reuse same structure as home page Process section
@@ -446,11 +472,13 @@ aspect ratios.
 `page.tsx` is a Server Component. `ContactForm` is a `"use client"` component inside it.
 
 **ContactForm fields:**
+
 - Name (required)
 - Email (required, email format)
 - Subject: `<select>` with options: General Inquiry, Custom Order, Press, Other
 - Message (required, `<textarea>`)
 - Honeypot: a hidden text input that must remain empty
+  
   ```tsx
   <input
     type="text"
@@ -463,11 +491,13 @@ aspect ratios.
     onChange={e => setHoneypot(e.target.value)}
   />
   ```
+
 - Client-side validation before submit: required fields, email regex
 - On submit: check honeypot (if filled, silently succeed without POSTing), then POST to `/api/contact`
 - On success: `toast.success("Message sent. We'll be in touch soon.")` + reset form
 
 **app/api/contact/route.ts:**
+
 ```ts
 export async function POST(request: Request) {
   const body = await request.json()
@@ -513,6 +543,7 @@ if (!policy) notFound()
 ```
 
 Render `policy.body` as HTML — Shopify provides sanitized HTML:
+
 ```tsx
 <div
   className="prose prose-stone max-w-none"
@@ -563,7 +594,8 @@ Note: `export default` is required — named exports will silently not work.
 
 ---
 
-> **After Phase 4, verify:**
+**After Phase 4, verify:**
+
 > - All pages render without errors with real Shopify data
 > - `tsc --noEmit` — zero errors
 > - Product page URL updates with `?variant=ID` on variant selection

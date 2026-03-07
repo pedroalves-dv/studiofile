@@ -1,6 +1,6 @@
 interface StockIndicatorProps {
   availableForSale: boolean;
-  quantityAvailable: number;
+  quantityAvailable: number | null;  // null = inventory tracking disabled = treat as unlimited
 }
 
 export function StockIndicator({ availableForSale, quantityAvailable }: StockIndicatorProps) {
@@ -13,7 +13,7 @@ export function StockIndicator({ availableForSale, quantityAvailable }: StockInd
     );
   }
 
-  if (quantityAvailable <= 5) {
+  if (quantityAvailable !== null && quantityAvailable <= 5 && quantityAvailable > 0) {
     return (
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
