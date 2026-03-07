@@ -1,11 +1,12 @@
-export function SkeletonCard() {
+import { cn } from '@/lib/utils/cn';
+import { Skeleton } from '@/components/ui/Skeleton';
+
+export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className="border border-border overflow-hidden">
-      <div className="h-64 bg-stone-100 animate-pulse"></div>
-      <div className="p-4 space-y-2">
-        <div className="h-4 bg-stone-100 w-3/4 animate-pulse"></div>
-        <div className="h-4 bg-stone-100 w-1/2 animate-pulse"></div>
-      </div>
+    <div className={cn('flex flex-col gap-3', className)}>
+      <Skeleton className="w-full aspect-[4/5]" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-1/3" />
     </div>
   );
 }

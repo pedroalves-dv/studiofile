@@ -15,7 +15,7 @@ export default function Loading() {
       {/* Product details skeleton */}
       <div className="section-padding">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
             {/* Image skeleton */}
             <div className="aspect-[3/4] overflow-hidden">
               <Skeleton className="w-full h-full" />

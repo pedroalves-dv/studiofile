@@ -1,14 +1,13 @@
 'use client';
 
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
   return (
-    <html>
+    <html lang="en">
       <body style={{
         fontFamily: 'var(--font-body), system-ui, sans-serif',
         backgroundColor: '#FAF7F2',
@@ -42,7 +41,7 @@ export default function GlobalError({
             An unexpected error occurred. Please try to reload the page.
           </p>
           <button
-            onClick={() => location.reload()}
+            onClick={reset}
             style={{
               padding: '12px 32px',
               backgroundColor: '#1A1917',
@@ -53,12 +52,9 @@ export default function GlobalError({
               fontWeight: '500',
               textTransform: 'uppercase',
               letterSpacing: '0.12em',
-              transition: 'opacity 200ms',
             }}
-            onMouseOver={(e) => (e.currentTarget.style.opacity = '0.8')}
-            onMouseOut={(e) => (e.currentTarget.style.opacity = '1')}
           >
-            Reload Page
+            Try again
           </button>
         </div>
       </body>

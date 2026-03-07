@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/Skeleton';
-import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { SkeletonCard } from '@/components/common/SkeletonCard';
 
 export default function Loading() {
   return (
@@ -31,7 +31,7 @@ export default function Loading() {
       <div className="section-padding">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>

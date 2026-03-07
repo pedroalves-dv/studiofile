@@ -9,6 +9,7 @@ export const size = {
 };
 
 export const contentType = 'image/png';
+export const alt = 'Collection image';
 
 export default async function Image({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;

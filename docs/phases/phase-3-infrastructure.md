@@ -11,6 +11,7 @@ Build all Next.js App Router boundary files and the shared `SkeletonCard` compon
 This component is used across all loading states. Build it first.
 
 A product card skeleton that matches the dimensions of `ProductCard` to prevent layout shift:
+
 - Aspect ratio container for the image area (portrait, ~4:5 ratio)
 - Two lines below for title and price
 - Use the `Skeleton` component from `components/ui/Skeleton.tsx`
@@ -31,6 +32,7 @@ export function SkeletonCard({ className }: { className?: string }) {
 ### app/loading.tsx
 
 Root-level loading state. Structure should match the home page layout to avoid shift:
+
 - Header height shimmer (`h-16 w-full` Skeleton — matches fixed header)
 - Hero area: full-viewport-height Skeleton
 - Row of 4 `SkeletonCard` components below
@@ -40,6 +42,7 @@ Keep styling minimal — this is a functional component, not a design piece.
 ### app/not-found.tsx
 
 Structure:
+
 - Large "404" display text — Cormorant Garamond, very large, low-opacity (ghost effect)
 - "Page not found." heading
 - One-line description
@@ -71,6 +74,7 @@ layout wrapper exists.
 Props: `error: Error & { digest?: string }`, `reset: () => void`
 
 Render a minimal inline-styled page (no Tailwind classes — those may not load):
+
 ```tsx
 export default function GlobalError({ reset }: { error: Error, reset: () => void }) {
   return (
@@ -97,6 +101,7 @@ export default function GlobalError({ reset }: { error: Error, reset: () => void
 These are identical in structure — a grid of `SkeletonCard` components with a heading skeleton above.
 
 Structure:
+
 - Heading area: one wide Skeleton for a collection banner/title
 - Product grid: 8 `SkeletonCard` components in a CSS grid matching the real product grid layout
   (2 cols mobile, 3 cols tablet, 4 cols desktop)
@@ -106,6 +111,7 @@ Use `container-wide section-padding`.
 ### app/products/[handle]/loading.tsx
 
 Must match the two-column PDP layout to avoid shift:
+
 - Left column (~55% width): tall image Skeleton (portrait aspect ratio matching the main product image)
 - Right column (~45% width): stacked Skeletons for title, price, variant pills row, and button
 
@@ -114,6 +120,7 @@ Use `grid grid-cols-1 md:grid-cols-2 gap-12` to match the real PDP layout.
 ### app/search/loading.tsx
 
 Structure:
+
 - Search input Skeleton at the top
 - Row of filter Skeletons below
 - Grid of 6 `SkeletonCard` components
@@ -137,6 +144,7 @@ const font = await fetch(
 ```
 
 Then pass to `ImageResponse` options:
+
 ```ts
 new ImageResponse(jsx, {
   width: 32,
@@ -146,6 +154,7 @@ new ImageResponse(jsx, {
 ```
 
 **app/icon.tsx:**
+
 ```ts
 export const size = { width: 32, height: 32 }
 export const contentType = 'image/png'
@@ -178,6 +187,7 @@ Same design, `size = { width: 180, height: 180 }`.
 
 **Wire up in app/layout.tsx** via the metadata export — do NOT use a manual `<link>` tag,
 App Router handles this automatically:
+
 ```ts
 export const metadata: Metadata = {
   // ...existing metadata...
@@ -203,6 +213,7 @@ Keep the layout simple — you'll refine the visual design later.
 ### app/products/[handle]/opengraph-image.tsx
 
 Required exports:
+
 ```ts
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -210,6 +221,7 @@ export const alt = 'Product image'  // overridden dynamically below
 ```
 
 Implementation:
+
 ```ts
 export default async function ProductOGImage({ params }: { params: { handle: string } }) {
   const product = await getProduct(params.handle)
@@ -223,6 +235,7 @@ export default async function ProductOGImage({ params }: { params: { handle: str
 ```
 
 The image URL for `<img>` inside `ImageResponse` must be an absolute URL. Use:
+
 ```ts
 src={product.featuredImage.url}  // Shopify CDN URLs are absolute — this works directly
 ```
@@ -230,6 +243,7 @@ src={product.featuredImage.url}  // Shopify CDN URLs are absolute — this works
 ### app/collections/[handle]/opengraph-image.tsx
 
 Same pattern as product OG image:
+
 ```ts
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -243,7 +257,8 @@ export default async function CollectionOGImage({ params }: { params: { handle: 
 
 ---
 
-> **After Phase 3, verify:**
+**After Phase 3, verify:**
+
 > - `npm run build` — confirm no build errors (OG image routes and icon routes are build-time)
 > - Visit `/` with network throttling — confirm loading skeletons appear before content
 > - Check browser tab for favicon

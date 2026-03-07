@@ -8,6 +8,7 @@ export const size = {
 };
 
 export const contentType = 'image/png';
+export const alt = 'Studiofile — Premium 3D-Printed Objects';
 
 export default function Image() {
   return new ImageResponse(

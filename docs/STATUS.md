@@ -11,12 +11,12 @@ Update this file at the end of every session.
 | Phase | Description | Status | Audit |
 | ------- | ----------- | --------- | --------- |
 | 1.1 | Scaffolding, env, next.config, tailwind | ✅ Done | ✅ Done |
-| 1.2 | Shopify types, client, queries, mutations, server functions | ✅ Done | ⬜ |
-| 2.1 | Design tokens, fonts, globals.css, layout.tsx | ✅ Done | ⬜ |
-| 2.2 | Header, Footer, Breadcrumb, PageWrapper | ✅ Done | ⬜ |
-| 2.3 | UI primitives, Toast, LoadingBar, CookieConsent | ✅ Done | ⬜ |
-| 3.1 | Loading skeletons, error boundaries, not-found | ✅ Done | ⬜ |
-| 3.2 | Favicon, manifest, OG images | ✅ Done | ⬜ |
+| 1.2 | Shopify types, client, queries, mutations, server functions | ✅ Done | ✅ Done |
+| 2.1 | Design tokens, fonts, globals.css, layout.tsx | ✅ Done | ✅ Done |
+| 2.2 | Header, Footer, Breadcrumb, PageWrapper | ✅ Done | ✅ Done |
+| 2.3 | UI primitives, Toast, LoadingBar, CookieConsent | ✅ Done | ✅ Done |
+| 3.1 | Loading skeletons, error boundaries, not-found | ✅ Done | ✅ Done |
+| 3.2 | Favicon, manifest, OG images | ✅ Done | ✅ Done |
 | 4.1 | Home page | ✅ Done | ⬜ |
 | 4.2 | Collections index | ✅ Done | ⬜ |
 | 4.3 | Shop / Collection pages, filtering, sorting, pagination | ✅ Done | ⬜ |
@@ -81,6 +81,7 @@ Issues discovered during development that affect future phases:
 - **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast — TypeScript does not recognise this property natively.
 - **`quantityAvailable`** can be `null` in Shopify when inventory tracking is disabled — treat as unlimited stock, not zero.
 - **`ImageZoom`** uses `createPortal` directly into `document.body`, not the `Dialog` component — Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox.
+- **`components/ui/SkeletonCard.tsx`** is a stray duplicate — canonical location is `components/common/SkeletonCard.tsx`. The `ui/` copy can be deleted when safe (nothing critical imports it after Phase 3 audit).
 
 ---
 

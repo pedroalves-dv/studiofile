@@ -9,6 +9,7 @@ export const size = {
 };
 
 export const contentType = 'image/png';
+export const alt = 'Product image';
 
 export default async function Image({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
@@ -20,7 +21,7 @@ export default async function Image({ params }: { params: Promise<{ handle: stri
       throw new Error('Product not found');
     }
 
-    const imageUrl = product.images[0]?.url;
+    const imageUrl = product.featuredImage?.url;
     const title = product.title;
     const price = product.priceRange.minVariantPrice.amount;
 
