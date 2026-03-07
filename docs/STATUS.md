@@ -1,0 +1,102 @@
+# STATUS.md — Studiofile
+
+Current position: **Phase 5 complete. Phase 6 is next.**
+
+Update this file at the end of every session.
+
+---
+
+## Phase Progress
+
+| Phase | Description | Status | Audit |
+| ------- | ----------- | --------- | --------- |
+| 1.1 | Scaffolding, env, next.config, tailwind | ✅ Done | ✅ Done |
+| 1.2 | Shopify types, client, queries, mutations, server functions | ✅ Done | ⬜ |
+| 2.1 | Design tokens, fonts, globals.css, layout.tsx | ✅ Done | ⬜ |
+| 2.2 | Header, Footer, Breadcrumb, PageWrapper | ✅ Done | ⬜ |
+| 2.3 | UI primitives, Toast, LoadingBar, CookieConsent | ✅ Done | ⬜ |
+| 3.1 | Loading skeletons, error boundaries, not-found | ✅ Done | ⬜ |
+| 3.2 | Favicon, manifest, OG images | ✅ Done | ⬜ |
+| 4.1 | Home page | ✅ Done | ⬜ |
+| 4.2 | Collections index | ✅ Done | ⬜ |
+| 4.3 | Shop / Collection pages, filtering, sorting, pagination | ✅ Done | ⬜ |
+| 4.4 | Product Detail Page (full) | ✅ Done | ⬜ |
+| 4.5 | About, Contact, Policies, Sitemap | ✅ Done | ⬜ |
+| 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ⬜ |
+| 6.1 | Cart context & state | ⬜ Next | ✅ Done |
+| 6.2 | Cart drawer UI | ⬜ | ⬜ |
+| 7.1 | Auth flow, middleware, account pages | ⬜ | ⬜ |
+| 8.1 | Wishlist | ⬜ | ⬜ |
+| 8.2 | Recently viewed, related products | ⬜ | ⬜ |
+| 9.1 | Analytics, SEO, structured data | ⬜ | ⬜ |
+| 10.1 | GSAP animations | ⬜ | ⬜ |
+| 10.2 | Page transitions, accessibility audit | ⬜ | ⬜ |
+
+---
+
+## Next Session — Phase 6.1
+
+**File to read:** `docs/phases/phase-6-cart.md`
+
+**What gets built:**
+
+- Replace `CartContext` stub with full `useReducer` implementation
+- Replace `useCart` stub with full hook exposing all cart operations
+- `createCart` / `addToCart` flow — handles first-ever add (no cartId) correctly
+- Cart rehydration from localStorage on mount, with expiry handling
+- Wire `cartIconRef` into CartContext for focus restoration
+
+**Before starting:**
+
+- Confirm CartContext and useCart are still stubs (returning children / empty values)
+- Confirm `lib/shopify/cart.ts` Server Actions are fully implemented from Phase 1.2
+
+---
+
+## Deferred Items
+
+These were intentionally skipped or partially implemented and must be completed before launch.
+
+| Item | Deferred from | Notes |
+| ---- | ------------- | ----- |
+| `lib/utils/seo.ts` full implementation | Phase 1 | Stub only — built in Phase 9 |
+| `RelatedProducts` full implementation | Phase 4.4 | Returns null — built in Phase 8 |
+| `WishlistContext` full implementation | Phase 2.1 | Stub only — built in Phase 8 |
+| `CartContext` full implementation | Phase 2.1 | Stub only — built in Phase 6 |
+| Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
+| About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |
+| Instagram / Pinterest real handles | Phase 9 | Placeholder URLs in Organization JSON-LD |
+| `lib/utils/params.ts` shared utility | Phase 5 | Created in Phase 5 — verify Phase 4 shop/collection pages import from it, not inline |
+
+---
+
+## Known Issues & Gotchas
+
+Issues discovered during development that affect future phases:
+
+- **`removeDiscountCode`** calls `CART_DISCOUNT_CODES_UPDATE` with an empty array — there is no separate remove mutation in Shopify's API.
+- **Shopify discount codes** do not throw on invalid codes — they return `discountCodes[].applicable: false`. Check this flag, not a caught error.
+- **`redirect()` in Server Actions** throws a special internal error — never wrap it in try/catch. See `customerLogout` in Phase 7.
+- **`useSearchParams()` in LoadingBar** requires a Suspense boundary in `layout.tsx` — should already be in place from Phase 2.3.
+- **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast — TypeScript does not recognise this property natively.
+- **`quantityAvailable`** can be `null` in Shopify when inventory tracking is disabled — treat as unlimited stock, not zero.
+- **`ImageZoom`** uses `createPortal` directly into `document.body`, not the `Dialog` component — Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox.
+
+---
+
+## Pre-Launch Checklist
+
+Not started. Revisit after Phase 10.
+
+- [ ] Replace placeholder founder name and bio (About page)
+- [ ] Replace placeholder photography (About page)
+- [ ] Update Instagram and Pinterest URLs in Footer and Organization JSON-LD
+- [ ] Wire contact form to email service (Resend recommended)
+- [ ] Set `NEXT_PUBLIC_SITE_URL` to production domain
+- [ ] Verify all `generateMetadata` canonical URLs match production domain
+- [ ] Test Shopify checkout handoff with real store credentials
+- [ ] Run Lighthouse audit — accessibility score ≥ 90
+- [ ] Run `npm run build` clean with zero warnings
+- [ ] Verify sitemap at `/sitemap.xml` includes all products and collections
+- [ ] Verify `/robots.txt` disallows `/account/` and `/api/`
+  

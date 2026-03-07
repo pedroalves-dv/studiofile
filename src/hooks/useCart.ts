@@ -1,0 +1,149 @@
+'use client';
+
+import { useCartContext } from '@/context/CartContext';
+import {
+  createCart,
+  addToCart,
+  updateCartLine,
+  removeFromCart,
+  applyDiscountCode,
+  removeDiscountCode,
+  updateCartNote,
+} from '@/lib/shopify/cart';
+import { useToast } from '@/components/common/Toast';
+import type { MoneyV2, ShopifyCart } from '@/lib/shopify/types';
+
+export function useCart() {
+  const { state, dispatch } = useCartContext();
+  const toast = useToast();
+
+  const { cart, isOpen, isLoading } = state;
+  const totalQuantity = cart?.totalQuantity ?? 0;
+  const totalAmount: MoneyV2 = cart?.cost.totalAmount ?? { amount: '0', currencyCode: 'USD' };
+
+  const openCart = () => dispatch({ type: 'OPEN_CART' });
+  const closeCart = () => dispatch({ type: 'CLOSE_CART' });
+
+  const addItem = async (variantId: string, quantity: number) => {
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      let updatedCart: ShopifyCart;
+      if (state.cartId) {
+        updatedCart = await addToCart(state.cartId, [{ merchandiseId: variantId, quantity }]);
+      } else {
+        updatedCart = await createCart([{ merchandiseId: variantId, quantity }]);
+      }
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+      openCart();
+      toast.success('Added to cart');
+    } catch {
+      toast.error('Failed to add to cart. Please try again.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
+  const updateItem = async (lineId: string, quantity: number) => {
+    if (!state.cartId) return;
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      let updatedCart: ShopifyCart;
+      if (quantity === 0) {
+        updatedCart = await removeFromCart(state.cartId, lineId);
+      } else {
+        updatedCart = await updateCartLine(state.cartId, lineId, quantity);
+      }
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+    } catch {
+      toast.error('Failed to update cart.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
+  const removeItem = async (lineId: string) => {
+    if (!state.cartId) return;
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      const updatedCart = await removeFromCart(state.cartId, lineId);
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+      toast.success('Item removed');
+    } catch {
+      toast.error('Failed to remove item.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
+  const applyDiscount = async (code: string) => {
+    if (!state.cartId) return;
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      const updatedCart = await applyDiscountCode(state.cartId, code);
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+      const applied = updatedCart.discountCodes.find((d) => d.code === code);
+      if (applied?.applicable) {
+        toast.success(`Discount "${code}" applied!`);
+      } else {
+        toast.error(`Discount code "${code}" is not valid.`);
+      }
+    } catch {
+      toast.error('Failed to apply discount code.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
+  const removeDiscount = async () => {
+    if (!state.cartId) return;
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      const updatedCart = await removeDiscountCode(state.cartId);
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+      toast.success('Discount removed');
+    } catch {
+      toast.error('Failed to remove discount.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
+  const updateNote = async (note: string) => {
+    if (!state.cartId) return;
+    try {
+      const updatedCart = await updateCartNote(state.cartId, note);
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+    } catch {
+      // Fail silently for note updates
+    }
+  };
+
+  const isItemInCart = (variantId: string): boolean => {
+    if (!cart) return false;
+    return cart.lines.some((line) => line.merchandise.id === variantId);
+  };
+
+  const getItemQuantity = (variantId: string): number => {
+    if (!cart) return 0;
+    const line = cart.lines.find((line) => line.merchandise.id === variantId);
+    return line?.quantity ?? 0;
+  };
+
+  return {
+    cart,
+    isOpen,
+    isLoading,
+    totalQuantity,
+    totalAmount,
+    openCart,
+    closeCart,
+    addItem,
+    updateItem,
+    removeItem,
+    applyDiscount,
+    removeDiscount,
+    updateNote,
+    isItemInCart,
+    getItemQuantity,
+  };
+}

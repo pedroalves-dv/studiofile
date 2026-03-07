@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   CSS CUSTOM PROPERTIES
+   ========================================== */
+@layer base {
+  :root {
+    /* Palette */
+    --color-ink: #1A1917;
+    --color-canvas: #FAF7F2;
+    --color-accent: #C8A97E;
+    --color-muted: #8A8580;
+    --color-border: #E5E0D8;
+    --color-success: #4A7C59;
+    --color-error: #B84040;
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+    --spacing-4xl: 5rem;
+    --spacing-5xl: 6rem;
+
+    /* Animation */
+    --duration-fast: 150ms;
+    --duration-base: 300ms;
+    --duration-slow: 500ms;
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Base styles */
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: var(--letter-spacing-display);
+    margin-top: 0;
+  }
+
+  /* Selection styles */
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-canvas);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-canvas);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-muted);
+  }
+
+  /* Links */
+  a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+@layer components {
+  /* Typography utilities */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: var(--letter-spacing-display);
+  }
+
+  .text-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: var(--letter-spacing-display);
+    text-transform: uppercase;
+  }
+
+  /* Layout utilities */
+  .section-padding {
+    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32;
+  }
+
+  .container-wide {
+    @apply max-w-screen-xl mx-auto px-6 md:px-12;
+  }
+
+  .container-narrow {
+    @apply max-w-2xl mx-auto px-6;
+  }
+
+  /* Grain texture overlay */
+  .grain::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background-image: 
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" seed="1"></feTurbulence><feColorMatrix in="noise" type="saturate" values="0"></feColorMatrix></filter><rect width="100" height="100" fill="%231A1917" opacity="0.03" filter="url(%23noise)"></rect></svg>');
+    background-attachment: fixed;
+    z-index: 1;
+  }
+
+  /* Link underline animation */
+  .link-underline {
+    @apply relative inline-block;
+  }
+
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background-color: var(--color-accent);
+    transition: width var(--duration-base) var(--ease-in-out);
+  }
+
+  .link-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Skip to content link */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .skip-to-content {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  .skip-to-content:focus {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    background-color: var(--color-accent);
+    color: var(--color-canvas);
+  }
+}
+
+/* ==========================================
+   PREFERS REDUCED MOTION
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
