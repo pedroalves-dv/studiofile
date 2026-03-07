@@ -43,7 +43,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
         <ol className="flex items-center gap-3 flex-wrap">
           {breadcrumbItems.map((item, index) => (
             <li key={index} className="flex items-center gap-3">
-              {index > 0 && <span className="text-muted">/</span>}
+              {index > 0 && <span aria-hidden="true" className="text-muted">›</span>}
               {item.href && index !== breadcrumbItems.length - 1 ? (
                 <Link
                   href={item.href}
@@ -52,7 +52,10 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
                   {item.label}
                 </Link>
               ) : (
-                <span className={index === breadcrumbItems.length - 1 ? 'text-ink' : 'text-muted'}>
+                <span
+                  aria-current={index === breadcrumbItems.length - 1 ? 'page' : undefined}
+                  className={index === breadcrumbItems.length - 1 ? 'text-ink' : 'text-muted'}
+                >
                   {item.label}
                 </span>
               )}
