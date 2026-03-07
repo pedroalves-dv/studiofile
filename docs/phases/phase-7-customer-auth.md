@@ -9,6 +9,7 @@
 Replace the empty shell from Phase 1.1 with the full implementation.
 
 Protected routes: all `/account/*` **except**:
+
 - `/account/login`
 - `/account/register`
 - `/account/forgot-password`  ← must be excluded or logged-out users hit a redirect loop
@@ -48,7 +49,7 @@ export const config = {
 Note: middleware cannot validate the token with Shopify (no API call possible here).
 It only checks for presence. If the token is expired, the account page handles it — see below.
 
-### lib/shopify/auth.ts — complete the implementation
+### src/lib/shopify/auth.ts — complete the implementation
 
 This file was scaffolded in Phase 1.2. Replace stubs with full implementations.
 All functions use `"use server"` at the top of the file.
@@ -62,6 +63,7 @@ import { ... } from './mutations'
 ```
 
 **Cookie config — define once at top of file:**
+
 ```ts
 const TOKEN_COOKIE = 'sf-customer-token'
 const COOKIE_OPTIONS = {
@@ -74,6 +76,7 @@ const COOKIE_OPTIONS = {
 ```
 
 **customerLogin:**
+
 ```ts
 export async function customerLogin(
   email: string,
@@ -98,6 +101,7 @@ export async function customerLogin(
 ```
 
 **customerLogout:**
+
 ```ts
 export async function customerLogout(): Promise<void> {
   const token = await getCustomerToken()
@@ -118,6 +122,7 @@ export async function customerLogout(): Promise<void> {
 ```
 
 **customerRegister:**
+
 ```ts
 export async function customerRegister(
   firstName: string,
@@ -142,6 +147,7 @@ export async function customerRegister(
 ```
 
 **getCustomer:**
+
 ```ts
 export async function getCustomer(token: string): Promise<ShopifyCustomer | null> {
   try {
@@ -156,6 +162,7 @@ export async function getCustomer(token: string): Promise<ShopifyCustomer | null
 ```
 
 **sendPasswordReset:**
+
 ```ts
 export async function sendPasswordReset(
   email: string
@@ -169,13 +176,14 @@ export async function sendPasswordReset(
 ```
 
 **getCustomerToken:**
+
 ```ts
 export async function getCustomerToken(): Promise<string | null> {
   return (await cookies()).get(TOKEN_COOKIE)?.value ?? null
 }
 ```
 
-### app/account/login/page.tsx
+### src/app/account/login/page.tsx
 
 ```ts
 export async function generateMetadata(): Promise<Metadata> {
@@ -186,6 +194,7 @@ export async function generateMetadata(): Promise<Metadata> {
 Server Component shell. Extract `LoginForm` as a `"use client"` component.
 
 **Reading the `?next` redirect param:**
+
 ```ts
 // In the page (Server Component):
 export default function LoginPage({ searchParams }: { searchParams: { next?: string } }) {
@@ -195,11 +204,13 @@ export default function LoginPage({ searchParams }: { searchParams: { next?: str
 ```
 
 **LoginForm:**
+
 ```ts
 interface LoginFormProps { nextPath: string }
 ```
 
 Use `useTransition` to call `customerLogin`:
+
 ```ts
 const [isPending, startTransition] = useTransition()
 const router = useRouter()
@@ -221,7 +232,7 @@ Fields: Email, Password. Error message displayed inline above the submit button.
 "Forgot password?" link → `/account/forgot-password`.
 "Don't have an account?" link → `/account/register`.
 
-### app/account/register/page.tsx
+### src/app/account/register/page.tsx
 
 ```ts
 export async function generateMetadata(): Promise<Metadata> {
@@ -230,6 +241,7 @@ export async function generateMetadata(): Promise<Metadata> {
 ```
 
 `"use client"` RegisterForm:
+
 - Fields: First Name, Last Name, Email, Password, Confirm Password
 - Client validation before calling server action:
   - Password min 8 characters
@@ -237,7 +249,7 @@ export async function generateMetadata(): Promise<Metadata> {
 - On success: `router.push('/account')`
 - Error displayed inline
 
-### app/account/forgot-password/page.tsx
+### src/app/account/forgot-password/page.tsx
 
 ```ts
 export async function generateMetadata(): Promise<Metadata> {
@@ -246,13 +258,14 @@ export async function generateMetadata(): Promise<Metadata> {
 ```
 
 `"use client"` ForgotPasswordForm:
+
 - Email field only
 - On submit: calls `sendPasswordReset(email)`
 - Always shows success message regardless of result:
   `"If an account exists for this email, you'll receive a reset link shortly."`
 - No error state exposed (security best practice — don't reveal whether email exists)
 
-### app/account/page.tsx
+### src/app/account/page.tsx
 
 Server Component. Handles both missing token and expired token:
 
@@ -281,6 +294,7 @@ export default async function AccountPage() {
 ```
 
 Layout:
+
 - `"Hello, {customer.firstName}."` in display font
 - Account nav tabs: Overview, Orders — **do not include Settings** (no settings page in scaffold)
 - Recent orders: last 3, using `OrderCard` component
@@ -288,6 +302,7 @@ Layout:
 - Logout form (see below)
 
 **Logout button — must use a form with Server Action:**
+
 ```tsx
 // Do NOT use onClick calling a server action — that pattern is unreliable in App Router.
 // Use a form with action= instead:
@@ -304,7 +319,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 ```
 
-### app/account/orders/page.tsx
+### src/app/account/orders/page.tsx
 
 ```ts
 export async function generateMetadata(): Promise<Metadata> {
@@ -323,7 +338,7 @@ const orders = customer.orders.edges.map(e => e.node)
 
 Render: all orders using `OrderCard`. Empty state if `orders.length === 0`.
 
-### components/account/OrderCard.tsx
+### src/components/account/OrderCard.tsx
 
 Define this component here — it was referenced but never built or scaffolded:
 
@@ -334,6 +349,7 @@ interface OrderCardProps {
 ```
 
 Fields to display:
+
 - Order number: `order.name` (Shopify order name, e.g. `#1001`)
 - Date: `formatDate(order.processedAt)`
 - Fulfillment status badge — use `Badge` component, variant based on status:
@@ -355,7 +371,7 @@ const statusInfo = FULFILLMENT_STATUS_MAP[order.fulfillmentStatus]
 
 - Total: `formatPrice(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)`
 - "View order" link: `order.statusUrl` — this is an external Shopify order status URL.
-  **Note:** `statusUrl` must be added to the `ShopifyOrder` type in `lib/shopify/types.ts`
+  **Note:** `statusUrl` must be added to the `ShopifyOrder` type in `src/lib/shopify/types.ts`
   and fetched in `GET_CUSTOMER` query if not already included.
 
 ```ts
@@ -365,7 +381,8 @@ statusUrl: string
 
 ---
 
-> **After Phase 7, verify:**
+**After Phase 7, verify:**
+
 > - Logged-out visit to `/account` redirects to `/account/login?next=/account`
 > - After login, redirects to `/account` (the `next` param)
 > - Logged-out visit to `/account/forgot-password` does NOT redirect (it's a public route)

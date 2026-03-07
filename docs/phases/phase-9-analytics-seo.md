@@ -12,7 +12,7 @@ from Phase 2.1. No additional setup needed for pageview tracking on Vercel deplo
 **Add e-commerce event tracking** — this was missing from earlier phases.
 Import `track` from `@vercel/analytics` and call it at the right points:
 
-In `hooks/useCart.ts`, inside `addItem` on success:
+In `src/hooks/useCart.ts`, inside `addItem` on success:
 ```ts
 import { track } from '@vercel/analytics'
 
@@ -23,10 +23,11 @@ track('AddToCart', {
 })
 ```
 
-In `app/products/[handle]/page.tsx`, add a client component tracker (same pattern as
+In `src/app/products/[handle]/page.tsx`, add a client component tracker (same pattern as
 `ProductViewTracker` from Phase 8):
 
-**components/product/ProductViewEvent.tsx ("use client"):**
+**src/components/product/ProductViewEvent.tsx ("use client"):**
+
 ```tsx
 'use client'
 import { useEffect } from 'react'
@@ -42,7 +43,7 @@ export function ProductViewEvent({ handle, title }: { handle: string; title: str
 
 Place `<ProductViewEvent handle={product.handle} title={product.title} />` in the PDP page.
 
-### lib/utils/seo.ts — replace the stub
+### src/lib/utils/seo.ts — replace the stub
 
 This file has been a stub since Phase 1. **Replace it entirely.**
 
@@ -137,9 +138,10 @@ export function buildCollectionMetadata(collection: ShopifyCollection): Metadata
 }
 ```
 
-### Update app/layout.tsx — replace partial metadata
+### Update src/app/layout.tsx — replace partial metadata
 
 In Phase 2.1, `layout.tsx` exported a partial `metadata` object. **Replace it** with:
+
 ```ts
 import { DEFAULT_METADATA } from '@/lib/utils/seo'
 
@@ -154,10 +156,11 @@ export const metadata: Metadata = {
 These pages called `buildProductMetadata` / `buildCollectionMetadata` when they were stubs.
 Now that the real implementations exist, verify each page's `generateMetadata` is wired correctly:
 
-- `app/products/[handle]/page.tsx` → `buildProductMetadata(product)`
+- `src/app/products/[handle]/page.tsx` → `buildProductMetadata(product)`
   Also add canonical: verify `alternates.canonical` includes the handle
-- `app/collections/[handle]/page.tsx` → `buildCollectionMetadata(collection)`
-- `app/shop/page.tsx` → add:
+- `src/app/collections/[handle]/page.tsx` → `buildCollectionMetadata(collection)`
+- `src/app/shop/page.tsx` → add:
+  
   ```ts
   return {
     title: 'Shop',
@@ -166,17 +169,19 @@ Now that the real implementations exist, verify each page's `generateMetadata` i
     // Note: do NOT include cursor param in canonical — paginated pages should not be indexed
   }
   ```
-- `app/collections/page.tsx` → add canonical: `${SITE_URL}/collections`
-- `app/about/page.tsx` → add canonical: `${SITE_URL}/about`
-- `app/contact/page.tsx` → add canonical: `${SITE_URL}/contact`
-- `app/search/page.tsx` → add `robots: { index: false, follow: true }` — search result pages
+
+- `src/app/collections/page.tsx` → add canonical: `${SITE_URL}/collections`
+- `src/app/about/page.tsx` → add canonical: `${SITE_URL}/about`
+- `src/app/contact/page.tsx` → add canonical: `${SITE_URL}/contact`
+- `src/app/search/page.tsx` → add `robots: { index: false, follow: true }` — search result pages
   should not be indexed
 
-### JSON-LD in app/layout.tsx
+### JSON-LD in src/app/layout.tsx
 
 Add two JSON-LD scripts to the root layout's `<body>`. These are static — no data fetching needed.
 
 **WebSite schema:**
+
 ```tsx
 <script
   type="application/ld+json"
@@ -202,6 +207,7 @@ Add two JSON-LD scripts to the root layout's `<body>`. These are static — no d
 ```
 
 **Organization schema:**
+
 ```tsx
 <script
   type="application/ld+json"
@@ -221,25 +227,28 @@ Add two JSON-LD scripts to the root layout's `<body>`. These are static — no d
 />
 ```
 
-Import `SITE_URL` from `lib/utils/seo.ts` or redeclare the constant — do not hardcode inline.
+Import `SITE_URL` from `src/lib/utils/seo.ts` or redeclare the constant — do not hardcode inline.
 
 ### Update Product JSON-LD on PDP
 
 In Phase 4.4, the Product JSON-LD was built with placeholder structure. Now that real data and
-`seo.ts` are complete, verify the JSON-LD in `app/products/[handle]/page.tsx` uses:
+`seo.ts` are complete, verify the JSON-LD in `src/app/products/[handle]/page.tsx` uses:
+
 - `product.vendor` for brand name
 - `product.variants.edges[0].node.price` for the offer price (first/default variant)
 - Correct `availability` URL:
+
   ```ts
   availability: product.availableForSale
     ? 'https://schema.org/InStock'
     : 'https://schema.org/OutOfStock'
   ```
+
 - `priceCurrency` from the variant's `price.currencyCode`
 
-### app/robots.ts — replace static file
+### src/app/robots.ts — replace static file
 
-Delete `public/robots.txt` (created in Phase 1.1) and replace with a dynamic `app/robots.ts`
+Delete `public/robots.txt` (created in Phase 1.1) and replace with a dynamic `src/app/robots.ts`
 for App Router consistency:
 
 ```ts
@@ -261,9 +270,10 @@ export default function robots(): MetadataRoute.Robots {
 }
 ```
 
-### app/sitemap.ts — verify from Phase 4.5
+### src/app/sitemap.ts — verify from Phase 4.5
 
 Confirm the sitemap from Phase 4.5 is complete and includes:
+
 - All static routes with correct `changeFrequency` and `priority`
 - All product handles from `getAllProductHandles()`
 - All collection handles from `getCollections()`
@@ -275,6 +285,7 @@ diverge, Google will flag the inconsistency. Verify both use the same URL struct
 
 Redirects were specified in the corrected Phase 1.1. **Verify they already exist** — do not
 add them again:
+
 ```ts
 async redirects() {
   return [
@@ -288,7 +299,8 @@ If they are missing, add them now.
 
 ---
 
-> **After Phase 9, verify:**
+ **After Phase 9, verify:**
+
 > - `https://your-site/sitemap.xml` — all products and collections listed
 > - `https://your-site/robots.txt` — correct disallow rules, sitemap URL
 > - Product page `<head>` contains correct `og:image`, `og:title`, canonical

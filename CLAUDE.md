@@ -10,7 +10,7 @@ Premium e-commerce + showcase website for a 3D printing and design studio.
 Modular, functional home decor and furniture. Premium brand aesthetic.
 
 | Layer | Choice |
-|-------|--------|
+| ------- | -------- |
 | Frontend | Next.js 15 App Router, TypeScript |
 | Styling | Tailwind CSS v3 |
 | Backend | Shopify Storefront API (GraphQL) |
@@ -91,8 +91,8 @@ docs/
 - Pages are **server components** by default — never add `'use client'` to a page.
 - Client logic lives in leaf components imported into server pages.
 - Client components cannot import server lib functions — use Server Actions or API routes.
-- Cart actions (`lib/shopify/cart.ts`) are Server Actions — call from client via `useCart`.
-- Auth actions (`lib/shopify/auth.ts`) are Server Actions — call from forms/useTransition.
+- Cart actions (`src/lib/shopify/cart.ts`) are Server Actions — call from client via `useCart`.
+- Auth actions (`src/lib/shopify/auth.ts`) are Server Actions — call from forms/useTransition.
 - Predictive search: client calls `/api/search/predictive` route, not the lib directly.
 - Wishlist/recently viewed product fetching: client calls `/api/products/batch` route.
 
@@ -100,9 +100,9 @@ docs/
 
 ## Shopify API Patterns
 
-- `lib/shopify/client.ts` — typed `storefront(query, variables?, options?)` fetch wrapper
-- `lib/shopify/queries.ts` — all GraphQL query strings
-- `lib/shopify/mutations.ts` — all GraphQL mutation strings
+- `src/lib/shopify/client.ts` — typed `storefront(query, variables?, options?)` fetch wrapper
+- `src/lib/shopify/queries.ts` — all GraphQL query strings
+- `src/lib/shopify/mutations.ts` — all GraphQL mutation strings
 - Individual lib files export typed server functions — never import from `queries.ts` directly in components
 - Policies: always fetched via `getShopPolicies()` — **never hardcode legal text**
 - Cart expiry: `getCart()` returning null = stale cartId — clear localStorage and start fresh
@@ -115,7 +115,7 @@ docs/
 ### Typography
 
 | Use | Font | Class/Variable |
-|-----|------|----------------|   
+| ----- | ------ | ---------------- |
 | Headings, editorial | Cormorant Garamond | `font-display` |
 | Body, UI text | DM Sans | default (CSS variable `--font-dm-sans`) |
 | Prices, labels, tags, counts | JetBrains Mono | `font-mono` |
@@ -126,7 +126,7 @@ docs/
 ### Colour palette
 
 | Token | Hex | Use |
-|-------|-----|-----|
+| ------- | ----- | ----- |
 | `ink` | `#1A1917` | Primary text, near-black |
 | `canvas` | `#FAF7F2` | Warm off-white background |
 | `accent` | `#C8A97E` | Warm brass/sand — use sparingly |
@@ -168,13 +168,12 @@ These files are intentional stubs replaced in later phases.
 Do not build their full functionality ahead of schedule.
 
 | File | Current state | Replaced in |
-|------|---------------|-------------|
-| `context/CartContext.tsx` | Stub (`return children`) | Phase 6 |
-| `hooks/useCart.ts` | Stub | Phase 6 |
-| `context/WishlistContext.tsx` | Stub (`return children`) | Phase 8 |
-| `hooks/useWishlist.ts` | Stub | Phase 8 |
-| `components/product/RelatedProducts.tsx` | Returns null | Phase 8 |
-| `lib/utils/seo.ts` | Returns empty objects | Phase 9 |
+| ------ | --------------- | ------------- |
+| `src/context/CartContext.tsx` | Stub (`return children`) | Phase 6 |
+| `src/hooks/useCart.ts` | Stub | Phase 6 |
+| `src/context/WishlistContext.tsx` | Stub (`return children`) | Phase 8 |
+| `src/hooks/useWishlist.ts` | Stub | Phase 8 |
+| `src/lib/utils/seo.ts` | Returns empty objects | Phase 9 |
 
 ---
 
@@ -197,7 +196,7 @@ Do not build their full functionality ahead of schedule.
 - `isItemInCart` / `getItemQuantity` match against `line.merchandise.id` (variant ID), not `line.id`.
 - `CartDrawer` uses the `Dialog` primitive from Phase 2.3 for focus trap.
 - Cart icon ref (`cartIconRef`) lives in CartContext — attached to Header's cart button for focus restoration on drawer close.
-- Free shipping threshold defined in `lib/constants.ts` — not hardcoded in components.
+- Free shipping threshold defined in `src/lib/constants.ts` — not hardcoded in components.
 
 ### Auth (Phase 7)
 
@@ -210,7 +209,7 @@ Do not build their full functionality ahead of schedule.
 ### Search (Phase 5)
 
 - Predictive search: client fetches `/api/search/predictive?q=` — not the lib directly.
-- `lib/utils/params.ts` exports `SORT_MAP` and `parseFilters` — shared between shop, collection, and search pages. Do not duplicate inline.
+- `src/lib/utils/params.ts` exports `SORT_MAP` and `parseFilters` — shared between shop, collection, and search pages. Do not duplicate inline.
 - Sort uses Shopify's `sortKey` + `reverse` pattern — not `PRICE_ASC`/`PRICE_DESC` strings.
 - `FilterPanel` and `SortSelect` from `components/search/` are reused on the search page — no separate shop variants needed.
 

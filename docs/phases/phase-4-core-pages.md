@@ -8,7 +8,7 @@
 
 ## Prompt 4.1 — Home Page
 
-Build the Studiofile home page at `app/page.tsx`. Server Component.
+Build the Studiofile home page at `src/app/page.tsx`. Server Component.
 
 ### Data fetching
 
@@ -24,7 +24,7 @@ const featuredCollections = collections.slice(0, 3)
 
 ### Sections
 
-Build each section as a separate Server Component in `components/home/` for clarity.
+Build each section as a separate Server Component in `src/components/home/` for clarity.
 Keep styles minimal — use design tokens and utility classes. You will refine visuals in the browser.
 
 **1. Hero** — full viewport height, two-column layout (stacked on mobile)
@@ -94,7 +94,7 @@ Keep styles minimal — use design tokens and utility classes. You will refine v
 
 ## Prompt 4.2 — Collections Index Page
 
-Build `app/collections/page.tsx`. Server Component.
+Build `src/app/collections/page.tsx`. Server Component.
 
 ```ts
 export async function generateMetadata(): Promise<Metadata> {
@@ -130,8 +130,8 @@ Empty state (no collections): simple centered message, "Coming soon. Check back 
 
 Build:
 
-- `app/shop/page.tsx` — all products
-- `app/collections/[handle]/page.tsx` — products in a specific collection
+- `src/app/shop/page.tsx` — all products
+- `src/app/collections/[handle]/page.tsx` — products in a specific collection
 
 Both are Server Components. All filter and sort state lives in URL search params.
 
@@ -171,7 +171,7 @@ function parseFilters(filterParams: string | string[] | undefined): ProductFilte
 }
 ```
 
-### components/search/SortSelect.tsx (client)
+### src/components/search/SortSelect.tsx (client)
 
 Dropdown `<select>` for sort options. On change:
 
@@ -184,7 +184,7 @@ router.replace(`?${params.toString()}`)
 
 Options: Price: Low to High, Price: High to Low, Best Selling, Newest, A–Z
 
-### components/search/FilterPanel.tsx (client)
+### src/components/search/FilterPanel.tsx (client)
 
 Accepts available filter options as props (derived from current product set):
 
@@ -203,7 +203,7 @@ interface FilterPanelProps {
 - "Clear all" link: removes all `?filter=` params
 - Active filter count badge on the "Filters" button
 
-### components/product/ProductGrid.tsx
+### src/components/product/ProductGrid.tsx
 
 ```ts
 interface ProductGridProps {
@@ -217,7 +217,7 @@ interface ProductGridProps {
 - Grid layout: CSS grid, responsive columns — keep class-based so layout is easy to adjust visually
 - Editorial asymmetric grid is a nice-to-have, not a requirement — a clean uniform grid is fine here
 
-### components/product/ProductCard.tsx
+### src/components/product/ProductCard.tsx
 
 Build this here if not already built:
 
@@ -251,18 +251,18 @@ Use "Load more" button approach (simpler than infinite scroll, easier to debug):
 
 ### Collection page extras
 
-`app/collections/[handle]/page.tsx`:
+`src/app/collections/[handle]/page.tsx`:
 
 - `notFound()` if collection not found
 - Full-width banner: collection image (if exists) + collection title + description below
 - `Breadcrumb`: `[{ label: 'Home', href: '/' }, { label: 'Collections', href: '/collections' }, { label: collection.title }]`
-- `generateMetadata`: use `buildCollectionMetadata(collection)` from `lib/utils/seo.ts` (stub in Phase 1, built in Phase 9 — call it now so the wiring is in place)
+- `generateMetadata`: use `buildCollectionMetadata(collection)` from `src/lib/utils/seo.ts` (stub in Phase 1, built in Phase 9 — call it now so the wiring is in place)
 
 ---
 
 ## Prompt 4.4 — Product Detail Page (Full)
 
-Build `app/products/[handle]/page.tsx`. Server Component shell with client sub-components.
+Build `src/app/products/[handle]/page.tsx`. Server Component shell with client sub-components.
 
 ### Server layer
 
@@ -306,7 +306,7 @@ Product JSON-LD (include in page as `<script type="application/ld+json">`):
 }
 ```
 
-### components/product/ImageGallery.tsx (client)
+### src/components/product/ImageGallery.tsx (client)
 
 Add this component to the scaffold — it was not in Phase 1 but is needed here.
 
@@ -323,7 +323,7 @@ interface ImageGalleryProps {
 - Main image click: opens `ImageZoom` lightbox (built later in this phase)
 - Keep styling minimal — structure over aesthetics
 
-### components/product/VariantSelector.tsx (client)
+### src/components/product/VariantSelector.tsx (client)
 
 ```ts
 interface VariantSelectorProps {
@@ -344,7 +344,7 @@ const variantIdFromUrl = searchParams.get('variant')
 const initialVariant = variants.find(v => v.id === variantIdFromUrl) ?? variants[0]
 ```
 
-### components/product/StockIndicator.tsx
+### src/components/product/StockIndicator.tsx
 
 ```ts
 interface StockIndicatorProps {
@@ -417,7 +417,7 @@ export function RelatedProducts({ products }: { products: ShopifyProduct[] }) {
 }
 ```
 
-### components/product/ImageZoom.tsx (client)
+### src/components/product/ImageZoom.tsx (client)
 
 Full-screen lightbox using the `Dialog` component from Phase 2.3.
 
@@ -442,7 +442,7 @@ interface ImageZoomProps {
 
 ## Prompt 4.5 — About, Contact & Policy Pages
 
-### app/about/page.tsx
+### src/app/about/page.tsx
 
 Server Component. Static content — placeholder copy is fine, will be updated.
 
@@ -467,7 +467,7 @@ Sections (structure over style — you will refine visually):
 For image placeholders where no real asset exists: use `bg-stone-100` divs with appropriate
 aspect ratios.
 
-### app/contact/page.tsx + ContactForm
+### src/app/contact/page.tsx + ContactForm
 
 `page.tsx` is a Server Component. `ContactForm` is a `"use client"` component inside it.
 
@@ -496,7 +496,7 @@ aspect ratios.
 - On submit: check honeypot (if filled, silently succeed without POSTing), then POST to `/api/contact`
 - On success: `toast.success("Message sent. We'll be in touch soon.")` + reset form
 
-**app/api/contact/route.ts:**
+**src/app/api/contact/route.ts:**
 
 ```ts
 export async function POST(request: Request) {
@@ -520,7 +520,7 @@ export async function POST(request: Request) {
 }
 ```
 
-### app/policies/[handle]/page.tsx
+### src/app/policies/[handle]/page.tsx
 
 ```ts
 const POLICY_HANDLES = ['privacy-policy', 'refund-policy', 'terms-of-service', 'shipping-policy']
@@ -555,7 +555,7 @@ Render `policy.body` as HTML — Shopify provides sanitized HTML:
 
 `generateMetadata`: `{ title: policy.title }`
 
-### app/sitemap.ts
+### src/app/sitemap.ts
 
 ```ts
 import type { MetadataRoute } from 'next'

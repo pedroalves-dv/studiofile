@@ -6,12 +6,13 @@
 
 ### Replace the CartProvider stub
 
-In Phase 2.1, `context/CartContext.tsx` was scaffolded as a stub returning `{children}`.
+In Phase 2.1, `src/context/CartContext.tsx` was scaffolded as a stub returning `{children}`.
 **Replace it entirely** with the full implementation below.
 
-### context/CartContext.tsx ("use client")
+### src/context/CartContext.tsx ("use client")
 
 State shape:
+
 ```ts
 interface CartState {
   cartId: string | null
@@ -22,6 +23,7 @@ interface CartState {
 ```
 
 Actions:
+
 ```ts
 type CartAction =
   | { type: 'SET_CART'; cart: ShopifyCart }
@@ -33,6 +35,7 @@ type CartAction =
 ```
 
 **On mount — SSR guard required.** localStorage does not exist server-side:
+
 ```ts
 useEffect(() => {
   const stored = localStorage.getItem('sf-cart-id')
@@ -53,6 +56,7 @@ useEffect(() => {
 ```
 
 **Persist cartId** to localStorage whenever `SET_CART_ID` is dispatched:
+
 ```ts
 // In reducer or via useEffect watching state.cartId:
 useEffect(() => {
@@ -63,6 +67,7 @@ useEffect(() => {
 ```
 
 Context value — expose a ref for the cart icon button (used for focus restoration):
+
 ```ts
 interface CartContextValue {
   state: CartState
@@ -71,7 +76,7 @@ interface CartContextValue {
 }
 ```
 
-### hooks/useCart.ts
+### src/hooks/useCart.ts
 
 Wraps `useContext(CartContext)`. All cart operations live here.
 
@@ -201,7 +206,8 @@ export function useCart() {
 
 ### Wire CartDrawer into the layout
 
-Add `<CartDrawer />` to `app/layout.tsx` inside `CartProvider`, after `{children}`:
+Add `<CartDrawer />` to `src/app/layout.tsx` inside `CartProvider`, after `{children}`:
+
 ```tsx
 <CartProvider>
   <WishlistProvider>
@@ -243,6 +249,7 @@ const { cart, isOpen, closeCart, cartIconRef } = useCart()
 ```
 
 Structure:
+
 ```tsx
 <Dialog isOpen={isOpen} onClose={closeCart} triggerRef={cartIconRef} ariaLabel="Shopping cart">
   <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md flex flex-col bg-canvas shadow-2xl">
@@ -279,6 +286,7 @@ Structure:
 Backdrop: handled by `Dialog` component. `useScrollLock` while `isOpen`.
 
 Slide-in animation — CSS only (GSAP is Phase 10):
+
 ```css
 /* In globals.css */
 @keyframes slideInRight {
@@ -286,13 +294,16 @@ Slide-in animation — CSS only (GSAP is Phase 10):
   to   { transform: translateX(0); }
 }
 ```
+
 Apply `animation: slideInRight 350ms ease-out` to the drawer panel when open.
 
 ### FREE_SHIPPING_THRESHOLD constant
 
 Define in a constants file, not hardcoded:
+
 ```ts
-// lib/constants.ts
+
+// src/lib/constants.ts
 export const FREE_SHIPPING_THRESHOLD = 150  // amount in store currency
 export const CURRENCY_CODE = 'EUR'          // match your Shopify store currency
 ```
@@ -336,6 +347,7 @@ interface CartItemProps {
 - Line total: `formatPrice(line.cost.totalAmount.amount, line.cost.totalAmount.currencyCode)`
 
 Quantity stepper with debounce:
+
 ```ts
 const [localQuantity, setLocalQuantity] = useState(line.quantity)
 const debouncedQuantity = useDebounce(localQuantity, 500)
@@ -392,6 +404,7 @@ const hasDiscount = cart.discountCodes.some(d => d.applicable)
 ```
 
 Layout:
+
 - Subtotal row: label + `formatPrice(subtotal.amount, subtotal.currencyCode)`
 - Discount row (only if `hasDiscount`): "Discount" in success color + savings amount
 - "Taxes and shipping calculated at checkout" — `text-label text-muted`
@@ -420,7 +433,8 @@ return (
 
 ---
 
-> **After Phase 6, verify:**
+**After Phase 6, verify:**
+
 > - Adding first item creates a new cart (no existing cartId) and opens drawer
 > - Adding subsequent items appends to existing cart
 > - Quantity stepper debounces — rapid clicks only fire one API call

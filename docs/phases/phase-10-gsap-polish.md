@@ -5,13 +5,14 @@
 ## Prompt 10.1 — GSAP Animations
 
 GSAP was installed in Phase 1. Before starting, install the official React hook:
+
 ```bash
 npm install @gsap/react
 ```
 
-### lib/gsap.ts
+### src/lib/gsap.ts
 
-Note: file lives at `lib/gsap.ts`, imported as `@/lib/gsap` — not `src/lib/gsap.ts`.
+Note: file lives at `src/lib/gsap.ts`, imported as `@/lib/gsap` — not `src/lib/gsap.ts`.
 
 ```ts
 // Must only run client-side
@@ -33,7 +34,8 @@ Use the official `@gsap/react` hook — do NOT build a custom one:
 import { useGSAP } from '@gsap/react'
 ```
 
-Register it once alongside ScrollTrigger in `lib/gsap.ts`:
+Register it once alongside ScrollTrigger in `src/lib/gsap.ts`:
+
 ```ts
 import { useGSAP } from '@gsap/react'
 if (typeof window !== 'undefined') {
@@ -45,6 +47,7 @@ export { gsap, ScrollTrigger, useGSAP }
 Then import `useGSAP` from `@/lib/gsap` across all components — not directly from `@gsap/react`.
 
 `useGSAP` signature:
+
 ```ts
 useGSAP(callback: () => void, options?: { scope?: RefObject<Element>, dependencies?: React.DependencyList, revertOnUpdate?: boolean })
 ```
@@ -53,7 +56,8 @@ It handles cleanup (`ctx.revert()`) automatically on unmount. No manual cleanup 
 
 ### Reduced motion — single guard pattern
 
-Define a utility once in `lib/gsap.ts` and use it everywhere:
+Define a utility once in `src/lib/gsap.ts` and use it everywhere:
+
 ```ts
 export function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false
@@ -62,6 +66,7 @@ export function prefersReducedMotion(): boolean {
 ```
 
 In every animation block, check once at the top — do not wrap individual tweens:
+
 ```ts
 useGSAP(() => {
   if (prefersReducedMotion()) return  // skip all animations in this block
@@ -101,6 +106,7 @@ useGSAP(() => {
 ```
 
 After heading animation completes, animate subtext and CTAs:
+
 ```ts
 gsap.from([subtextRef.current, ctaRef.current], {
   y: 20,
@@ -113,7 +119,7 @@ gsap.from([subtextRef.current, ctaRef.current], {
 
 ### Animation 2 — RevealOnScroll wrapper component
 
-**components/common/RevealOnScroll.tsx ("use client")**
+**src/components/common/RevealOnScroll.tsx ("use client")**
 
 Applied manually at call sites — not automatic. Wrap section headings and content blocks
 explicitly wherever you want the effect.
@@ -148,6 +154,7 @@ useGSAP(() => {
 ```
 
 Usage:
+
 ```tsx
 <RevealOnScroll>
   <h2>Section Heading</h2>
@@ -159,7 +166,7 @@ Do not apply to above-the-fold content (hero) — it has its own animation.
 
 ### Animation 3 — Product grid stagger
 
-In `components/product/ProductGrid.tsx`, add a `useGSAP` block using `ScrollTrigger.batch`:
+In `src/components/product/ProductGrid.tsx`, add a `useGSAP` block using `ScrollTrigger.batch`:
 
 ```ts
 const gridRef = useRef<HTMLDivElement>(null)
@@ -185,13 +192,14 @@ useGSAP(() => {
 ```
 
 Add `data-product-card` attribute to each `ProductCard` root element:
+
 ```tsx
 <div data-product-card className="...">
 ```
 
 ### Animation 4 — Header wordmark entrance
 
-In `components/layout/Header.tsx`:
+In `src/components/layout/Header.tsx`:
 
 ```ts
 const wordmarkRef = useRef<HTMLSpanElement>(null)
@@ -265,7 +273,8 @@ The CSS below degrades gracefully — browsers without support simply skip the t
 
 `next.config.ts`: `experimental.viewTransition: true` — verify this is present from Phase 1.1.
 
-Add to `app/globals.css`:
+Add to `src/app/globals.css`:
+
 ```css
 @view-transition {
   navigation: auto;
@@ -304,6 +313,7 @@ Add to `app/globals.css`:
 Use a cast to avoid type errors:
 
 In `ProductCard`:
+
 ```tsx
 <div
   style={{ viewTransitionName: `product-image-${product.handle}` } as React.CSSProperties}
@@ -314,6 +324,7 @@ In `ProductCard`:
 ```
 
 In PDP `ImageGallery` main image container:
+
 ```tsx
 <div
   style={{ viewTransitionName: `product-image-${product.handle}` } as React.CSSProperties}
@@ -327,7 +338,8 @@ The `handle` must be identical in both places for the shared element transition 
 
 ### ImageZoom — verify completeness
 
-`components/product/ImageZoom.tsx` was built in Phase 4.4. Verify it has:
+`src/components/product/ImageZoom.tsx` was built in Phase 4.4. Verify it has:
+
 - [ ] `Dialog` component from Phase 2.3 as the wrapper (focus trap + Escape handling)
 - [ ] Full-resolution `next/image` with `fill` and `object-contain`
 - [ ] `triggerRef` passed to `Dialog` for focus restoration
@@ -346,6 +358,7 @@ If any of these are missing, complete them now.
 Work through each item systematically. Fix issues before marking complete.
 
 **1. Icon-only buttons — verify aria-labels:**
+
 - Cart icon: `aria-label={Open cart${totalQuantity > 0 ? ` — ${totalQuantity} items` : ''}}`
 - Wishlist icon: `aria-label={Open wishlist${totalCount > 0 ? ` — ${totalCount} items` : ''}}`
 - Search icon: `aria-label="Open search"`
@@ -364,6 +377,7 @@ Work through each item systematically. Fix issues before marking complete.
 **2. Focus management — verify each panel:**
 
 For each of: CartDrawer, WishlistDrawer, SearchOverlay, ImageZoom, mobile nav:
+
 - Focus moves to first interactive element on open
 - Focus is trapped inside (Tab/Shift+Tab cycles within)
 - Focus returns to trigger element on close
@@ -373,22 +387,26 @@ All should use the `Dialog` primitive from Phase 2.3. If any were implemented wi
 refactor to use it.
 
 **3. Product images:**
+
 - All `<Image>` components for products: `alt={product.featuredImage?.altText ?? product.title}`
 - Never leave `alt=""` on product images (empty alt = decorative, which is wrong for products)
 - Collection images: `alt={collection.image?.altText ?? collection.title}`
 
 **4. Skip to content link:**
+
 - Verify `<a href="#main-content" ...>Skip to content</a>` is first child of `<body>` in layout.tsx
 - Verify `<main id="main-content">` exists in `PageWrapper.tsx`
 - Test: press Tab on any page — skip link should appear, press Enter should jump to main content
 
 **5. Color contrast:**
+
 - `muted` color was corrected to `#6B6560` in Phase 2.1 (not `#8A8580` which fails WCAG AA)
 - Verify `tailwind.config.ts` has `muted: '#6B6560'`
 - Verify no component still references the old hex value `#8A8580` directly
 
 **6. Form labels:**
 Verify every `<input>`, `<textarea>`, `<select>` has an associated `<label>`:
+
 - Login: Email, Password
 - Register: First Name, Last Name, Email, Password, Confirm Password
 - Contact: Name, Email, Subject, Message (honeypot field must have `aria-hidden="true"`)
@@ -400,6 +418,7 @@ Verify every `<input>`, `<textarea>`, `<select>` has an associated `<label>`:
 
 **7. Reduced motion — CSS consistency:**
 CSS animations in `globals.css` use the Phase 2.1 approach (reduce → override to near-zero):
+
 ```css
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -408,6 +427,7 @@ CSS animations in `globals.css` use the Phase 2.1 approach (reduce → override 
   }
 }
 ```
+
 This covers all CSS animations. GSAP animations use `prefersReducedMotion()` guard from 10.1.
 View transition overrides are handled separately in the `::view-transition` block above.
 Do NOT add redundant `@media (prefers-reduced-motion: no-preference)` wrappers — they conflict
@@ -415,6 +435,7 @@ with the Phase 2.1 approach.
 
 **8. Custom interactive elements:**
 Any `<div>` or `<span>` used as a button must have:
+
 - `role="button"`
 - `tabIndex={0}`
 - `onKeyDown` handler for Enter and Space keys
@@ -423,6 +444,7 @@ and any custom toggle components.
 
 **9. Keyboard navigation — manual test:**
 Tab through each of the following and verify logical order, no traps, all elements reachable:
+
 - [ ] Header nav (desktop + mobile)
 - [ ] Cart drawer (open → items → discount → note → checkout)
 - [ ] Wishlist drawer
@@ -433,7 +455,8 @@ Tab through each of the following and verify logical order, no traps, all elemen
 
 ---
 
-> **Phase 10 complete when:**
+ **Phase 10 complete when:**
+
 > - GSAP animations run on desktop, are skipped on `prefers-reduced-motion`
 > - View transitions animate between pages in Chrome (degrade silently in Firefox/Safari)
 > - ProductCard → PDP shared element transition connects correctly in Chrome

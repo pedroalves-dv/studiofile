@@ -23,7 +23,7 @@ Update this file at the end of every session.
 | 4.4 | Product Detail Page (full) | ✅ Done | ✅ Done |
 | 4.5 | About, Contact, Policies, Sitemap | ✅ Done | ✅ Done |
 | 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ⬜ |
-| 6.1 | Cart context & state | ⬜ Next | ✅ Done |
+| 6.1 | Cart context & state | ⬜ Next | ⬜ |
 | 6.2 | Cart drawer UI | ⬜ | ⬜ |
 | 7.1 | Auth flow, middleware, account pages | ⬜ | ⬜ |
 | 8.1 | Wishlist | ⬜ | ⬜ |
@@ -49,7 +49,7 @@ Update this file at the end of every session.
 **Before starting:**
 
 - Confirm CartContext and useCart are still stubs (returning children / empty values)
-- Confirm `lib/shopify/cart.ts` Server Actions are fully implemented from Phase 1.2
+- Confirm `src/lib/shopify/cart.ts` Server Actions are fully implemented from Phase 1.2
 
 ---
 
@@ -59,15 +59,14 @@ These were intentionally skipped or partially implemented and must be completed 
 
 | Item | Deferred from | Notes |
 | ---- | ------------- | ----- |
-| `lib/utils/seo.ts` full implementation | Phase 1 | Stub only — built in Phase 9 |
+| `src/lib/utils/seo.ts` full implementation | Phase 1 | Stub only — built in Phase 9 |
 | `RelatedProducts` full implementation | Phase 4.4 | Returns null — built in Phase 8 |
 | `WishlistContext` full implementation | Phase 2.1 | Stub only — built in Phase 8 |
 | `CartContext` full implementation | Phase 2.1 | Stub only — built in Phase 6 |
 | Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
 | About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |
 | Instagram / Pinterest real handles | Phase 9 | Placeholder URLs in Organization JSON-LD |
-| `lib/utils/params.ts` shared utility | Phase 5 | Not created yet — shop/collection pages still use inline sort logic. Create in Phase 5 revisit. |
-| `components/shop/` directory | Phase 4 audit | Stray directory (SortSelect, FilterPanel, ProductGrid). Shop/collection pages now import from canonical paths (`search/`, `product/`). `components/shop/` can be deleted when safe. |
+| `src/components/shop/` directory | Phase 4 audit | Stray directory (SortSelect, FilterPanel, ProductGrid). Shop/collection pages now import from canonical paths (`search/`, `product/`). `src/components/shop/` can be deleted when safe. |
 | `RelatedProducts.tsx` | Phase 4 audit | Fully implemented (spec says stub until Phase 8). Left as-is since it's working code. |
 
 ---
@@ -83,8 +82,8 @@ Issues discovered during development that affect future phases:
 - **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast — TypeScript does not recognise this property natively.
 - **`quantityAvailable`** can be `null` in Shopify when inventory tracking is disabled — treat as unlimited stock, not zero.
 - **`ImageZoom`** uses `createPortal` directly into `document.body`, not the `Dialog` component — Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox.
-- **`components/ui/SkeletonCard.tsx`** is a stray duplicate — canonical location is `components/common/SkeletonCard.tsx`. Shop and collection pages now import from `common/`. The `ui/` copy can be deleted when safe.
-- **`components/shop/`** is a stray directory containing SortSelect, FilterPanel, ProductGrid. Shop/collection pages now import from canonical paths. `components/shop/` can be deleted when safe (search/FilterPanel still re-exports from it — fix that when deleting).
+- **`src/components/ui/SkeletonCard.tsx`** is a stray duplicate — canonical location is `src/components/common/SkeletonCard.tsx`. Shop and collection pages now import from `common/`. The `ui/` copy can be deleted when safe.
+- **`src/components/shop/`** is a stray directory containing SortSelect, FilterPanel, ProductGrid. Shop/collection pages now import from canonical paths. `src/components/shop/` can be deleted when safe (search/FilterPanel still re-exports from it — fix that when deleting).
 - **`VariantSelector.tsx`** now syncs `?variant=` to URL on selection. Initial variant from URL is read by `ProductInfoPanel` — ensure `useSearchParams` is available (wrap in Suspense if SSR issues arise).
 
 ---

@@ -9,7 +9,8 @@
 Client components cannot call server lib functions directly.
 Build this route first — it's used by both WishlistDrawer and RecentlyViewed:
 
-**app/api/products/batch/route.ts:**
+**src/app/api/products/batch/route.ts:**
+
 ```ts
 import { getProduct } from '@/lib/shopify/products'
 
@@ -31,12 +32,13 @@ This route is shared between WishlistDrawer and RecentlyViewed — do not duplic
 
 ### Replace the WishlistProvider stub
 
-In Phase 2.1, `context/WishlistContext.tsx` was scaffolded as a stub returning `{children}`.
+In Phase 2.1, `src/context/WishlistContext.tsx` was scaffolded as a stub returning `{children}`.
 **Replace it entirely** with the full implementation below.
 
-### context/WishlistContext.tsx ("use client")
+### src/context/WishlistContext.tsx ("use client")
 
 State shape:
+
 ```ts
 interface WishlistState {
   items: string[]    // product handles
@@ -45,6 +47,7 @@ interface WishlistState {
 ```
 
 **SSR guard on mount** — localStorage does not exist server-side:
+
 ```ts
 useEffect(() => {
   const stored = localStorage.getItem('sf-wishlist')
@@ -56,6 +59,7 @@ useEffect(() => {
 ```
 
 **Persist on every change:**
+
 ```ts
 useEffect(() => {
   localStorage.setItem('sf-wishlist', JSON.stringify(state.items))
@@ -63,6 +67,7 @@ useEffect(() => {
 ```
 
 Actions:
+
 ```ts
 type WishlistAction =
   | { type: 'LOAD'; items: string[] }
@@ -74,6 +79,7 @@ type WishlistAction =
 ```
 
 Context value — expose a ref for the wishlist icon button (focus restoration pattern):
+
 ```ts
 interface WishlistContextValue {
   state: WishlistState
@@ -82,7 +88,7 @@ interface WishlistContextValue {
 }
 ```
 
-### hooks/useWishlist.ts
+### src/hooks/useWishlist.ts
 
 ```ts
 export function useWishlist() {
@@ -113,7 +119,8 @@ export function useWishlist() {
 
 ### Wire WishlistDrawer into layout and Header
 
-Add `<WishlistDrawer />` to `app/layout.tsx` alongside `<CartDrawer />`:
+Add `<WishlistDrawer />` to `src/app/layout.tsx` alongside `<CartDrawer />`:
+
 ```tsx
 {children}
 <CartDrawer />
@@ -121,6 +128,7 @@ Add `<WishlistDrawer />` to `app/layout.tsx` alongside `<CartDrawer />`:
 ```
 
 In `Header.tsx`, wire the wishlist icon button:
+
 ```tsx
 const { wishlistIconRef, openDrawer, totalCount } = useWishlist()
 
@@ -134,7 +142,7 @@ const { wishlistIconRef, openDrawer, totalCount } = useWishlist()
 </button>
 ```
 
-### components/wishlist/WishlistButton.tsx
+### src/components/wishlist/WishlistButton.tsx
 
 ```ts
 interface WishlistButtonProps {
@@ -163,6 +171,7 @@ function handleToggle(e: React.MouseEvent) {
 **Placement on ProductCard:**
 The ProductCard wrapper needs `position: relative` (add `relative` class to ProductCard's root
 element if not already present). Place WishlistButton as an absolute overlay:
+
 ```tsx
 <div className="relative group">
   {/* product image + details */}
@@ -175,7 +184,7 @@ element if not already present). Place WishlistButton as an absolute overlay:
 **Placement on PDP:**
 Place alongside (not inside) the Add to Cart button row in the product info panel.
 
-### components/wishlist/WishlistDrawer.tsx
+### src/components/wishlist/WishlistDrawer.tsx
 
 Uses the `Dialog` component from Phase 2.3 for focus trap and Escape. Same pattern as CartDrawer.
 
@@ -184,6 +193,7 @@ const { isOpen, closeDrawer, wishlistIconRef, items } = useWishlist()
 ```
 
 **Fetching product data — use the API route, not server lib functions:**
+
 ```ts
 const [products, setProducts] = useState<ShopifyProduct[]>([])
 const [isLoading, setIsLoading] = useState(false)
@@ -199,6 +209,7 @@ useEffect(() => {
 ```
 
 Structure (same slide-in pattern as CartDrawer):
+
 ```tsx
 <Dialog isOpen={isOpen} onClose={closeDrawer} triggerRef={wishlistIconRef} ariaLabel="Wishlist">
   <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md flex flex-col bg-canvas shadow-2xl">
@@ -222,6 +233,7 @@ Structure (same slide-in pattern as CartDrawer):
 ```
 
 **WishlistItem** (inline component or separate file):
+
 ```ts
 interface WishlistItemProps { product: ShopifyProduct }
 ```
@@ -229,15 +241,18 @@ interface WishlistItemProps { product: ShopifyProduct }
 - Thumbnail: `product.featuredImage`, 60×60
 - Title + price
 - "Add to Cart" button: adds the **first available variant** to cart
+
   ```ts
   const firstAvailableVariant = product.variants.edges
     .find(({ node }) => node.availableForSale)?.node
     ?? product.variants.edges[0]?.node  // fallback to first if none available
   ```
+
   If no variants exist at all: disable the button
 - Remove X button: `removeItem(product.handle)`, `aria-label={Remove ${product.title} from wishlist}`
 
 **WishlistEmpty:**
+
 ```tsx
 <div className="flex flex-col items-center justify-center h-full gap-4 text-center py-12">
   <Heart size={48} className="text-muted/40" />
@@ -252,7 +267,7 @@ interface WishlistItemProps { product: ShopifyProduct }
 
 ## Prompt 8.2 — Recently Viewed & Related Products
 
-### hooks/useRecentlyViewed.ts
+### src/hooks/useRecentlyViewed.ts
 
 ```ts
 export function useRecentlyViewed() {
@@ -280,7 +295,8 @@ export function useRecentlyViewed() {
 
 Add a dedicated client component to the PDP to record views. Name it explicitly:
 
-**components/product/ProductViewTracker.tsx ("use client"):**
+**src/components/product/ProductViewTracker.tsx ("use client"):**
+
 ```tsx
 'use client'
 import { useEffect } from 'react'
@@ -295,13 +311,15 @@ export function ProductViewTracker({ handle }: { handle: string }) {
 }
 ```
 
-Place in `app/products/[handle]/page.tsx` inside the page's JSX:
+Place in `src/app/products/[handle]/page.tsx` inside the page's JSX:
+
 ```tsx
 <ProductViewTracker handle={product.handle} />
 ```
+
 Position doesn't matter — it renders null.
 
-### components/product/RecentlyViewed.tsx (client)
+### src/components/product/RecentlyViewed.tsx (client)
 
 ```ts
 interface RecentlyViewedProps {
@@ -310,6 +328,7 @@ interface RecentlyViewedProps {
 ```
 
 **Fetching — use the batch API route:**
+
 ```ts
 const [products, setProducts] = useState<ShopifyProduct[]>([])
 
@@ -333,7 +352,7 @@ Renders: "Recently Viewed" heading + `<HorizontalScrollRow>` of `ProductCard` co
 
 **Placement in PDP:** above `RelatedProducts`, below the image gallery strip (Section 3).
 
-### components/product/RelatedProducts.tsx
+### src/components/product/RelatedProducts.tsx
 
 **Replace the stub from Phase 4.4** with the full implementation:
 
@@ -358,7 +377,7 @@ export function RelatedProducts({ products, currentHandle }: RelatedProductsProp
 }
 ```
 
-### components/common/HorizontalScrollRow.tsx
+### src/components/common/HorizontalScrollRow.tsx
 
 Extract the horizontal scroll container as a reusable component — used by both
 `RecentlyViewed` and `RelatedProducts`:
@@ -371,6 +390,7 @@ interface HorizontalScrollRowProps {
 ```
 
 Implementation:
+
 ```tsx
 const scrollRef = useRef<HTMLDivElement>(null)
 const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -397,6 +417,7 @@ function scroll(direction: 'left' | 'right') {
 ```
 
 Container styles:
+
 ```tsx
 <div className="relative">
   {/* Left arrow — desktop only, show only when canScrollLeft */}
@@ -438,7 +459,8 @@ Arrow buttons are `hidden md:flex` — never shown on mobile (touch scrolling is
 
 ---
 
-> **After Phase 8, verify:**
+ **After Phase 8, verify:**
+
 > - Wishlisting a product on ProductCard and PDP both persist across page refresh
 > - WishlistDrawer fetches and displays product data correctly
 > - "Add to Cart" in WishlistDrawer adds the first available variant
