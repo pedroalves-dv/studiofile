@@ -321,6 +321,75 @@ export const GET_SHOP_POLICIES = `
   }
 `;
 
+// Customer
+export const GET_CUSTOMER = `
+  query getCustomer($customerAccessToken: String!) {
+    customer(customerAccessToken: $customerAccessToken) {
+      id
+      firstName
+      lastName
+      email
+      phone
+      orders(first: 20, sortKey: PROCESSED_AT, reverse: true) {
+        edges {
+          node {
+            id
+            orderNumber
+            name
+            processedAt
+            fulfillmentStatus
+            financialStatus
+            statusUrl
+            currentTotalPrice {
+              amount
+              currencyCode
+            }
+            lineItems(first: 5) {
+              edges {
+                node {
+                  id
+                  title
+                  quantity
+                  originalTotalPrice {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      defaultAddress {
+        id
+        firstName
+        lastName
+        address1
+        address2
+        city
+        province
+        country
+        zip
+      }
+      addresses(first: 10) {
+        edges {
+          node {
+            id
+            firstName
+            lastName
+            address1
+            address2
+            city
+            province
+            country
+            zip
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Shop Info
 export const GET_SHOP_INFO = `
   query getShopInfo {

@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 6 complete. Phase 7 is next.**
+Current position: **Phase 7 complete. Phase 8 is next.**
 
 Update this file at the end of every session.
 
@@ -25,7 +25,7 @@ Update this file at the end of every session.
 | 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ✅ Done |
 | 6.1 | Cart context & state | ✅ Done | ⬜ |
 | 6.2 | Cart drawer UI | ✅ Done | ⬜ |
-| 7.1 | Auth flow, middleware, account pages | ⬜ Next | ⬜ |
+| 7.1 | Auth flow, middleware, account pages | ✅ Done | ⬜ |
 | 8.1 | Wishlist | ⬜ | ⬜ |
 | 8.2 | Recently viewed, related products | ⬜ | ⬜ |
 | 9.1 | Analytics, SEO, structured data | ⬜ | ⬜ |
@@ -34,16 +34,15 @@ Update this file at the end of every session.
 
 ---
 
-## Next Session — Phase 7.1
+## Next Session — Phase 8.1
 
-**File to read:** `docs/phases/phase-7-auth.md`
+**File to read:** `docs/phases/phase-8-wishlist.md`
 
 **What gets built:**
 
-- Auth flow: login, register, logout, forgot password
-- Middleware for protected `/account/` routes
-- Account pages: orders, addresses, profile
-- `CustomerContext` or server-side session handling via Shopify Customer API
+- Wishlist context, hooks, and drawer
+- Recently viewed products
+- Related products on PDP
 
 ---
 
@@ -57,6 +56,7 @@ These were intentionally skipped or partially implemented and must be completed 
 | `RelatedProducts` full implementation | Phase 4.4 | Returns null — built in Phase 8 |
 | `WishlistContext` full implementation | Phase 2.1 | Stub only — built in Phase 8 |
 | `CartContext` full implementation | Phase 2.1 | Stub only — built in Phase 6 |
+| Address management UI | Phase 7 | Auth core done; no addresses page in this scaffold |
 | Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
 | About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |
 | Instagram / Pinterest real handles | Phase 9 | Placeholder URLs in Organization JSON-LD |

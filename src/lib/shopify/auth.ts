@@ -1,399 +1,147 @@
-'use server';
+'use server'
 
-// Authentication-specific Shopify API Server Actions
-import { cookies } from 'next/headers';
-import { storefront } from './client';
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { storefront } from './client'
 import {
   CUSTOMER_ACCESS_TOKEN_CREATE,
   CUSTOMER_ACCESS_TOKEN_DELETE,
   CUSTOMER_CREATE,
   CUSTOMER_RECOVER,
-  CUSTOMER_RESET,
-  CUSTOMER_UPDATE,
-  CUSTOMER_ADDRESS_CREATE,
-  CUSTOMER_ADDRESS_UPDATE,
-  CUSTOMER_ADDRESS_DELETE,
-} from './mutations';
-import type { ShopifyCustomer, ShopifyAddress } from './types';
+} from './mutations'
+import { GET_CUSTOMER } from './queries'
+import type { ShopifyCustomer } from './types'
 
-const COOKIE_NAME = 'sf-customer-token';
-const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
+const TOKEN_COOKIE = 'sf-customer-token'
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30, // 30 days
+}
 
-interface AccessTokenResponse {
+// Response shape types (local — not exported)
+interface AccessTokenCreateResponse {
   customerAccessTokenCreate: {
     customerAccessToken: {
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
+      accessToken: string
+      expiresAt: string
+    } | null
+    customerUserErrors: Array<{ field: string[]; message: string }>
+  }
 }
 
 interface CustomerCreateResponse {
   customerCreate: {
-    customer: ShopifyCustomer | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
+    customer: { id: string } | null
+    customerUserErrors: Array<{ field: string[]; message: string }>
+  }
 }
 
-interface CustomerRecoverResponse {
-  customerRecover: {
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
+interface GetCustomerResponse {
+  customer: ShopifyCustomer | null
 }
 
-interface CustomerResetResponse {
-  customerReset: {
-    customer: ShopifyCustomer | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
-}
-
-interface CustomerUpdateResponse {
-  customerUpdate: {
-    customer: ShopifyCustomer | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
-}
-
-interface AddressCreateResponse {
-  customerAddressCreate: {
-    customerAddress: ShopifyAddress | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
-}
-
-interface AddressUpdateResponse {
-  customerAddressUpdate: {
-    customerAddress: ShopifyAddress | null;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
-}
-
-interface AddressDeleteResponse {
-  customerAddressDelete: {
-    deletedAddressId: string;
-    userErrors: Array<{ field: string[]; message: string }>;
-  };
-}
-
-/**
- * Login customer with email and password
- * Sets httpOnly cookie with access token
- */
 export async function customerLogin(
   email: string,
   password: string
-): Promise<ShopifyCustomer | null> {
-  const response = await storefront<AccessTokenResponse>(
-    CUSTOMER_ACCESS_TOKEN_CREATE,
-    {
-      input: {
-        email,
-        password,
-      },
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const data = await storefront<AccessTokenCreateResponse>(
+      CUSTOMER_ACCESS_TOKEN_CREATE,
+      { input: { email, password } },
+      { cache: 'no-store' }
+    )
+
+    const token = data.customerAccessTokenCreate?.customerAccessToken?.accessToken
+    const userErrors = data.customerAccessTokenCreate?.customerUserErrors
+
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
     }
-  );
 
-  const tokenData = response.customerAccessTokenCreate.customerAccessToken;
+    if (!token) return { success: false, error: 'Login failed' }
 
-  if (!tokenData || response.customerAccessTokenCreate.userErrors.length > 0) {
-    throw new Error(
-      response.customerAccessTokenCreate.userErrors[0]?.message ||
-        'Failed to login'
-    );
+    ;(await cookies()).set(TOKEN_COOKIE, token, COOKIE_OPTIONS)
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Login failed' }
   }
-
-  // Set cookie with access token
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, tokenData.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: COOKIE_MAX_AGE,
-    path: '/',
-  });
-
-  // Fetch customer data to return
-  const customer = await getCustomer(tokenData.accessToken);
-  return customer;
 }
 
-/**
- * Logout customer by clearing cookie
- */
 export async function customerLogout(): Promise<void> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
+  const token = await getCustomerToken()
 
   if (token) {
-    // Delete token on Shopify side (optional but recommended)
+    // Best-effort revoke — don't let failure block the logout
     try {
-      await storefront(CUSTOMER_ACCESS_TOKEN_DELETE, {
-        accessToken: token,
-      });
-    } catch {
-      // Ignore errors from Shopify side deletion
-    }
+      await storefront(
+        CUSTOMER_ACCESS_TOKEN_DELETE,
+        { accessToken: token },
+        { cache: 'no-store' }
+      )
+    } catch {}
   }
 
-  // Clear cookie
-  cookieStore.delete(COOKIE_NAME);
+  ;(await cookies()).delete(TOKEN_COOKIE)
+
+  // redirect() throws a special NEXT_REDIRECT error — must NOT be inside a try/catch.
+  redirect('/')
 }
 
-/**
- * Create new customer account
- */
 export async function customerRegister(
   firstName: string,
   lastName: string,
   email: string,
   password: string
-): Promise<ShopifyCustomer> {
-  const response = await storefront<CustomerCreateResponse>(CUSTOMER_CREATE, {
-    input: {
-      firstName,
-      lastName,
-      email,
-      password,
-    },
-  });
-
-  if (!response.customerCreate.customer || response.customerCreate.userErrors.length > 0) {
-    throw new Error(
-      response.customerCreate.userErrors[0]?.message || 'Failed to create account'
-    );
-  }
-
-  // Auto-login after registration
-  await customerLogin(email, password);
-
-  return response.customerCreate.customer;
-}
-
-/**
- * Get customer from Shopify using access token
- */
-export async function getCustomer(
-  accessToken: string
-): Promise<ShopifyCustomer | null> {
+): Promise<{ success: boolean; error?: string }> {
   try {
-    // This requires a custom query - using a basic approach
-    // In production, you'd want a dedicated GET_CUSTOMER query
-    const query = `
-      query getCustomer($accessToken: String!) {
-        customer(customerAccessToken: $accessToken) {
-          id
-          firstName
-          lastName
-          email
-          phone
-          orders(first: 10) {
-            edges {
-              node {
-                id
-                orderNumber
-                name
-                processedAt
-                fulfillmentStatus
-                financialStatus
-                currentTotalPrice {
-                  amount
-                  currencyCode
-                }
-                lineItems(first: 5) {
-                  edges {
-                    node {
-                      id
-                      title
-                      quantity
-                      originalTotalPrice {
-                        amount
-                        currencyCode
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          defaultAddress {
-            id
-            firstName
-            lastName
-            address1
-            address2
-            city
-            province
-            country
-            zip
-          }
-          addresses(first: 5) {
-            edges {
-              node {
-                id
-                firstName
-                lastName
-                address1
-                address2
-                city
-                province
-                country
-                zip
-              }
-            }
-          }
-        }
-      }
-    `;
+    const data = await storefront<CustomerCreateResponse>(
+      CUSTOMER_CREATE,
+      { input: { firstName, lastName, email, password } },
+      { cache: 'no-store' }
+    )
 
-    const response = await storefront<{
-      customer: ShopifyCustomer | null;
-    }>(query, {
-      accessToken,
-    });
+    const userErrors = data.customerCreate?.customerUserErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
 
-    return response.customer || null;
+    if (!data.customerCreate?.customer) {
+      return { success: false, error: 'Registration failed' }
+    }
+
+    // Auto-login after successful registration
+    return customerLogin(email, password)
   } catch {
-    return null;
+    return { success: false, error: 'Registration failed' }
   }
 }
 
-/**
- * Get customer token from cookies (server-side only)
- */
+export async function getCustomer(token: string): Promise<ShopifyCustomer | null> {
+  try {
+    const data = await storefront<GetCustomerResponse>(
+      GET_CUSTOMER,
+      { customerAccessToken: token },
+      { cache: 'no-store' }
+    )
+    return data.customer ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function getCustomerToken(): Promise<string | null> {
-  const cookieStore = await cookies();
-  return cookieStore.get(COOKIE_NAME)?.value || null;
+  return (await cookies()).get(TOKEN_COOKIE)?.value ?? null
 }
 
-/**
- * Send password reset email
- */
-export async function sendPasswordReset(email: string): Promise<void> {
-  const response = await storefront<CustomerRecoverResponse>(CUSTOMER_RECOVER, {
-    email,
-  });
-
-  if (response.customerRecover.userErrors.length > 0) {
-    throw new Error(response.customerRecover.userErrors[0]?.message || 'Failed to send reset');
-  }
-}
-
-/**
- * Reset customer password with token
- */
-export async function resetPassword(
-  id: string,
-  password: string,
-  token: string
-): Promise<ShopifyCustomer> {
-  const response = await storefront<CustomerResetResponse>(CUSTOMER_RESET, {
-    id,
-    input: {
-      password,
-      resetToken: token,
-    },
-  });
-
-  if (!response.customerReset.customer || response.customerReset.userErrors.length > 0) {
-    throw new Error(response.customerReset.userErrors[0]?.message || 'Failed to reset password');
-  }
-
-  return response.customerReset.customer;
-}
-
-/**
- * Update customer profile
- */
-export async function updateCustomerProfile(
-  accessToken: string,
-  firstName?: string,
-  lastName?: string,
-  email?: string,
-  phone?: string
-): Promise<ShopifyCustomer> {
-  const response = await storefront<CustomerUpdateResponse>(CUSTOMER_UPDATE, {
-    customerAccessToken: accessToken,
-    customer: {
-      firstName,
-      lastName,
-      email,
-      phone,
-    },
-  });
-
-  if (!response.customerUpdate.customer || response.customerUpdate.userErrors.length > 0) {
-    throw new Error(
-      response.customerUpdate.userErrors[0]?.message || 'Failed to update profile'
-    );
-  }
-
-  return response.customerUpdate.customer;
-}
-
-/**
- * Create customer address
- */
-export async function createCustomerAddress(
-  accessToken: string,
-  address: Omit<ShopifyAddress, 'id'>
-): Promise<ShopifyAddress> {
-  const response = await storefront<AddressCreateResponse>(
-    CUSTOMER_ADDRESS_CREATE,
-    {
-      customerAccessToken: accessToken,
-      address,
-    }
-  );
-
-  if (!response.customerAddressCreate.customerAddress) {
-    throw new Error(response.customerAddressCreate.userErrors[0]?.message || 'Failed to create address');
-  }
-
-  return response.customerAddressCreate.customerAddress;
-}
-
-/**
- * Update customer address
- */
-export async function updateCustomerAddress(
-  accessToken: string,
-  id: string,
-  address: Omit<ShopifyAddress, 'id'>
-): Promise<ShopifyAddress> {
-  const response = await storefront<AddressUpdateResponse>(
-    CUSTOMER_ADDRESS_UPDATE,
-    {
-      customerAccessToken: accessToken,
-      id,
-      address,
-    }
-  );
-
-  if (!response.customerAddressUpdate.customerAddress) {
-    throw new Error(response.customerAddressUpdate.userErrors[0]?.message || 'Failed to update address');
-  }
-
-  return response.customerAddressUpdate.customerAddress;
-}
-
-/**
- * Delete customer address
- */
-export async function deleteCustomerAddress(
-  accessToken: string,
-  id: string
-): Promise<void> {
-  const response = await storefront<AddressDeleteResponse>(
-    CUSTOMER_ADDRESS_DELETE,
-    {
-      customerAccessToken: accessToken,
-      id,
-    }
-  );
-
-  if (response.customerAddressDelete.userErrors.length > 0) {
-    throw new Error(response.customerAddressDelete.userErrors[0]?.message || 'Failed to delete address');
-  }
+export async function sendPasswordReset(
+  email: string
+): Promise<{ success: boolean }> {
+  // Always returns success: true — never reveal whether email exists (security)
+  try {
+    await storefront(CUSTOMER_RECOVER, { email }, { cache: 'no-store' })
+  } catch {}
+  return { success: true }
 }

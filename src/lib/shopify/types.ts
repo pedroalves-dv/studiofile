@@ -134,9 +134,13 @@ export interface ShopifyCustomer {
   lastName: string | null;
   email: string;
   phone: string | null;
-  orders: ShopifyOrder[];
+  orders: {
+    edges: Array<{ node: ShopifyOrder }>;
+  };
   defaultAddress: ShopifyAddress | null;
-  addresses: ShopifyAddress[];
+  addresses: {
+    edges: Array<{ node: ShopifyAddress }>;
+  };
 }
 
 // Order
@@ -145,15 +149,20 @@ export interface ShopifyOrder {
   orderNumber: number;
   name: string;
   processedAt: string;
-  fulfillmentStatus: 'FULFILLED' | 'PARTIAL' | 'PENDING' | 'RESTOCKED' | 'UNDELIVERED' | 'CANCELED';
-  financialStatus: 'AUTHORIZED' | 'PENDING' | 'PAID' | 'REFUNDED' | 'VOIDED' | 'PARTIALLY_REFUNDED' | 'PARTIALLY_PAID' | 'DECLINED';
+  fulfillmentStatus: string;
+  financialStatus: string;
+  statusUrl: string;
   currentTotalPrice: MoneyV2;
-  lineItems: Array<{
-    id: string;
-    title: string;
-    quantity: number;
-    originalTotalPrice: MoneyV2;
-  }>;
+  lineItems: {
+    edges: Array<{
+      node: {
+        id: string;
+        title: string;
+        quantity: number;
+        originalTotalPrice: MoneyV2;
+      };
+    }>;
+  };
 }
 
 // Policy

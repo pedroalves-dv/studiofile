@@ -8,7 +8,7 @@ Read the following files before doing anything else:
 
 1. CLAUDE.md
 2. docs/STATUS.md
-3. docs/phases/phase-6-cart-checkout.md
+3. docs/phases/phase-7-customer-auth.md
 
 All source files live under src/. Use src/ prefix for all file paths.
 Path alias @/ maps to src/ — use @/ in imports, src/ in file path references.
@@ -18,7 +18,7 @@ Determine which files those are from the phase prompt — all paths are under sr
 
 Systematically Use subagents for any task that requires reading many files to gather information before acting — return only the findings to the main session.
 
-Today's task: BUILD Phase 6 — do not build anything new.
+Today's task: BUILD Phase 7.
 
 Scope: Only create or edit the files listed in the phase prompt.
 Do not touch any file not explicitly listed.
@@ -27,5 +27,5 @@ When done:
 
 - Run `npm run type-check` and fix all errors
 - Tell me what you built and what (if anything) was deferred or unclear
-- Update docs/STATUS.md
+- Update docs/STATUS.md accordingly
   
