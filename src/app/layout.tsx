@@ -11,7 +11,6 @@ import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { WishlistDrawer } from '@/components/wishlist/WishlistDrawer';
 import { CookieConsent } from '@/components/common/CookieConsent';
-import { LoadingBar } from '@/components/common/LoadingBar';
 import { ToastProvider } from '@/components/common/Toast';
 import { DEFAULT_METADATA, SITE_URL } from '@/lib/utils/seo';
 
@@ -75,7 +74,7 @@ export default function RootLayout({
               {/* Common components */}
               <CookieConsent />
               <Suspense fallback={null}>
-                <LoadingBar />
+    
               </Suspense>
             </ToastProvider>
           </WishlistProvider>

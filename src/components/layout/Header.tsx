@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Search, Heart, ShoppingCart, Menu, X } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from 'lucide-react';
 import { useScroll } from '@/hooks/useScroll';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useCart } from '@/hooks/useCart';
@@ -54,7 +54,7 @@ export function Header() {
                 aria-label="Close search"
                 className="flex-shrink-0 p-2 hover:text-accent transition-colors"
               >
-                <X size={20} />
+                <ArrowRight size={20} />
               </button>
             </div>
           </div>
@@ -81,10 +81,10 @@ export function Header() {
             {/* Wordmark */}
             <Link
               href="/"
-              className="font-display text-sm md:text-base uppercase tracking-widest text-ink hover:text-accent transition-colors"
+              className="font-display text-sm md:text-base tracking-wide text-ink hover:text-accent transition-colors"
               aria-label="Studiofile — Home"
             >
-              Studiofile
+              STUDIO filé
             </Link>
 
             {/* Desktop nav */}
@@ -93,7 +93,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs uppercase tracking-wider text-ink hover:text-accent transition-colors relative group"
+                  className="text-xs tracking-wider text-ink hover:text-accent transition-colors relative group"
                 >
                   {link.label}
                   <span className="absolute bottom-0 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300" />

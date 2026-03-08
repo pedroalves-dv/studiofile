@@ -17,8 +17,8 @@
     --color-error: #B84040;
 
     /* Typography */
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'JetBrains Mono', monospace;
+    --font-body: 'JetBrains Mono', monospace;
     --font-mono: 'JetBrains Mono', monospace;
 
     /* Spacing */

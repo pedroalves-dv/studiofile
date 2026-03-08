@@ -11,7 +11,7 @@ const config: Config = {
         ink: '#1A1917',
         canvas: '#FAF7F2',
         accent: '#C8A97E',
-        muted: '#6B6560',
+        muted: '#8A8580',
         border: '#E5E0D8',
         success: '#4A7C59',
         error: '#B84040',
@@ -30,9 +30,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-display)', 'serif'],
+        display: ['var(--font-display)', 'ui-monospace', 'monospace'],
         body: ['var(--font-body)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         DEFAULT: '0px',

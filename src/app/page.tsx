@@ -329,19 +329,19 @@ function ProcessSection() {
 }
 
 // Newsletter Section
-function NewsletterSection() {
-  return (
-    <section className="bg-ink text-canvas section-padding">
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="font-display text-4xl md:text-5xl mb-6">Stay in the loop.</h2>
-        <p className="text-canvas/80 mb-8">
-          Get updates on new releases, studio stories, and special offers.
-        </p>
-        <NewsletterForm />
-      </div>
-    </section>
-  );
-}
+// function NewsletterSection() {
+//   return (
+//     <section className="bg-ink text-canvas section-padding">
+//       <div className="max-w-2xl mx-auto text-center">
+//         <h2 className="font-display text-4xl md:text-5xl mb-6">Stay in the loop.</h2>
+//         <p className="text-canvas/80 mb-8">
+//           Get updates on new releases, studio stories, and special offers.
+//         </p>
+//         <NewsletterForm />
+//       </div>
+//     </section>
+//   );
+// }
 
 export default async function HomePage() {
   return (
@@ -371,7 +371,7 @@ export default async function HomePage() {
       <ProcessSection />
 
       {/* Newsletter */}
-      <NewsletterSection />
+      {/* <NewsletterSection /> */}
     </>
   );
 }

@@ -74,50 +74,7 @@ useGSAP(() => {
 }, { scope: containerRef })
 ```
 
-### Animation 1 — Home hero kinetic typography
-
-Target: the `<h1>` in the Hero section. It must have a `ref` attached.
-
-```ts
-const headingRef = useRef<HTMLHeadingElement>(null)
-
-useGSAP(() => {
-  if (prefersReducedMotion()) return
-  const el = headingRef.current
-  if (!el) return
-
-  // Split text content into word spans — do this in JS, not JSX,
-  // so the ref has real text content to split
-  const words = el.innerText.split(' ')
-  el.innerHTML = words
-    .map(w => `<span style="display:inline-block; overflow:hidden">
-                 <span class="word-inner" style="display:inline-block">${w}</span>
-               </span>`)
-    .join(' ')
-
-  gsap.from(el.querySelectorAll('.word-inner'), {
-    y: 60,
-    opacity: 0,
-    duration: 1,
-    ease: 'expo.out',
-    stagger: 0.08,
-  })
-}, { scope: headingRef })
-```
-
-After heading animation completes, animate subtext and CTAs:
-
-```ts
-gsap.from([subtextRef.current, ctaRef.current], {
-  y: 20,
-  opacity: 0,
-  duration: 0.6,
-  ease: 'power2.out',
-  delay: 0.7,  // after heading stagger finishes
-})
-```
-
-### Animation 2 — RevealOnScroll wrapper component
+### Animation 1 — RevealOnScroll wrapper component
 
 **src/components/common/RevealOnScroll.tsx ("use client")**
 
@@ -164,7 +121,7 @@ Usage:
 Apply to: all section headings on home page, brand story text, process steps, about page sections.
 Do not apply to above-the-fold content (hero) — it has its own animation.
 
-### Animation 3 — Product grid stagger
+### Animation 2 — Product grid stagger
 
 In `src/components/product/ProductGrid.tsx`, add a `useGSAP` block using `ScrollTrigger.batch`:
 
@@ -197,7 +154,7 @@ Add `data-product-card` attribute to each `ProductCard` root element:
 <div data-product-card className="...">
 ```
 
-### Animation 4 — Header wordmark entrance
+### Animation 3 — Header wordmark entrance
 
 In `src/components/layout/Header.tsx`:
 
@@ -234,34 +191,48 @@ useGSAP(() => {
 
 Attach `ref={wordmarkRef}` to the `<span>` wrapping "STUDIOFILE" in the header.
 
-### Animation 5 — Hero image parallax
+### Animation 4 — Home hero kinetic typography
 
-In the Hero component on the home page:
+Target: the `<h1>` in the Hero section. It must have a `ref` attached.
 
 ```ts
-const imageRef = useRef<HTMLDivElement>(null)  // ref on the image container div, not <img>
+const headingRef = useRef<HTMLHeadingElement>(null)
 
 useGSAP(() => {
   if (prefersReducedMotion()) return
-  if (!imageRef.current) return
+  const el = headingRef.current
+  if (!el) return
 
-  gsap.to(imageRef.current, {
-    yPercent: -15,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: imageRef.current,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    },
+  // Split text content into word spans — do this in JS, not JSX,
+  // so the ref has real text content to split
+  const words = el.innerText.split(' ')
+  el.innerHTML = words
+    .map(w => `<span style="display:inline-block; overflow:hidden">
+                 <span class="word-inner" style="display:inline-block">${w}</span>
+               </span>`)
+    .join(' ')
+
+  gsap.from(el.querySelectorAll('.word-inner'), {
+    y: 60,
+    opacity: 0,
+    duration: 1,
+    ease: 'expo.out',
+    stagger: 0.08,
   })
-}, { scope: imageRef })
+}, { scope: headingRef })
 ```
 
-The image container must have `overflow: hidden` on its parent so the parallax movement
-doesn't overflow. The `next/image` inside should use `fill` layout.
+After heading animation completes, animate subtext and CTAs:
 
----
+```ts
+gsap.from([subtextRef.current, ctaRef.current], {
+  y: 20,
+  opacity: 0,
+  duration: 0.6,
+  ease: 'power2.out',
+  delay: 0.7,  // after heading stagger finishes
+})
+```
 
 ## Prompt 10.2 — Page Transitions, Image Zoom & Accessibility Audit
 
@@ -462,5 +433,5 @@ Tab through each of the following and verify logical order, no traps, all elemen
 > - ProductCard → PDP shared element transition connects correctly in Chrome
 > - All accessibility audit items checked and passing
 > - Lighthouse accessibility score ≥ 90
-> - `tsc --noEmit` — zero errors
+> - `npm run type-check` — zero errors
 > - `npm run build` — clean build with no warnings
