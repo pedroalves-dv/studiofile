@@ -1,10 +1,44 @@
-export function RecentlyViewed() {
+'use client'
+
+import { useEffect, useState } from 'react'
+import type { ShopifyProduct } from '@/lib/shopify/types'
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed'
+import { HorizontalScrollRow } from '@/components/common/HorizontalScrollRow'
+import { ProductCard } from './ProductCard'
+
+interface RecentlyViewedProps {
+  currentHandle: string   // exclude this product from the list
+}
+
+export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
+  const { getHandles } = useRecentlyViewed()
+  const [products, setProducts] = useState<ShopifyProduct[]>([])
+
+  useEffect(() => {
+    const handles = getHandles()
+      .filter(h => h !== currentHandle)  // exclude current product
+      .slice(0, 6)
+
+    if (handles.length < 2) return  // only render if ≥ 2 items (after excluding current)
+
+    fetch(`/api/products/batch?handles=${handles.join(',')}`)
+      .then(r => r.json())
+      .then(setProducts)
+      .catch(() => {})
+  }, [currentHandle])
+
+  if (products.length < 2) return null
+
   return (
-    <section className="mt-12">
-      <h2 className="text-2xl font-bold mb-6">Recently Viewed</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Recently viewed products will be displayed here */}
+    <section className="border-t border-border section-padding">
+      <div className="container-wide">
+        <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-10">Recently Viewed</h2>
+        <HorizontalScrollRow>
+          {products.map(product => (
+            <ProductCard key={product.handle} product={product} />
+          ))}
+        </HorizontalScrollRow>
       </div>
     </section>
-  );
+  )
 }

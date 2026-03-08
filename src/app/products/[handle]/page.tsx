@@ -4,6 +4,8 @@ import { getProduct, getProductRecommendations } from '@/lib/shopify/products';
 import { truncate } from '@/lib/utils/format';
 import { ProductInfoPanel } from '@/components/product/ProductInfoPanel';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
+import { RecentlyViewed } from '@/components/product/RecentlyViewed';
+import { ProductViewTracker } from '@/components/product/ProductViewTracker';
 import { ImageGalleryWithZoomClient } from '@/components/product/ImageGalleryWithZoom';
 import { ImageZoomGallery } from '@/components/product/ImageZoomGallery';
 
@@ -143,8 +145,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </section>
         )}
 
-        {/* ─── Section 4 — Related products ─── */}
-        <RelatedProducts products={recommendations} />
+        {/* Track this product view (client component, renders null) */}
+        <ProductViewTracker handle={product.handle} />
+
+        {/* ─── Section 4 — Recently viewed ─── */}
+        <RecentlyViewed currentHandle={product.handle} />
+
+        {/* ─── Section 5 — Related products ─── */}
+        <RelatedProducts products={recommendations} currentHandle={product.handle} />
       </main>
     </>
   );

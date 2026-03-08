@@ -3,6 +3,7 @@ import Image from 'next/image';
 import type { ShopifyProduct } from '@/lib/shopify/types';
 import { formatPrice, isOnSale, getDiscountPercent } from '@/lib/utils/format';
 import { Badge } from '@/components/ui/Badge';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -46,6 +47,11 @@ export function ProductCard({ product }: ProductCardProps) {
           {onSale && availableForSale && (
             <Badge variant="sale">−{discountPercent}%</Badge>
           )}
+        </div>
+
+        {/* Wishlist button */}
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <WishlistButton productHandle={handle} />
         </div>
       </div>
 

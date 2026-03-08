@@ -6,7 +6,7 @@ import { Search, Heart, ShoppingCart, Menu, X } from 'lucide-react';
 import { useScroll } from '@/hooks/useScroll';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useCart } from '@/hooks/useCart';
-import { useWishlistContext } from '@/context/WishlistContext';
+import { useWishlist } from '@/hooks/useWishlist';
 import { SearchBar } from '@/components/search/SearchBar';
 
 const NAV_LINKS = [
@@ -20,7 +20,7 @@ const NAV_LINKS = [
 export function Header() {
   const { isScrolled } = useScroll(60);
   const { totalQuantity: cartCount, cartIconRef, openCart } = useCart();
-  const { items: wishlistItems } = useWishlistContext();
+  const { wishlistIconRef, openDrawer: openWishlist, totalCount: wishlistCount } = useWishlist();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   useScrollLock(isSearchOpen);
@@ -115,13 +115,15 @@ export function Header() {
 
               {/* Wishlist (desktop) */}
               <button
+                ref={wishlistIconRef}
+                onClick={openWishlist}
                 className="hidden sm:flex p-2 hover:text-accent transition-colors relative"
-                aria-label={`Open wishlist${wishlistItems.length > 0 ? ` (${wishlistItems.length} items)` : ''}`}
+                aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ''}`}
               >
                 <Heart size={20} />
-                {wishlistItems.length > 0 && (
+                {wishlistCount > 0 && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-canvas text-xs flex items-center justify-center rounded-full font-mono leading-none">
-                    {wishlistItems.length}
+                    {wishlistCount}
                   </span>
                 )}
               </button>
@@ -180,14 +182,14 @@ export function Header() {
 
               <button
                 className="flex items-center gap-2 text-sm uppercase tracking-wider text-ink hover:text-accent transition-colors py-3 w-full"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => { setIsMobileMenuOpen(false); openWishlist() }}
                 aria-label="Open wishlist"
               >
                 <Heart size={18} />
                 Wishlist
-                {wishlistItems.length > 0 && (
+                {wishlistCount > 0 && (
                   <span className="ml-auto font-mono text-xs bg-accent text-canvas px-2 py-0.5">
-                    {wishlistItems.length}
+                    {wishlistCount}
                   </span>
                 )}
               </button>

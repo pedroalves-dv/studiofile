@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 7 complete. Phase 8 is next.**
+Current position: **Phase 8 complete. Phase 9 is next.**
 
 Update this file at the end of every session.
 
@@ -26,23 +26,23 @@ Update this file at the end of every session.
 | 6.1 | Cart context & state | ✅ Done | ⬜ |
 | 6.2 | Cart drawer UI | ✅ Done | ⬜ |
 | 7.1 | Auth flow, middleware, account pages | ✅ Done | ⬜ |
-| 8.1 | Wishlist | ⬜ | ⬜ |
-| 8.2 | Recently viewed, related products | ⬜ | ⬜ |
+| 8.1 | Wishlist | ✅ Done | ⬜ |
+| 8.2 | Recently viewed, related products | ✅ Done | ⬜ |
 | 9.1 | Analytics, SEO, structured data | ⬜ | ⬜ |
 | 10.1 | GSAP animations | ⬜ | ⬜ |
 | 10.2 | Page transitions, accessibility audit | ⬜ | ⬜ |
 
 ---
 
-## Next Session — Phase 8.1
+## Next Session — Phase 9.1
 
-**File to read:** `docs/phases/phase-8-wishlist.md`
+**File to read:** `docs/phases/phase-9-analytics-seo.md`
 
 **What gets built:**
 
-- Wishlist context, hooks, and drawer
-- Recently viewed products
-- Related products on PDP
+- Full `src/lib/utils/seo.ts` implementation
+- Structured data / JSON-LD across pages
+- Analytics and SEO metadata
 
 ---
 
@@ -53,9 +53,9 @@ These were intentionally skipped or partially implemented and must be completed 
 | Item | Deferred from | Notes |
 | ---- | ------------- | ----- |
 | `src/lib/utils/seo.ts` full implementation | Phase 1 | Stub only — built in Phase 9 |
-| `RelatedProducts` full implementation | Phase 4.4 | Returns null — built in Phase 8 |
-| `WishlistContext` full implementation | Phase 2.1 | Stub only — built in Phase 8 |
-| `CartContext` full implementation | Phase 2.1 | Stub only — built in Phase 6 |
+| `RelatedProducts` full implementation | Phase 4.4 | ✅ Done in Phase 8 |
+| `WishlistContext` full implementation | Phase 2.1 | ✅ Done in Phase 8 |
+| `CartContext` full implementation | Phase 2.1 | ✅ Done in Phase 6 |
 | Address management UI | Phase 7 | Auth core done; no addresses page in this scaffold |
 | Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
 | About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |

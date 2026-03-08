@@ -1,37 +1,29 @@
-// Custom hooks for wishlist management
-'use client';
+'use client'
 
-import { useCallback, useState } from 'react';
+import { useContext } from 'react'
+import { WishlistContext } from '@/context/WishlistContext'
 
 export function useWishlist() {
-  const [items, setItems] = useState<string[]>([]);
-
-  const addItem = useCallback((productId: string) => {
-    setItems((prev) => (prev.includes(productId) ? prev : [...prev, productId]));
-  }, []);
-
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((id) => id !== productId));
-  }, []);
-
-  const toggleItem = useCallback((productId: string) => {
-    setItems((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  }, []);
-
-  const isInWishlist = useCallback(
-    (productId: string) => items.includes(productId),
-    [items]
-  );
+  const ctx = useContext(WishlistContext)
+  if (!ctx) throw new Error('useWishlist must be used inside WishlistProvider')
+  const { state, dispatch, wishlistIconRef } = ctx
 
   return {
-    items,
-    addItem,
-    removeItem,
-    toggleItem,
-    isInWishlist,
-  };
+    items: state.items,
+    isOpen: state.isOpen,
+    totalCount: state.items.length,
+    wishlistIconRef,
+
+    isWishlisted: (handle: string) => state.items.includes(handle),
+
+    addItem: (handle: string) => dispatch({ type: 'ADD', handle }),
+    removeItem: (handle: string) => dispatch({ type: 'REMOVE', handle }),
+    toggleItem: (handle: string) => dispatch({
+      type: state.items.includes(handle) ? 'REMOVE' : 'ADD',
+      handle,
+    }),
+    clearWishlist: () => dispatch({ type: 'CLEAR' }),
+    openDrawer: () => dispatch({ type: 'OPEN_DRAWER' }),
+    closeDrawer: () => dispatch({ type: 'CLOSE_DRAWER' }),
+  }
 }

@@ -9,6 +9,7 @@ import { WishlistProvider } from '@/context/WishlistContext';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { WishlistDrawer } from '@/components/wishlist/WishlistDrawer';
 import { CookieConsent } from '@/components/common/CookieConsent';
 import { LoadingBar } from '@/components/common/LoadingBar';
 import { ToastProvider } from '@/components/common/Toast';
@@ -102,6 +103,7 @@ export default function RootLayout({
               <main id="main-content">{children}</main>
               <Footer />
               <CartDrawer />
+              <WishlistDrawer />
 
               {/* Common components */}
               <CookieConsent />

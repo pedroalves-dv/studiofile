@@ -10,6 +10,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { StockIndicator } from './StockIndicator';
 import { VariantSelector } from './VariantSelector';
 import { useCart } from '@/hooks/useCart';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 interface ProductInfoPanelProps {
   product: ShopifyProduct;
@@ -166,18 +167,20 @@ export function ProductInfoPanel({
         </div>
       )}
 
-      {/* Add to cart */}
-      <Button
-        variant="primary"
-        size="lg"
-        fullWidth
-        isLoading={isAdding}
-        disabled={!selectedVariant.availableForSale || isAdding}
-        onClick={handleAddToCart}
-        className="mt-2"
-      >
-        {selectedVariant.availableForSale ? 'Add to cart' : 'Out of stock'}
-      </Button>
+      {/* Add to cart + wishlist */}
+      <div className="flex gap-3 mt-2">
+        <Button
+          variant="primary"
+          size="lg"
+          isLoading={isAdding}
+          disabled={!selectedVariant.availableForSale || isAdding}
+          onClick={handleAddToCart}
+          className="flex-1"
+        >
+          {selectedVariant.availableForSale ? 'Add to cart' : 'Out of stock'}
+        </Button>
+        <WishlistButton productHandle={product.handle} />
+      </div>
 
       {/* Custom order note */}
       <p className="text-label text-muted border-l-2 border-accent pl-3">
