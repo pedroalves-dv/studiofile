@@ -37,9 +37,13 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 
 ### End of session
 
-- Run `npm run type-check` (do not use `npx tsc` directly — nvm is not available in the shell) — zero errors required.
+- Run Type checking: `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check` — zero errors required.
 - Commit: `feat: phase X.Y — [description]`
 - Update `docs/STATUS.md` — tick completed items, note anything blocked or deferred.
+
+## Important
+
+Do not use `npx` or bare `npm` directly — nvm is not available in the shell. Always prepend `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH"` to any Node/npm commands.
 
 ### After `/compact` or context reset
 
