@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 5 complete. Phase 6 is next.**
+Current position: **Phase 6 complete. Phase 7 is next.**
 
 Update this file at the end of every session.
 
@@ -22,10 +22,10 @@ Update this file at the end of every session.
 | 4.3 | Shop / Collection pages, filtering, sorting, pagination | ✅ Done | ✅ Done |
 | 4.4 | Product Detail Page (full) | ✅ Done | ✅ Done |
 | 4.5 | About, Contact, Policies, Sitemap | ✅ Done | ✅ Done |
-| 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ⬜ |
-| 6.1 | Cart context & state | ⬜ Next | ⬜ |
-| 6.2 | Cart drawer UI | ⬜ | ⬜ |
-| 7.1 | Auth flow, middleware, account pages | ⬜ | ⬜ |
+| 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ✅ Done |
+| 6.1 | Cart context & state | ✅ Done | ⬜ |
+| 6.2 | Cart drawer UI | ✅ Done | ⬜ |
+| 7.1 | Auth flow, middleware, account pages | ⬜ Next | ⬜ |
 | 8.1 | Wishlist | ⬜ | ⬜ |
 | 8.2 | Recently viewed, related products | ⬜ | ⬜ |
 | 9.1 | Analytics, SEO, structured data | ⬜ | ⬜ |
@@ -34,22 +34,16 @@ Update this file at the end of every session.
 
 ---
 
-## Next Session — Phase 6.1
+## Next Session — Phase 7.1
 
-**File to read:** `docs/phases/phase-6-cart.md`
+**File to read:** `docs/phases/phase-7-auth.md`
 
 **What gets built:**
 
-- Replace `CartContext` stub with full `useReducer` implementation
-- Replace `useCart` stub with full hook exposing all cart operations
-- `createCart` / `addToCart` flow — handles first-ever add (no cartId) correctly
-- Cart rehydration from localStorage on mount, with expiry handling
-- Wire `cartIconRef` into CartContext for focus restoration
-
-**Before starting:**
-
-- Confirm CartContext and useCart are still stubs (returning children / empty values)
-- Confirm `src/lib/shopify/cart.ts` Server Actions are fully implemented from Phase 1.2
+- Auth flow: login, register, logout, forgot password
+- Middleware for protected `/account/` routes
+- Account pages: orders, addresses, profile
+- `CustomerContext` or server-side session handling via Shopify Customer API
 
 ---
 

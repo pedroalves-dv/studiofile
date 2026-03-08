@@ -32,12 +32,12 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 
 - Scope your work to the files listed in the phase prompt. Do not touch unrelated files.
 - Use `TodoWrite` to track multi-step tasks within a session.
-- Fix TypeScript errors before moving on — run `tsc --noEmit` if unsure.
+- Fix TypeScript errors before moving on — run `npm run type-check` if unsure.
 - Prefer `Edit` over `Write` for existing files to minimise diff noise.
 
 ### End of session
 
-- Run `tsc --noEmit` — zero errors required.
+- Run `npm run type-check` (do not use `npx tsc` directly — nvm is not available in the shell) — zero errors required.
 - Commit: `feat: phase X.Y — [description]`
 - Update `docs/STATUS.md` — tick completed items, note anything blocked or deferred.
 

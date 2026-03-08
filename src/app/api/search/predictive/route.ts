@@ -1,20 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { predictiveSearch } from '@/lib/shopify/search';
+import { predictiveSearch } from '@/lib/shopify/search'
 
-export async function GET(request: NextRequest) {
-  const q = request.nextUrl.searchParams.get('q') ?? '';
+const EMPTY = { products: [], collections: [], queries: [], pages: [], articles: [] }
 
-  if (!q.trim()) {
-    return NextResponse.json({ products: [], collections: [], queries: [] });
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const query = searchParams.get('q')
+
+  if (!query || query.trim().length < 2) {
+    return Response.json(EMPTY)
   }
 
   try {
-    const results = await predictiveSearch(q, 10);
-    return NextResponse.json(results);
-  } catch {
-    return NextResponse.json(
-      { products: [], collections: [], queries: [] },
-      { status: 500 }
-    );
+    const results = await predictiveSearch(query)
+    return Response.json(results)
+  } catch (error) {
+    console.error('Predictive search error:', error)
+    return Response.json(EMPTY)
   }
 }

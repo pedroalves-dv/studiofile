@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { searchProducts } from '@/lib/shopify/search';
 import { getCollections } from '@/lib/shopify/collections';
+import { SORT_MAP } from '@/lib/utils/params';
 import { SearchBar } from '@/components/search/SearchBar';
 import { SearchResults } from '@/components/search/SearchResults';
 import { SortSelect } from '@/components/search/SortSelect';
@@ -25,25 +26,14 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   };
 }
 
-// Map URL sort param → API sort key + reverse flag
-function parseSortParam(sort?: string): {
-  sortKey: 'RELEVANCE' | 'PRICE' | 'BEST_SELLING' | 'CREATED';
-  reverse: boolean;
-} {
-  switch (sort) {
-    case 'PRICE_ASC':   return { sortKey: 'PRICE', reverse: false };
-    case 'PRICE_DESC':  return { sortKey: 'PRICE', reverse: true };
-    case 'BEST_SELLING': return { sortKey: 'BEST_SELLING', reverse: false };
-    case 'CREATED':     return { sortKey: 'CREATED', reverse: false };
-    default:            return { sortKey: 'RELEVANCE', reverse: false };
-  }
-}
-
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q, sort, filter, cursor } = await searchParams;
 
+  const sortEntry = SORT_MAP[sort as string] ?? { sortKey: 'RELEVANCE', reverse: false };
+  const sortKey = sortEntry.sortKey as 'RELEVANCE' | 'PRICE' | 'BEST_SELLING' | 'CREATED';
+  const reverse = sortEntry.reverse;
+
   const filterParams = filter ? (Array.isArray(filter) ? filter : [filter]) : [];
-  const { sortKey, reverse } = parseSortParam(sort);
 
   // Build Shopify query string (append filter clauses)
   const filterClauses = filterParams
@@ -98,7 +88,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <Link
                   key={collection.id}
                   href={`/collections/${collection.handle}`}
-                  className="group border border-border p-6 hover:border-ink transition-colors"
+                  className="group border border-stroke p-6 hover:border-ink transition-colors"
                 >
                   <p className="font-display text-xl group-hover:text-accent transition-colors">
                     {collection.title}
@@ -124,23 +114,31 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
             {/* Main results */}
             <div className="flex-1 min-w-0">
-              {/* Sort + count row */}
-              <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
-                <p className="text-label text-muted">
-                  {searchResult.totalCount}{' '}
-                  {searchResult.totalCount === 1 ? 'result' : 'results'}
-                </p>
+              {/* Sort row */}
+              <div className="flex items-center justify-end mb-8">
                 <SortSelect />
               </div>
 
               <SearchResults
+                products={searchResult.products}
                 query={q!}
-                initialProducts={searchResult.products}
-                pageInfo={searchResult.pageInfo}
                 totalCount={searchResult.totalCount}
-                sort={sort ?? 'RELEVANCE'}
-                filterParams={filterParams}
               />
+
+              {/* Load more — URL-based cursor pagination */}
+              {searchResult.pageInfo.hasNextPage && searchResult.pageInfo.endCursor && (
+                <div className="mt-16 flex flex-col items-center gap-3">
+                  <Link
+                    href={`/search?q=${encodeURIComponent(q!)}${sort ? `&sort=${sort}` : ''}${filterParams.map(f => `&filter=${encodeURIComponent(f)}`).join('')}&cursor=${searchResult.pageInfo.endCursor}`}
+                    className="inline-flex items-center justify-center px-8 py-3 border border-ink text-label text-ink hover:bg-ink hover:text-canvas transition-colors"
+                  >
+                    Load more
+                  </Link>
+                  <p className="text-label text-muted">
+                    Showing {searchResult.products.length} of {searchResult.totalCount}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

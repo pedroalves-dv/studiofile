@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn';
 interface PredictiveSearchProps {
   query: string;
   results: ShopifyPredictiveSearchResult;
-  isLoading: boolean;
+  isFetching: boolean;
   activeIndex: number;
   onSelect: (href: string) => void;
   onSeeAll: () => void;
@@ -20,7 +20,7 @@ interface PredictiveSearchProps {
 export function PredictiveSearch({
   query,
   results,
-  isLoading,
+  isFetching,
   activeIndex,
   onSelect,
   onSeeAll,
@@ -28,11 +28,11 @@ export function PredictiveSearch({
   const listRef = useRef<HTMLDivElement>(null);
   const { products, collections, queries } = results;
 
-  // Build flat navigable item list to map activeIndex → href
+  // Build flat navigable item list to map activeIndex → href (products → collections → queries)
   const items: { href: string }[] = [
-    ...queries.slice(0, 3).map((q) => ({ href: `/search?q=${encodeURIComponent(q.text)}` })),
     ...products.slice(0, 5).map((p) => ({ href: `/products/${p.handle}` })),
     ...collections.slice(0, 3).map((c) => ({ href: `/collections/${c.handle}` })),
+    ...queries.slice(0, 3).map((q) => ({ href: `/search?q=${encodeURIComponent(q.text)}` })),
   ];
 
   // Scroll active item into view
@@ -63,12 +63,13 @@ export function PredictiveSearch({
 
   return (
     <div
+      id="predictive-search-results"
       ref={listRef}
       role="listbox"
       aria-label="Search suggestions"
       className="absolute top-full left-0 right-0 bg-canvas border border-border border-t-0 z-50 shadow-xl max-h-[70vh] overflow-y-auto"
     >
-      {isLoading ? (
+      {isFetching ? (
         <div className="p-6 space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex gap-3 items-center">
@@ -86,31 +87,6 @@ export function PredictiveSearch({
         </p>
       ) : (
         <>
-          {/* Suggestions */}
-          {queries.length > 0 && (
-            <div className="border-b border-border">
-              {queries.slice(0, 3).map((q) => {
-                const idx = nextIdx();
-                return (
-                  <button
-                    key={q.text}
-                    data-item
-                    role="option"
-                    aria-selected={activeIndex === idx}
-                    onClick={() => onSelect(`/search?q=${encodeURIComponent(q.text)}`)}
-                    className={cn(
-                      'flex items-center gap-3 w-full px-6 py-3 text-left transition-colors',
-                      activeIndex === idx ? 'bg-stone-50' : 'hover:bg-stone-50'
-                    )}
-                  >
-                    <Search size={14} className="flex-shrink-0 text-muted" />
-                    <span className="text-sm text-ink">{q.text}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
           {/* Products */}
           {products.length > 0 && (
             <div>
@@ -121,6 +97,7 @@ export function PredictiveSearch({
                 return (
                   <button
                     key={product.id}
+                    id={`result-${idx}`}
                     data-item
                     role="option"
                     aria-selected={activeIndex === idx}
@@ -163,6 +140,7 @@ export function PredictiveSearch({
                 return (
                   <button
                     key={collection.id}
+                    id={`result-${idx}`}
                     data-item
                     role="option"
                     aria-selected={activeIndex === idx}
@@ -184,6 +162,32 @@ export function PredictiveSearch({
                       )}
                     </div>
                     <p className="text-sm text-ink">{collection.title}</p>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Suggested searches */}
+          {queries.length > 0 && (
+            <div className="border-t border-border">
+              {queries.slice(0, 3).map((q) => {
+                const idx = nextIdx();
+                return (
+                  <button
+                    key={q.text}
+                    id={`result-${idx}`}
+                    data-item
+                    role="option"
+                    aria-selected={activeIndex === idx}
+                    onClick={() => onSelect(`/search?q=${encodeURIComponent(q.text)}`)}
+                    className={cn(
+                      'flex items-center gap-3 w-full px-6 py-3 text-left transition-colors',
+                      activeIndex === idx ? 'bg-stone-50' : 'hover:bg-stone-50'
+                    )}
+                  >
+                    <Search size={14} className="flex-shrink-0 text-muted" />
+                    <span className="text-sm text-ink">{q.text}</span>
                   </button>
                 );
               })}

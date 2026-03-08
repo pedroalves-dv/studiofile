@@ -10,10 +10,11 @@ import { PredictiveSearch } from './PredictiveSearch';
 interface SearchBarProps {
   onClose?: () => void;
   autoFocus?: boolean;
+  placeholder?: string;
   className?: string;
 }
 
-export function SearchBar({ onClose, autoFocus = false, className }: SearchBarProps) {
+export function SearchBar({ onClose, autoFocus = false, placeholder = 'Search products…', className }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<ShopifyPredictiveSearchResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -129,12 +130,15 @@ export function SearchBar({ onClose, autoFocus = false, className }: SearchBarPr
           onFocus={() => {
             if (query.trim() && results) setIsOpen(true);
           }}
-          placeholder="Search products…"
           autoFocus={autoFocus}
           autoComplete="off"
-          aria-label="Search"
+          role="combobox"
+          aria-label="Search products"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          aria-controls="predictive-search-results"
+          aria-activedescendant={activeIndex >= 0 ? `result-${activeIndex}` : undefined}
+          placeholder={placeholder}
           className="flex-1 py-3 bg-transparent text-ink placeholder-muted focus:outline-none text-base"
         />
         {isLoading && (
@@ -155,7 +159,7 @@ export function SearchBar({ onClose, autoFocus = false, className }: SearchBarPr
         <PredictiveSearch
           query={query}
           results={results}
-          isLoading={isLoading}
+          isFetching={isLoading}
           activeIndex={activeIndex}
           onSelect={handleSelect}
           onSeeAll={() => navigateToSearch(query)}

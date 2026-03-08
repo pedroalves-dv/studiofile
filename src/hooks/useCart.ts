@@ -14,7 +14,7 @@ import { useToast } from '@/components/common/Toast';
 import type { MoneyV2, ShopifyCart } from '@/lib/shopify/types';
 
 export function useCart() {
-  const { state, dispatch } = useCartContext();
+  const { state, dispatch, cartIconRef } = useCartContext();
   const toast = useToast();
 
   const { cart, isOpen, isLoading } = state;
@@ -135,6 +135,7 @@ export function useCart() {
     isLoading,
     totalQuantity,
     totalAmount,
+    cartIconRef,
     openCart,
     closeCart,
     addItem,

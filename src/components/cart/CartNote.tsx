@@ -1,12 +1,41 @@
+'use client';
+
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useCart } from '@/hooks/useCart';
+
 export function CartNote() {
+  const { cart, updateNote } = useCart();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [note, setNote] = useState(cart?.note ?? '');
+
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium mb-2">Order Note</label>
-      <textarea
-        placeholder="Add a note to your order..."
-        className="w-full border border-border rounded px-3 py-2 resize-none"
-        rows={3}
-      />
+    <div>
+      <button
+        onClick={() => setIsExpanded((v) => !v)}
+        className="flex items-center gap-1 text-label text-muted hover:text-ink transition-colors"
+      >
+        Add order note
+        <ChevronDown
+          size={14}
+          className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {isExpanded && (
+        <div className="mt-2">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            onBlur={() => updateNote(note)}
+            placeholder="Special instructions, custom dimensions, or delivery notes..."
+            maxLength={500}
+            rows={3}
+            className="w-full border border-border px-3 py-2 text-sm bg-canvas resize-none focus:outline-none focus:border-ink transition-colors"
+          />
+          <p className="text-label text-muted mt-1 text-right">{note.length}/500</p>
+        </div>
+      )}
     </div>
   );
 }

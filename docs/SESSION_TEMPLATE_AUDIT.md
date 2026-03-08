@@ -13,11 +13,10 @@ Read the following files before doing anything else:
 All source files live under src/. Use src/ prefix for all file paths.
 Path alias @/ maps to src/ — use @/ in imports, src/ in file path references.
 
-Then read the existing files this phase will touch before editing them.
+Read the existing files this phase will touch before editing them.
 Determine which files those are from the phase prompt — all paths are under src/.
 
-Use subagents for any task that requires reading many files to gather information
-before acting — return only the findings to the main session.
+Systematically Use subagents for any task that requires reading many files to gather information before acting — return only the findings to the main session.
 
 Today's task: AUDIT Phase 4 — do not build anything new.
 
@@ -26,7 +25,7 @@ Do not touch any file not explicitly listed.
 
 When done:
 
-- Run tsc --noEmit and fix all errors
+- Run `npm run type-check` and fix all errors
 - Tell me what you built and what (if anything) was deferred or unclear
 - Update docs/STATUS.md
   

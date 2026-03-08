@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, createContext, useContext, useReducer, useEffect, Dispatch } from 'react';
+import { ReactNode, createContext, useContext, useReducer, useEffect, useRef, Dispatch } from 'react';
 import type { ShopifyCart } from '@/lib/shopify/types';
 import { getCart } from '@/lib/shopify/cart';
 
@@ -16,6 +16,7 @@ interface CartState {
 export type CartAction =
   | { type: 'SET_CART'; cart: ShopifyCart }
   | { type: 'SET_CART_ID'; cartId: string }
+  | { type: 'CLEAR_CART' }
   | { type: 'OPEN_CART' }
   | { type: 'CLOSE_CART' }
   | { type: 'SET_LOADING'; loading: boolean };
@@ -23,6 +24,7 @@ export type CartAction =
 interface CartContextType {
   state: CartState;
   dispatch: Dispatch<CartAction>;
+  cartIconRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -33,6 +35,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return { ...state, cart: action.cart, cartId: action.cart.id };
     case 'SET_CART_ID':
       return { ...state, cartId: action.cartId };
+    case 'CLEAR_CART':
+      return { ...state, cart: null, cartId: null };
     case 'OPEN_CART':
       return { ...state, isOpen: true };
     case 'CLOSE_CART':
@@ -52,6 +56,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     isLoading: false,
   });
 
+  const cartIconRef = useRef<HTMLButtonElement>(null);
+
   // Load and validate stored cart on mount
   useEffect(() => {
     const stored = localStorage.getItem(CART_ID_KEY);
@@ -64,10 +70,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
           dispatch({ type: 'SET_CART', cart });
         } else {
           localStorage.removeItem(CART_ID_KEY);
+          dispatch({ type: 'CLEAR_CART' });
         }
       })
       .catch(() => {
         localStorage.removeItem(CART_ID_KEY);
+        dispatch({ type: 'CLEAR_CART' });
       })
       .finally(() => {
         dispatch({ type: 'SET_LOADING', loading: false });
@@ -82,7 +90,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [state.cartId]);
 
   return (
-    <CartContext.Provider value={{ state, dispatch }}>
+    <CartContext.Provider value={{ state, dispatch, cartIconRef }}>
       {children}
     </CartContext.Provider>
   );

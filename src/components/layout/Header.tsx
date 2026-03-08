@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Search, Heart, ShoppingCart, Menu, X } from 'lucide-react';
 import { useScroll } from '@/hooks/useScroll';
-import { useCartContext } from '@/context/CartContext';
+import { useScrollLock } from '@/hooks/useScrollLock';
+import { useCart } from '@/hooks/useCart';
 import { useWishlistContext } from '@/context/WishlistContext';
 import { SearchBar } from '@/components/search/SearchBar';
 
@@ -18,11 +19,11 @@ const NAV_LINKS = [
 
 export function Header() {
   const { isScrolled } = useScroll(60);
-  const { state: cartState } = useCartContext();
-  const cartCount = cartState.cart?.totalQuantity ?? 0;
+  const { totalQuantity: cartCount, cartIconRef, openCart } = useCart();
   const { items: wishlistItems } = useWishlistContext();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  useScrollLock(isSearchOpen);
 
   // Close both overlays on Escape
   useEffect(() => {
@@ -38,12 +39,26 @@ export function Header() {
 
   return (
     <>
-      {/* Backdrop for search overlay */}
+      {/* Search overlay — full-screen */}
       {isSearchOpen && (
-        <div
-          className="fixed inset-0 bg-ink/20 z-40 backdrop-blur-sm"
-          onClick={() => setIsSearchOpen(false)}
-        />
+        <div className="fixed inset-0 z-[60] bg-canvas/95 backdrop-blur-sm flex flex-col">
+          <div className="container-wide pt-6">
+            <div className="flex items-center gap-4">
+              <SearchBar
+                autoFocus
+                onClose={() => setIsSearchOpen(false)}
+                placeholder="Search products..."
+              />
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                aria-label="Close search"
+                className="flex-shrink-0 p-2 hover:text-accent transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Backdrop for mobile menu */}
@@ -113,8 +128,10 @@ export function Header() {
 
               {/* Cart */}
               <button
+                ref={cartIconRef}
+                onClick={openCart}
                 className="p-2 hover:text-accent transition-colors relative"
-                aria-label={`Open cart${cartCount > 0 ? ` (${cartCount} items)` : ''}`}
+                aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ''}`}
               >
                 <ShoppingCart size={20} />
                 {cartCount > 0 && (
@@ -136,15 +153,6 @@ export function Header() {
             </div>
           </div>
 
-          {/* Search overlay panel — real SearchBar */}
-          {isSearchOpen && (
-            <div className="pb-4 border-t border-border">
-              <SearchBar
-                autoFocus
-                onClose={() => setIsSearchOpen(false)}
-              />
-            </div>
-          )}
         </div>
 
         {/* Mobile menu */}
