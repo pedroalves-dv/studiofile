@@ -13,6 +13,7 @@ import { WishlistDrawer } from '@/components/wishlist/WishlistDrawer';
 import { CookieConsent } from '@/components/common/CookieConsent';
 import { LoadingBar } from '@/components/common/LoadingBar';
 import { ToastProvider } from '@/components/common/Toast';
+import { DEFAULT_METADATA, SITE_URL } from '@/lib/utils/seo';
 
 import './globals.css';
 
@@ -39,42 +40,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s — Studiofile',
-    default: 'Studiofile | Premium 3D Printed Furniture',
-  },
-  description: 'Modular, functional home decor and furniture by Studiofile. Premium design studio aesthetic.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  ...DEFAULT_METADATA,
   manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'Studiofile',
-  },
-  formatDetection: {
-    telephone: false,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    title: 'Studiofile | Premium 3D Printed Furniture',
-    description: 'Modular, functional home decor and furniture by Studiofile.',
-    images: [
-      {
-        url: '/opengraph-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Studiofile',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Studiofile | Premium 3D Printed Furniture',
-    description: 'Modular, functional home decor and furniture by Studiofile.',
-    images: ['/opengraph-image.png'],
-  },
 };
 
 export default function RootLayout({
@@ -113,6 +80,45 @@ export default function RootLayout({
             </ToastProvider>
           </WishlistProvider>
         </CartProvider>
+
+          {/* JSON-LD — WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Studiofile',
+              url: SITE_URL,
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
+
+        {/* JSON-LD — Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Studiofile',
+              url: SITE_URL,
+              logo: `${SITE_URL}/icon.png`,
+              sameAs: [
+                'https://instagram.com/studiofile',
+                'https://pinterest.com/studiofile',
+              ],
+            }),
+          }}
+        />
 
         {/* Analytics */}
         <Analytics />

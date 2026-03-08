@@ -25,7 +25,7 @@ Do not touch any file not explicitly listed.
 
 When done:
 
-- Run `npm run type-check` and fix all errors
+- Run `npm run type-check` and fix all errors (do not use `npx tsc` directly — nvm is not available in the shell)
 - Tell me what you built and what (if anything) was deferred or unclear
 - Update docs/STATUS.md accordingly
   

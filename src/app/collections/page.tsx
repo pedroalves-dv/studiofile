@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/utils/seo';
 import Image from 'next/image';
 import { getCollections } from '@/lib/shopify/collections';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
@@ -9,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Collections — Studiofile',
     description: 'Explore our curated collections of 3D printed furniture and home decor.',
+    alternates: { canonical: `${SITE_URL}/collections` },
   };
 }
 

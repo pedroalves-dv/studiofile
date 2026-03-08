@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { getCollectionWithPagination } from '@/lib/shopify/collections';
+import { buildCollectionMetadata } from '@/lib/utils/seo';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { SortSelect } from '@/components/search/SortSelect';
@@ -34,21 +35,10 @@ export async function generateMetadata(
 
   try {
     const collection = await getCollectionWithPagination(handle, 1);
-
-    if (!collection) {
-      return {
-        title: 'Collection — Studiofile',
-      };
-    }
-
-    return {
-      title: `${collection.title} — Studiofile`,
-      description: collection.description || `Browse our ${collection.title} collection.`,
-    };
+    if (!collection) return { title: 'Collection — Studiofile' };
+    return buildCollectionMetadata(collection);
   } catch {
-    return {
-      title: 'Collection — Studiofile',
-    };
+    return { title: 'Collection — Studiofile' };
   }
 }
 

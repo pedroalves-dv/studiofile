@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import { useCartContext } from '@/context/CartContext';
 import {
   createCart,
@@ -36,6 +37,7 @@ export function useCart() {
       dispatch({ type: 'SET_CART', cart: updatedCart });
       openCart();
       toast.success('Added to cart');
+      track('AddToCart', { productHandle: variantId, quantity });
     } catch {
       toast.error('Failed to add to cart. Please try again.');
     } finally {

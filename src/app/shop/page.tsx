@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { getProducts } from '@/lib/shopify/products';
+import { SITE_URL } from '@/lib/utils/seo';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { SortSelect } from '@/components/search/SortSelect';
@@ -8,11 +9,13 @@ import { FilterPanel } from '@/components/search/FilterPanel';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { SkeletonCard } from '@/components/common/SkeletonCard';
 
-export const metadata: Metadata = {
-  title: 'Shop — Studiofile',
-  description:
-    'Explore our complete collection of premium 3D printed furniture and home décor.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Shop',
+    description: 'Browse all products.',
+    alternates: { canonical: `${SITE_URL}/shop` },
+  };
+}
 
 interface ShopPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

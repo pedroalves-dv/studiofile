@@ -1,68 +1,86 @@
-// SEO metadata builders
-import { Metadata } from 'next';
+import type { Metadata } from 'next'
+import type { ShopifyProduct, ShopifyCollection } from '@/lib/shopify/types'
+import { truncate } from '@/lib/utils/format'
 
-export function createMetadata(
-  title: string,
-  description: string,
-  ogImage?: string
-): Metadata {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.com'
+const TWITTER_HANDLE = '@studiofile'
+
+export const DEFAULT_METADATA: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    template: '%s — Studiofile',
+    default: 'Studiofile — Premium 3D-Printed Objects',
+  },
+  description: 'Modular, functional home decor and furniture. Designed in Paris, printed to order.',
+  robots: { index: true, follow: true },
+  twitter: {
+    card: 'summary_large_image',
+    site: TWITTER_HANDLE,
+    creator: TWITTER_HANDLE,
+  },
+}
+
+export function buildProductMetadata(product: ShopifyProduct): Metadata {
+  const description = truncate(product.description, 155)
+  const canonical = `${SITE_URL}/products/${product.handle}`
+
+  const images = product.featuredImage
+    ? [{
+        url: product.featuredImage.url,
+        width: product.featuredImage.width ?? 1200,
+        height: product.featuredImage.height ?? 630,
+        alt: product.featuredImage.altText ?? product.title,
+      }]
+    : []
 
   return {
-    title,
+    title: product.title,
     description,
-    metadataBase: new URL(siteUrl),
+    alternates: { canonical },
     openGraph: {
-      title,
+      title: product.title,
       description,
-      url: siteUrl,
-      siteName: 'Studiofile',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-              width: 1200,
-              height: 630,
-              alt: title,
-            },
-          ]
-        : undefined,
+      url: canonical,
+      images,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: product.title,
       description,
-      images: ogImage ? [ogImage] : undefined,
+      images: images.map(i => i.url),
     },
-  };
+  }
 }
 
-export function createProductMetadata(
-  title: string,
-  description: string,
-  price: string,
-  image: string
-): Metadata {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+export function buildCollectionMetadata(collection: ShopifyCollection): Metadata {
+  const description = truncate(collection.description || collection.title, 155)
+  const canonical = `${SITE_URL}/collections/${collection.handle}`
+
+  const images = collection.image
+    ? [{
+        url: collection.image.url,
+        width: collection.image.width ?? 1200,
+        height: collection.image.height ?? 630,
+        alt: collection.image.altText ?? collection.title,
+      }]
+    : []
 
   return {
-    title,
+    title: collection.title,
     description,
-    metadataBase: new URL(siteUrl),
+    alternates: { canonical },
     openGraph: {
-      title,
+      title: collection.title,
       description,
-      url: siteUrl,
+      url: canonical,
+      images,
       type: 'website',
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
     },
-  };
+    twitter: {
+      card: 'summary_large_image',
+      title: collection.title,
+      description,
+    },
+  }
 }

@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getProduct, getProductRecommendations } from '@/lib/shopify/products';
-import { truncate } from '@/lib/utils/format';
+import { buildProductMetadata, SITE_URL } from '@/lib/utils/seo';
 import { ProductInfoPanel } from '@/components/product/ProductInfoPanel';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
 import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 import { ProductViewTracker } from '@/components/product/ProductViewTracker';
+import { ProductViewEvent } from '@/components/product/ProductViewEvent';
 import { ImageGalleryWithZoomClient } from '@/components/product/ImageGalleryWithZoom';
 import { ImageZoomGallery } from '@/components/product/ImageZoomGallery';
 
@@ -17,29 +18,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const { handle } = await params;
   const product = await getProduct(handle);
   if (!product) return { title: 'Product not found' };
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-  return {
-    title: product.title,
-    description: truncate(product.description, 155),
-    alternates: { canonical: `${siteUrl}/products/${handle}` },
-    openGraph: {
-      title: product.title,
-      description: truncate(product.description, 155),
-      images: product.featuredImage
-        ? [
-            {
-              url: product.featuredImage.url,
-              width: product.featuredImage.width ?? 1200,
-              height: product.featuredImage.height ?? 630,
-              alt: product.featuredImage.altText ?? product.title,
-            },
-          ]
-        : undefined,
-    },
-    twitter: { card: 'summary_large_image' },
-  };
+  return buildProductMetadata(product);
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -49,8 +28,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) notFound();
 
   const recommendations = await getProductRecommendations(product.id);
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
   // Parse "key:value" tags into a specs table
   const specs = product.tags
@@ -74,7 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       availability: product.availableForSale
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
-      url: `${siteUrl}/products/${handle}`,
+      url: `${SITE_URL}/products/${handle}`,
     },
   };
 
@@ -145,8 +122,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </section>
         )}
 
-        {/* Track this product view (client component, renders null) */}
+        {/* Track this product view (client components, render null) */}
         <ProductViewTracker handle={product.handle} />
+        <ProductViewEvent handle={product.handle} title={product.title} />
 
         {/* ─── Section 4 — Recently viewed ─── */}
         <RecentlyViewed currentHandle={product.handle} />
