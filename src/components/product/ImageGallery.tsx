@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import type { ShopifyImage } from '@/lib/shopify/types';
 import { cn } from '@/lib/utils/cn';
@@ -8,10 +8,11 @@ import { cn } from '@/lib/utils/cn';
 interface ImageGalleryProps {
   images: ShopifyImage[];
   productTitle: string;
+  productHandle?: string;
   onImageClick?: (index: number) => void;
 }
 
-export function ImageGallery({ images, productTitle, onImageClick }: ImageGalleryProps) {
+export function ImageGallery({ images, productTitle, productHandle, onImageClick }: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   if (!images.length) {
@@ -29,6 +30,7 @@ export function ImageGallery({ images, productTitle, onImageClick }: ImageGaller
       {/* Main image */}
       <div
         className="relative aspect-square bg-stone-50 overflow-hidden cursor-zoom-in"
+        style={productHandle ? ({ viewTransitionName: `product-image-${productHandle}` } as React.CSSProperties) : undefined}
         onClick={() => onImageClick?.(selectedIndex)}
       >
         <Image

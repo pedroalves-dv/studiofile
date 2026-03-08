@@ -114,19 +114,6 @@ docs/
 
 ---
 
-## Design System
-
-### Typography
-
-| Use | Font | Class/Variable |
-| ----- | ------ | ---------------- |
-| Headings, editorial | Cormorant Garamond | `font-display` |
-| Body, UI text | DM Sans | default (CSS variable `--font-dm-sans`) |
-| Prices, labels, tags, counts | JetBrains Mono | `font-mono` |
-
-- Uppercase labels: `text-label` utility class (font-mono, text-xs, tracking-display, uppercase)
-- **No rounded corners** — `borderRadius: { DEFAULT: '0px', sm: '2px' }`
-
 ### Colour palette
 
 | Token | Hex | Use |
@@ -151,8 +138,40 @@ docs/
 
 ### Aesthetic constraints
 
-> No rounded corners. Cormorant for headings. DM Sans for body. Stone/warm palette.
-> Architectural, editorial — not generic SaaS. Be explicit about structure; loose on cosmetic styles.
+#### Typography
+
+- Single font: `JetBrains Mono` for everything — headings, body, labels, UI
+- Type is a design element — use scale, weight, and tracking aggressively to create hierarchy
+
+#### Corners
+
+- Buttons and inputs: `rounded-md`
+- Images: always sharp — `rounded-none`, no exceptions
+- Cards and containers: sharp by default unless explicitly specified
+
+#### Spacing & layout
+
+- Be explicit and precise — do not fall back to Tailwind defaults without intention
+- Layouts should feel considered and dense, not airy or generic
+- Grids can be clean and structured, but compositions should feel designed, not templated
+- Layering is encouraged — elements can sit behind or over others to create depth
+- Avoid the standard stacked-sections pattern; think in terms of composition, not blocks
+
+#### Design direction
+
+- Reference point: Pentagram, high-end design studio websites, Readymag showcases
+- Image and motion (gifs, video) are first-class compositional elements, not decoration
+- UX quirks are welcome — unexpected interactions, scroll behaviors, cursor effects
+- Brutalist in sensibility: raw, confident, not polished-SaaS or generic e-commerce
+- Never default to what looks "safe" — if two approaches exist, prefer the more interesting one
+
+#### What to avoid
+
+- Rounded images
+- Soft gradients used decoratively
+- Generic card layouts with equal padding and shadow
+- Centered hero + stacked sections structure
+- Any pattern that looks like it came from a UI kit
 
 ---
 

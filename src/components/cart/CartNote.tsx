@@ -29,6 +29,7 @@ export function CartNote() {
             onChange={(e) => setNote(e.target.value)}
             onBlur={() => updateNote(note)}
             placeholder="Special instructions, custom dimensions, or delivery notes..."
+            aria-label="Order note"
             maxLength={500}
             rows={3}
             className="w-full border border-border px-3 py-2 text-sm bg-canvas resize-none focus:outline-none focus:border-ink transition-colors"

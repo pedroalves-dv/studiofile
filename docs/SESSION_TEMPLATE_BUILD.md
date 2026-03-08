@@ -8,7 +8,7 @@ Read the following files before doing anything else:
 
 1. CLAUDE.md
 2. docs/STATUS.md
-3. docs/phases/phase-10-polish.md
+3. docs/phases/phase-10-gsap-polish.md
 
 All source files live under src/. Use src/ prefix for all file paths.
 Path alias @/ maps to src/ — use @/ in imports, src/ in file path references.

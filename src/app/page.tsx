@@ -2,9 +2,9 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { NewsletterForm } from '@/components/home/NewsletterForm';
+import { HeroContent } from '@/components/home/HeroContent';
 import { getProducts } from '@/lib/shopify/products';
 import { getCollections } from '@/lib/shopify/collections';
 
@@ -77,25 +77,9 @@ async function Hero() {
 
     return (
       <section className="relative h-screen flex items-center overflow-hidden">
-        {/* Left content */}
+        {/* Left content — client component owns heading animation */}
         <div className="flex-1 px-6 md:px-12 py-20 flex flex-col justify-center">
-          <div className="max-w-2xl">
-            <h1 className="font-display text-6xl md:text-7xl leading-tight text-ink mb-6">
-              Objects made <br />
-              to last.
-            </h1>
-            <p className="text-lg text-muted mb-8 max-w-md">
-              Modular, functional home decor and furniture crafted through precision 3D printing. Designed in Paris, made to order.
-            </p>
-            <div className="flex gap-4 flex-wrap">
-              <Link href="/shop">
-                <Button variant="primary">Shop All</Button>
-              </Link>
-              <Link href="/collections">
-                <Button variant="ghost">View Collections</Button>
-              </Link>
-            </div>
-          </div>
+          <HeroContent />
         </div>
 
         {/* Right image */}

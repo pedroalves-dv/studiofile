@@ -129,6 +129,7 @@ export function ImageZoom({
                 key={i}
                 onClick={() => onIndexChange(i)}
                 aria-label={`View image ${i + 1}`}
+                aria-current={i === currentIndex ? 'true' : undefined}
                 className={cn(
                   'flex-shrink-0 w-14 h-14 relative border-2 transition-all duration-200',
                   i === currentIndex

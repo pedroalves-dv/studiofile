@@ -1,3 +1,4 @@
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { ShopifyProduct } from '@/lib/shopify/types';
@@ -23,10 +24,12 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link
       href={`/products/${handle}`}
       className="group block"
-      style={{ viewTransitionName: `product-card-${handle}` }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden bg-stone-50 aspect-[3/4] mb-4">
+      <div
+        className="relative overflow-hidden bg-stone-50 aspect-[3/4] mb-4"
+        style={{ viewTransitionName: `product-image-${handle}` } as React.CSSProperties}
+      >
         {featuredImage ? (
           <Image
             src={featuredImage.url}

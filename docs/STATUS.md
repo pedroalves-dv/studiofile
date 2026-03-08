@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 9 complete. Phase 10 is next.**
+Current position: **Phase 10 complete. All phases done — pre-launch checklist is next.**
 
 Update this file at the end of every session.
 
@@ -29,20 +29,14 @@ Update this file at the end of every session.
 | 8.1 | Wishlist | ✅ Done | ⬜ |
 | 8.2 | Recently viewed, related products | ✅ Done | ⬜ |
 | 9.1 | Analytics, SEO, structured data | ✅ Done | ⬜ |
-| 10.1 | GSAP animations | ⬜ | ⬜ |
-| 10.2 | Page transitions, accessibility audit | ⬜ | ⬜ |
+| 10.1 | GSAP animations | ✅ Done | ✅ Done |
+| 10.2 | Page transitions, accessibility audit | ✅ Done | ✅ Done |
 
 ---
 
-## Next Session — Phase 10.1
+## Next Session — Pre-Launch
 
-**File to read:** `docs/phases/phase-10-animations.md`
-
-**What gets built:**
-
-- GSAP + ScrollTrigger animations
-- Page transitions
-- Accessibility audit
+All phases complete. Work through the pre-launch checklist below before going live.
 
 ---
 
@@ -79,12 +73,15 @@ Issues discovered during development that affect future phases:
 - **`src/components/ui/SkeletonCard.tsx`** is a stray duplicate — canonical location is `src/components/common/SkeletonCard.tsx`. Shop and collection pages now import from `common/`. The `ui/` copy can be deleted when safe.
 - **`src/components/shop/`** is a stray directory containing SortSelect, FilterPanel, ProductGrid. Shop/collection pages now import from canonical paths. `src/components/shop/` can be deleted when safe (search/FilterPanel still re-exports from it — fix that when deleting).
 - **`VariantSelector.tsx`** now syncs `?variant=` to URL on selection. Initial variant from URL is read by `ProductInfoPanel` — ensure `useSearchParams` is available (wrap in Suspense if SSR issues arise).
+- **GSAP + `@gsap/react`** registered in `src/lib/gsap.ts` — import `gsap`, `ScrollTrigger`, `useGSAP`, `prefersReducedMotion` from `@/lib/gsap` everywhere (not directly from `gsap`/`@gsap/react`).
+- **`ProductGrid`** is now `'use client'` — needed for `useGSAP` + `ScrollTrigger.batch`.
+- **Hero animation** lives in `src/components/home/HeroContent.tsx` (client) — `Hero()` in `page.tsx` remains a server component and renders `<HeroContent />` in its left panel.
+- **`PageWrapper`** changed from `<main>` to `<div>` — `layout.tsx` already wraps children in `<main id="main-content">`, so PageWrapper's own `<main>` was a duplicate ID. PDP's inline `<main>` was also changed to `<div>` for the same reason.
+- **`muted` color corrected** in `tailwind.config.ts` to `#6B6560` (was `#8A8580` which fails WCAG AA).
 
 ---
 
 ## Pre-Launch Checklist
-
-Not started. Revisit after Phase 10.
 
 - [ ] Replace placeholder founder name and bio (About page)
 - [ ] Replace placeholder photography (About page)

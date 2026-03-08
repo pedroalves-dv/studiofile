@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from 'lucide-react';
 import { useScroll } from '@/hooks/useScroll';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { SearchBar } from '@/components/search/SearchBar';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 const NAV_LINKS = [
   { label: 'Shop', href: '/shop' },
@@ -24,6 +25,33 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   useScrollLock(isSearchOpen);
+
+  const wordmarkRef = useRef<HTMLSpanElement>(null);
+
+  useGSAP(() => {
+    if (prefersReducedMotion()) return;
+    if (typeof window === 'undefined') return;
+
+    const hasAnimated = sessionStorage.getItem('sf-wordmark-animated');
+    if (hasAnimated) return;
+
+    const el = wordmarkRef.current;
+    if (!el) return;
+
+    const letters = el.innerText.split('');
+    el.innerHTML = letters
+      .map((l) => `<span style="display:inline-block">${l === ' ' ? '&nbsp;' : l}</span>`)
+      .join('');
+
+    gsap.from(el.querySelectorAll('span'), {
+      y: 10,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'power2.out',
+      stagger: 0.04,
+      onComplete: () => sessionStorage.setItem('sf-wordmark-animated', '1'),
+    });
+  }, {});
 
   // Close both overlays on Escape
   useEffect(() => {
@@ -84,7 +112,7 @@ export function Header() {
               className="font-display text-sm md:text-base tracking-wide text-ink hover:text-accent transition-colors"
               aria-label="Studiofile — Home"
             >
-              STUDIO filé
+              <span ref={wordmarkRef}>STUDIO filé</span>
             </Link>
 
             {/* Desktop nav */}

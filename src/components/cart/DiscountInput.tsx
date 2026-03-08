@@ -74,6 +74,7 @@ export function DiscountInput() {
             onChange={(e) => setCode(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleApply()}
             placeholder="Enter code"
+            aria-label="Discount code"
             className="flex-1 border border-border px-3 py-1.5 text-sm bg-canvas focus:outline-none focus:border-ink transition-colors"
           />
           <button

@@ -9,11 +9,10 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children, className, narrow }: PageWrapperProps) {
   return (
-    <main
-      id="main-content"
+    <div
       className={cn(narrow ? 'container-narrow' : 'container-wide', 'section-padding', className)}
     >
       {children}
-    </main>
+    </div>
   );
 }

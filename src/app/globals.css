@@ -204,6 +204,39 @@
 }
 
 /* ==========================================
+   VIEW TRANSITIONS
+   ========================================== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 350ms ease-out both fade-and-slide-out;
+}
+
+::view-transition-new(root) {
+  animation: 350ms ease-out both fade-and-slide-in;
+}
+
+@keyframes fade-and-slide-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes fade-and-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Instant transitions for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ==========================================
    PREFERS REDUCED MOTION
    ========================================== */
 @media (prefers-reduced-motion: reduce) {

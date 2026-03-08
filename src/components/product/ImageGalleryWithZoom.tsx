@@ -8,11 +8,13 @@ import { ImageZoom } from './ImageZoom';
 interface ImageGalleryWithZoomClientProps {
   images: ShopifyImage[];
   productTitle: string;
+  productHandle?: string;
 }
 
 export function ImageGalleryWithZoomClient({
   images,
   productTitle,
+  productHandle,
 }: ImageGalleryWithZoomClientProps) {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoomIndex, setZoomIndex] = useState(0);
@@ -27,6 +29,7 @@ export function ImageGalleryWithZoomClient({
       <ImageGallery
         images={images}
         productTitle={productTitle}
+        productHandle={productHandle}
         onImageClick={handleImageClick}
       />
       <ImageZoom

@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main id="main-content">
+      <div>
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
         <section className="container-wide py-8 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
@@ -71,6 +71,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <ImageGalleryWithZoomClient
                 images={product.images}
                 productTitle={product.title}
+                productHandle={product.handle}
               />
             </div>
 
@@ -131,7 +132,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* ─── Section 5 — Related products ─── */}
         <RelatedProducts products={recommendations} currentHandle={product.handle} />
-      </main>
+      </div>
     </>
   );
 }

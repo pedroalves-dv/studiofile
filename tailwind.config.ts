@@ -11,7 +11,7 @@ const config: Config = {
         ink: '#1A1917',
         canvas: '#FAF7F2',
         accent: '#C8A97E',
-        muted: '#8A8580',
+        muted: '#6B6560',
         border: '#E5E0D8',
         success: '#4A7C59',
         error: '#B84040',
