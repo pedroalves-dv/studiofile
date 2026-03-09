@@ -14,7 +14,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 | Frontend | Next.js 15 App Router, TypeScript |
 | Styling | Tailwind CSS v3 |
 | Backend | Shopify Storefront API (GraphQL) |
-| Animations | GSAP + ScrollTrigger (Phase 10 only) |
+| Animations | Framer motion / CSS animation / View Transitions API (Previously GSAP + ScrollTrigger) |
 | Hosting | Vercel |
 
 ---
@@ -25,8 +25,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 
 1. Read this file.
 2. Read `docs/STATUS.md` — check what is done and what is next.
-3. Read the relevant phase file in `docs/phases/` for detailed build instructions.
-4. Read existing files before editing them — never guess at their shape.
+3. Read existing files before editing them — never guess at their shape.
 
 ### During a session
 
@@ -140,8 +139,9 @@ docs/
 
 #### Typography
 
-- Single font: `JetBrains Mono` for everything — headings, body, labels, UI
-- Type is a design element — use scale, weight, and tracking aggressively to create hierarchy
+- Mono font: `JetBrains Mono` for small tags, buttons, small links, small text blocks
+- Bold font: `Noka` used very sparringly, for typography hierarchy contrast
+- Serif font: `Instrument Serif` for headings, and emphasised/presentation text
 
 #### Corners
 
@@ -163,15 +163,13 @@ docs/
 - Image and motion (gifs, video) are first-class compositional elements, not decoration
 - UX quirks are welcome — unexpected interactions, scroll behaviors, cursor effects
 - Brutalist in sensibility: raw, confident, not polished-SaaS or generic e-commerce
-- Never default to what looks "safe" — if two approaches exist, prefer the more interesting one
 
-#### What to avoid
+#### Performance (Important!)
 
-- Rounded images
-- Soft gradients used decoratively
-- Generic card layouts with equal padding and shadow
-- Centered hero + stacked sections structure
-- Any pattern that looks like it came from a UI kit
+- Be systematically mindful of performance when planning or making creating UI/UX tweaks
+- We want this website to be as snappy as possible
+- Use skeletons when necessary
+- Avoid heavy effects and libraries
 
 ---
 

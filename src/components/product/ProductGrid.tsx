@@ -1,11 +1,9 @@
 'use client';
 
-import { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/Badge';
 import type { ShopifyProduct } from '@/lib/shopify/types';
-import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 interface ProductGridProps {
   products: ShopifyProduct[];
@@ -14,26 +12,6 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ products, totalCount, showCount = true }: ProductGridProps) {
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (prefersReducedMotion()) return;
-    if (!gridRef.current) return;
-
-    ScrollTrigger.batch(gridRef.current.querySelectorAll('[data-product-card]'), {
-      onEnter: (elements) => {
-        gsap.from(elements, {
-          y: 30,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          stagger: 0.06,
-        });
-      },
-      start: 'top 90%',
-      once: true,
-    });
-  }, { scope: gridRef });
 
   if (!products || products.length === 0) {
     return (
@@ -55,7 +33,7 @@ export function ProductGrid({ products, totalCount, showCount = true }: ProductG
       )}
 
       {/* Grid */}
-      <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {products.map((product) => (
           <Link
             key={product.id}
