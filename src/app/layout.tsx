@@ -54,7 +54,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${cormorant.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="grain">
+      <body className="grain relative">
         {/* Skip to content link */}
         <a href="#main-content" className="skip-to-content">
           Skip to content
@@ -66,7 +66,7 @@ export default function RootLayout({
             <ToastProvider>
               {/* Layout */}
               <Header />
-              <main id="main-content">{children}</main>
+              <main id="main-content" className="flex flex-col min-h-full">{children}</main>
               <Footer />
               <CartDrawer />
               <WishlistDrawer />

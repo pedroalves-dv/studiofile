@@ -8,7 +8,7 @@ Read the following files before doing anything else:
 
 1. CLAUDE.md
 2. docs/STATUS.md
-3. docs/phases/phase-10-gsap-polish.md
+3. docs/phases/phase-11-UX-design-concept.md
 
 All source files live under src/. Use src/ prefix for all file paths.
 Path alias @/ maps to src/ — use @/ in imports, src/ in file path references.
@@ -18,7 +18,7 @@ Determine which files those are from the phase prompt — all paths are under sr
 
 Systematically Use subagents for any task that requires reading many files to gather information before acting — return only the findings to the main session.
 
-Today's task: BUILD Phase 10.
+Today's task: BUILD Phase 11.
 
 Scope: Only create or edit the files listed in the phase prompt.
 Do not touch any file not explicitly listed.

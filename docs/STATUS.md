@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 10 complete. All phases done — pre-launch checklist is next.**
+Current position: **Phase 11 planned — UX design concept pass is next.**
 
 Update this file at the end of every session.
 
@@ -31,12 +31,20 @@ Update this file at the end of every session.
 | 9.1 | Analytics, SEO, structured data | ✅ Done | ⬜ |
 | 10.1 | GSAP animations | ✅ Done | ✅ Done |
 | 10.2 | Page transitions, accessibility audit | ✅ Done | ✅ Done |
+| 11.1 | Global interaction layer (cursor, magnet, mask-reveal, velocity marquee) | ⬜ | ⬜ |
+| 11.2 | Home page editorial overhaul | ⬜ | ⬜ |
+| 11.3 | Header & footer redesign | ⬜ | ⬜ |
+| 11.4 | Shop & collection editorial layout, ProductCard redesign | ⬜ | ⬜ |
+| 11.5 | PDP editorial redesign, sticky purchase bar | ⬜ | ⬜ |
 
 ---
 
-## Next Session — Pre-Launch
+## Next Session — Phase 11
 
-All phases complete. Work through the pre-launch checklist below before going live.
+Start with `docs/phases/phase-11-UX-design-concept.md`.
+Use `docs/SESSION-TEMPLATE-BUILD.md` as the session prompt template — update the phase number to 11.
+
+Work through sub-prompts 11.1 → 11.5 in order. Type-check and commit after each.
 
 ---
 

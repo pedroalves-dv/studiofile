@@ -8,6 +8,8 @@ Premium e-commerce + showcase website for a 3D printing and design studio.
 
 ```bash
 npm install
+
+PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm install
 ```
 
 ### Environment Setup

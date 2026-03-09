@@ -1,16 +1,17 @@
-import { Suspense } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Metadata } from 'next';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { NewsletterForm } from '@/components/home/NewsletterForm';
-import { HeroContent } from '@/components/home/HeroContent';
-import { getProducts } from '@/lib/shopify/products';
-import { getCollections } from '@/lib/shopify/collections';
+import { Suspense } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Metadata } from "next";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { NewsletterForm } from "@/components/home/NewsletterForm";
+import { HeroContent } from "@/components/home/HeroContent";
+import { getProducts } from "@/lib/shopify/products";
+import { getCollections } from "@/lib/shopify/collections";
 
 export const metadata: Metadata = {
-  title: 'Premium 3D Printed Furniture & Home Decor',
-  description: 'Studiofile: Modular, functional home decor and furniture crafted through 3D printing. Designed in Paris, made to order, shipped worldwide.',
+  title: "Premium 3D Printed Furniture & Home Decor",
+  description:
+    "Studiofile: Modular, functional home decor and furniture crafted through 3D printing. Designed in Paris, made to order, shipped worldwide.",
 };
 
 // Skeleton components for Suspense fallbacks
@@ -41,7 +42,10 @@ function FeaturedProductsSkeleton() {
         <Skeleton className="h-8 w-48 mb-12" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-[400px]">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className={i === 3 ? 'md:col-span-1 md:row-span-2' : ''}>
+            <div
+              key={i}
+              className={i === 3 ? "md:col-span-1 md:row-span-2" : ""}
+            >
               <Skeleton className="w-full h-full" />
             </div>
           ))}
@@ -71,7 +75,10 @@ function CollectionsSkeleton() {
 // Hero Section
 async function Hero() {
   try {
-    const productsResult = await getProducts({ first: 1, sortKey: 'BEST_SELLING' });
+    const productsResult = await getProducts({
+      first: 1,
+      sortKey: "BEST_SELLING",
+    });
     const featuredProduct = productsResult?.edges?.[0]?.node;
     const heroImage = featuredProduct?.images?.[0]?.url;
 
@@ -87,7 +94,7 @@ async function Hero() {
           {heroImage && (
             <Image
               src={heroImage}
-              alt={featuredProduct?.title || 'Featured Product'}
+              alt={featuredProduct?.title || "Featured Product"}
               fill
               className="object-cover"
               priority
@@ -97,7 +104,7 @@ async function Hero() {
       </section>
     );
   } catch (error) {
-    console.error('Error fetching hero data:', error);
+    console.error("Error fetching hero data:", error);
     return <HeroSkeleton />;
   }
 }
@@ -139,7 +146,10 @@ function Marquee() {
 // Featured Products Section
 async function FeaturedProductsSection() {
   try {
-    const productsResult = await getProducts({ first: 4, sortKey: 'BEST_SELLING' });
+    const productsResult = await getProducts({
+      first: 4,
+      sortKey: "BEST_SELLING",
+    });
     const products = productsResult?.edges?.map((edge) => edge.node) || [];
 
     if (!products || products.length === 0) {
@@ -150,8 +160,13 @@ async function FeaturedProductsSection() {
       <section className="section-padding border-b border-border">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
-            <h2 className="font-display text-4xl md:text-5xl text-ink">Selected Works</h2>
-            <Link href="/shop" className="text-sm font-mono uppercase tracking-wider hover:underline">
+            <h2 className="font-display text-4xl md:text-5xl text-ink">
+              Selected Works
+            </h2>
+            <Link
+              href="/shop"
+              className="text-sm font-mono uppercase tracking-wider hover:underline"
+            >
               View All →
             </Link>
           </div>
@@ -162,7 +177,7 @@ async function FeaturedProductsSection() {
                 key={product.id}
                 href={`/products/${product.handle}`}
                 className={`group relative overflow-hidden bg-stone-100 ${
-                  i === 3 ? 'md:col-span-1 md:row-span-2' : ''
+                  i === 3 ? "md:col-span-1 md:row-span-2" : ""
                 }`}
               >
                 {product.images?.[0]?.url && (
@@ -174,8 +189,12 @@ async function FeaturedProductsSection() {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <h3 className="font-display text-xl text-canvas mb-2">{product.title}</h3>
-                  <p className="text-sm text-canvas/80">${product.priceRange.minVariantPrice.amount}</p>
+                  <h3 className="font-display text-xl text-canvas mb-2">
+                    {product.title}
+                  </h3>
+                  <p className="text-sm text-canvas/80">
+                    ${product.priceRange.minVariantPrice.amount}
+                  </p>
                 </div>
               </Link>
             ))}
@@ -184,7 +203,7 @@ async function FeaturedProductsSection() {
       </section>
     );
   } catch (error) {
-    console.error('Error fetching featured products:', error);
+    console.error("Error fetching featured products:", error);
     return null;
   }
 }
@@ -207,15 +226,27 @@ function BrandStory() {
         {/* Right: Story text */}
         <div className="flex flex-col justify-center gap-8">
           <div>
-            <h2 className="font-display text-4xl md:text-5xl text-ink mb-6">About the Studio</h2>
+            <h2 className="font-display text-4xl md:text-5xl text-ink mb-6">
+              About the Studio
+            </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-5">
-              Studiofile is a design studio founded in Paris, specializing in modular furniture and functional home decor created through precision 3D printing. Our objects blend architectural thinking with craft sensibility, resulting in pieces that are both conceptually rigorous and tactilely rewarding.
+              Studiofile is a design studio founded in Paris, specializing in
+              modular furniture and functional home decor created through
+              precision 3D printing. Our objects blend architectural thinking
+              with craft sensibility, resulting in pieces that are both
+              conceptually rigorous and tactilely rewarding.
             </p>
             <p className="text-base text-muted-foreground leading-relaxed">
-              Each piece is made to order, ensuring minimal waste and maximum customization. We work with premium materials to create objects that transcend trends—pieces designed to be lived with, repaired, and loved for years to come.
+              Each piece is made to order, ensuring minimal waste and maximum
+              customization. We work with premium materials to create objects
+              that transcend trends—pieces designed to be lived with, repaired,
+              and loved for years to come.
             </p>
           </div>
-          <Link href="/about" className="text-sm font-mono uppercase tracking-wider hover:underline w-fit">
+          <Link
+            href="/about"
+            className="text-sm font-mono uppercase tracking-wider hover:underline w-fit"
+          >
             Read Our Story →
           </Link>
         </div>
@@ -234,11 +265,16 @@ async function CollectionsSection() {
     }
 
     return (
-      <section className="section-padding border-b border-border">
+      <section className="section-padding border-b border-ink/50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
-            <h2 className="font-display text-4xl md:text-5xl text-ink">Shop by Collection</h2>
-            <Link href="/collections" className="text-sm font-mono uppercase tracking-wider hover:underline">
+            <h2 className="font-display text-4xl md:text-5xl text-ink">
+              Shop by Collection
+            </h2>
+            <Link
+              href="/collections"
+              className="text-sm font-mono uppercase tracking-wider hover:underline"
+            >
               All Collections →
             </Link>
           </div>
@@ -259,7 +295,9 @@ async function CollectionsSection() {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="font-display text-2xl text-canvas">{collection.title}</h3>
+                  <h3 className="font-display text-2xl text-canvas">
+                    {collection.title}
+                  </h3>
                 </div>
               </Link>
             ))}
@@ -268,7 +306,7 @@ async function CollectionsSection() {
       </section>
     );
   } catch (error) {
-    console.error('Error fetching collections:', error);
+    console.error("Error fetching collections:", error);
     return null;
   }
 }
@@ -277,33 +315,52 @@ async function CollectionsSection() {
 function ProcessSection() {
   const steps = [
     {
-      number: '01',
-      title: 'Designed In-Studio',
-      description: 'Each object is meticulously designed by our team, balancing form and function.',
+      number: "/01",
+      title: "Designed In-Studio",
+      description:
+        "Each object is meticulously designed by our team, balancing form and function.",
     },
     {
-      number: '02',
-      title: 'Printed to Order',
-      description: 'Made fresh using precision 3D printing, minimizing waste and maximizing quality.',
+      number: "/02",
+      title: "Printed to Order",
+      description:
+        "Made fresh using precision 3D printing, minimizing waste and maximizing quality.",
     },
     {
-      number: '03',
-      title: 'Shipped to You',
-      description: 'Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.',
+      number: "/03",
+      title: "Shipped to You",
+      description:
+        "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
+    },
+    {
+      number: "/04",
+      title: "Upgrade / Repair / Replace",
+      description:
+        "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
     },
   ];
 
   return (
-    <section className="section-padding border-b border-border">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="font-display text-4xl md:text-5xl text-ink mb-16 text-center">How It Works</h2>
+    <section className="pb-60">
+      <div className="max-w-full mx-auto">
+        {/* <h2 className="font-display text-4xl md:text-5xl text-ink mb-16 text-center">How It Works</h2> */}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-1">
           {steps.map((step, i) => (
-            <div key={i} className="flex flex-col">
-              <div className="font-mono text-lg font-semibold text-accent mb-6">{step.number}</div>
-              <h3 className="font-display text-2xl text-ink mb-4">{step.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+            <div key={i} className="border-b border-border">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 container-wide py-4">
+                <div className="flex justify-end font-display text-6xl font-semibold text-ink">
+                  {step.number}
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="font-serif italic text-3xl text-ink">
+                    {step.title}
+                  </h3>
+                  <p className="font-serif text-3xl text-light leading-none">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -312,20 +369,22 @@ function ProcessSection() {
   );
 }
 
-// Newsletter Section
-// function NewsletterSection() {
-//   return (
-//     <section className="bg-ink text-canvas section-padding">
-//       <div className="max-w-2xl mx-auto text-center">
-//         <h2 className="font-display text-4xl md:text-5xl mb-6">Stay in the loop.</h2>
-//         <p className="text-canvas/80 mb-8">
-//           Get updates on new releases, studio stories, and special offers.
-//         </p>
-//         <NewsletterForm />
-//       </div>
-//     </section>
-//   );
-// }
+// Bottom Hero
+function BottomHeroSection() {
+  return (
+    <section className="relative w-full h-[400px]">
+      <div
+              className="h-full w-full bg-accent"
+              style={{
+                maskImage: 'url(/images/logo/logo-thin.svg)',
+                maskSize: 'contain',
+                maskRepeat: 'no-repeat',
+              }}
+            />
+      {/* <div className="bg-accent h-[300px] w-full -mt-12"></div> */}
+    </section>
+  );
+}
 
 export default async function HomePage() {
   return (
@@ -354,8 +413,8 @@ export default async function HomePage() {
       {/* Process */}
       <ProcessSection />
 
-      {/* Newsletter */}
-      {/* <NewsletterSection /> */}
+      {/* Bottom Hero */}
+      <BottomHeroSection />
     </>
   );
 }

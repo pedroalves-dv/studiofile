@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { SimpleIcon } from '@/components/ui/SimpleIcon';
 import { siInstagram, siPinterest, siX, siTiktok } from 'simple-icons';
 import { useState } from 'react';
+import { ArrowButton } from '../ui/ArrowButton';
 
 const FOOTER_LINKS = [
   { label: 'Shop', href: '/shop' },
@@ -29,41 +30,49 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-ink text-canvas border-t border-stone-800">
+    <footer className="-mt-[340px] w-full absolute bottom-0 z-10 backdrop-blur-md border-t py-8">
       {/* Main footer content */}
-      <div className="container-wide py-16 md:py-10">
+      <div className="container-wide">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {/* Column 1: Wordmark + Tagline */}
-          <div className="space-y-4">
-            <h2 className="font-display text-2xl md:text-2xl tracking-wide">
-              STUDIO filé
-            </h2>
+          <div className="flex flex-col justify-between">
+            <div
+              className="h-6 w-[170px] bg-ink"
+              style={{
+                maskImage: 'url(/images/logo/logo-270-45.svg)',
+                maskSize: 'contain',
+                maskRepeat: 'no-repeat',
+              }}
+            />
+            <div className="text-xs text-ink flex flex-col justify-end">
+            <p>© {new Date().getFullYear()} Studiofile</p>
+          
+            </div>
           </div>
-
           {/* Column 2: Links */}
-          <div className="space-y-4 mb-2">
-            <h3 className="text-xs tracking-display font-mono text-muted text-canvas/90">
+          <div className="space-y-4 text-light">
+            <h3 className="text-xs tracking-normal font-mono">
             Navigation</h3>
-            <nav className="space-y-2 flex flex-col pb-4">
+            <nav className="space-y-2 flex flex-col pb-2">
               {FOOTER_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs text-canvas/80 hover:text-canvas transition-colors"
+                  className="text-xs text-ink hover:text-light transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
           
-            <h3 className="text-xs tracking-display font-mono text-muted text-canvas/90">
+            <h3 className="text-xs tracking-normal font-mono">
             Conditions & Policies</h3>
-            <nav className="space-y-2 flex flex-col pb-4">
+            <nav className="space-y-2 flex flex-col">
               {CONDITIONS_POLICIES_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs text-canvas/80 hover:text-canvas transition-colors"
+                  className="text-xs text-ink hover:text-light transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -79,49 +88,49 @@ export function Footer() {
               <div className="flex gap-6">
                 <a
                   href="#"
-                  className="text-canvas/80 hover:text-canvas transition-colors"
+                  className="transition-colors"
                   aria-label="Instagram"
                 >
                   <SimpleIcon 
                     icon={siInstagram} 
                     size={18}
-                    className="fill-canvas/80 hover:fill-canvas transition-colors"
+                    className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Instagram"
                   />
                 </a>
                 <a
                   href="#"
-                  className="text-canvas/80 hover:text-canvas transition-colors text-sm font-mono"
+                  className="transition-colors"
                   aria-label="Pinterest"
                 >
                   <SimpleIcon 
                     icon={siX} 
                     size={18}
-                    className="fill-canvas/80 hover:fill-canvas transition-colors"
+                    className="fill-ink hover:fill-light  transition-colors"
                     ariaLabel="Xt"
                   />
                 </a>
                 <a
                   href="#"
-                  className="text-canvas/80 hover:text-canvas transition-colors text-sm font-mono"
+                  className="transition-colors"
                   aria-label="Pinterest"
                 >
                   <SimpleIcon 
                     icon={siTiktok} 
                     size={18}
-                    className="fill-canvas/80 hover:fill-canvas transition-colors"
+                    className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="TikTok"
                   />
                 </a>
                 <a
                   href="#"
-                  className="text-canvas/80 hover:text-canvas transition-colors text-sm font-mono"
+                  className="transition-colors"
                   aria-label="Pinterest"
                 >
                   <SimpleIcon 
                     icon={siPinterest} 
                     size={18}
-                    className="fill-canvas/80 hover:fill-canvas transition-colors"
+                    className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Pinterest"
                   />
                 </a>
@@ -130,7 +139,7 @@ export function Footer() {
 
             {/* Newsletter */}
             <div className="space-y-4 pt-4">
-              <h3 className="text-sm tracking-normal font-mono text-canvas/90">
+              <h3 className="text-xs tracking-normal font-mono text-ink">
                 Get updates on new releases, early-bird notifications, and special offers.
               </h3>
               <form onSubmit={handleNewsletterSubmit} className="space-y-2">
@@ -140,15 +149,14 @@ export function Footer() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-ink border border-stone-700 text-canvas placeholder-canvas/50 text-sm focus:outline-none focus:border-accent transition-colors"
+                  className="w-full px-3 py-2 bg-canvas border rounded-md border-canvas-50 text-ink placeholder-ink/50 text-sm focus:outline-none focus:border-accent transition-colors"
                   required
                 />
-                <button
+                <ArrowButton
+                  label="Subscribe"
                   type="submit"
-                  className="w-full uppercase px-3 py-2 bg-accent text-ink text-xs tracking-display font-mono transition-opacity hover:opacity-80"
-                >
-                  Subscribe
-                </button>
+                  className="w-full uppercase px-3 py-2 bg-ink text-canvas text-xs tracking-display font-mono rounded-md"
+                />
               </form>
             </div>
           </div>
@@ -156,13 +164,13 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-canvas/10 mx-28">
-        <div className="py-6 flex flex-col md:flex-row items-center justify-between 
-        gap-4 text-xs text-canvas/70">
+      {/* <div>
+        <div className="container-wide py-4 flex flex-col md:flex-row items-center justify-between 
+        gap-4 text-xs text-ink/90">
           <p>© {new Date().getFullYear()} Studiofile</p>
           
         </div>
-      </div>
+      </div> */}
     </footer>
   );
 }
