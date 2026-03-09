@@ -12,7 +12,7 @@ const config: Config = {
         canvas: 'var(--color-canvas)',
         accent: 'var(--color-accent)',
         muted: 'var(--color-muted)',
-        border: 'var(--color-border)',
+        stroke: 'var(--color-stroke)',
         light: 'var(--color-light)',
         success: 'var(--color-success)',
         error: 'var(--color-error)',
@@ -30,6 +30,9 @@ const config: Config = {
       letterSpacing: {
         display: '0.08em',
         tight: '-0.02em',
+      },
+      animation: {
+        marquee: 'marquee 30s linear infinite',
       },
     },
   },

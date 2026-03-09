@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="-mt-[340px] w-full absolute bottom-0 z-10 backdrop-blur-xl border-t py-8">
+    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20">
       {/* Main footer content */}
       <div className="container-wide">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -155,7 +155,7 @@ export function Footer() {
                 <ArrowButton
                   label="Subscribe"
                   type="submit"
-                  className="w-full uppercase px-3 py-2 bg-ink text-canvas text-xs tracking-display font-mono rounded-md"
+                  className="w-full px-3 py-2 bg-ink text-canvas text-xs tracking-display font-mono rounded-md"
                 />
               </form>
             </div>

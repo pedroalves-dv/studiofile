@@ -14,17 +14,14 @@ export function ArrowButton({ label, type = 'button', onClick, className }: Arro
       onClick={onClick}
       className={`group relative ${className}`}
     >
-      <span className="flex items-center justify-center gap-1">
-        {/* Arrow — slides in from left, fades in */}
-        <span className="absolute -left-4  opacity-0 -translate-x-3 transition-all duration-800 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-1">
-          →
-        </span>
-
-        {/* Label — nudges right */}
-        <span className="transition-transform duration-800 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-x-2">
-          {label.toUpperCase()}
-        </span>
-      </span>
+      <span className="relative inline-flex items-center">
+  <span className="absolute -left-5 opacity-0 -translate-x-3 transition-all duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3">
+    →
+  </span>
+  <span className="transition-transform duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-x-2">
+    {label}
+  </span>
+</span>
     </button>
   );
 }

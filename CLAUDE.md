@@ -14,7 +14,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 | Frontend | Next.js 15 App Router, TypeScript |
 | Styling | Tailwind CSS v3 |
 | Backend | Shopify Storefront API (GraphQL) |
-| Animations | Framer motion / CSS animation / View Transitions API (Previously GSAP + ScrollTrigger) |
+| Animations | CSS transitions · `motion` (Framer Motion v12) · View Transitions API |
 | Hosting | Vercel |
 
 ---
@@ -36,7 +36,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 
 ### End of session
 
-- Run Type checking: `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check` — zero errors required.
+- Run type checking: `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check` — zero errors required.
 - Commit: `feat: phase X.Y — [description]`
 - Update `docs/STATUS.md` — tick completed items, note anything blocked or deferred.
 
@@ -68,7 +68,7 @@ src/
     account/         ← OrderCard
     wishlist/        ← WishlistButton, WishlistDrawer
     common/          ← Toast, Toaster, CookieConsent, LoadingBar, SkeletonCard,
-                        RevealOnScroll
+                        RevealOnScroll, Marquee
     home/            ← home page section components
   lib/
     shopify/         ← client.ts, queries.ts, mutations.ts, types.ts,
@@ -76,7 +76,6 @@ src/
                         search.ts, policies.ts
     utils/           ← format.ts, cn.ts, seo.ts, params.ts
     constants.ts     ← FREE_SHIPPING_THRESHOLD, CURRENCY_CODE
-    gsap.ts          ← gsap + ScrollTrigger registration, prefersReducedMotion()
   hooks/             ← useCart, useWishlist, useScrollLock, useLocalStorage,
                         useDebounce, useMediaQuery, useRecentlyViewed,
                         useIsomorphicLayoutEffect, useClickOutside
@@ -113,21 +112,6 @@ docs/
 
 ---
 
-### Colour palette
-
-| Token | Hex | Use |
-| ------- | ----- | ----- |
-| `ink` | `#1A1917` | Primary text, near-black |
-| `canvas` | `#FAF7F2` | Warm off-white background |
-| `accent` | `#C8A97E` | Warm brass/sand — use sparingly |
-| `muted` | `#6B6560` | Secondary text — WCAG AA on canvas |
-| `stroke` | `#E5E0D8` | Dividers, subtle lines |
-| `success` | `#4A7C59` | Stock indicators, confirmations |
-| `error` | `#B84040` | Errors, out-of-stock |
-
-> Note: the token is `stroke`, not `border` — `border` conflicts with Tailwind utilities.
-> Note: `muted` is `#6B6560`, not `#8A8580` — the lighter value fails WCAG AA contrast.
-
 ### Layout utilities
 
 - `container-wide` — `max-w-screen-xl mx-auto px-6 md:px-12`
@@ -140,8 +124,8 @@ docs/
 #### Typography
 
 - Mono font: `JetBrains Mono` for small tags, buttons, small links, small text blocks
-- Bold font: `Noka` used very sparringly, for typography hierarchy contrast
-- Serif font: `Instrument Serif` for headings, and emphasised/presentation text
+- Bold font: `Noka` used very sparingly, for typography hierarchy contrast
+- Serif font: `Instrument Serif` for headings and emphasised/presentation text
 
 #### Corners
 
@@ -164,12 +148,13 @@ docs/
 - UX quirks are welcome — unexpected interactions, scroll behaviors, cursor effects
 - Brutalist in sensibility: raw, confident, not polished-SaaS or generic e-commerce
 
-#### Performance (Important!)
+#### Performance (Critical)
 
-- Be systematically mindful of performance when planning or making creating UI/UX tweaks
-- We want this website to be as snappy as possible
-- Use skeletons when necessary
-- Avoid heavy effects and libraries
+- CSS transitions and animations are always preferred over JS-driven equivalents
+- Use the `motion` package only when CSS cannot achieve the desired result
+- Never install animation libraries without explicit instruction — the bundle is already lean
+- Use skeletons for any async content that takes time to load
+- No heavy visual effects — blur filters, large box-shadows, and backdrop-filter should be used sparingly and tested for paint performance
 
 ---
 
@@ -183,31 +168,16 @@ docs/
 
 ---
 
-## Stub Awareness
-
-These files are intentional stubs replaced in later phases.
-Do not build their full functionality ahead of schedule.
-
-| File | Current state | Replaced in |
-| ------ | --------------- | ------------- |
-| `src/context/CartContext.tsx` | Stub (`return children`) | Phase 6 |
-| `src/hooks/useCart.ts` | Stub | Phase 6 |
-| `src/context/WishlistContext.tsx` | Stub (`return children`) | Phase 8 |
-| `src/hooks/useWishlist.ts` | Stub | Phase 8 |
-| `src/lib/utils/seo.ts` | Returns empty objects | Phase 9 |
-
----
-
 ## Known Decisions & Resolved Ambiguities
 
 ### PDP (Phase 4.4)
 
 - `ProductInfoPanel.tsx` is the client orchestrator for the right panel — owns `selectedVariant` state.
-- `ImageGallery.tsx` handles main image + thumbnail strip (Section 1).
+- `ImageGallery.tsx` handles main image + thumbnail strip.
 - `ImageZoom.tsx` is a portal-based fullscreen lightbox — renders into `document.body` via `createPortal`, does **not** use the `Dialog` component (Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox).
-- Section 3 (horizontal strip) opens `ImageZoom` on click.
 - `VariantSelector` syncs selected variant to URL `?variant={variantId}` via `router.replace()`.
 - Spec tags in `key:value` format are auto-parsed into the specs table. Tags without `:` are ignored.
+- **The PDP will be fully rebuilt as a custom product configurator in a future phase.** Do not make structural changes to PDP files outside that dedicated phase.
 
 ### Cart (Phase 6)
 
@@ -232,7 +202,8 @@ Do not build their full functionality ahead of schedule.
 - Predictive search: client fetches `/api/search/predictive?q=` — not the lib directly.
 - `src/lib/utils/params.ts` exports `SORT_MAP` and `parseFilters` — shared between shop, collection, and search pages. Do not duplicate inline.
 - Sort uses Shopify's `sortKey` + `reverse` pattern — not `PRICE_ASC`/`PRICE_DESC` strings.
-- `FilterPanel` and `SortSelect` from `components/search/` are reused on the search page — no separate shop variants needed.
+- `FilterPanel` and `SortSelect` from `components/search/` are reused on the search page.
+- `components/search/FilterPanel` re-exports from `components/shop/FilterPanel` — the shop version is canonical. Do not delete `shop/FilterPanel`.
 
 ### Wishlist & Engagement (Phase 8)
 

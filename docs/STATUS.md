@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 11 planned — UX design concept pass is next.**
+Current position: **Phase 11 in progress — UX design concept pass.**
 
 Update this file at the end of every session.
 
@@ -29,13 +29,12 @@ Update this file at the end of every session.
 | 8.1 | Wishlist | ✅ Done | ⬜ |
 | 8.2 | Recently viewed, related products | ✅ Done | ⬜ |
 | 9.1 | Analytics, SEO, structured data | ✅ Done | ⬜ |
-| 10.1 | GSAP animations | ✅ Done | ✅ Done |
+| 10.1 | Animation layer — GSAP removed, replaced by CSS/Motion in Phase 11 | ✅ Done | ✅ Done |
 | 10.2 | Page transitions, accessibility audit | ✅ Done | ✅ Done |
-| 11.1 | Global interaction layer (cursor, magnet, mask-reveal, velocity marquee) | ⬜ | ⬜ |
+| 11.1 | Marquee component (CSS, no JS animation) | ✅ Done | ✅ Done |
 | 11.2 | Home page editorial overhaul | ⬜ | ⬜ |
-| 11.3 | Header & footer redesign | ⬜ | ⬜ |
+| 11.3 | Header accent hover effects | ⬜ | ⬜ |
 | 11.4 | Shop & collection editorial layout, ProductCard redesign | ⬜ | ⬜ |
-| 11.5 | PDP editorial redesign, sticky purchase bar | ⬜ | ⬜ |
 
 ---
 
@@ -44,7 +43,10 @@ Update this file at the end of every session.
 Start with `docs/phases/phase-11-UX-design-concept.md`.
 Use `docs/SESSION-TEMPLATE-BUILD.md` as the session prompt template — update the phase number to 11.
 
-Work through sub-prompts 11.1 → 11.5 in order. Type-check and commit after each.
+Work through sub-prompts 11.1 → 11.4 in order. Type-check and commit after each.
+
+Note: Phase 11.5 (PDP redesign) is intentionally deferred — the PDP will be rebuilt
+as a custom product configurator in a dedicated phase.
 
 ---
 
@@ -62,8 +64,7 @@ These were intentionally skipped or partially implemented and must be completed 
 | Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
 | About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |
 | Instagram / Pinterest real handles | Phase 9 | Placeholder URLs in Organization JSON-LD |
-| `src/components/shop/` directory | Phase 4 audit | Stray directory (SortSelect, FilterPanel, ProductGrid). Shop/collection pages now import from canonical paths (`search/`, `product/`). `src/components/shop/` can be deleted when safe. |
-| `RelatedProducts.tsx` | Phase 4 audit | Fully implemented (spec says stub until Phase 8). Left as-is since it's working code. |
+| PDP redesign | Phase 11 | Deferred — will be rebuilt as custom product configurator |
 
 ---
 
@@ -78,14 +79,12 @@ Issues discovered during development that affect future phases:
 - **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast — TypeScript does not recognise this property natively.
 - **`quantityAvailable`** can be `null` in Shopify when inventory tracking is disabled — treat as unlimited stock, not zero.
 - **`ImageZoom`** uses `createPortal` directly into `document.body`, not the `Dialog` component — Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox.
-- **`src/components/ui/SkeletonCard.tsx`** is a stray duplicate — canonical location is `src/components/common/SkeletonCard.tsx`. Shop and collection pages now import from `common/`. The `ui/` copy can be deleted when safe.
-- **`src/components/shop/`** is a stray directory containing SortSelect, FilterPanel, ProductGrid. Shop/collection pages now import from canonical paths. `src/components/shop/` can be deleted when safe (search/FilterPanel still re-exports from it — fix that when deleting).
-- **`VariantSelector.tsx`** now syncs `?variant=` to URL on selection. Initial variant from URL is read by `ProductInfoPanel` — ensure `useSearchParams` is available (wrap in Suspense if SSR issues arise).
-- **GSAP + `@gsap/react`** registered in `src/lib/gsap.ts` — import `gsap`, `ScrollTrigger`, `useGSAP`, `prefersReducedMotion` from `@/lib/gsap` everywhere (not directly from `gsap`/`@gsap/react`).
-- **`ProductGrid`** is now `'use client'` — needed for `useGSAP` + `ScrollTrigger.batch`.
-- **Hero animation** lives in `src/components/home/HeroContent.tsx` (client) — `Hero()` in `page.tsx` remains a server component and renders `<HeroContent />` in its left panel.
-- **`PageWrapper`** changed from `<main>` to `<div>` — `layout.tsx` already wraps children in `<main id="main-content">`, so PageWrapper's own `<main>` was a duplicate ID. PDP's inline `<main>` was also changed to `<div>` for the same reason.
-- **`muted` color corrected** in `tailwind.config.ts` to `#6B6560` (was `#8A8580` which fails WCAG AA).
+- **`VariantSelector.tsx`** syncs `?variant=` to URL on selection. Initial variant from URL is read by `ProductInfoPanel` — ensure `useSearchParams` is available (wrap in Suspense if SSR issues arise).
+- **`PageWrapper`** is a `<div>` — `layout.tsx` wraps children in `<main id="main-content">`, so PageWrapper must not use `<main>` (duplicate landmark). PDP page likewise uses `<div>`, not `<main>`.
+- **`muted` color** is `#6B6560` in `tailwind.config.ts` — do not change to `#8A8580`, which fails WCAG AA contrast.
+- **`RevealOnScroll`** is currently a plain `<div>` passthrough — GSAP was removed in the Phase 11 audit. It will be rebuilt with CSS in Phase 11 if needed.
+- **`ProductGrid`** is `'use client'` — this was required for GSAP but GSAP has since been removed. It can be converted back to a server component if no client features are added during Phase 11.
+- **`src/components/shop/`** contains only `FilterPanel.tsx` (canonical) and `SortSelect.tsx` (dead, can be deleted). `search/FilterPanel` re-exports from `shop/FilterPanel` — do not delete `shop/FilterPanel` without updating that re-export.
 
 ---
 
@@ -102,4 +101,3 @@ Issues discovered during development that affect future phases:
 - [ ] Run `npm run build` clean with zero warnings
 - [ ] Verify sitemap at `/sitemap.xml` includes all products and collections
 - [ ] Verify `/robots.txt` disallows `/account/` and `/api/`
-  
