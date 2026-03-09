@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="-mt-[340px] w-full absolute bottom-0 z-10 backdrop-blur-md border-t py-8">
+    <footer className="-mt-[340px] w-full absolute bottom-0 z-10 backdrop-blur-xl border-t py-8">
       {/* Main footer content */}
       <div className="container-wide">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -162,15 +162,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Bottom bar */}
-      {/* <div>
-        <div className="container-wide py-4 flex flex-col md:flex-row items-center justify-between 
-        gap-4 text-xs text-ink/90">
-          <p>© {new Date().getFullYear()} Studiofile</p>
-          
-        </div>
-      </div> */}
     </footer>
   );
 }

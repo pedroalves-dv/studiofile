@@ -372,7 +372,7 @@ function ProcessSection() {
 // Bottom Hero
 function BottomHeroSection() {
   return (
-    <section className="relative w-full h-[400px]">
+    <section className="relative w-full h-[420px] flex justify-center items-center">
       <div
               className="h-full w-full bg-accent"
               style={{
