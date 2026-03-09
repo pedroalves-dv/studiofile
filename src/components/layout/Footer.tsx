@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { SimpleIcon } from '@/components/ui/SimpleIcon';
-import { siInstagram, siPinterest, siX, siTiktok } from 'simple-icons';
-import { useState } from 'react';
-import { ArrowButton } from '../ui/ArrowButton';
+import Link from "next/link";
+import { SimpleIcon } from "@/components/ui/SimpleIcon";
+import { siInstagram, siPinterest, siX, siTiktok } from "simple-icons";
+import { useState } from "react";
+import { ArrowButton } from "../ui/ArrowButton";
 
 const FOOTER_LINKS = [
-  { label: 'Shop', href: '/shop' },
-  { label: 'Collections', href: '/collections' },
-  { label: 'About', href: '/about' },
-  { label: 'Process', href: '/about#process' },
-  { label: 'Contact', href: '/contact' },
+  { label: "Shop", href: "/shop" },
+  { label: "Collections", href: "/collections" },
+  { label: "About", href: "/about" },
+  { label: "Process", href: "/about#process" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const CONDITIONS_POLICIES_LINKS = [
-  { label: 'Terms of Service', href: '/policies/terms-of-service' },
-  { label: 'Privacy Policy', href: '/policies/privacy-policy' },
-  { label: 'Refund Policy', href: '/policies/refund-policy' },
+  { label: "Terms of Service", href: "/policies/terms-of-service" },
+  { label: "Privacy Policy", href: "/policies/privacy-policy" },
+  { label: "Refund Policy", href: "/policies/refund-policy" },
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement newsletter subscription
-    setEmail('');
+    setEmail("");
   };
 
   return (
@@ -39,20 +39,18 @@ export function Footer() {
             <div
               className="h-6 w-[170px] bg-ink"
               style={{
-                maskImage: 'url(/images/logo/logo-270-45.svg)',
-                maskSize: 'contain',
-                maskRepeat: 'no-repeat',
+                maskImage: "url(/images/logo/logo-270-45.svg)",
+                maskSize: "contain",
+                maskRepeat: "no-repeat",
               }}
             />
             <div className="text-xs text-ink flex flex-col justify-end">
-            <p>© {new Date().getFullYear()} Studiofile</p>
-          
+              <p>© {new Date().getFullYear()} Studiofile</p>
             </div>
           </div>
           {/* Column 2: Links */}
           <div className="space-y-4 text-light">
-            <h3 className="text-xs tracking-normal font-mono">
-            Navigation</h3>
+            <h3 className="text-xs tracking-normal font-mono">Navigation</h3>
             <nav className="space-y-2 flex flex-col pb-2">
               {FOOTER_LINKS.map((link) => (
                 <Link
@@ -64,9 +62,10 @@ export function Footer() {
                 </Link>
               ))}
             </nav>
-          
+
             <h3 className="text-xs tracking-normal font-mono">
-            Conditions & Policies</h3>
+              Conditions & Policies
+            </h3>
             <nav className="space-y-2 flex flex-col">
               {CONDITIONS_POLICIES_LINKS.map((link) => (
                 <Link
@@ -79,7 +78,6 @@ export function Footer() {
               ))}
             </nav>
           </div>
-          
 
           {/* Column 3: Social + Newsletter */}
           <div className="space-y-6">
@@ -91,8 +89,8 @@ export function Footer() {
                   className="transition-colors"
                   aria-label="Instagram"
                 >
-                  <SimpleIcon 
-                    icon={siInstagram} 
+                  <SimpleIcon
+                    icon={siInstagram}
                     size={18}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Instagram"
@@ -103,8 +101,8 @@ export function Footer() {
                   className="transition-colors"
                   aria-label="Pinterest"
                 >
-                  <SimpleIcon 
-                    icon={siX} 
+                  <SimpleIcon
+                    icon={siX}
                     size={18}
                     className="fill-ink hover:fill-light  transition-colors"
                     ariaLabel="Xt"
@@ -115,8 +113,8 @@ export function Footer() {
                   className="transition-colors"
                   aria-label="Pinterest"
                 >
-                  <SimpleIcon 
-                    icon={siTiktok} 
+                  <SimpleIcon
+                    icon={siTiktok}
                     size={18}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="TikTok"
@@ -127,8 +125,8 @@ export function Footer() {
                   className="transition-colors"
                   aria-label="Pinterest"
                 >
-                  <SimpleIcon 
-                    icon={siPinterest} 
+                  <SimpleIcon
+                    icon={siPinterest}
                     size={18}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Pinterest"
@@ -140,7 +138,8 @@ export function Footer() {
             {/* Newsletter */}
             <div className="space-y-4 pt-4">
               <h3 className="text-xs tracking-normal font-mono text-ink">
-                Get updates on new releases, early-bird notifications, and special offers.
+                Get updates on new releases, early-bird notifications, and
+                special offers.
               </h3>
               <form onSubmit={handleNewsletterSubmit} className="space-y-2">
                 <input
@@ -149,13 +148,13 @@ export function Footer() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-canvas border rounded-md border-canvas-50 text-ink placeholder-ink/50 text-sm focus:outline-none focus:border-accent transition-colors"
+                  className="w-full px-3 py-2 bg-canvas border rounded-xl border-stroke text-ink placeholder-light text-sm focus:outline-none focus:border-muted transition-colors"
                   required
                 />
                 <ArrowButton
                   label="Subscribe"
                   type="submit"
-                  className="w-full px-3 py-2 bg-ink text-canvas text-xs tracking-display font-mono rounded-md"
+                  className="w-full px-3 py-2.5 bg-ink text-canvas text-xs tracking-display font-mono rounded-xl"
                 />
               </form>
             </div>

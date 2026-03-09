@@ -8,13 +8,14 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import { useCart } from '@/hooks/useCart';
 import { useWishlist } from '@/hooks/useWishlist';
 import { SearchBar } from '@/components/search/SearchBar';
+import { ArrowButton } from '@/components/ui/ArrowButton';
 import { SparklesIcon, type SparklesIconHandle } from '@/components/ui/SparklesIcon';
 import { MagnifyingGlassIcon, type  MagnifyingGlassIconHandle } from "@/components/ui/MagnifyingGlassIcon";
 import { ShoppingBagIcon, type ShoppingBagIconHandle } from "@/components/ui/ShoppingBagIcon";
 
 const NAV_LINKS = [
   { label: 'Shop', href: '/shop' },
-  { label: 'Collections', href: '/collections' },
+  // { label: 'Collections', href: '/collections' },
   { label: 'About', href: '/about' },
   { label: 'Process', href: '/about#process' },
   { label: 'Contact', href: '/contact' },
@@ -127,25 +128,23 @@ useEffect(() => {
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+            <nav className="hidden md:flex items-center gap-16" aria-label="Main navigation">
               {NAV_LINKS.map((link) => (
-                <Link
+                <ArrowButton
                   key={link.href}
                   href={link.href}
-                  className="text-xs tracking-wider text-ink hover:text-accent transition-colors relative group"
-                >
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-accent group-hover:w-full transition-all duration-300" />
-                </Link>
+                  label={link.label}
+                  className="text-xs tracking-normal text-ink "
+                />
               ))}
             </nav>
 
             {/* Right icons */}
-            <div className="flex items-center gap-4 md:gap-5">
+            <div className="flex items-center gap-4 md:gap-6">
               {/* Search toggle */}
               <button
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className="p-2 hover:text-accent transition-colors"
+                className="p-2"
                 aria-label="Open search"
                 aria-expanded={isSearchOpen}
                 onMouseEnter={() => searchIconRef.current?.startAnimation()}
@@ -158,7 +157,7 @@ useEffect(() => {
               <button
                 ref={wishlistIconRef}
                 onClick={openWishlist}
-                className="hidden sm:flex p-2 hover:text-accent transition-colors relative"
+                className="hidden sm:flex p-2  relative"
                 aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ''}`}
                 onMouseEnter={() => sparklesRef.current?.startAnimation()}
                 onMouseLeave={() => sparklesRef.current?.stopAnimation()}
@@ -175,7 +174,7 @@ useEffect(() => {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-2 hover:text-accent transition-colors relative"
+                className="p-2 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ''}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
@@ -216,14 +215,13 @@ useEffect(() => {
               </div>
 
               {NAV_LINKS.map((link) => (
-                <Link
+                <ArrowButton
                   key={link.href}
                   href={link.href}
-                  className="block text-sm uppercase tracking-wider text-ink hover:text-accent transition-colors py-3 border-b border-border/50"
+                  label={link.label}
                   onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
+                  className="block w-full text-sm uppercase tracking-wider text-ink hover:text-accent transition-colors py-3 border-b border-border/50"
+                />
               ))}
 
               <button
