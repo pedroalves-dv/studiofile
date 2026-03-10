@@ -154,6 +154,7 @@ export function Footer() {
                 <ArrowButton
                   label="Subscribe"
                   type="submit"
+                  glowColor="var(--color-black)"
                   className="w-full px-3 py-2.5 bg-ink text-canvas text-xs tracking-display font-mono rounded-xl"
                 />
               </form>

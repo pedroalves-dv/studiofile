@@ -22,11 +22,12 @@ type AsLink = ArrowButtonBase & {
 
 type ArrowButtonProps = AsButton | AsLink;
 
-export function ArrowButton({ label, onClick, className, glowColor = '#000000', ...rest }: ArrowButtonProps) {
+export function ArrowButton({ label, onClick, className, glowColor, ...rest }: ArrowButtonProps) {
   
   const inner = (
     <span className="relative inline-flex items-center hover:">
-      <span className="absolute -left-5 opacity-0 -translate-x-3 transition-all duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3">
+      <span className="absolute -left-5 opacity-0 -translate-x-3 transition-all duration-400 
+      ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3">
         →
       </span>
       <span className="transition-transform duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-x-2">
