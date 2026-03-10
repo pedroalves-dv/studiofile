@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { HeroContent } from "@/components/home/HeroContent";
 import { getProducts } from "@/lib/shopify/products";
 import { getCollections } from "@/lib/shopify/collections";
+import BrandStory from "@/components/home/BrandStory";
 
 export const metadata: Metadata = {
   title: "3d printing & design studio",
@@ -82,14 +83,15 @@ async function Hero() {
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
-      <section className="relative h-screen flex items-center overflow-hidden">
+      <section className="relative w-full h-screen flex items-center overflow-hidden px-4">
         {/* Left content — client component owns heading animation */}
-        <div className="flex-1 px-6 md:px-12 py-20 flex flex-col justify-center">
+        <div className="flex flex-col h-full z-10 md:w-3/4 lg:w-2/3 flex-1 
+          items-center">
           <HeroContent />
         </div>
 
         {/* Right image */}
-        <div className="flex-1 relative h-full bg-stone-100 hidden md:block">
+        <div className="absolute flex-1 hidden md:block border border-purple-500">
           {heroImage && (
             <Image
               src={heroImage}
@@ -122,7 +124,7 @@ async function FeaturedProductsSection() {
     }
 
     return (
-      <section className="section-padding border-b border-stroke">
+      <section className="border-b border-stroke">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
             <h2 className="font-display text-4xl md:text-5xl text-ink">
@@ -171,53 +173,6 @@ async function FeaturedProductsSection() {
     console.error("Error fetching featured products:", error);
     return null;
   }
-}
-
-// Brand Story Section
-function BrandStory() {
-  return (
-    <section className="section-padding border-b border-stroke">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-        {/* Left: Large accent shape */}
-        <div className="flex items-center justify-center md:justify-start h-96">
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div className="absolute inset-0 border border-stroke" />
-            <div className="text-[150px] md:text-[200px] font-display text-stone-200 leading-none">
-              &
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Story text */}
-        <div className="flex flex-col justify-center gap-8">
-          <div>
-            <h2 className="font-display uppercase text-4xl md:text-7xl text-ink mb-6">
-              About the Studio
-            </h2>
-            <p className="font-serif text-4xl text-ink leading-none mb-5">
-              Studiofile is a design studio founded in Paris, specializing in
-              modular furniture and functional home decor created through
-              precision 3D printing. Our objects blend architectural thinking
-              with craft sensibility, resulting in pieces that are both
-              conceptually rigorous and tactilely rewarding.
-            </p>
-            <p className="font-serif text-4xl text-light leading-none">
-              Each piece is made to order, ensuring minimal waste and maximum
-              customization. We work with premium materials to create objects
-              that transcend trends—pieces designed to be lived with, repaired,
-              and loved for years to come.
-            </p>
-          </div>
-          <Link
-            href="/about"
-            className="text-sm font-mono uppercase tracking-wider hover:underline w-fit"
-          >
-            Read Our Story →
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
 }
 
 // Collections Section
@@ -306,8 +261,8 @@ function ProcessSection() {
   ];
 
   return (
-    <section className="pb-60">
-      <div className="max-w-full mx-auto">
+    <section className="relative flex flex-col w-full h-screen flex items-center overflow-hidden">
+      <div className="flex-1 h-full w-full border border-purple-500">
         {/* <h2 className="font-display text-4xl md:text-5xl text-ink mb-16 text-center">How It Works</h2> */}
 
         <div className="grid grid-cols-1 md:grid-cols-1">
@@ -359,12 +314,6 @@ export default async function HomePage() {
         <Hero />
       </Suspense>
 
-      {/* Marquee */}
-      {/* <Marquee
-  text='3D-PRINTED  ·  MADE TO ORDER  ·  DESIGNED IN PARIS  ·  MODULAR OBJECTS'
-  className="border-y border-stroke py-4"
-/> */}
-
       {/* Featured Products */}
       <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProductsSection />
@@ -374,9 +323,9 @@ export default async function HomePage() {
       <BrandStory />
 
       {/* Collections */}
-      <Suspense fallback={<CollectionsSkeleton />}>
+      {/* <Suspense fallback={<CollectionsSkeleton />}>
         <CollectionsSection />
-      </Suspense>
+      </Suspense> */}
 
       {/* Process */}
       <ProcessSection />

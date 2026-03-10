@@ -243,7 +243,7 @@ useEffect(() => {
       </header>
 
       {/* Spacer */}
-      <div className="h-16 md:h-20" aria-hidden="true" />
+      <div className="h-16 md:h-16" aria-hidden="true" />
     </>
   );
 }

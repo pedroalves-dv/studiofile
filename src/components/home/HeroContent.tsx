@@ -1,26 +1,36 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 export function HeroContent() {
   return (
-    <div className="max-w-2xl">
-      <h1 className="font-display uppercase text-6xl md:text-7xl leading-none text-ink mb-6">
-        Objects made to last.
-      </h1>
-      <p className="font-serif text-4xl text-muted mb-8 max-w-md">
-        Modular, functional home decor and furniture crafted through the magic of 3D printing.
-        Designed in Paris, made to order.
-      </p>
-      <div className="flex gap-4 flex-wrap">
-        <Link href="/shop">
-          <Button variant="primary">Shop All</Button>
-        </Link>
-        <Link href="/collections">
-          <Button variant="ghost">View Collections</Button>
-        </Link>
+    <div className="flex flex-col">
+      <div className="flex flex-col">
+        <h1
+          className="font-display text-6xl sm:text-8xl leading-none 
+          text-ink tracking-tight mt-20 "
+        >
+          TOTEM <span className="inline-block align-top font-mono text-xl 
+          sm:text-2xl mt-1 -ml-2 sm:-ml-3 sm:mt-2">©</span>
+        </h1>
+
+        <ArrowButton
+          href="/shop"
+          label="Shop"
+          glowColor="var(--color-black)"
+          className="mt-12 sm:ml-[22rem] h-12 w-24 px-8 py-3 bg-ink text-canvas text-xs 
+          tracking-display font-mono rounded-xl flex items-center 
+          justify-center self-start"
+        />
       </div>
+      
+      <p className=" mt-36 font-serif text-5xl sm:text-6xl text-light text-right md:w-3/4 
+      lg:w-2/3 self-end tracking-(space-xsm)"
+      >
+        Introducting<span className="inline-block italic text-ink px-3"> TOTEM</span>, a fully modular lamp
+        that adapts to you.
+      </p>
+      
     </div>
   );
 }

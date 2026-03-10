@@ -28,7 +28,7 @@ export function Button({
     'relative inline-flex items-center justify-center font-mono text-sm uppercase letter-spacing-display transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'bg-ink text-canvas hover:opacity-90',
+    primary: 'bg-ink text-canvas rounded-lg',
     secondary: 'border border-ink text-ink hover:bg-ink hover:text-canvas',
     ghost: 'text-ink hover:bg-stone-50',
     link: 'text-ink underline hover:text-accent',

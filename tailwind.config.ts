@@ -8,6 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        black: 'var(--color-black)',
         ink: 'var(--color-ink)',
         canvas: 'var(--color-canvas)',
         accent: 'var(--color-accent)',
@@ -22,6 +23,7 @@ const config: Config = {
         body: ['var(--font-body)', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
         serif: ['var(--font-serif)', 'serif'],
+        logoserif: ['var(--font-logoserif)', 'serif'],
       },
       borderRadius: {
         DEFAULT: '0px',
