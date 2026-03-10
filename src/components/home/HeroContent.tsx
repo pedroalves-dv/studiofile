@@ -20,7 +20,7 @@ export function HeroContent() {
         </h1> */}
 
         <h1 className="mt-20 flex flex-col items-center leading-none text-ink 
-        text-8xl sm:text-10xl font-display border border-green-500 w-fit 
+        text-9xl sm:text-10xl font-display w-fit 
         -space-y-4 sm:-space-y-6 mx-auto">
           <span>T</span>
           <span>O</span>
@@ -40,7 +40,7 @@ export function HeroContent() {
       </div>
 
       <p
-        className="mt-36 font-serif text-5xl sm:text-6xl text-light text-right md:w-3/4 
+        className="mt-44 font-serif text-5xl sm:text-6xl text-light text-right md:w-3/4 
       lg:w-2/3 self-end tracking-(space-xsm)"
       >
         Introducting

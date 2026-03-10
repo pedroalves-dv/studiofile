@@ -17,7 +17,7 @@ export default function BrandStory() {
   }, []);
 
   return (
-    <section className="relative flex items-center overflow-hidden h-screen border border-red-500" onMouseMove={handleMouseMove}>
+    <section className="relative flex items-center min-h-screen border border-red-500 mt-60" onMouseMove={handleMouseMove}>
 
       {/* Cursor-following hover image — behind text */}
       <div

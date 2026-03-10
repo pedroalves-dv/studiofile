@@ -83,7 +83,7 @@ async function Hero() {
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
-      <section className="relative w-full h-screen flex items-center overflow-hidden px-4">
+      <section className="relative w-full min-h-screen flex items-center px-4">
         {/* Left content — client component owns heading animation */}
         <div className="flex flex-col h-full z-10 md:w-3/4 lg:w-2/3 flex-1 
           items-center">
@@ -261,8 +261,8 @@ function ProcessSection() {
   ];
 
   return (
-    <section className="relative flex flex-col w-full h-screen flex items-center overflow-hidden">
-      <div className="flex-1 h-full w-full border border-purple-500">
+    <section className="relative flex flex-col w-full min-h-screen items-center border border-green-500 mt-60">
+      <div className="flex-1 min-h-full w-full border border-purple-500">
         {/* <h2 className="font-display text-4xl md:text-5xl text-ink mb-16 text-center">How It Works</h2> */}
 
         <div className="grid grid-cols-1 md:grid-cols-1">
@@ -292,13 +292,16 @@ function ProcessSection() {
 // Bottom Hero
 function BottomHeroSection() {
   return (
-    <section className="relative w-full h-[420px] flex justify-center items-center">
+    <section className="w-full h-full flex justify-center 
+    items-center mt-60 border border-yellow-500">
       <div
-              className="h-full w-full bg-accent"
+              className="w-96 bg-accent"
               style={{
-                maskImage: 'url(/images/logo/logo-thin.svg)',
-                maskSize: 'contain',
-                maskRepeat: 'no-repeat',
+                aspectRatio: "43.710445 / 237.04541",
+                maskImage: "url(/images/logo/logo-large-vertical.svg)",
+                maskSize: "contain",
+                maskRepeat: "no-repeat",
+                maskPosition: "center left",
               }}
             />
       {/* <div className="bg-accent h-[300px] w-full -mt-12"></div> */}

@@ -117,11 +117,13 @@ useEffect(() => {
             >
               <span className="group cursor-pointer">
               <div
-                className="h-4 w-[170px] bg-ink hover:bg-accent transition-colors"
+                className="h-5 bg-ink hover:bg-accent transition-colors"
                 style={{
-                  maskImage: 'url(/images/logo/logo-270-45.svg)',
-                  maskSize: 'contain',
-                  maskRepeat: 'no-repeat',
+                  aspectRatio: "22.203955 / 4.0943561",
+                  maskImage: "url(/images/logo/logo-small.svg)",
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center left",
                 }}
               />
               </span>
