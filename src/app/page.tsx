@@ -52,9 +52,7 @@ function FeaturedProductsSkeleton() {
           }).map((_, i) => (
             <div
               key={i}
-              className={
-                i === 3 ? "md:col-span-1 md:row-span-2" : ""
-              }
+              className={i === 3 ? "md:col-span-1 md:row-span-2" : ""}
             >
               <Skeleton className="w-full h-full" />
             </div>
@@ -91,8 +89,7 @@ async function Hero() {
       first: 1,
       sortKey: "BEST_SELLING",
     });
-    const featuredProduct =
-      productsResult?.edges?.[0]?.node;
+    const featuredProduct = productsResult?.edges?.[0]?.node;
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
@@ -110,9 +107,7 @@ async function Hero() {
           {heroImage && (
             <Image
               src={heroImage}
-              alt={
-                featuredProduct?.title || "Featured Product"
-              }
+              alt={featuredProduct?.title || "Featured Product"}
               fill
               className="object-cover"
               priority
@@ -134,8 +129,7 @@ async function FeaturedProductsSection() {
       first: 4,
       sortKey: "BEST_SELLING",
     });
-    const products =
-      productsResult?.edges?.map((edge) => edge.node) || [];
+    const products = productsResult?.edges?.map((edge) => edge.node) || [];
 
     if (!products || products.length === 0) {
       return null;
@@ -162,9 +156,7 @@ async function FeaturedProductsSection() {
                 key={product.id}
                 href={`/products/${product.handle}`}
                 className={`group relative overflow-hidden ${
-                  i === 3
-                    ? "md:col-span-1 md:row-span-2"
-                    : ""
+                  i === 3 ? "md:col-span-1 md:row-span-2" : ""
                 }`}
               >
                 {product.images?.[0]?.url && (
@@ -180,11 +172,7 @@ async function FeaturedProductsSection() {
                     {product.title}
                   </h3>
                   <p className="text-sm text-canvas/80">
-                    $
-                    {
-                      product.priceRange.minVariantPrice
-                        .amount
-                    }
+                    ${product.priceRange.minVariantPrice.amount}
                   </p>
                 </div>
               </Link>
@@ -194,10 +182,7 @@ async function FeaturedProductsSection() {
       </section>
     );
   } catch (error) {
-    console.error(
-      "Error fetching featured products:",
-      error,
-    );
+    console.error("Error fetching featured products:", error);
     return null;
   }
 }
@@ -301,22 +286,18 @@ function ProcessSection() {
 
   return (
     <section className="relative flex flex-col w-full items-center mt-60 border-t border-stroke">
-      <AccordionRoot
-        type="single"
-        collapsible
-        className="w-full"
-      >
+      <AccordionRoot type="single" collapsible className="w-full">
         {steps.map((step, i) => (
           <AccordionItem
             key={i}
             value={`step-${i}`}
-            className="border-b border-stroke "
+            className="border-b border-stroke"
           >
-            <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-4 pt-4">
+            <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-[3fr_1fr] px-4 pt-4">
               {/* <div className="flex justify-end font-mono text-6xl font-bold text-ink tracking-tight">
                 {step.number}
               </div> */}
-              <div className="flex flex-col text-left">
+              <div className="flex flex-col text-left sm:px-44">
                 <p className="font-serif italic text-3xl text-ink">
                   {step.title}
                 </p>
@@ -326,9 +307,7 @@ function ProcessSection() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-2">
-              <p className="font-serif text-xl text-light p-2">
-                {step.detail}
-              </p>
+              <p className="font-serif text-xl text-light p-2">{step.detail}</p>
             </AccordionContent>
           </AccordionItem>
         ))}
@@ -348,8 +327,7 @@ function BottomHeroSection() {
         className="w-96 bg-accent"
         style={{
           aspectRatio: "43.710445 / 237.04541",
-          maskImage:
-            "url(/images/logo/logo-large-vertical.svg)",
+          maskImage: "url(/images/logo/logo-large-vertical.svg)",
           maskSize: "contain",
           maskRepeat: "no-repeat",
           maskPosition: "center left",
