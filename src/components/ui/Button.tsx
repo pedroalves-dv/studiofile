@@ -13,7 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export function Button({
   variant = 'primary',
-  size = 'md',
+  size = 'lg',
   isLoading = false,
   disabled = false,
   fullWidth = false,
@@ -25,10 +25,10 @@ export function Button({
   const Comp = asChild ? Slot : 'button';
 
   const baseStyles =
-    'relative inline-flex items-center justify-center font-mono text-sm uppercase letter-spacing-display transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed';
+    'relative inline-flex items-center justify-center font-mono text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'bg-ink text-canvas rounded-lg',
+    primary: 'bg-ink text-white rounded-lg',
     secondary: 'border border-ink text-ink hover:bg-ink hover:text-canvas',
     ghost: 'text-ink hover:bg-stone-50',
     link: 'text-ink underline hover:text-accent',

@@ -17,11 +17,11 @@ export function CartDrawer() {
     <Dialog open={isOpen} onOpenChange={() => closeCart()}>
       <div
         className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col bg-canvas shadow-2xl"
-        style={{ animation: 'slideInRight 350ms ease-out' }}
+        style={{ animation: 'slideInRight 150ms ease-in-out' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-label">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stroke">
+          <h2 className="text-ink font-display uppercase tracking-tight text-2xl">
             Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ''}
           </h2>
           <button onClick={closeCart} aria-label="Close cart">
@@ -43,7 +43,7 @@ export function CartDrawer() {
 
         {/* Footer — sticky */}
         {cart && cart.lines.length > 0 && (
-          <div className="border-t border-border px-6 py-4 flex flex-col gap-4">
+          <div className="border-t border-stroke px-6 py-4 flex flex-col gap-4">
             <DiscountInput />
             <CartNote />
             <CartSummary cart={cart} />

@@ -9,11 +9,11 @@ export function EmptyCart() {
   const { closeCart } = useCart();
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-6 text-center py-12">
-      <ShoppingBag size={48} className="text-muted opacity-40" />
-      <div>
-        <p className="font-display text-xl">Your cart is empty.</p>
-        <p className="text-label text-muted mt-1">Add something beautiful.</p>
+    <div className="flex flex-col items-center justify-center h-full gap-6 text-center pb-24">
+      <ShoppingBag size={48} className="text-light" />
+      <div className='py-4'>
+        <p className="font-display uppercase tracking-[-1px] text-6xl">Your cart is empty.</p>
+        <p className="font-mono text-light mt-4">Add something beautiful.</p>
       </div>
       <Button onClick={closeCart} asChild>
         <Link href="/shop">Start Shopping</Link>

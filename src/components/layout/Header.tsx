@@ -159,7 +159,7 @@ export function Header() {
               {/* Search toggle */}
               <button
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className="p-2"
+                className="hidden md:flex p-2"
                 aria-label="Open search"
                 aria-expanded={isSearchOpen}
                 onMouseEnter={() => searchIconRef.current?.startAnimation()}
@@ -220,10 +220,10 @@ export function Header() {
         </div>
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden" aria-label="Mobile navigation">
-            <div className="px-4 py-8 space-y-3">
+          <nav className="md:hidden bg-canvas" aria-label="Mobile navigation">
+            <div className="pt-8 space-y-0">
               {/* Mobile search */}
-              <div className="pb-4 mb-2">
+              <div className="px-4 pb-4">
                 <SearchBar
                   onClose={() => setIsMobileMenuOpen(false)}
                   hideBorder
@@ -238,10 +238,10 @@ export function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="
                   block w-full 
-                  text-center py-4
-                  text-md tracking-normal text-ink 
-                  bg-canvas rounded-2xl
-                  border border-ink 
+                  text-center py-6
+                  text-4xl tracking-normal text-ink 
+                  font-display uppercase tracking-[-2px]
+                  border-b border-ink
                   active:bg-accent active:text-canvas"
                 >
                   {link.label}
@@ -251,10 +251,10 @@ export function Header() {
               <button
                 className="
                   gap-2 w-full 
-                  text-center py-4
-                  text-md tracking-normal text-ink 
-                  bg-canvas rounded-2xl
-                  border border-ink
+                  text-center py-6
+                  text-4xl tracking-normal text-ink 
+                  font-display uppercase tracking-[-2px]
+                  border-b border-ink
                   active:bg-accent active:text-canvas"
                 onClick={() => {
                   setIsMobileMenuOpen(false);

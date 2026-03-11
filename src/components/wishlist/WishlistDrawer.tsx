@@ -62,7 +62,7 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <Link href={`/products/${product.handle}`} onClick={onClose}>
-          <p className="font-display text-sm leading-tight hover:text-muted transition-colors truncate">
+          <p className="font-display uppercase text-sm leading-tight hover:text-muted transition-colors truncate">
             {product.title}
           </p>
         </Link>
@@ -112,7 +112,7 @@ export function WishlistDrawer() {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-label">Wishlist {items.length > 0 ? `(${items.length})` : ''}</h2>
+          <h2 className="font-display uppercase tracking-tight text-2xl">Wishlist {items.length > 0 ? `(${items.length})` : ''}</h2>
           <button onClick={closeDrawer} aria-label="Close wishlist">
             <X size={20} />
           </button>
@@ -123,9 +123,9 @@ export function WishlistDrawer() {
           {isLoading && <WishlistSkeleton />}
 
           {!isLoading && items.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 text-center py-12">
-              <Heart size={48} className="text-muted/40" />
-              <p className="font-display text-xl">Your wishlist is empty.</p>
+            <div className="flex flex-col items-center justify-center h-full gap-12 text-center pb-24">
+              <Heart size={48} className="text-light" />
+              <p className="font-display uppercase  tracking-[-1px] text-6xl">Your wishlist is empty.</p>
               <Button onClick={closeDrawer} asChild>
                 <Link href="/shop">Browse Products</Link>
               </Button>
