@@ -73,7 +73,7 @@ useEffect(() => {
       {/* Search overlay — full-screen */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[60] backdrop-blur-md flex flex-col">
-          <div className="container-wide pt-6">
+          <div className="p-6">
             <div className="flex items-center gap-4">
               <SearchBar
                 autoFocus
@@ -101,13 +101,13 @@ useEffect(() => {
       )}
 
       <header
-  className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+  className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
     isScrolling
       ? 'backdrop-blur-lg bg-canvas/80 border-b border-stroke'
       : 'bg-canvas border-b border-stroke'
   }`}
 >
-        <div className="container-wide">
+        <div className="px-6">
           <div className="flex items-center justify-between h-16 md:h-16">
             {/* Wordmark */}
             <Link
@@ -210,7 +210,7 @@ useEffect(() => {
             className="md:hidden border-t border-border bg-canvas"
             aria-label="Mobile navigation"
           >
-            <div className="container-wide py-4 space-y-1">
+            <div className="p-4 space-y-1">
               {/* Mobile search */}
               <div className="pb-4 border-b border-border mb-2">
                 <SearchBar onClose={() => setIsMobileMenuOpen(false)} />

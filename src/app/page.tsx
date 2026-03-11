@@ -7,6 +7,12 @@ import { HeroContent } from "@/components/home/HeroContent";
 import { getProducts } from "@/lib/shopify/products";
 import { getCollections } from "@/lib/shopify/collections";
 import BrandStory from "@/components/home/BrandStory";
+import {
+  AccordionRoot,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/Accordion";
 
 export const metadata: Metadata = {
   title: "3d printing & design studio",
@@ -83,10 +89,12 @@ async function Hero() {
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
-      <section className="relative w-full min-h-screen flex items-center px-4">
+      <section className="relative w-full min-h-dvh flex items-center px-4">
         {/* Left content — client component owns heading animation */}
-        <div className="flex flex-col h-full z-10 md:w-3/4 lg:w-2/3 flex-1 
-          items-center">
+        <div
+          className="flex flex-col h-full z-10 md:w-3/4 lg:w-2/3 flex-1 
+          items-center"
+        >
           <HeroContent />
         </div>
 
@@ -211,10 +219,12 @@ async function CollectionsSection() {
                     src={collection.image.url}
                     alt={collection.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover group-hover:scale-105 transition-transform 
+                    duration-500"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent flex flex-col justify-end p-6">
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 
+                to-transparent flex flex-col justify-end p-6">
                   <h3 className="font-display text-2xl text-canvas">
                     {collection.title}
                   </h3>
@@ -235,56 +245,55 @@ async function CollectionsSection() {
 function ProcessSection() {
   const steps = [
     {
-      number: "/01",
+      // number: "/01",
       title: "Designed In-Studio",
       description:
         "Each object is meticulously designed by our team, balancing form and function.",
+      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
-      number: "/02",
+      // number: "/02",
       title: "Printed to Order",
       description:
         "Made fresh using precision 3D printing, minimizing waste and maximizing quality.",
+      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
-      number: "/03",
+      // number: "/03",
       title: "Shipped to You",
       description:
         "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
+      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
-      number: "/04",
+      // number: "/04",
       title: "Upgrade / Repair / Replace",
       description:
         "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
+      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
   ];
 
   return (
-    <section className="relative flex flex-col w-full min-h-screen items-center border border-green-500 mt-60">
-      <div className="flex-1 min-h-full w-full border border-purple-500">
-        {/* <h2 className="font-display text-4xl md:text-5xl text-ink mb-16 text-center">How It Works</h2> */}
-
-        <div className="grid grid-cols-1 md:grid-cols-1">
-          {steps.map((step, i) => (
-            <div key={i} className="border-b border-stroke">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 container-wide py-4">
-                <div className="flex justify-end font-display text-6xl font-semibold text-ink">
-                  {step.number}
-                </div>
-                <div className="flex flex-col">
-                  <h3 className="font-serif italic text-3xl text-ink">
-                    {step.title}
-                  </h3>
-                  <p className="font-serif text-3xl text-light leading-none">
-                    {step.description}
-                  </p>
-                </div>
+    <section className="relative flex flex-col w-full items-center mt-60 border-t border-stroke">
+      <AccordionRoot type="single" collapsible className="w-full">
+        {steps.map((step, i) => (
+          <AccordionItem key={i} value={`step-${i}`} className="border-b border-stroke ">
+            <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-4 pt-4">
+              {/* <div className="flex justify-end font-mono text-6xl font-bold text-ink tracking-tight">
+                {step.number}
+              </div> */}
+              <div className="flex flex-col text-left">
+                <p className="font-serif italic text-3xl text-ink">{step.title}</p>
+                <p className="font-serif text-3xl text-light leading-none">{step.description}</p>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            </AccordionTrigger>
+            <AccordionContent className="p-2">
+              <p className="font-serif text-xl text-light p-2">{step.detail}</p>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </AccordionRoot>
     </section>
   );
 }
@@ -292,18 +301,20 @@ function ProcessSection() {
 // Bottom Hero
 function BottomHeroSection() {
   return (
-    <section className="w-full h-full flex justify-center 
-    items-center mt-60 border border-yellow-500">
+    <section
+      className="w-full h-full flex justify-center 
+    items-center mt-60 border border-yellow-500"
+    >
       <div
-              className="w-96 bg-accent"
-              style={{
-                aspectRatio: "43.710445 / 237.04541",
-                maskImage: "url(/images/logo/logo-large-vertical.svg)",
-                maskSize: "contain",
-                maskRepeat: "no-repeat",
-                maskPosition: "center left",
-              }}
-            />
+        className="w-96 bg-accent"
+        style={{
+          aspectRatio: "43.710445 / 237.04541",
+          maskImage: "url(/images/logo/logo-large-vertical.svg)",
+          maskSize: "contain",
+          maskRepeat: "no-repeat",
+          maskPosition: "center left",
+        }}
+      />
       {/* <div className="bg-accent h-[300px] w-full -mt-12"></div> */}
     </section>
   );
@@ -335,8 +346,6 @@ export default async function HomePage() {
 
       {/* Bottom Hero */}
       <BottomHeroSection />
-
-      
     </>
   );
 }
