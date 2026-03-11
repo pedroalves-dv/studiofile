@@ -1,7 +1,7 @@
 "use client";
 
 import * as Accordion from "@radix-ui/react-accordion";
-import { Plus, MoveDown, ArrowDown, ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const AccordionRoot = Accordion.Root;

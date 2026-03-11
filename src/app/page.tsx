@@ -151,7 +151,7 @@ async function FeaturedProductsSection() {
               <Link
                 key={product.id}
                 href={`/products/${product.handle}`}
-                className={`group relative overflow-hidden bg-stone-100 ${
+                className={`group relative overflow-hidden ${
                   i === 3 ? "md:col-span-1 md:row-span-2" : ""
                 }`}
               >

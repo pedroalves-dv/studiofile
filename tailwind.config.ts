@@ -14,7 +14,7 @@ const config: Config = {
       colors: {
         black: "var(--color-black)",
         ink: "var(--color-ink)",
-        canvas: "var(--color-canvas)",
+        canvas: "rgb(var(--color-canvas) / <alpha-value>)",
         accent: "var(--color-accent)",
         muted: "var(--color-muted)",
         stroke: "var(--color-stroke)",

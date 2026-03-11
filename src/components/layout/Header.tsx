@@ -1,27 +1,34 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
-import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from 'lucide-react';
-import { useScroll } from '@/hooks/useScroll';
-import { useScrollLock } from '@/hooks/useScrollLock';
-import { useCart } from '@/hooks/useCart';
-import { useWishlist } from '@/hooks/useWishlist';
-import { SearchBar } from '@/components/search/SearchBar';
-import { ArrowButton } from '@/components/ui/ArrowButton';
-import { SparklesIcon, type SparklesIconHandle } from '@/components/ui/SparklesIcon';
-import { MagnifyingGlassIcon, type  MagnifyingGlassIconHandle } from "@/components/ui/MagnifyingGlassIcon";
-import { ShoppingBagIcon, type ShoppingBagIconHandle } from "@/components/ui/ShoppingBagIcon";
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from "lucide-react";
+import { useScroll } from "@/hooks/useScroll";
+import { useScrollLock } from "@/hooks/useScrollLock";
+import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
+import { SearchBar } from "@/components/search/SearchBar";
+import { ArrowButton } from "@/components/ui/ArrowButton";
+import {
+  SparklesIcon,
+  type SparklesIconHandle,
+} from "@/components/ui/SparklesIcon";
+import {
+  MagnifyingGlassIcon,
+  type MagnifyingGlassIconHandle,
+} from "@/components/ui/MagnifyingGlassIcon";
+import {
+  ShoppingBagIcon,
+  type ShoppingBagIconHandle,
+} from "@/components/ui/ShoppingBagIcon";
 
 const NAV_LINKS = [
-  { label: 'Shop', href: '/shop' },
+  { label: "Shop", href: "/shop" },
   // { label: 'Collections', href: '/collections' },
-  { label: 'About', href: '/about' },
-  { label: 'Process', href: '/about#process' },
-  { label: 'Contact', href: '/contact' },
+  { label: "About", href: "/about" },
+  { label: "Process", href: "/about#process" },
+  { label: "Contact", href: "/contact" },
 ];
-
-
 
 export function Header() {
   const sparklesRef = useRef<SparklesIconHandle>(null);
@@ -31,27 +38,31 @@ export function Header() {
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-useEffect(() => {
-  const handleScroll = () => {
-    setIsScrolling(true);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
 
-    // Clear previous timeout and reset it
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      // Clear previous timeout and reset it
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
 
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 1000); // ms after last scroll event to consider scrolling "stopped"
-  };
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, 1000); // ms after last scroll event to consider scrolling "stopped"
+    };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-  };
-}, []);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
   const { isScrolled } = useScroll(60);
   const { totalQuantity: cartCount, openCart } = useCart();
-  const { wishlistIconRef, openDrawer: openWishlist, totalCount: wishlistCount } = useWishlist();
+  const {
+    wishlistIconRef,
+    openDrawer: openWishlist,
+    totalCount: wishlistCount,
+  } = useWishlist();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   useScrollLock(isSearchOpen);
@@ -59,13 +70,13 @@ useEffect(() => {
   // Close both overlays on Escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
         setIsSearchOpen(false);
       }
     };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
   return (
@@ -95,19 +106,18 @@ useEffect(() => {
       {/* Backdrop for mobile menu */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40 md:hidden"
+          className="fixed inset-0 backdrop-blur-xl z-40 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      <header
-  className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-    isScrolling
-      ? 'backdrop-blur-lg bg-canvas/80 border-b border-stroke'
-      : 'bg-canvas border-b border-stroke'
-  }`}
->
-        <div className="px-6">
+      <header className="fixed top-0 left-0 right-0 z-50">
+        {" "}
+        <div
+          className={`px-6 backdrop-blur-xl border-b border-stroke transition-colors duration-300 ${
+            isScrolling ? "bg-canvas/80" : "bg-canvas"
+          }`}
+        >
           <div className="flex items-center justify-between h-16 md:h-16">
             {/* Wordmark */}
             <Link
@@ -116,21 +126,24 @@ useEffect(() => {
               aria-label="Studiofile — Home"
             >
               <span className="group cursor-pointer">
-              <div
-                className="h-5 bg-ink hover:bg-accent transition-colors"
-                style={{
-                  aspectRatio: "22.203955 / 4.0943561",
-                  maskImage: "url(/images/logo/logo-small.svg)",
-                  maskSize: "contain",
-                  maskRepeat: "no-repeat",
-                  maskPosition: "center left",
-                }}
-              />
+                <div
+                  className="h-5 bg-ink hover:bg-accent transition-colors"
+                  style={{
+                    aspectRatio: "22.203955 / 4.0943561",
+                    maskImage: "url(/images/logo/logo-small.svg)",
+                    maskSize: "contain",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center left",
+                  }}
+                />
               </span>
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-16" aria-label="Main navigation">
+            <nav
+              className="hidden md:flex items-center gap-16"
+              aria-label="Main navigation"
+            >
               {NAV_LINKS.map((link) => (
                 <ArrowButton
                   key={link.href}
@@ -152,7 +165,11 @@ useEffect(() => {
                 onMouseEnter={() => searchIconRef.current?.startAnimation()}
                 onMouseLeave={() => searchIconRef.current?.stopAnimation()}
               >
-                {isSearchOpen ? <X size={20} /> : <MagnifyingGlassIcon ref={searchIconRef} />}
+                {isSearchOpen ? (
+                  <X size={2} />
+                ) : (
+                  <MagnifyingGlassIcon ref={searchIconRef} />
+                )}
               </button>
 
               {/* Wishlist (desktop) */}
@@ -160,7 +177,7 @@ useEffect(() => {
                 ref={wishlistIconRef}
                 onClick={openWishlist}
                 className="hidden sm:flex p-2  relative"
-                aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ''}`}
+                aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`}
                 onMouseEnter={() => sparklesRef.current?.startAnimation()}
                 onMouseLeave={() => sparklesRef.current?.stopAnimation()}
               >
@@ -177,12 +194,11 @@ useEffect(() => {
                 ref={buttonRef}
                 onClick={openCart}
                 className="p-2 relative"
-                aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ''}`}
+                aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
               >
-                
-                <ShoppingBagIcon ref={cartIconRef}/>
+                <ShoppingBagIcon ref={cartIconRef} />
                 {cartCount > 0 && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-canvas text-xs flex items-center justify-center rounded-full font-mono leading-none">
                     {cartCount}
@@ -194,44 +210,59 @@ useEffect(() => {
               <button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
                 className="md:hidden p-2 hover:text-accent transition-colors"
-                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
           </div>
-
         </div>
-
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <nav
-            className="md:hidden border-t border-border bg-canvas"
-            aria-label="Mobile navigation"
-          >
-            <div className="p-4 space-y-1">
+          <nav className="md:hidden" aria-label="Mobile navigation">
+            <div className="px-4 py-8 space-y-3">
               {/* Mobile search */}
-              <div className="pb-4 border-b border-border mb-2">
-                <SearchBar onClose={() => setIsMobileMenuOpen(false)} />
+              <div className="pb-4 mb-2">
+                <SearchBar
+                  onClose={() => setIsMobileMenuOpen(false)}
+                  hideBorder
+                  className="bg-white rounded-2xl border border-ink px-2"
+                />
               </div>
 
               {NAV_LINKS.map((link) => (
-                <ArrowButton
+                <Link
                   key={link.href}
                   href={link.href}
-                  label={link.label}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full text-sm uppercase tracking-wider text-ink hover:text-accent transition-colors py-3 border-b border-border/50"
-                />
+                  className="
+                  block w-full 
+                  text-center py-4
+                  text-md tracking-normal text-ink 
+                  bg-canvas rounded-2xl
+                  border border-ink 
+                  active:bg-accent active:text-canvas"
+                >
+                  {link.label}
+                </Link>
               ))}
 
               <button
-                className="flex items-center gap-2 text-sm uppercase tracking-wider text-ink hover:text-accent transition-colors py-3 w-full"
-                onClick={() => { setIsMobileMenuOpen(false); openWishlist() }}
+                className="
+                  gap-2 w-full 
+                  text-center py-4
+                  text-md tracking-normal text-ink 
+                  bg-canvas rounded-2xl
+                  border border-ink
+                  active:bg-accent active:text-canvas"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  openWishlist();
+                }}
                 aria-label="Open wishlist"
               >
-                <Heart size={18} />
+                {/* <Heart size={18} /> */}
                 Wishlist
                 {wishlistCount > 0 && (
                   <span className="ml-auto font-mono text-xs bg-accent text-canvas px-2 py-0.5">

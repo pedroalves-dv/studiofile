@@ -12,9 +12,10 @@ interface SearchBarProps {
   autoFocus?: boolean;
   placeholder?: string;
   className?: string;
+  hideBorder?: boolean;
 }
 
-export function SearchBar({ onClose, autoFocus = false, placeholder = 'Search products…', className }: SearchBarProps) {
+export function SearchBar({ onClose, autoFocus = false, placeholder = 'Search products…', className, hideBorder }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<ShopifyPredictiveSearchResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -119,7 +120,10 @@ export function SearchBar({ onClose, autoFocus = false, placeholder = 'Search pr
 
   return (
     <div ref={containerRef} className={cn('relative w-full', className)}>
-      <div className="px-2 h-10 flex items-center gap-2 border rounded-md  focus-within:border-accent transition-colors">
+      <div className={cn(
+        "px-2 h-10 flex items-center gap-2 transition-colors",
+        !hideBorder && "border rounded-md focus-within:border-accent"
+      )}>
         <Search size={18} className="flex-shrink-0 text-muted" aria-hidden="true" />
         <input
           ref={inputRef}
