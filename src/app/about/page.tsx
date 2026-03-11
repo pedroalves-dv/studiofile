@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { ArrowButton } from '@/components/ui/ArrowButton';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -58,34 +59,28 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" className='section-padding-bottom'>
       {/* ─── Hero ─── */}
-      <section className="relative h-[70vh] min-h-[480px] flex items-end bg-stone-900 overflow-hidden">
-        {/* Background placeholder — replace with <Image> once real photo is available */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-stone-800 via-stone-700 to-stone-900"
-          aria-hidden="true"
-        >
-          {/* Grain overlay */}
-          <div className="absolute inset-0 opacity-30 mix-blend-overlay grain" />
-        </div>
-
-        <div className="relative container-wide pb-16 md:pb-24">
-          <p className="text-label text-canvas/60 mb-4">Studiofile</p>
-          <h1 className="font-display text-[clamp(3rem,8vw,7rem)] leading-none tracking-tight text-canvas">
-            Design that<br />lasts.
-          </h1>
-        </div>
-      </section>
-
+      <div className="container-wide">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
+                {/* Left — info */}
+                <div className="space-y-8 md:sticky md:top-24">
+                  <div>
+                    <p className="text-label text-muted mb-4">About us</p>
+                    <h1 className="font-display text-5xl md:text-6xl leading-tight tracking-tight pb-8">
+                      Made to last.
+                    </h1>
+                  </div>
+              </div>
+            </div>
+      </div>
       {/* ─── Studio Story ─── */}
-      <section className="section-padding border-b border-border">
+      <section className="border-b border-stroke pb-8">
         <div className="container-wide">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Left — long-form text */}
             <div className="space-y-6">
-              <p className="text-label text-muted mb-8">Our story</p>
-              <p className="text-lg text-ink/80 leading-relaxed">
+              <p className="text-base text-ink leading-relaxed">
                 Studiofile began with a simple frustration: the objects we wanted for our homes
                 didn&apos;t exist. Too much furniture was made to be disposable, too little was
                 made to be beautiful and functional at the same time.
@@ -123,15 +118,15 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Process ─── */}
-      <section className="section-padding border-b border-border">
+      <section className="border-b border-stroke pt-12 pb-8">
         <div className="container-wide">
           <p className="text-label text-muted mb-12">How it works</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {PROCESS_STEPS.map((step) => (
               <div key={step.number} className="space-y-4">
                 <span className="font-mono text-4xl text-border">{step.number}</span>
-                <h3 className="font-display text-2xl leading-tight">{step.title}</h3>
-                <p className="text-sm text-ink/70 leading-relaxed">{step.description}</p>
+                <h3 className="font-display text-4xl leading-tight tracking-tight">{step.title}</h3>
+                <p className="text-sm text-ink leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
@@ -139,14 +134,14 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Studio Values ─── */}
-      <section className="section-padding border-b border-border bg-stone-50">
+      <section className="border-b border-stroke pt-12 pb-8">
         <div className="container-wide">
-          <p className="text-label text-muted mb-12">What we stand for</p>
+          <p className="text-label text-muted mb-4">What we stand for</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
             {STUDIO_VALUES.map((value) => (
-              <div key={value.title} className="bg-stone-50 p-8 space-y-4">
-                <h3 className="font-display text-2xl">{value.title}</h3>
-                <p className="text-sm text-ink/70 leading-relaxed">{value.description}</p>
+              <div key={value.title} className="space-y-4">
+                <h3 className="font-display text-4xl mt-8 tracking-tigh">{value.title}</h3>
+                <p className="text-sm text-ink leading-relaxed">{value.description}</p>
               </div>
             ))}
           </div>
@@ -154,7 +149,7 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Founder ─── */}
-      <section className="section-padding border-b border-border">
+      <section className="border-b border-stroke pt-12 pb-8">
         <div className="container-wide">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Photo placeholder */}
@@ -165,19 +160,19 @@ export default function AboutPage() {
             {/* Bio */}
             <div className="space-y-6">
               <p className="text-label text-muted">Founder</p>
-              <h2 className="font-display text-4xl md:text-5xl leading-tight">
+              <h2 className="font-display text-4xl md:text-5xl leading-tight tracking-tigh">
                 Alex Dumont
               </h2>
               <p className="text-label text-accent tracking-wider">
                 Designer & Creative Director
               </p>
-              <p className="text-base text-ink/70 leading-relaxed">
+              <p className="text-base text-ink leading-relaxed">
                 Alex trained as an industrial designer before spending a decade working across
                 product, furniture, and spatial design studios in Paris and Amsterdam. Studiofile
                 is the convergence of everything he&apos;s learned: rigorous process, honest
                 materials, and design that earns its place in a home.
               </p>
-              <p className="text-base text-ink/70 leading-relaxed">
+              <p className="text-base text-ink leading-relaxed">
                 &ldquo;I wanted to make things that get better as they age — objects that develop
                 a patina, that you remember acquiring. Not things you replace.&rdquo;
               </p>
@@ -187,21 +182,20 @@ export default function AboutPage() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="section-padding bg-ink text-canvas">
-        <div className="container-narrow text-center space-y-8">
-          <h2 className="font-display text-4xl md:text-5xl leading-tight">
-            Objects made to last.
+      <section>
+        <div className="text-center space-y-8">
+          <h2 className="font-display text-6xl md:text-8xl leading-tight pt-40 pb-8">
+            TOTEM
           </h2>
-          <p className="text-base text-canvas/70 max-w-md mx-auto">
-            Explore the full Studiofile collection — designed in Paris, printed to order, shipped
-            to you.
-          </p>
-          <Button asChild variant="secondary" size="lg" className="border-canvas text-canvas hover:bg-canvas hover:text-ink">
-            <Link href="/shop">
-              Shop the Collection
-              <ArrowRight size={16} className="ml-2" />
-            </Link>
-          </Button>
+
+           <ArrowButton
+                    href="/shop"
+                    label="Shop"
+                    glowColor="var(--color-black)"
+                    className="mt-12 sm:ml-[22rem] h-12 w-24 px-8 py-3 bg-ink text-white text-xs 
+                    tracking-display font-mono rounded-xl flex items-center 
+                    justify-center self-start mx-auto"
+                  />
         </div>
       </section>
     </main>

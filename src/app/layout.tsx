@@ -13,6 +13,7 @@ import { WishlistDrawer } from '@/components/wishlist/WishlistDrawer';
 import { CookieConsent } from '@/components/common/CookieConsent';
 import { ToastProvider } from '@/components/common/Toast';
 import { DEFAULT_METADATA, SITE_URL } from '@/lib/utils/seo';
+import { ScrollToTop } from '@/components/common/ScrollToTop';
 
 import './globals.css';
 
@@ -48,6 +49,7 @@ export default function RootLayout({
       className={`${dmSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="grain relative">
+        <ScrollToTop />
         {/* Skip to content link */}
         <a href="#main-content" className="skip-to-content">
           Skip to content

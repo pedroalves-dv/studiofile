@@ -137,8 +137,8 @@
   }
 
   /* Layout utilities */
-  .section-padding {
-    @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32;
+  .section-padding-bottom {
+    @apply pt-20 pb-[70rem];
   }
 
   .container-wide {

@@ -94,7 +94,7 @@ export function ContactForm() {
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-8">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-8 px-6">
       {/* Honeypot — hidden from real users, visible to bots */}
       <div aria-hidden="true" className="hidden" tabIndex={-1}>
         <input
