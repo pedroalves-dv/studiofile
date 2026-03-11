@@ -17,7 +17,7 @@ import {
 export const metadata: Metadata = {
   title: "3d printing & design studio",
   description:
-    "Studiofile: Modular, functional home decor and furniture crafted through 3D printing. Designed in Paris, made to order, shipped worldwide.",
+    "Studiofile: Modular, functional home decor and furniture crafted through 3D printing.    Designed in Paris, made to order, shipped worldwide.",
 };
 
 // Skeleton components for Suspense fallbacks
@@ -47,10 +47,14 @@ function FeaturedProductsSkeleton() {
       <div className="max-w-7xl mx-auto">
         <Skeleton className="h-8 w-48 mb-12" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-[400px]">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({
+            length: 4,
+          }).map((_, i) => (
             <div
               key={i}
-              className={i === 3 ? "md:col-span-1 md:row-span-2" : ""}
+              className={
+                i === 3 ? "md:col-span-1 md:row-span-2" : ""
+              }
             >
               <Skeleton className="w-full h-full" />
             </div>
@@ -67,7 +71,9 @@ function CollectionsSkeleton() {
       <div className="max-w-7xl mx-auto">
         <Skeleton className="h-8 w-48 mb-12" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {Array.from({
+            length: 3,
+          }).map((_, i) => (
             <div key={i} className="aspect-[3/4]">
               <Skeleton className="w-full h-full" />
             </div>
@@ -85,7 +91,8 @@ async function Hero() {
       first: 1,
       sortKey: "BEST_SELLING",
     });
-    const featuredProduct = productsResult?.edges?.[0]?.node;
+    const featuredProduct =
+      productsResult?.edges?.[0]?.node;
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
@@ -103,7 +110,9 @@ async function Hero() {
           {heroImage && (
             <Image
               src={heroImage}
-              alt={featuredProduct?.title || "Featured Product"}
+              alt={
+                featuredProduct?.title || "Featured Product"
+              }
               fill
               className="object-cover"
               priority
@@ -125,7 +134,8 @@ async function FeaturedProductsSection() {
       first: 4,
       sortKey: "BEST_SELLING",
     });
-    const products = productsResult?.edges?.map((edge) => edge.node) || [];
+    const products =
+      productsResult?.edges?.map((edge) => edge.node) || [];
 
     if (!products || products.length === 0) {
       return null;
@@ -152,7 +162,9 @@ async function FeaturedProductsSection() {
                 key={product.id}
                 href={`/products/${product.handle}`}
                 className={`group relative overflow-hidden ${
-                  i === 3 ? "md:col-span-1 md:row-span-2" : ""
+                  i === 3
+                    ? "md:col-span-1 md:row-span-2"
+                    : ""
                 }`}
               >
                 {product.images?.[0]?.url && (
@@ -168,7 +180,11 @@ async function FeaturedProductsSection() {
                     {product.title}
                   </h3>
                   <p className="text-sm text-canvas/80">
-                    ${product.priceRange.minVariantPrice.amount}
+                    $
+                    {
+                      product.priceRange.minVariantPrice
+                        .amount
+                    }
                   </p>
                 </div>
               </Link>
@@ -178,7 +194,10 @@ async function FeaturedProductsSection() {
       </section>
     );
   } catch (error) {
-    console.error("Error fetching featured products:", error);
+    console.error(
+      "Error fetching featured products:",
+      error,
+    );
     return null;
   }
 }
@@ -223,8 +242,10 @@ async function CollectionsSection() {
                     duration-500"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 
-                to-transparent flex flex-col justify-end p-6">
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 
+                to-transparent flex flex-col justify-end p-6"
+                >
                   <h3 className="font-display text-2xl text-canvas">
                     {collection.title}
                   </h3>
@@ -249,47 +270,65 @@ function ProcessSection() {
       title: "Designed In-Studio",
       description:
         "Each object is meticulously designed by our team, balancing form and function.",
-      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
+      detail:
+        "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
       // number: "/02",
       title: "Printed to Order",
       description:
         "Made fresh using precision 3D printing, minimizing waste and maximizing quality.",
-      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
+      detail:
+        "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
       // number: "/03",
       title: "Shipped to You",
       description:
         "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
-      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
+      detail:
+        "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
     {
       // number: "/04",
       title: "Upgrade / Repair / Replace",
       description:
         "Carefully packaged and delivered worldwide. Every piece arrives in perfect condition.",
-      detail: "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
+      detail:
+        "Space is a three-dimensional continuum containing positions and directions.[1] In classical physics, physical space is often conceived in three linear dimensions. Modern physicists usually consider it, with time, to be part of a boundless four-dimensional continuum known as spacetime.[2] The concept of space is considered to be of fundamental importance to an understanding of the physical universe. However, disagreement continues between philosophers over whether it is itself an entity, a relationship between entities, or part of a conceptual framework.",
     },
   ];
 
   return (
     <section className="relative flex flex-col w-full items-center mt-60 border-t border-stroke">
-      <AccordionRoot type="single" collapsible className="w-full">
+      <AccordionRoot
+        type="single"
+        collapsible
+        className="w-full"
+      >
         {steps.map((step, i) => (
-          <AccordionItem key={i} value={`step-${i}`} className="border-b border-stroke ">
+          <AccordionItem
+            key={i}
+            value={`step-${i}`}
+            className="border-b border-stroke "
+          >
             <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-4 pt-4">
               {/* <div className="flex justify-end font-mono text-6xl font-bold text-ink tracking-tight">
                 {step.number}
               </div> */}
               <div className="flex flex-col text-left">
-                <p className="font-serif italic text-3xl text-ink">{step.title}</p>
-                <p className="font-serif text-3xl text-light leading-none">{step.description}</p>
+                <p className="font-serif italic text-3xl text-ink">
+                  {step.title}
+                </p>
+                <p className="font-serif text-3xl text-light leading-none">
+                  {step.description}
+                </p>
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-2">
-              <p className="font-serif text-xl text-light p-2">{step.detail}</p>
+              <p className="font-serif text-xl text-light p-2">
+                {step.detail}
+              </p>
             </AccordionContent>
           </AccordionItem>
         ))}
@@ -309,7 +348,8 @@ function BottomHeroSection() {
         className="w-96 bg-accent"
         style={{
           aspectRatio: "43.710445 / 237.04541",
-          maskImage: "url(/images/logo/logo-large-vertical.svg)",
+          maskImage:
+            "url(/images/logo/logo-large-vertical.svg)",
           maskSize: "contain",
           maskRepeat: "no-repeat",
           maskPosition: "center left",

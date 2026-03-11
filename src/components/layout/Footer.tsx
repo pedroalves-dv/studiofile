@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20">
+    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 tracking-tight">
       {/* Main footer content */}
       <div className="px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -139,9 +139,9 @@ export function Footer() {
 
             {/* Newsletter */}
             <div className="space-y-4">
-              <h3 className="text-sm sm:text-xs tracking-normal font-mono text-ink">
-                Get updates on new releases, early-bird notifications, and
-                special offers.
+              <h3 className="text-sm sm:text-xs tracking-tight font-mono text-ink pb-2">
+                Get updates and special offers on new products. No weekly spam,
+                we promise.
               </h3>
               <form onSubmit={handleNewsletterSubmit} className="space-y-4">
                 <input
@@ -159,7 +159,7 @@ export function Footer() {
                   label="Subscribe"
                   type="submit"
                   glowColor="var(--color-black)"
-                  className="w-full px-3 py-2.5 bg-ink text-canvas text-xs tracking-display 
+                  className="w-full py-2.5 bg-ink text-canvas text-xs tracking-display 
                   font-mono rounded-xl"
                 />
               </form>
