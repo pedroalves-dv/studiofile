@@ -14,7 +14,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 | Frontend | Next.js 15 App Router, TypeScript |
 | Styling | Tailwind CSS v3 |
 | Backend | Shopify Storefront API (GraphQL) |
-| Animations | CSS transitions · `motion` (Framer Motion v12) · View Transitions API |
+| Animations | CSS transitions · `motion` v12 · View Transitions API |
 | Hosting | Vercel |
 
 ---
@@ -56,20 +56,25 @@ Re-read this file first, then `docs/STATUS.md`.
 src/
   app/               ← Next.js App Router pages (server components by default)
   components/
-    ui/              ← Button, Badge, Input, Skeleton, Dialog
+    ui/              ← Accordion, ArrowButton, Badge, Button, Dialog, HoverWord,
+                        Input, MagneticButton, MagnifyingGlassIcon, ScrambleButton,
+                        ShoppingBagIcon, SimpleIcon, Skeleton, SparklesIcon,
+                        TextEffectWrapper, Tooltip
     layout/          ← Header, Footer, Breadcrumb, PageWrapper
-    product/         ← ProductCard, ProductGrid, ImageGallery, ImageZoom,
-                        VariantSelector, StockIndicator, RelatedProducts,
-                        RecentlyViewed, ProductViewTracker, ProductViewEvent,
-                        HorizontalScrollRow
+    product/         ← ProductCard, ProductGrid, ProductImage, ImageGallery,
+                        ImageGalleryWithZoom, ImageZoom, ImageZoomGallery,
+                        ProductInfoPanel, VariantSelector, StockIndicator,
+                        RelatedProducts, RecentlyViewed, ProductViewTracker,
+                        ProductViewEvent
     cart/            ← CartDrawer, CartItem, CartSummary, DiscountInput,
                         CartNote, FreeShippingBar, EmptyCart
     search/          ← SearchBar, PredictiveSearch, SearchResults, FilterPanel, SortSelect
-    account/         ← OrderCard
+    account/         ← AccountDashboard, OrderCard, OrderList
     wishlist/        ← WishlistButton, WishlistDrawer
-    common/          ← Toast, Toaster, CookieConsent, LoadingBar, SkeletonCard,
-                        RevealOnScroll, Marquee
-    home/            ← home page section components
+    contact/         ← ContactForm
+    common/          ← Toast, CookieConsent, LoadingBar, SkeletonCard,
+                        RevealOnScroll, Marquee, HorizontalScrollRow
+    home/            ← BrandStory, FeaturedProducts, HeroContent, NewsletterForm
   lib/
     shopify/         ← client.ts, queries.ts, mutations.ts, types.ts,
                         products.ts, collections.ts, cart.ts, auth.ts,
@@ -78,7 +83,8 @@ src/
     constants.ts     ← FREE_SHIPPING_THRESHOLD, CURRENCY_CODE
   hooks/             ← useCart, useWishlist, useScrollLock, useLocalStorage,
                         useDebounce, useMediaQuery, useRecentlyViewed,
-                        useIsomorphicLayoutEffect, useClickOutside
+                        useIsomorphicLayoutEffect, useClickOutside,
+                        useScramble, useScroll
   context/           ← CartContext.tsx, WishlistContext.tsx, ToastContext.tsx
 docs/
   STATUS.md          ← current progress — update after every session
@@ -123,15 +129,33 @@ docs/
 
 #### Typography
 
-- Mono font: `JetBrains Mono` for small tags, buttons, small links, small text blocks
-- Bold font: `Noka` used very sparingly, for typography hierarchy contrast
-- Serif font: `Instrument Serif` for headings and emphasised/presentation text
+- Display/heading: `Noka` (`font-display`) — all `h1–h6`, large editorial text
+- Body: `JetBrains Mono` (`font-body`) — body copy
+- Mono labels: `JetBrains Mono` (`font-mono`) — prices, tags, UI labels, button text
+- Narrative: `Instrument Serif` (`font-serif`) — long-form editorial paragraphs, pull quotes
+- Logo only: `Apple Garamond` (`font-logoserif`) — never use elsewhere
+
+#### Colors
+
+| Token | Hex | Usage |
+| ----- | --- | ----- |
+| `ink` | `#31302e` | Primary text, dark backgrounds |
+| `canvas` | `#faf7f2` | Page background |
+| `accent` | `#ffdaa7` | Highlights, selection, badges |
+| `muted` | `#6B6560` | Secondary text |
+| `light` | `#b4b0ac` | Tertiary/placeholder text (`text-light`) |
+| `stroke` | `#E5E0D8` | Borders, dividers |
+| `success` | `#4A7C59` | Success states |
+| `error` | `#B84040` | Error states |
+
+All colors are defined as CSS custom properties in `globals.css` and consumed via Tailwind tokens.
 
 #### Corners
 
-- Buttons and inputs: `rounded-md`
-- Images: always sharp — `rounded-none`, no exceptions
-- Cards and containers: sharp by default unless explicitly specified
+- All elements: sharp by default — `borderRadius: DEFAULT: 0px`. Do not add rounding without explicit justification.
+- `sm: 2px` is the only non-zero radius defined — use only when a very subtle rounding is intentional.
+- Images: always sharp — no exceptions.
+- Exceptions must be deliberate and noted (e.g. mobile search uses `rounded-2xl` for a UX reason).
 
 #### Spacing & layout
 
@@ -221,6 +245,14 @@ docs/
 
 - Valid handles: `'privacy-policy' | 'refund-policy' | 'terms-of-service' | 'shipping-policy'`.
 - `getShopPolicies()` fetches all four at once — page matches on handle.
+
+### Animation (Phase 10–11)
+
+- GSAP has been **removed** — `src/lib/gsap.ts` does not exist. Do not reference or reinstall it.
+- `motion` (Framer Motion v12 rebranded) is the JS animation library — use only when CSS cannot achieve the result.
+- `RevealOnScroll` is currently a passthrough `<div>` with no animation logic.
+- `ProductGrid` is `'use client'` from GSAP era — can be converted to a server component if no client features are added.
+- Marquee uses a CSS `@keyframes` animation — no JS. Keyframe defined in `globals.css`.
 
 ---
 
