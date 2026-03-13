@@ -17,7 +17,7 @@ import {
 export const metadata: Metadata = {
   title: "3d printing & design studio",
   description:
-    "Studiofile: Modular, functional home decor and furniture crafted through 3D printing.    Designed in Paris, made to order, shipped worldwide.",
+    "Studiofile: Modular, functional home decor and furniture crafted through 3D printing. Designed in Paris, made to order, shipped worldwide.",
 };
 
 // Skeleton components for Suspense fallbacks
@@ -93,7 +93,7 @@ async function Hero() {
     const heroImage = featuredProduct?.images?.[0]?.url;
 
     return (
-      <section className="relative w-full min-h-dvh flex items-center px-4">
+      <section className="relative w-full min-h-dvh flex items-center px-4 border border-blue-500">
         {/* Left content — client component owns heading animation */}
         <div
           className="flex flex-col h-full z-10 md:w-3/4 lg:w-2/3 flex-1 
@@ -136,7 +136,7 @@ async function FeaturedProductsSection() {
     }
 
     return (
-      <section className="border-b border-stroke">
+      <section className="relative flex items-center min-h-dvh border border-green-500 mt-60">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
             <h2 className="font-display text-4xl md:text-5xl text-ink">
@@ -285,7 +285,8 @@ function ProcessSection() {
   ];
 
   return (
-    <section className="relative flex flex-col w-full items-center mt-60 border-t border-stroke">
+    <section className="relative flex items-center min-h-dvh border border-green-500 mt-60">
+      {/* <div className="relative flex flex-col w-full items-center border-t border-stroke"></div> */}
       <AccordionRoot type="single" collapsible className="w-full">
         {steps.map((step, i) => (
           <AccordionItem
@@ -316,7 +317,7 @@ function ProcessSection() {
   );
 }
 
-// Bottom Hero
+// Bottom Hero Section - Mobile
 function BottomHeroSection() {
   return (
     <section
@@ -337,6 +338,8 @@ function BottomHeroSection() {
     </section>
   );
 }
+
+// Bottom Hero Section - Tablet/Desktop
 
 export default async function HomePage() {
   return (
@@ -360,7 +363,7 @@ export default async function HomePage() {
       </Suspense> */}
 
       {/* Process */}
-      <ProcessSection />
+      {/* <ProcessSection /> */}
 
       {/* Bottom Hero */}
       <BottomHeroSection />
