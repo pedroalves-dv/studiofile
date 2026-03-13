@@ -324,8 +324,9 @@ function BottomHeroSection() {
       className="w-full h-full flex justify-center 
     items-center mt-60 border border-yellow-500"
     >
+      {/* Bottom Hero Section - Mobile */}
       <div
-        className="w-96 bg-accent"
+        className="sm:hidden w-96 bg-accent"
         style={{
           aspectRatio: "43.710445 / 237.04541",
           maskImage: "url(/images/logo/logo-large-vertical.svg)",
@@ -334,7 +335,17 @@ function BottomHeroSection() {
           maskPosition: "center left",
         }}
       />
-      {/* <div className="bg-accent h-[300px] w-full -mt-12"></div> */}
+      {/* Bottom Hero Section - Tablet/Desktop */}
+      <div
+        className="hidden sm:block w-full bg-accent"
+        style={{
+          aspectRatio: "237.04541 / 43.710445",
+          maskImage: "url(/images/logo/logo-large-horizontal.svg)",
+          maskSize: "contain",
+          maskRepeat: "no-repeat",
+          maskPosition: "center",
+        }}
+      />
     </section>
   );
 }
