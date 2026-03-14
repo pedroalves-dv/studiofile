@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 tracking-tight">
+    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 sm:py-12 sm:px-32 tracking-tight">
       {/* Main footer content */}
       <div className="px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -82,7 +82,7 @@ export function Footer() {
           </div>
 
           {/* Column 3: Social + Newsletter */}
-          <div className="space-y-10">
+          <div className="space-y-10 sm:pl-32">
             {/* Social Links */}
             <div className="space-y-3 px-1">
               <div className="flex flex-row justify-between">

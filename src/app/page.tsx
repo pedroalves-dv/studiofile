@@ -322,7 +322,7 @@ function BottomHeroSection() {
   return (
     <section
       className="w-full h-full flex justify-center 
-    items-center mt-60 border border-yellow-500"
+    items-center mt-60"
     >
       {/* Bottom Hero Section - Mobile */}
       <div
@@ -336,16 +336,38 @@ function BottomHeroSection() {
         }}
       />
       {/* Bottom Hero Section - Tablet/Desktop */}
-      <div
-        className="hidden sm:block w-full bg-accent"
-        style={{
-          aspectRatio: "237.04541 / 43.710445",
-          maskImage: "url(/images/logo/logo-large-horizontal.svg)",
-          maskSize: "contain",
-          maskRepeat: "no-repeat",
-          maskPosition: "center",
-        }}
-      />
+      <div className="hidden sm:block w-full flex flex-col items-center">
+        {/* <div
+          className="hidden sm:block w-full bg-white"
+          style={{
+            aspectRatio: "237.04541 / 43.710445",
+            maskImage: "url(/images/logo/logo-large-horizontal.svg)",
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+        <div
+          className="hidden sm:block w-full bg-accent"
+          style={{
+            aspectRatio: "237.04541 / 43.710445",
+            maskImage: "url(/images/logo/logo-large-horizontal.svg)",
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        /> */}
+        <div
+          className="hidden sm:block w-full bg-success mb-10"
+          style={{
+            aspectRatio: "237.04541 / 43.710445",
+            maskImage: "url(/images/logo/logo-large-horizontal.svg)",
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      </div>
     </section>
   );
 }
