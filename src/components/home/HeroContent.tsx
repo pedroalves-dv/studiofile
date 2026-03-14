@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
-import { motion, useAnimationControls } from "motion/react";
+import { m, useAnimationControls } from "motion/react";
 
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 // Downward offset (px) each letter lands at relative to its final position.
@@ -57,69 +57,66 @@ export function HeroContent() {
       });
     };
 
-    run();
+    const raf = requestAnimationFrame(() => run()); // 👈 wrap here
+    return () => cancelAnimationFrame(raf); // 👈 and cleanup
   }, [controls]);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col relative">
-        {/* <h1
-          className="font-display text-6xl sm:text-8xl leading-none
-          text-ink tracking-tight mt-20"
-        >
-          TOTEM{" "}
-          <span
-            className="inline-block align-top font-mono text-xl
-          sm:text-2xl mt-1 -ml-2 sm:-ml-3 sm:mt-2"
-          >
-            ©
-          </span>
-        </h1> */}
-
+    <div
+      className="flex flex-col items-center justify-center"
+      style={{ minHeight: "calc(100dvh - var(--header-height))" }}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-20 items-center w-full max-w-7xl">
+        {/* Left — desktop only */}
+        <div className="px-4 py-4 self-start ">
+          {/* <p className="hidden sm:block italic font-serif text-8xl text-ink text-right tracking-tighter">
+            Introducing
+          </p> */}
+        </div>
+        {/* Center — TOTEM title, always visible */}
         <h1
-          className="mt-16 flex flex-col items-center leading-none text-ink
-          text-9xl sm:text-10xl font-display w-fit
-          -space-y-4 sm:-space-y-6 mx-auto"
+          className="flex flex-col items-center leading-none text-ink
+        text-9xl sm:text-10xl font-display -space-y-4 sm:-space-y-6 mx-auto"
         >
           {LETTERS.map((letter, i) => (
-            <motion.span
-              // biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
+            <m.span
               key={i}
               animate={controls}
               initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
               custom={i}
               className="origin-bottom"
+              style={{ willChange: "transform, opacity" }}
             >
               {letter}
-            </motion.span>
+            </m.span>
           ))}
         </h1>
 
-        <ArrowButton
-          href="/shop"
-          label="Shop"
-          glowColor="var(--color-black)"
-          className="mt-12 h-12 w-24 px-8 py-3 bg-ink text-white text-xs
-          tracking-display font-mono rounded-xl flex items-center
-          justify-center self-start mx-auto sm:absolute sm:top-[13rem] sm:right-[16rem]"
-        />
+        {/* Right — desktop only */}
+        <div className="hidden sm:flex flex-col items-start gap-1">
+          <div className="backdrop-blur-xl px-6 py-4 rounded-2xl">
+            <p className="font-mono font-bold text-xl text-ink tracking-tight">
+              $33 — $149
+            </p>
+          </div>
+          <ArrowButton
+            href="/shop"
+            label="Shop"
+            glowColor="var(--color-black)"
+            className="h-12 px-8 py-4 bg-ink text-white text-sm
+            tracking-display font-mono rounded-xl flex items-center justify-center"
+          />
+        </div>
       </div>
 
-      <p
-        className="mt-[30rem] font-serif text-5xl sm:text-6xl text-light text-right md:w-3/4
-      lg:w-2/3 self-end tracking-(space-xsm)"
-      >
-        Introducting
-        <span
-          className="inline-block font-display tracking-tight text-[4.2rem]
-        text-ink pl-4 pr-2"
-        >
-          {" "}
-          TOTEM
-        </span>
-        , a fully <span className="italic text-ink pr-3">modular lamp</span>
-        that adapts to you.
-      </p>
+      {/* Mobile-only button — below the title */}
+      <ArrowButton
+        href="/shop"
+        label="Shop"
+        glowColor="var(--color-black)"
+        className="sm:hidden mt-12 h-12 w-24 px-8 py-3 bg-ink text-white text-xs
+        tracking-display font-mono rounded-xl flex items-center justify-center"
+      />
     </div>
   );
 }

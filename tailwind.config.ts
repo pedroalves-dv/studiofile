@@ -51,6 +51,7 @@ const config: Config = {
         slideDown: "slideDown 0.15s ease-out",
         slideUp: "slideUp 0.15s ease-out",
       },
+      
     },
   },
   plugins: [],

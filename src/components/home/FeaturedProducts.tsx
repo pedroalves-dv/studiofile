@@ -3,6 +3,27 @@ import Link from "next/link";
 import { getProducts } from "@/lib/shopify/products";
 import { formatPrice } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
+import { Skeleton } from "@/components/ui/Skeleton";
+
+export function FeaturedProductsSkeleton() {
+  return (
+    <div className="section-padding border-b border-stroke">
+      <div className="max-w-7xl mx-auto">
+        <Skeleton className="h-8 w-48 mb-12" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-[400px]">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className={i === 3 ? "md:col-span-1 md:row-span-2" : ""}
+            >
+              <Skeleton className="w-full h-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export async function FeaturedProducts() {
   try {

@@ -122,7 +122,7 @@ export function Header() {
             isScrolling ? "bg-canvas/80" : "bg-canvas"
           }`}
         >
-          <div className="flex items-center justify-between h-16 md:h-16">
+          <div className="flex items-center justify-between h-[var(--header-height)]">
             {/* Wordmark */}
             <Link
               href="/"
@@ -280,7 +280,7 @@ export function Header() {
       </header>
 
       {/* Spacer */}
-      <div className="h-16 md:h-16" aria-hidden="true" />
+      <div className="h-[var(--header-height)]" aria-hidden="true" />
     </>
   );
 }

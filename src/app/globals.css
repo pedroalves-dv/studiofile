@@ -7,16 +7,16 @@
    ========================================== */
 
 @font-face {
-  font-family: 'Instrument Serif';
-  src: url('/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-family: "Instrument Serif";
+  src: url("/fonts/InstrumentSerif-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Noka';
-  src: url('/fonts/Noka-Black.woff2') format('woff2');
+  font-family: "Noka";
+  src: url("/fonts/Noka-Black.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -28,26 +28,25 @@
 @layer base {
   :root {
     /* Palette */
-    --color-black: #000000;
+    --color-black: #141414;
     --color-ink: #31302e;
     --color-canvas: 250 247 242; /* #f9f5f0 */
     --color-accent: #ffdaa7;
-    --color-muted: #6B6560;
+    --color-muted: #6b6560;
     --color-light: #b4b0ac;
-    --color-stroke: #E5E0D8;
-    --color-success: #4A7C59;
-    --color-error: #B84040;
+    --color-stroke: #e5e0d8;
+    --color-success: #4a7c59;
+    --color-error: #b84040;
     --color-white: #ffffff;
 
     /* Typography */
-    --font-display: 'Noka', monospace;
-    --font-body: 'JetBrains Mono', monospace;
-    --font-mono: 'JetBrains Mono', monospace;
-    --font-serif: 'Instrument Serif', serif;
-    --font-logoserif: 'Apple Garamond', serif;
+    --font-display: "Noka", monospace;
+    --font-body: "JetBrains Mono", monospace;
+    --font-mono: "JetBrains Mono", monospace;
+    --font-serif: "Instrument Serif", serif;
+    --font-logoserif: "Apple Garamond", serif;
 
     /* Spacing */
-    
     --spacing-xs: 0.25rem;
     --spacing-xsm: 0.38rem;
     --spacing-sm: 0.5rem;
@@ -58,6 +57,9 @@
     --spacing-3xl: 4rem;
     --spacing-4xl: 5rem;
     --spacing-5xl: 6rem;
+
+    /* Header height */
+    --header-height: 4rem;
 
     /* Animation */
     --duration-fast: 150ms;
@@ -81,7 +83,12 @@
   }
 
   /* Headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: var(--letter-spacing-display);
@@ -105,7 +112,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #C8C3BB;
+    background-color: #c8c3bb;
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -145,7 +152,7 @@
     @apply max-w-screen-xl mx-auto px-6 md:px-12;
   }
 
-   .container-wider {
+  .container-wider {
     @apply max-w-screen-2xl mx-auto px-6 md:px-12;
   }
 
@@ -155,15 +162,14 @@
 
   /* Grain texture overlay */
   .grain::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background-image: 
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" seed="1"></feTurbulence><feColorMatrix in="noise" type="saturate" values="0"></feColorMatrix></filter><rect width="100" height="100" fill="%231A1917" opacity="0.03" filter="url(%23noise)"></rect></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" seed="1"></feTurbulence><feColorMatrix in="noise" type="saturate" values="0"></feColorMatrix></filter><rect width="100" height="100" fill="%231A1917" opacity="0.03" filter="url(%23noise)"></rect></svg>');
     background-attachment: fixed;
     z-index: 9999;
   }
@@ -211,13 +217,21 @@
    ANIMATIONS
    ========================================== */
 @keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ==========================================
@@ -236,13 +250,25 @@
 }
 
 @keyframes fade-and-slide-out {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-8px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes fade-and-slide-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Instant transitions for reduced motion */
