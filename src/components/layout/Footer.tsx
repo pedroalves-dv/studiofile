@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SimpleIcon } from "@/components/ui/SimpleIcon";
 import { siInstagram, siPinterest, siX, siTiktok } from "simple-icons";
 import { useState } from "react";
-import { ArrowButton } from "../ui/ArrowButton";
+import { NewsletterForm } from "@/components/layout/NewsletterForm";
 
 const FOOTER_LINKS = [
   { label: "Shop", href: "/shop" },
@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 sm:py-12 sm:px-36 tracking-tight">
+    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg  border-t py-20 sm:py-16 sm:px-36 tracking-tight">
       {/* Main footer content */}
       <div className="px-6 sm:px-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
@@ -98,11 +98,7 @@ export function Footer() {
                     ariaLabel="Instagram"
                   />
                 </a>
-                <a
-                  href="#"
-                  className="transition-colors"
-                  aria-label="Pinterest"
-                >
+                <a href="#" className="transition-colors" aria-label="Xt">
                   <SimpleIcon
                     icon={siX}
                     size={24}
@@ -110,11 +106,7 @@ export function Footer() {
                     ariaLabel="Xt"
                   />
                 </a>
-                <a
-                  href="#"
-                  className="transition-colors"
-                  aria-label="Pinterest"
-                >
+                <a href="#" className="transition-colors" aria-label="TikTok">
                   <SimpleIcon
                     icon={siTiktok}
                     size={24}
@@ -143,26 +135,7 @@ export function Footer() {
                 Get updates and special offers on new products. No weekly spam,
                 we promise.
               </h3>
-              <form onSubmit={handleNewsletterSubmit} className="space-y-4">
-                <input
-                  type="email"
-                  aria-label="Email address"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 bg-canvas border rounded-xl border-stroke 
-                  text-ink placeholder-light text-sm focus:outline-none focus:border-muted 
-                  transition-colors"
-                  required
-                />
-                <ArrowButton
-                  label="Subscribe"
-                  type="submit"
-                  glowColor="var(--color-black)"
-                  className="w-full py-2.5 bg-ink text-canvas text-xs tracking-display 
-                  font-mono rounded-xl"
-                />
-              </form>
+              <NewsletterForm />
             </div>
           </div>
         </div>

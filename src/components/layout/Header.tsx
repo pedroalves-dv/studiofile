@@ -124,20 +124,32 @@ export function Header() {
         >
           <div className="flex items-center justify-between h-[var(--header-height)]">
             {/* Wordmark */}
-            <Link
-              href="/"
-              className="font-display text-sm md:text-base tracking-wide text-ink hover:text-accent transition-colors"
-              aria-label="Studiofile — Home"
-            >
-              <span className="group cursor-pointer">
+            <Link href="/" aria-label="Studiofile — Home">
+              <span
+                className="group cursor-pointer relative block"
+                style={{
+                  aspectRatio: "22.203955 / 4.0943561",
+                  height: "2rem",
+                }}
+              >
+                {/* Default logo */}
                 <div
-                  className="h-5 bg-ink hover:bg-accent transition-colors"
+                  className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-100 group-hover:opacity-0"
                   style={{
-                    aspectRatio: "22.203955 / 4.0943561",
-                    maskImage: "url(/images/logo/logo-small.svg)",
-                    maskSize: "contain",
+                    maskImage: "url(/images/logo/rect8.svg)",
+                    maskSize: "100% 100%",
                     maskRepeat: "no-repeat",
-                    maskPosition: "center left",
+                    maskPosition: "center top",
+                  }}
+                />
+                {/* Hover logo */}
+                <div
+                  className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  style={{
+                    maskImage: "url(/images/logo/rect7.svg)",
+                    maskSize: "100% 100%",
+                    maskRepeat: "no-repeat",
+                    maskPosition: "center top",
                   }}
                 />
               </span>

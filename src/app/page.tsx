@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Image from "next/image";
 import { Metadata } from "next";
 import { HeroContent } from "@/components/home/HeroContent";
+import Image from "next/image";
 import BrandStory from "@/components/home/BrandStory";
 
 import { ProductSpotlight } from "@/components/home/ProductSpotlight";
@@ -61,9 +61,9 @@ export default async function HomePage() {
       <ProductSpotlight />
 
       {/* Featured Products */}
-      <Suspense fallback={<FeaturedProductsSkeleton />}>
+      {/* <Suspense fallback={<FeaturedProductsSkeleton />}>
         <FeaturedProducts />
-      </Suspense>
+      </Suspense> */}
 
       {/* Brand Story */}
       <BrandStory />

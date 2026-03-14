@@ -4,11 +4,12 @@ export function ProductSpotlight() {
   return (
     <section className="relative w-full h-dvh overflow-hidden border border-blue-500">
       <Image
-        src="/images/hero/totem-3.png"
+        src="/images/hero/totem-1.png"
         alt="TOTEM"
         sizes="100vw"
         fill
         className="object-cover"
+        priority
       />
 
       <div className="relative h-full flex items-center justify-center">
