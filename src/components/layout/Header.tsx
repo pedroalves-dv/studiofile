@@ -115,10 +115,10 @@ export function Header() {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 sm:px-32">
+      <header className="fixed top-0 left-0 right-0 z-50">
         {" "}
         <div
-          className={`px-6 backdrop-blur-xl border-b border-stroke transition-colors duration-300 ${
+          className={`px-6 sm:px-36 backdrop-blur-xl border-b border-stroke transition-colors duration-300 ${
             isScrolling ? "bg-canvas/80" : "bg-canvas"
           }`}
         >

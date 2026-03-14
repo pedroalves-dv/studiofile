@@ -322,7 +322,7 @@ function BottomHeroSection() {
   return (
     <section
       className="w-full h-full flex justify-center 
-    items-center mt-60"
+    items-center"
     >
       {/* Bottom Hero Section - Mobile */}
       <div
@@ -358,7 +358,7 @@ function BottomHeroSection() {
           }}
         /> */}
         <div
-          className="hidden sm:block w-full bg-success mb-10"
+          className="hidden sm:block w-full bg-success mb-14"
           style={{
             aspectRatio: "237.04541 / 43.710445",
             maskImage: "url(/images/logo/logo-large-horizontal.svg)",

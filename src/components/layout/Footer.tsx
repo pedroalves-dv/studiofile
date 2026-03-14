@@ -30,9 +30,9 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 sm:py-12 sm:px-32 tracking-tight">
+    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-20 sm:py-12 sm:px-36 tracking-tight">
       {/* Main footer content */}
-      <div className="px-6">
+      <div className="px-6 sm:px-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {/* Column 1: Wordmark + Tagline */}
           <div className="flex flex-row sm:flex-col justify-between ">
