@@ -58,7 +58,7 @@ The TOTEM lamp is a modular ceiling light: stackable 3D-printed shapes, each sol
 | Phase | Description | Status |
 | ----- | ----------- | ------ |
 | TOTEM 1 | `totem-config.ts`, cart line attributes, `addBundle()` in `useCart`, `TotemCartGroup` in cart drawer | ✅ Done |
-| TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total | ⬜ Pending |
+| TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total | ✅ Done |
 | TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish | ⬜ Pending |
 
 ### TOTEM Architecture Decisions

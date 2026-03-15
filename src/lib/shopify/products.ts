@@ -6,7 +6,21 @@ import {
   GET_PRODUCT_RECOMMENDATIONS,
   GET_ALL_PRODUCT_HANDLES,
 } from './queries';
-import type { ShopifyProduct } from './types';
+import type { ShopifyProduct, ShopifyImage, ShopifyProductVariant } from './types';
+
+// Raw wire shape: images and variants come back as edge/node connections
+interface RawShopifyProduct extends Omit<ShopifyProduct, 'images' | 'variants'> {
+  images: { edges: Array<{ node: ShopifyImage }> };
+  variants: { edges: Array<{ node: ShopifyProductVariant }> };
+}
+
+function normalizeProduct(raw: RawShopifyProduct): ShopifyProduct {
+  return {
+    ...raw,
+    images: raw.images.edges.map((e) => e.node),
+    variants: raw.variants.edges.map((e) => e.node),
+  };
+}
 
 interface GetProductsOptions {
   first?: number;
@@ -16,19 +30,24 @@ interface GetProductsOptions {
   query?: string;
 }
 
+interface NormalizedProductsConnection {
+  edges: Array<{ node: ShopifyProduct; cursor: string }>;
+  pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
+}
+
 interface ProductsResponse {
   products: {
-    edges: Array<{ node: ShopifyProduct; cursor: string }>;
+    edges: Array<{ node: RawShopifyProduct; cursor: string }>;
     pageInfo: { hasNextPage: boolean; hasPreviousPage: boolean };
   };
 }
 
 interface ProductResponse {
-  productByHandle: ShopifyProduct | null;
+  productByHandle: RawShopifyProduct | null;
 }
 
 interface ProductRecommendationsResponse {
-  productRecommendations: ShopifyProduct[];
+  productRecommendations: RawShopifyProduct[];
 }
 
 interface ProductHandlesResponse {
@@ -46,7 +65,8 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
     handle,
   });
 
-  return response.productByHandle;
+  const raw = response.productByHandle;
+  return raw ? normalizeProduct(raw) : null;
 }
 
 /**
@@ -54,7 +74,7 @@ export async function getProduct(handle: string): Promise<ShopifyProduct | null>
  */
 export async function getProducts(
   options: GetProductsOptions = {}
-): Promise<ProductsResponse['products']> {
+): Promise<NormalizedProductsConnection> {
   const {
     first = 20,
     after = null,
@@ -71,7 +91,11 @@ export async function getProducts(
     query: query || undefined,
   });
 
-  return response.products;
+  const raw = response.products;
+  return {
+    ...raw,
+    edges: raw.edges.map((edge) => ({ ...edge, node: normalizeProduct(edge.node) })),
+  };
 }
 
 /**
@@ -85,7 +109,7 @@ export async function getProductRecommendations(
     { productId }
   );
 
-  return response.productRecommendations;
+  return response.productRecommendations.map(normalizeProduct);
 }
 
 /**
