@@ -36,6 +36,7 @@ export const CART_FIELDS = `
         discountAllocations {
           allocatedAmount { amount currencyCode }
         }
+        attributes { key value }
       }
     }
   }

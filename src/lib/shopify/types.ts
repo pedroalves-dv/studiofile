@@ -95,6 +95,7 @@ export interface ShopifyCartLine {
   discountAllocations: Array<{
     allocatedAmount: MoneyV2;
   }>;
+  attributes: Array<{ key: string; value: string }>;
 }
 
 export interface ShopifyCart {

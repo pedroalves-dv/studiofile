@@ -62,6 +62,7 @@ interface CartFetchResponse {
 interface CartLine {
   merchandiseId: string;
   quantity: number;
+  attributes?: Array<{ key: string; value: string }>;
 }
 
 /**

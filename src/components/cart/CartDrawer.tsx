@@ -4,11 +4,13 @@ import { X } from 'lucide-react';
 import { Dialog } from '@/components/ui/Dialog';
 import { useCart } from '@/hooks/useCart';
 import { CartItem } from './CartItem';
+import { TotemCartGroup } from './TotemCartGroup';
 import { CartSummary } from './CartSummary';
 import { DiscountInput } from './DiscountInput';
 import { CartNote } from './CartNote';
 import { FreeShippingBar } from './FreeShippingBar';
 import { EmptyCart } from './EmptyCart';
+import type { ShopifyCartLine } from '@/lib/shopify/types';
 
 export function CartDrawer() {
   const { cart, isOpen, closeCart } = useCart();
@@ -36,9 +38,26 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {!cart || cart.lines.length === 0 ? (
             <EmptyCart />
-          ) : (
-            cart.lines.map((line) => <CartItem key={line.id} line={line} />)
-          )}
+          ) : (() => {
+            const groups = new Map<string, ShopifyCartLine[]>();
+            const ungrouped: ShopifyCartLine[] = [];
+            for (const line of cart.lines) {
+              const buildId = line.attributes.find((a) => a.key === '_build_id')?.value;
+              if (buildId) {
+                groups.set(buildId, [...(groups.get(buildId) ?? []), line]);
+              } else {
+                ungrouped.push(line);
+              }
+            }
+            return (
+              <>
+                {ungrouped.map((line) => <CartItem key={line.id} line={line} />)}
+                {Array.from(groups.entries()).map(([buildId, groupLines]) => (
+                  <TotemCartGroup key={buildId} lines={groupLines} />
+                ))}
+              </>
+            );
+          })()}
         </div>
 
         {/* Footer — sticky */}

@@ -48,6 +48,11 @@ export function CartItem({ line }: CartItemProps) {
         {merchandise.title !== 'Default Title' && (
           <p className="text-xs text-muted mt-0.5">{merchandise.title}</p>
         )}
+        {line.attributes.filter((a) => !a.key.startsWith('_')).length > 0 && (
+          <p className="text-xs text-muted mt-0.5">
+            {line.attributes.filter((a) => !a.key.startsWith('_')).map((a) => a.value).join(' · ')}
+          </p>
+        )}
         <p className="font-mono text-xs text-muted mt-1">
           {formatPrice(merchandise.price.amount, merchandise.price.currencyCode)}
         </p>
