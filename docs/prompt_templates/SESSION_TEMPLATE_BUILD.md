@@ -1,227 +1,164 @@
-# Session Opening Template
-
 Read the following files before doing anything else:
+- CLAUDE.md
+- docs/STATUS.md
+- src/components/product/TotemConfigurator.tsx
+- src/lib/totem-config.ts
+- src/components/cart/TotemCartGroup.tsx
 
-1. CLAUDE.md
-2. docs/STATUS.md
-3. Today's task: TOTEM Phase 2
+Before editing any file: read it first. Use subagents for any task that requires reading files to gather information before acting.
 
-Before editing any file: read it first. Use subagents for any task that requires reading files to gather information before acting — return only the findings to the main session.
-
-Scope: Only create or edit the files listed in that sub-prompt.
-Do not touch any file not explicitly listed. Do not begin the next sub-phase.
+Scope: Only create or edit the files listed below. Do not touch any other file.
 
 When done:
-
-- Run type checking: `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check`
-- Fix all errors before finishing — do not use npx or bare npm
-- Update docs/STATUS.md — tick completed items
+- Run: PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check — zero errors
+- Update docs/STATUS.md — mark TOTEM Phase 3 done
 - Tell me what was built and anything deferred or unclear
 
-----
+---
 
 ## Goal
-Build the TOTEM configurator UI at /products/totem. When the product handle is 'totem', the standard PDP layout is replaced entirely by TotemConfigurator. Zero TypeScript errors at the end.
+Redesign the TotemConfigurator layout around a compound viewer, add a presets tab, add orientation flip per piece, and polish TotemCartGroup. The SVG shape files do not exist yet — use CSS placeholder blocks as stand-ins. Phase 4 will wire in real SVGs.
 
 ---
 
-## Step 1 — Read existing files first
+## 1 — Update TotemPiece type
 
-Before writing anything, read these files in full:
-- src/app/products/[handle]/page.tsx
-- src/lib/totem-config.ts
-- src/hooks/useCart.ts
-- src/components/cart/CartDrawer.tsx
-- src/components/cart/TotemCartGroup.tsx
-- src/lib/shopify/types.ts
-- src/app/globals.css
-- tailwind.config.ts
+In src/lib/totem-config.ts, add a `flipped` boolean to the TotemPiece interface:
 
----
-
-## Step 2 — Create TotemConfigurator
-
-Create src/components/product/TotemConfigurator.tsx as a 'use client' component.
-
-### State
-```ts
-// One piece instance in the stack
-interface LocalPiece {
-  uid: string          // generated client-side: crypto.randomUUID() or Math.random().toString(36)
+interface TotemPiece {
+  uid: string
   shapeId: string
   colorId: string
+  flipped: boolean   // ← add this, default false
 }
-```
 
-Component state:
-- `pieces: LocalPiece[]` — the lamp stack, top to bottom
-- `selectedUid: string | null` — which piece is selected (shows color picker)
-- `fixationId: string` — default to first fixation in TOTEM_FIXATIONS
-- `cableId: string` — default to first cable in TOTEM_CABLES
-- `isAdding: boolean` — cart loading state
+Update TOTEM_PRESETS so each piece object includes `flipped: false`.
 
-Import from '@/lib/totem-config':
-- `TOTEM_SHAPES`, `TOTEM_COLORS`, `TOTEM_FIXATIONS`, `TOTEM_CABLES`
-- `calcTotemPrice`, `TotemBuildConfig`
-
-Import `useCart` from '@/hooks/useCart' and call `addBundle`.
+calcTotemPrice does not need to change — flipped has no price impact.
 
 ---
 
-### Layout
+## 2 — Restructure TotemConfigurator layout
 
-Two-column grid on desktop, stacked on mobile:
-┌─────────────────┬──────────────────────────────┐
-│  LEFT PANE      │  RIGHT PANE                  │
-│  The Stack      │  Shape Catalog               │
-│  (your lamp)    │  (click shapes to add)       │
-└─────────────────┴──────────────────────────────┘
+Replace the current two-column layout entirely. The new layout has three sections stacked vertically on mobile, and arranged as described below on desktop.
 
-**Left pane — the stack**
+### Section A — The Compound Viewer
 
-- Heading: "Your lamp" with piece count in muted text
-- If pieces is empty: show a centered placeholder — "Add shapes from the right →" in muted mono text
-- Each piece in the stack renders as a row with:
-  - A color swatch (16×16 square, background = color hex)
-  - Shape name (font-mono text-sm)
-  - Price (font-mono text-xs text-muted)
-  - ▲ / ▼ arrow buttons to reorder (disabled at top/bottom respectively). Use ChevronUp / ChevronDown from lucide-react. aria-label="Move piece up" / "Move piece down".
-  - Trash2 icon button to remove the piece. aria-label="Remove piece".
-  - The entire row is clickable — clicking it sets `selectedUid` to this piece's uid (makes it 'selected').
-- Selected piece: add a `ring-1 ring-ink` outline to the row. Show the color picker directly below it (not in a modal).
+This is the centrepiece of the configurator. It is a single bordered element (border border-stroke) containing two halves side by side on desktop, stacked on mobile.
 
-**Color picker (appears under selected piece)**
+**Left half — Visual stack**
 
-- A grid of color swatches from TOTEM_COLORS — 8 swatches, each 28×28, with a 1px ring on the selected color.
-- Clicking a swatch calls `setColorForPiece(uid, colorId)`.
-- No label text needed — the color hex is the visual.
+A vertical column of shape placeholder blocks, one per piece, top to bottom matching the pieces array order.
 
-**System selectors (below the stack)**
+Each block:
+- Width: 80px, centered horizontally in the column
+- Height varies by shape:
+  - arch: 52px, dome: 44px, cylinder: 64px, cone: 56px, wave: 44px, sphere: 44px, torus: 28px, prism: 52px
+- Background: the piece's color hex from TOTEM_COLORS
+- border-radius: 4px (slight rounding to look like a physical object, exception to the zero-radius rule)
+- 4px gap between blocks
+- When flipped: apply `transform: scaleY(-1)` to the block
+- When selected: ring-2 ring-ink
+- Clicking a block sets selectedUid to that piece's uid
+- Drag to reorder: implement HTML5 drag and drop on the blocks. onDragStart sets a dragged uid in local state. onDragOver prevents default. onDrop swaps the dragged piece with the target piece in the pieces array.
 
-Two dropdowns, each with a label:
-- Fixation: `<select>` mapped from TOTEM_FIXATIONS — shows `${fixation.name} — €${fixation.price}`
-- Cable: `<select>` mapped from TOTEM_CABLES — shows `${cable.name} — €${cable.price}`
+If pieces is empty: show a vertical dashed line (w-0.5 border-l-2 border-dashed border-stroke h-40) centered in the column, representing an empty cable drop.
 
-Both use `font-mono text-sm`.
+**Right half — Named list with options**
 
-**Price + Add to Cart (bottom of left pane)**
+A vertical list, one row per piece, always visible.
 
-- Live total: `calcTotemPrice({ pieces: pieces.map(p => ({...p, uid: p.uid})), fixationId, cableId })` formatted as `€X` in font-mono text-2xl.
-- Subtext: `"${pieces.length} piece${pieces.length === 1 ? '' : 's'} · ${fixationName} · ${cableName}"` in text-label text-muted.
-- Add to Cart button: full-width, primary. Disabled when `pieces.length === 0` or `isAdding`. Label: "Add to cart" / "Out of stock" is not relevant here — pieces always in stock for now.
-- On click: build a `TotemBuildConfig` from current state and call `await addBundle(config)`. Set `isAdding` before, clear after.
+Each row:
+- Shape name: font-mono text-sm
+- Color name: font-mono text-xs text-muted
+- ▲ ▼ arrow buttons (ChevronUp / ChevronDown from lucide-react), disabled at bounds
+- Flip button: RotateCcw icon from lucide-react, aria-label="Flip shape", toggles flipped boolean for that piece
+- Trash2 delete button
+- Clicking the row sets selectedUid
 
----
+When a piece is selected (selectedUid matches), render the color swatches inline at the bottom of the compound viewer element, spanning full width, below both halves. 8 swatches, w-7 h-7 each, ring-1 ring-ink on selected color. Clicking updates that piece's color.
 
-**Right pane — shape catalog**
-
-- Heading: "Add shapes" in font-display uppercase.
-- A grid of shape cards (2 cols on mobile, 3 cols on desktop, or just 2-col uniform).
-- Each card:
-  - Shape name in font-mono text-sm uppercase
-  - Price in font-mono text-xs text-muted
-  - A visual placeholder (square div, aspect-square, bg-stone-100) — no real images yet
-  - Clicking the card calls `addShape(shapeId)` which appends a new LocalPiece to `pieces` with a generated uid, the shapeId, and the first color ('chalk') as default.
-  - The card has a `+` icon (Plus from lucide-react) in the corner, aria-label="Add {shapeName}".
-  - Hover: `border-ink` (the card has `border border-stroke` at rest).
+**Mobile behaviour:**
+- Left half (visual stack) stacks on top, full width, blocks centered
+- Right half (list) below it, full width
+- Color swatches still appear at bottom when a piece is selected
+- The compound viewer as a whole is full width
 
 ---
 
-### Helper functions (inside the component)
-```ts
-function addShape(shapeId: string) {
-  const uid = Math.random().toString(36).slice(2, 10)
-  setPieces(prev => [...prev, { uid, shapeId, colorId: 'chalk' }])
-}
+### Section B — System selectors + Price + Add to Cart
 
-function removeShape(uid: string) {
-  setPieces(prev => prev.filter(p => p.uid !== uid))
-  if (selectedUid === uid) setSelectedUid(null)
-}
-
-function setColorForPiece(uid: string, colorId: string) {
-  setPieces(prev => prev.map(p => p.uid === uid ? { ...p, colorId } : p))
-}
-
-function moveUp(uid: string) {
-  setPieces(prev => {
-    const i = prev.findIndex(p => p.uid === uid)
-    if (i <= 0) return prev
-    const next = [...prev]
-    ;[next[i - 1], next[i]] = [next[i], next[i - 1]]
-    return next
-  })
-}
-
-function moveDown(uid: string) {
-  setPieces(prev => {
-    const i = prev.findIndex(p => p.uid === uid)
-    if (i >= prev.length - 1) return prev
-    const next = [...prev]
-    ;[next[i], next[i + 1]] = [next[i + 1], next[i]]
-    return next
-  })
-}
-```
+Below the compound viewer. Same as current implementation:
+- Fixation dropdown
+- Cable dropdown
+- Live price (calcTotemPrice)
+- Add to Cart button (disabled when pieces.length === 0 || isAdding)
+- On successful add: setPieces([]), setSelectedUid(null), setMode('build') — reset to empty state
 
 ---
 
-### Styling notes
+### Section C — Shape catalog with mode tabs
 
-- Follow the existing design system: font-mono for prices/labels, font-display for headings, ink/canvas/stroke/muted tokens.
-- No rounded corners (borderRadius: DEFAULT: 0px in tailwind.config.ts).
-- Use the `cn()` utility from '@/lib/utils/cn'.
-- The component should feel architectural — not airy. Tight spacing.
+Below Section B. Two tabs at the top:
 
----
+[ Build your own ]  [ Ready-made ]
 
-## Step 3 — Wire into the product page
+Tab styling: font-mono text-xs uppercase tracking-wider. Active: border-b-2 border-ink text-ink. Inactive: text-muted.
 
-In src/app/products/[handle]/page.tsx:
+**Build your own tab:**
+Same shape catalog grid as current — 8 cards, 2 cols mobile / 3 cols desktop. Each card adds a piece with flipped: false as default.
 
-Read the file in full before editing.
+**Ready-made tab:**
+Grid of preset cards, 1 col mobile / 2 col desktop. Each card:
+- Preset name: font-display text-lg
+- Preset description: font-mono text-xs text-muted
+- Mini visual preview: a row of small colored squares (w-3 h-3 each) representing the pieces in order, using color hex values
+- Price: calcTotemPrice with preset data
+- "Use this" button (secondary style)
 
-Add this conditional at the top of the page's JSX (after the JSON-LD script), before the normal product layout sections:
-```tsx
-import { TotemConfigurator } from '@/components/product/TotemConfigurator'
-
-// Inside the component, before the normal layout:
-if (handle === 'totem') {
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <ProductViewTracker handle={product.handle} />
-      <ProductViewEvent handle={product.handle} title={product.title} />
-      <div className="container-wide py-8 md:py-16">
-        <TotemConfigurator />
-      </div>
-    </>
-  )
-}
-```
-
-The rest of the standard PDP layout (ImageGalleryWithZoomClient, ProductInfoPanel, description, gallery, recently viewed, related) only renders for non-totem handles.
+On clicking "Use this":
+- Map preset.pieces to TotemPiece[] with generated uids and flipped: false
+- Set pieces, fixationId, cableId from preset
+- Set selectedUid to null
+- Switch mode to 'build' so customer sees the stack immediately
 
 ---
 
-## Step 4 — Add NEXT_PUBLIC_TOTEM_VARIANT_ID to env
+## 3 — Polish TotemCartGroup
 
-In .env.local.example, add:
-TOTEM configurator — replace with real Shopify variant ID after products are created
-NEXT_PUBLIC_TOTEM_VARIANT_ID=TOTEM_VARIANT_PLACEHOLDER
+In src/components/cart/TotemCartGroup.tsx, read the current file fully before editing.
+
+**Collapsed state:**
+- "TOTEM" in font-display uppercase text-lg
+- Price right-aligned font-mono text-sm
+- ChevronDown icon (rotates when expanded)
+- Summary line 1: shape names joined with ' · ', max 3 shown then "+ N more"
+- Summary line 2: fixation name + cable name from visible attributes
+
+Build summary by reading line.attributes — filter out keys starting with '_'. Shape lines have a 'Shape' attribute, fixation line has 'Fixation', cable line has 'Cable'.
+
+**Expanded state:**
+Sub-rows, pl-4 indent, text-xs font-mono:
+- Shape lines: shape name · color name (left), line price (right)
+- Fixation line: fixation name (left), price (right)
+- Cable line: cable name (left), price (right)
+- py-2 border-b border-stroke last:border-b-0
+
+At the bottom of the expanded group: a small "Remove bundle" text button that calls removeItem for each line id in the group. text-xs text-muted hover:text-error.
 
 ---
 
-## Completion checklist
+## 4 — Verification
 
-- Run `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check` — zero errors required
-- Confirm: visiting /products/totem shows the configurator, not the standard PDP
-- Confirm: adding shapes updates the live price
-- Confirm: reorder ▲▼ works
-- Confirm: color picker appears on piece selection and updates the swatch
-- Confirm: clicking Add to Cart (with pieces) calls addBundle and opens the cart drawer with a TotemCartGroup card
-- Update docs/STATUS.md — mark TOTEM Phase 2 done
-- Commit: `feat: totem phase 2 — configurator UI`
+- type-check passes with zero errors
+- /products/totem renders the new compound viewer layout
+- Adding shapes shows colored placeholder blocks in the visual stack
+- Clicking a block or list row selects that piece, color swatches appear
+- Changing color updates the block color immediately
+- Flip button applies scaleY(-1) to the block
+- Drag and drop reorders blocks in the visual stack
+- ▲▼ arrows in the list also reorder
+- Presets tab shows 4 preset cards, clicking "Use this" populates the stack
+- Add to Cart resets the configurator to empty state after success
+- TotemCartGroup collapsed and expanded states display correctly
+- Normal cart items still work alongside TOTEM groups

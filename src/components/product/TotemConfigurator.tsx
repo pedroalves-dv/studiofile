@@ -1,17 +1,32 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, Trash2, Plus } from 'lucide-react';
+import { ChevronUp, ChevronDown, Trash2, Plus, RotateCcw } from 'lucide-react';
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
   TOTEM_FIXATIONS,
   TOTEM_CABLES,
+  TOTEM_PRESETS,
   calcTotemPrice,
   type TotemPiece,
 } from '@/lib/totem-config';
 import { useCart } from '@/hooks/useCart';
 import { cn } from '@/lib/utils/cn';
+
+// Shape height lookup for visual placeholder blocks (deliberate borderRadius exception — physical object feel)
+const SHAPE_HEIGHTS: Record<string, number> = {
+  arch: 52,
+  dome: 44,
+  cylinder: 64,
+  cone: 56,
+  wave: 44,
+  sphere: 44,
+  torus: 28,
+  prism: 52,
+};
+
+type Mode = 'build' | 'presets';
 
 export function TotemConfigurator() {
   const { addBundle } = useCart();
@@ -21,10 +36,12 @@ export function TotemConfigurator() {
   const [fixationId, setFixationId] = useState(TOTEM_FIXATIONS[0].id);
   const [cableId, setCableId] = useState(TOTEM_CABLES[0].id);
   const [isAdding, setIsAdding] = useState(false);
+  const [mode, setMode] = useState<Mode>('build');
+  const [draggedUid, setDraggedUid] = useState<string | null>(null);
 
   function addShape(shapeId: string) {
     const uid = Math.random().toString(36).slice(2, 10);
-    setPieces((prev) => [...prev, { uid, shapeId, colorId: 'chalk' }]);
+    setPieces((prev) => [...prev, { uid, shapeId, colorId: 'chalk', flipped: false }]);
   }
 
   function removeShape(uid: string) {
@@ -34,6 +51,10 @@ export function TotemConfigurator() {
 
   function setColorForPiece(uid: string, colorId: string) {
     setPieces((prev) => prev.map((p) => (p.uid === uid ? { ...p, colorId } : p)));
+  }
+
+  function flipPiece(uid: string) {
+    setPieces((prev) => prev.map((p) => (p.uid === uid ? { ...p, flipped: !p.flipped } : p)));
   }
 
   function moveUp(uid: string) {
@@ -56,131 +77,193 @@ export function TotemConfigurator() {
     });
   }
 
+  function handleDrop(targetUid: string) {
+    if (!draggedUid || draggedUid === targetUid) {
+      setDraggedUid(null);
+      return;
+    }
+    setPieces((prev) => {
+      const next = [...prev];
+      const draggedIdx = next.findIndex((p) => p.uid === draggedUid);
+      const targetIdx = next.findIndex((p) => p.uid === targetUid);
+      if (draggedIdx === -1 || targetIdx === -1) return prev;
+      [next[draggedIdx], next[targetIdx]] = [next[targetIdx], next[draggedIdx]];
+      return next;
+    });
+    setDraggedUid(null);
+  }
+
+  function applyPreset(presetId: string) {
+    const preset = TOTEM_PRESETS.find((p) => p.id === presetId);
+    if (!preset) return;
+    setPieces(
+      preset.pieces.map((p) => ({
+        uid: Math.random().toString(36).slice(2, 10),
+        shapeId: p.shapeId,
+        colorId: p.colorId,
+        flipped: p.flipped,
+      }))
+    );
+    setFixationId(preset.fixationId);
+    setCableId(preset.cableId);
+    setSelectedUid(null);
+    setMode('build');
+  }
+
   async function handleAddToCart() {
     if (pieces.length === 0 || isAdding) return;
     setIsAdding(true);
     await addBundle({ pieces, fixationId, cableId });
+    setPieces([]);
+    setSelectedUid(null);
+    setMode('build');
     setIsAdding(false);
   }
 
   const totalPrice = calcTotemPrice({ pieces, fixationId, cableId });
-  const fixationName = TOTEM_FIXATIONS.find((f) => f.id === fixationId)?.name ?? fixationId;
-  const cableName = TOTEM_CABLES.find((c) => c.id === cableId)?.name ?? cableId;
+  const selectedPiece = pieces.find((p) => p.uid === selectedUid);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
-      {/* ─── Left pane — the stack ─── */}
-      <div className="flex flex-col gap-6">
-        {/* Heading */}
-        <div className="flex items-baseline gap-3">
-          <h1 className="font-display uppercase text-2xl tracking-display">Your lamp</h1>
-          {pieces.length > 0 && (
-            <span className="font-mono text-sm text-muted">
-              {pieces.length} piece{pieces.length === 1 ? '' : 's'}
-            </span>
-          )}
-        </div>
+    <div className="flex flex-col gap-10">
 
-        {/* Stack */}
-        <div className="flex flex-col">
-          {pieces.length === 0 ? (
-            <div className="border border-stroke py-12 flex items-center justify-center">
-              <p className="font-mono text-sm text-muted">Add shapes from the right →</p>
-            </div>
-          ) : (
-            pieces.map((piece, idx) => {
-              const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
-              const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
-              const isSelected = selectedUid === piece.uid;
+      {/* ── Section A: Compound Viewer ── */}
+      <div className="border border-stroke">
+        <div className="flex flex-col md:flex-row">
 
-              return (
-                <div key={piece.uid}>
-                  {/* Piece row */}
+          {/* Left half — visual stack */}
+          <div className="w-full md:w-40 border-b border-stroke md:border-b-0 md:border-r flex items-start justify-center py-6 min-h-[200px]">
+            {pieces.length === 0 ? (
+              <div className="w-0.5 border-l-2 border-dashed border-stroke h-40 mt-4" />
+            ) : (
+              <div className="flex flex-col items-center" style={{ gap: 4 }}>
+                {pieces.map((piece) => {
+                  const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
+                  const height = SHAPE_HEIGHTS[piece.shapeId] ?? 44;
+                  const isSelected = selectedUid === piece.uid;
+                  return (
+                    <div
+                      key={piece.uid}
+                      draggable
+                      onDragStart={() => setDraggedUid(piece.uid)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => handleDrop(piece.uid)}
+                      onClick={() => setSelectedUid(isSelected ? null : piece.uid)}
+                      className={cn(
+                        'cursor-grab active:cursor-grabbing transition-all',
+                        isSelected && 'ring-2 ring-ink'
+                      )}
+                      style={{
+                        width: 80,
+                        height,
+                        backgroundColor: color?.hex ?? '#F2F0EB',
+                        borderRadius: 4,
+                        transform: piece.flipped ? 'scaleY(-1)' : undefined,
+                        flexShrink: 0,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Right half — named list */}
+          <div className="flex-1 divide-y divide-stroke">
+            {pieces.length === 0 ? (
+              <p className="font-mono text-sm text-muted px-4 py-6">Add shapes below →</p>
+            ) : (
+              pieces.map((piece, idx) => {
+                const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
+                const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
+                const isSelected = selectedUid === piece.uid;
+                return (
                   <div
+                    key={piece.uid}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 border border-stroke cursor-pointer -mt-px transition-colors',
-                      isSelected ? 'ring-1 ring-ink border-ink z-10 relative' : 'hover:border-ink'
+                      'flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors',
+                      isSelected ? 'bg-stroke/30' : 'hover:bg-stroke/10'
                     )}
                     onClick={() => setSelectedUid(isSelected ? null : piece.uid)}
                   >
-                    {/* Color swatch */}
-                    <span
-                      className="w-4 h-4 shrink-0 border border-stroke/50"
-                      style={{ backgroundColor: color?.hex ?? '#F2F0EB' }}
-                    />
-
-                    {/* Shape info */}
-                    <span className="font-mono text-sm flex-1 truncate">
-                      {shape?.name ?? piece.shapeId}
-                    </span>
-                    <span className="font-mono text-xs text-muted shrink-0">
-                      €{shape?.price ?? 0}
-                    </span>
-
-                    {/* Reorder + remove */}
-                    <div className="flex items-center gap-1 ml-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-mono text-sm">{shape?.name ?? piece.shapeId}</p>
+                      <p className="font-mono text-xs text-muted">{color?.name ?? piece.colorId}</p>
+                    </div>
+                    <div
+                      className="flex items-center gap-0.5"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <button
                         type="button"
                         aria-label="Move piece up"
                         disabled={idx === 0}
                         onClick={() => moveUp(piece.uid)}
-                        className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                       >
-                        <ChevronUp size={14} />
+                        <ChevronUp size={13} />
                       </button>
                       <button
                         type="button"
                         aria-label="Move piece down"
                         disabled={idx === pieces.length - 1}
                         onClick={() => moveDown(piece.uid)}
-                        className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                        className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                       >
-                        <ChevronDown size={14} />
+                        <ChevronDown size={13} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Flip shape"
+                        onClick={() => flipPiece(piece.uid)}
+                        className="p-1 text-muted hover:text-ink transition-colors"
+                      >
+                        <RotateCcw size={13} />
                       </button>
                       <button
                         type="button"
                         aria-label="Remove piece"
                         onClick={() => removeShape(piece.uid)}
-                        className="p-0.5 text-muted hover:text-error transition-colors ml-1"
+                        className="p-1 text-muted hover:text-error transition-colors ml-0.5"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={13} />
                       </button>
                     </div>
                   </div>
-
-                  {/* Color picker — shown inline under selected piece */}
-                  {isSelected && (
-                    <div
-                      className="border border-t-0 border-ink px-3 py-3 bg-canvas"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex flex-wrap gap-1.5">
-                        {TOTEM_COLORS.map((c) => (
-                          <button
-                            key={c.id}
-                            type="button"
-                            aria-label={c.name}
-                            onClick={() => setColorForPiece(piece.uid, c.id)}
-                            className={cn(
-                              'w-7 h-7 transition-all',
-                              piece.colorId === c.id ? 'ring-1 ring-ink ring-offset-1' : 'ring-1 ring-transparent hover:ring-stroke'
-                            )}
-                            style={{ backgroundColor: c.hex }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
+                );
+              })
+            )}
+          </div>
         </div>
 
-        {/* System selectors */}
-        <div className="flex flex-col gap-4 pt-2 border-t border-stroke">
+        {/* Color swatches — full width below both halves, shown when a piece is selected */}
+        {selectedPiece && (
+          <div className="border-t border-stroke px-4 py-3">
+            <div className="flex flex-wrap gap-1.5">
+              {TOTEM_COLORS.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-label={c.name}
+                  onClick={() => setColorForPiece(selectedPiece.uid, c.id)}
+                  className={cn(
+                    'w-7 h-7 transition-all',
+                    selectedPiece.colorId === c.id
+                      ? 'ring-1 ring-ink ring-offset-1'
+                      : 'ring-1 ring-transparent hover:ring-stroke'
+                  )}
+                  style={{ backgroundColor: c.hex }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Section B: System selectors + Price + Add to Cart ── */}
+      <div className="flex flex-col gap-6 border-t border-stroke pt-6">
+        <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-label text-muted">Fixation</label>
+            <label className="font-mono text-xs uppercase tracking-wider text-muted">Fixation</label>
             <select
               value={fixationId}
               onChange={(e) => setFixationId(e.target.value)}
@@ -193,9 +276,8 @@ export function TotemConfigurator() {
               ))}
             </select>
           </div>
-
           <div className="flex flex-col gap-1.5">
-            <label className="text-label text-muted">Cable</label>
+            <label className="font-mono text-xs uppercase tracking-wider text-muted">Cable</label>
             <select
               value={cableId}
               onChange={(e) => setCableId(e.target.value)}
@@ -210,55 +292,127 @@ export function TotemConfigurator() {
           </div>
         </div>
 
-        {/* Price + Add to Cart */}
-        <div className="flex flex-col gap-3 pt-2 border-t border-stroke">
+        <div className="flex items-center justify-between gap-6">
           <div>
             <p className="font-mono text-2xl text-ink">€{totalPrice}</p>
-            <p className="text-label text-muted mt-1">
-              {pieces.length} piece{pieces.length === 1 ? '' : 's'} · {fixationName} · {cableName}
-            </p>
+            {pieces.length > 0 && (
+              <p className="font-mono text-xs text-muted mt-0.5">
+                {pieces.length} piece{pieces.length === 1 ? '' : 's'}
+              </p>
+            )}
           </div>
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={pieces.length === 0 || isAdding}
-            className="w-full bg-ink text-canvas font-mono text-sm py-3 px-6 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="bg-ink text-canvas font-mono text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {isAdding ? 'Adding…' : 'Add to cart'}
           </button>
         </div>
       </div>
 
-      {/* ─── Right pane — shape catalog ─── */}
-      <div className="flex flex-col gap-6">
-        <h2 className="font-display uppercase text-2xl tracking-display">Add shapes</h2>
+      {/* ── Section C: Shape catalog with mode tabs ── */}
+      <div className="flex flex-col gap-6 border-t border-stroke pt-6">
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-stroke">
-          {TOTEM_SHAPES.map((shape) => (
+        {/* Tab bar */}
+        <div className="flex gap-6 border-b border-stroke pb-px">
+          {(['build', 'presets'] as Mode[]).map((tab) => (
             <button
-              key={shape.id}
+              key={tab}
               type="button"
-              aria-label={`Add ${shape.name}`}
-              onClick={() => addShape(shape.id)}
-              className="group relative bg-canvas border border-stroke hover:border-ink transition-colors text-left flex flex-col"
+              onClick={() => setMode(tab)}
+              className={cn(
+                'font-mono text-xs uppercase tracking-wider pb-2 -mb-px border-b-2 transition-colors',
+                mode === tab
+                  ? 'border-ink text-ink'
+                  : 'border-transparent text-muted hover:text-ink'
+              )}
             >
-              {/* Visual placeholder */}
-              <div className="aspect-square w-full bg-stone-100 group-hover:bg-stone-200 transition-colors" />
-
-              {/* Info */}
-              <div className="px-3 py-2.5 flex items-end justify-between gap-2">
-                <div>
-                  <p className="font-mono text-sm uppercase">{shape.name}</p>
-                  <p className="font-mono text-xs text-muted">€{shape.price}</p>
-                </div>
-                <Plus
-                  size={14}
-                  className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
-                />
-              </div>
+              {tab === 'build' ? 'Build your own' : 'Ready-made'}
             </button>
           ))}
         </div>
+
+        {/* Build your own tab */}
+        {mode === 'build' && (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-stroke">
+            {TOTEM_SHAPES.map((shape) => (
+              <button
+                key={shape.id}
+                type="button"
+                aria-label={`Add ${shape.name}`}
+                onClick={() => addShape(shape.id)}
+                className="group relative bg-canvas border border-stroke hover:border-ink transition-colors text-left flex flex-col"
+              >
+                {/* CSS placeholder — Phase 4 will replace with real SVGs */}
+                <div className="aspect-square w-full bg-stone-100 group-hover:bg-stone-200 transition-colors" />
+                <div className="px-3 py-2.5 flex items-end justify-between gap-2">
+                  <div>
+                    <p className="font-mono text-sm uppercase">{shape.name}</p>
+                    <p className="font-mono text-xs text-muted">€{shape.price}</p>
+                  </div>
+                  <Plus
+                    size={14}
+                    className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
+                  />
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Ready-made presets tab */}
+        {mode === 'presets' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-stroke">
+            {TOTEM_PRESETS.map((preset) => {
+              const presetPrice = calcTotemPrice({
+                pieces: preset.pieces.map((p) => ({
+                  uid: '',
+                  shapeId: p.shapeId,
+                  colorId: p.colorId,
+                  flipped: p.flipped,
+                })),
+                fixationId: preset.fixationId,
+                cableId: preset.cableId,
+              });
+              return (
+                <div
+                  key={preset.id}
+                  className="bg-canvas border border-stroke flex flex-col gap-3 p-4"
+                >
+                  <div>
+                    <h3 className="font-display text-lg">{preset.name}</h3>
+                    <p className="font-mono text-xs text-muted mt-0.5">{preset.description}</p>
+                  </div>
+                  {/* Mini color preview — one square per piece */}
+                  <div className="flex gap-1 flex-wrap">
+                    {preset.pieces.map((p, i) => {
+                      const color = TOTEM_COLORS.find((c) => c.id === p.colorId);
+                      return (
+                        <span
+                          key={i}
+                          className="w-3 h-3 inline-block"
+                          style={{ backgroundColor: color?.hex ?? '#F2F0EB' }}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center justify-between mt-auto pt-1">
+                    <p className="font-mono text-sm">€{presetPrice}</p>
+                    <button
+                      type="button"
+                      onClick={() => applyPreset(preset.id)}
+                      className="font-mono text-xs border border-stroke px-3 py-1.5 hover:border-ink transition-colors"
+                    >
+                      Use this
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

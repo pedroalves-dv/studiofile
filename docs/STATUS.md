@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 11 partially done — 11.3 header effects + 11.4 shop layout remaining. TOTEM configurator is the active build track.**
+Current position: **Phase 11 partially done — 11.3 header effects + 11.4 shop layout remaining. TOTEM Phase 3 complete. TOTEM Phase 4 (real SVG shapes) is next on the TOTEM track.**
 
 Update this file at the end of every session.
 
@@ -59,7 +59,7 @@ The TOTEM lamp is a modular ceiling light: stackable 3D-printed shapes, each sol
 | ----- | ----------- | ------ |
 | TOTEM 1 | `totem-config.ts`, cart line attributes, `addBundle()` in `useCart`, `TotemCartGroup` in cart drawer | ✅ Done |
 | TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total | ✅ Done |
-| TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish | ⬜ Pending |
+| TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish | ✅ Done |
 
 ### TOTEM Architecture Decisions
 

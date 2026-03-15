@@ -28,7 +28,7 @@ export interface TotemPreset {
   id: string;
   name: string;
   description: string;
-  pieces: Array<{ shapeId: string; colorId: string }>;
+  pieces: Array<{ shapeId: string; colorId: string; flipped: boolean }>;
   fixationId: string;
   cableId: string;
 }
@@ -37,6 +37,7 @@ export interface TotemPiece {
   uid: string; // unique per piece instance, generated client-side
   shapeId: string;
   colorId: string;
+  flipped: boolean;
 }
 
 export interface TotemBuildConfig {
@@ -87,9 +88,9 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: 'The Studio',
     description: 'A minimal three-piece composition',
     pieces: [
-      { shapeId: 'arch', colorId: 'chalk' },
-      { shapeId: 'dome', colorId: 'stone' },
-      { shapeId: 'cylinder', colorId: 'chalk' },
+      { shapeId: 'arch', colorId: 'chalk', flipped: false },
+      { shapeId: 'dome', colorId: 'stone', flipped: false },
+      { shapeId: 'cylinder', colorId: 'chalk', flipped: false },
     ],
     fixationId: 'rosette',
     cableId: 'black-textile',
@@ -99,11 +100,11 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: 'The Salon',
     description: 'A five-piece statement piece',
     pieces: [
-      { shapeId: 'dome', colorId: 'chalk' },
-      { shapeId: 'arch', colorId: 'stone' },
-      { shapeId: 'dome', colorId: 'black' },
-      { shapeId: 'wave', colorId: 'chalk' },
-      { shapeId: 'arch', colorId: 'cream' },
+      { shapeId: 'dome', colorId: 'chalk', flipped: false },
+      { shapeId: 'arch', colorId: 'stone', flipped: false },
+      { shapeId: 'dome', colorId: 'black', flipped: false },
+      { shapeId: 'wave', colorId: 'chalk', flipped: false },
+      { shapeId: 'arch', colorId: 'cream', flipped: false },
     ],
     fixationId: 'rosette',
     cableId: 'black-textile',
@@ -113,13 +114,13 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: 'The Atelier',
     description: 'Seven pieces, maximum drama',
     pieces: [
-      { shapeId: 'dome', colorId: 'black' },
-      { shapeId: 'arch', colorId: 'clay' },
-      { shapeId: 'wave', colorId: 'stone' },
-      { shapeId: 'dome', colorId: 'chalk' },
-      { shapeId: 'arch', colorId: 'black' },
-      { shapeId: 'wave', colorId: 'clay' },
-      { shapeId: 'cylinder', colorId: 'chalk' },
+      { shapeId: 'dome', colorId: 'black', flipped: false },
+      { shapeId: 'arch', colorId: 'clay', flipped: false },
+      { shapeId: 'wave', colorId: 'stone', flipped: false },
+      { shapeId: 'dome', colorId: 'chalk', flipped: false },
+      { shapeId: 'arch', colorId: 'black', flipped: false },
+      { shapeId: 'wave', colorId: 'clay', flipped: false },
+      { shapeId: 'cylinder', colorId: 'chalk', flipped: false },
     ],
     fixationId: 'rail',
     cableId: 'black-textile',
@@ -129,8 +130,8 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: 'The Duo',
     description: 'Two pieces, compact and refined',
     pieces: [
-      { shapeId: 'arch', colorId: 'chalk' },
-      { shapeId: 'dome', colorId: 'black' },
+      { shapeId: 'arch', colorId: 'chalk', flipped: false },
+      { shapeId: 'dome', colorId: 'black', flipped: false },
     ],
     fixationId: 'rosette',
     cableId: 'transparent',
