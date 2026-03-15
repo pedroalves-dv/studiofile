@@ -1,14 +1,14 @@
-import { Suspense } from "react";
+// import { Suspense } from "react";
 import { Metadata } from "next";
 import { HeroContent } from "@/components/home/HeroContent";
 import Image from "next/image";
 import BrandStory from "@/components/home/BrandStory";
 
 import { ProductSpotlight } from "@/components/home/ProductSpotlight";
-import {
-  FeaturedProducts,
-  FeaturedProductsSkeleton,
-} from "@/components/home/FeaturedProducts";
+// import {
+//   FeaturedProducts,
+//   FeaturedProductsSkeleton,
+// } from "@/components/home/FeaturedProducts";
 
 export const metadata: Metadata = {
   title: "3d printing & design studio",

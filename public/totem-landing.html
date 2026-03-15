@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOTEM — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0e0d0b;
+    --warm-dark: #1a1713;
+    --amber: #c8892a;
+    --amber-light: #e8a83c;
+    --amber-pale: #f2d9a2;
+    --cream: #f0ead8;
+    --muted: #7a7265;
+    --line: rgba(200,137,42,0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- GRID OVERLAY ---- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- LAYOUT ---- */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+  }
+
+  /* ---- HEADER ---- */
+  header {
+    padding: 2.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .studio-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  .studio-name span {
+    display: block;
+    color: var(--amber);
+  }
+
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 70vh;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .hero-left {
+    padding: 5rem 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 0.5px solid var(--line);
+  }
+
+  .collection-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  h1 {
+    font-size: clamp(7rem, 14vw, 13rem);
+    font-weight: 300;
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 3rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber-pale);
+  }
+
+  .hero-description {
+    font-size: 1.35rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(240,234,216,0.6);
+    max-width: 38ch;
+    margin-bottom: 3.5rem;
+  }
+
+  /* ---- SHAPE VISUAL ---- */
+  .hero-right {
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shapes-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .shape {
+    display: block;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .shape:nth-child(2) { animation-delay: -2.5s; }
+  .shape:nth-child(3) { animation-delay: -5s; }
+  .shape:nth-child(4) { animation-delay: -1s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .lamp-glow {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(ellipse, rgba(200,137,42,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .shape-count {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    text-align: right;
+  }
+
+  .shape-count .number {
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--amber);
+    line-height: 1;
+    display: block;
+  }
+
+  .shape-count .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ---- FEATURE STRIP ---- */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .feature {
+    padding: 2.5rem 3rem;
+    border-right: 0.5px solid var(--line);
+  }
+
+  .feature:last-child { border-right: none; }
+
+  .feature-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+    margin-bottom: 1rem;
+  }
+
+  .feature h3 {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 0.6rem;
+  }
+
+  .feature p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ---- WAITLIST SECTION ---- */
+  .waitlist-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .waitlist-left {
+    padding: 5rem 3rem;
+    border-right: 0.5px solid var(--line);
+  }
+
+  .waitlist-left h2 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .waitlist-left h2 em {
+    font-style: italic;
+    color: var(--amber-pale);
+  }
+
+  .waitlist-left p {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(240,234,216,0.55);
+    line-height: 1.7;
+    max-width: 36ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .perks {
+    list-style: none;
+    margin-bottom: 3.5rem;
+  }
+
+  .perks li {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 0.6rem 0;
+    border-top: 0.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .perks li::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+
+  .waitlist-right {
+    padding: 5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ---- FORM ---- */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: 0.5px solid rgba(200,137,42,0.3);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    padding: 0.9rem 1.1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input::placeholder {
+    color: var(--muted);
+  }
+
+  .form-input:focus {
+    border-color: var(--amber);
+  }
+
+  .form-submit {
+    width: 100%;
+    background: var(--amber);
+    color: var(--black);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .form-submit:hover {
+    background: var(--amber-light);
+  }
+
+  .form-submit:active {
+    transform: scale(0.99);
+  }
+
+  .form-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  /* ---- SUCCESS STATE ---- */
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  .form-success .check {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    color: var(--amber);
+  }
+
+  .form-success h3 {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-success p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--muted);
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .footer-right a {
+    color: var(--amber);
+    text-decoration: none;
+  }
+
+  /* ---- ENTRY ANIMATIONS ---- */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.9s ease forwards;
+  }
+
+  .fade-up:nth-child(1) { animation-delay: 0.1s; }
+  .fade-up:nth-child(2) { animation-delay: 0.25s; }
+  .fade-up:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .shapes-entry {
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.4s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 900px) {
+    header { padding: 1.5rem; }
+
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 3rem 1.5rem; border-right: none; border-bottom: 0.5px solid var(--line); min-height: auto; }
+    .hero-right { padding: 3rem 1.5rem; min-height: 50vw; }
+
+    h1 { font-size: clamp(5rem, 20vw, 8rem); }
+
+    .features { grid-template-columns: 1fr; }
+    .feature { border-right: none; border-bottom: 0.5px solid var(--line); padding: 2rem 1.5rem; }
+    .feature:last-child { border-bottom: none; }
+
+    .waitlist-section { grid-template-columns: 1fr; }
+    .waitlist-left { padding: 3rem 1.5rem; border-right: none; border-bottom: 0.5px solid var(--line); }
+    .waitlist-right { padding: 3rem 1.5rem; }
+
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="studio-name">
+      <span>Studio Name</span>
+      3D Design & Print
+    </div>
+    <div class="header-tag">
+      Collection 01<br>
+      Ceiling Lighting
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <div>
+          <p class="collection-label fade-up">Collection 01 — Ceiling Lighting</p>
+          <h1 class="fade-up">TO<br><em>TEM</em></h1>
+          <p class="hero-description fade-up">
+            A modular lighting system built from stackable shapes. Choose from twenty forms, mix colors and textures, make it entirely yours.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="shapes-container shapes-entry">
+          <!-- Stacked modular lamp shapes as SVG -->
+          <svg width="220" height="420" viewBox="0 0 220 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Wire -->
+            <line x1="110" y1="0" x2="110" y2="50" stroke="#c8892a" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+            <!-- Shape 1 — wide flat cylinder -->
+            <ellipse cx="110" cy="88" rx="70" ry="12" fill="#c8892a" fill-opacity="0.12" stroke="#c8892a" stroke-width="0.8"/>
+            <rect x="40" y="62" width="140" height="26" rx="2" fill="#1a1713" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="62" rx="70" ry="12" fill="#c8892a" fill-opacity="0.25" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Clip ring -->
+            <rect x="100" y="88" width="20" height="10" rx="2" fill="#c8892a" fill-opacity="0.4" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Shape 2 — tapered cone -->
+            <path d="M75 98 L50 162 L170 162 L145 98 Z" fill="#1a1713" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="98" rx="35" ry="6" fill="#c8892a" fill-opacity="0.2" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="162" rx="60" ry="10" fill="#c8892a" fill-opacity="0.1" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Clip ring -->
+            <rect x="100" y="162" width="20" height="10" rx="2" fill="#c8892a" fill-opacity="0.4" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Shape 3 — sphere-like -->
+            <path d="M55 172 Q40 210 55 248 L165 248 Q180 210 165 172 Z" fill="#1a1713" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="172" rx="55" ry="9" fill="#c8892a" fill-opacity="0.2" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="248" rx="55" ry="9" fill="#c8892a" fill-opacity="0.1" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Clip ring -->
+            <rect x="100" y="248" width="20" height="10" rx="2" fill="#c8892a" fill-opacity="0.4" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Shape 4 — bottom bell -->
+            <path d="M85 258 Q60 295 50 340 L170 340 Q160 295 135 258 Z" fill="#1a1713" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="258" rx="25" ry="5" fill="#c8892a" fill-opacity="0.2" stroke="#c8892a" stroke-width="0.8"/>
+            <ellipse cx="110" cy="340" rx="60" ry="10" fill="#c8892a" fill-opacity="0.1" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Bottom cap -->
+            <ellipse cx="110" cy="352" rx="22" ry="5" fill="#c8892a" fill-opacity="0.5" stroke="#c8892a" stroke-width="1"/>
+            <rect x="98" y="340" width="24" height="12" rx="2" fill="#c8892a" fill-opacity="0.3" stroke="#c8892a" stroke-width="0.8"/>
+
+            <!-- Bulb glow hint -->
+            <ellipse cx="110" cy="370" rx="28" ry="10" fill="#c8892a" fill-opacity="0.08"/>
+            <ellipse cx="110" cy="370" rx="16" ry="6" fill="#e8a83c" fill-opacity="0.18"/>
+          </svg>
+
+          <div class="lamp-glow"></div>
+        </div>
+
+        <div class="shape-count shapes-entry">
+          <span class="number">20</span>
+          <span class="label">Shapes to combine</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+      <div class="feature">
+        <p class="feature-num">01</p>
+        <h3>Stack freely</h3>
+        <p>Any combination of shapes, as many as you want. The modular system is designed to let you build without limits.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-num">02</p>
+        <h3>Your palette</h3>
+        <p>Colors and textures for every piece. Mix and match across a curated range of finishes — matte, raw, tinted.</p>
+      </div>
+      <div class="feature">
+        <p class="feature-num">03</p>
+        <h3>Made for you</h3>
+        <p>Each lamp is 3D printed to order. Choose a preset or build your own in our interactive configurator.</p>
+      </div>
+    </section>
+
+    <!-- WAITLIST -->
+    <section class="waitlist-section">
+      <div class="waitlist-left">
+        <h2>Be<br>first<br><em>in line</em></h2>
+        <p>
+          TOTEM launches in a limited founding batch. Join the list and be among the first to configure yours.
+        </p>
+        <ul class="perks">
+          <li>Founding batch pricing</li>
+          <li>First access to the builder</li>
+          <li>Exclusive first-run colorway</li>
+          <li>Behind the scenes updates</li>
+        </ul>
+      </div>
+
+      <div class="waitlist-right">
+        <div id="form-container">
+          <div class="form-group">
+            <label class="form-label" for="name">Your name</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Marie Dupont" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="interest">Most excited about</label>
+            <select class="form-input" id="interest" name="interest">
+              <option value="" disabled selected>Choose one</option>
+              <option value="ceiling">Ceiling lamps</option>
+              <option value="builder">The custom builder</option>
+              <option value="presets">Preset collections</option>
+              <option value="all">All of the above</option>
+            </select>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()">
+            Notify me at launch →
+          </button>
+          <p class="form-note">No spam. Just a message when TOTEM is ready.</p>
+        </div>
+
+        <div class="form-success" id="form-success">
+          <span class="check">✦</span>
+          <h3>You're on the list.</h3>
+          <p>We'll be in touch when TOTEM is ready.<br>Thank you for being here early.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">© 2025 Studio Name — Paris</div>
+    <div class="footer-right">
+      <a href="#">Instagram</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  function handleSubmit() {
+    const email = document.getElementById('email').value;
+    const name = document.getElementById('name').value;
+
+    if (!email || !email.includes('@')) {
+      document.getElementById('email').focus();
+      document.getElementById('email').style.borderColor = 'rgba(200,80,80,0.7)';
+      setTimeout(() => {
+        document.getElementById('email').style.borderColor = 'rgba(200,137,42,0.3)';
+      }, 1500);
+      return;
+    }
+
+    // ---- CONNECT YOUR EMAIL SERVICE HERE ----
+    // e.g. fetch('/api/waitlist', { method: 'POST', body: JSON.stringify({ name, email }) })
+    // or Mailchimp / ConvertKit API
+
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }
+</script>
+</body>
+</html>

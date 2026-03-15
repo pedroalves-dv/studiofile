@@ -10,6 +10,15 @@ const PUBLIC_ACCOUNT_PATHS = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Soft-launch: redirect root to landing page REMOVE ON LAUNCH
+  // ===================================
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/coming-soon', request.url))
+  }
+
+   // ===================================
+
+
   if (!pathname.startsWith('/account')) return NextResponse.next()
   if (PUBLIC_ACCOUNT_PATHS.some(p => pathname.startsWith(p))) return NextResponse.next()
 
@@ -24,6 +33,16 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
+//  REMOVE ON LAUNCH
+// ===================================
+
 export const config = {
-  matcher: ['/account/:path*'],
+  matcher: ['/', '/account/:path*'],
 }
+
+//  UNCOMMENT
+// ===================================
+
+// export const config = {
+//   matcher: ['/account/:path*'],
+// }
