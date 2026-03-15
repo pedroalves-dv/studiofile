@@ -119,14 +119,14 @@ export function Header() {
         {" "}
         <div
           className={`px-6 sm:px-36 backdrop-blur-xl border-b border-stroke transition-colors duration-300 ${
-            isScrolling ? "bg-canvas/80" : "bg-canvas"
+            isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
           <div className="flex items-center justify-between h-[var(--header-height)]">
             {/* Wordmark */}
-            <Link href="/" aria-label="Studiofile — Home">
+            <Link href="/" aria-label="Studiofile — Home" className="-ml-6">
               <span
-                className="group cursor-pointer relative block"
+                className="group relative block"
                 style={{
                   aspectRatio: "22.203955 / 4.0943561",
                   height: "2rem",
@@ -137,7 +137,7 @@ export function Header() {
                   className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-100 group-hover:opacity-0"
                   style={{
                     maskImage: "url(/images/logo/rect8.svg)",
-                    maskSize: "100% 100%",
+                    maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
                   }}
@@ -147,7 +147,7 @@ export function Header() {
                   className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-0 group-hover:opacity-100"
                   style={{
                     maskImage: "url(/images/logo/rect7.svg)",
-                    maskSize: "100% 100%",
+                    maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
                   }}
