@@ -1,109 +1,112 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 11 in progress — 11.3 Header effects + 11.4 Shop layout remaining.**
+Current position: **Phase 11 partially done — 11.3 header effects + 11.4 shop layout remaining. TOTEM configurator is the active build track.**
 
 Update this file at the end of every session.
 
 ---
 
+## Site Architecture
+
+| Layer | Choice |
+| ----- | ------ |
+| Frontend | Next.js 15 App Router, TypeScript (`strict: false`) |
+| Styling | Tailwind CSS v3 |
+| Backend | Shopify Storefront API (GraphQL) |
+| Animations | CSS transitions · `motion` v12 |
+| Hosting | Vercel |
+
+**Soft launch mode:** `middleware.ts` redirects `/` → `/coming-soon`. The main site is live but gated. Remove the redirect when ready to launch.
+
+---
+
 ## Phase Progress
 
-| Phase | Description | Status | Audit |
-| ------- | ----------- | --------- | --------- |
-| 1.1 | Scaffolding, env, next.config, tailwind | ✅ Done | ✅ Done |
-| 1.2 | Shopify types, client, queries, mutations, server functions | ✅ Done | ✅ Done |
-| 2.1 | Design tokens, fonts, globals.css, layout.tsx | ✅ Done | ✅ Done |
-| 2.2 | Header, Footer, Breadcrumb, PageWrapper | ✅ Done | ✅ Done |
-| 2.3 | UI primitives, Toast, LoadingBar, CookieConsent | ✅ Done | ✅ Done |
-| 3.1 | Loading skeletons, error boundaries, not-found | ✅ Done | ✅ Done |
-| 3.2 | Favicon, manifest, OG images | ✅ Done | ✅ Done |
-| 4.1 | Home page | ✅ Done | ✅ Done |
-| 4.2 | Collections index | ✅ Done | ✅ Done |
-| 4.3 | Shop / Collection pages, filtering, sorting, pagination | ✅ Done | ✅ Done |
-| 4.4 | Product Detail Page (full) | ✅ Done | ✅ Done |
-| 4.5 | About, Contact, Policies, Sitemap | ✅ Done | ✅ Done |
-| 5.1 | Search, predictive search, SearchBar, Header integration | ✅ Done | ✅ Done |
-| 6.1 | Cart context & state | ✅ Done | ⬜ |
-| 6.2 | Cart drawer UI | ✅ Done | ⬜ |
-| 7.1 | Auth flow, middleware, account pages | ✅ Done | ⬜ |
-| 8.1 | Wishlist | ✅ Done | ⬜ |
-| 8.2 | Recently viewed, related products | ✅ Done | ⬜ |
-| 9.1 | Analytics, SEO, structured data | ✅ Done | ⬜ |
-| 10.1 | Animation layer — GSAP removed, replaced by CSS/Motion in Phase 11 | ✅ Done | ✅ Done |
-| 10.2 | Page transitions, accessibility audit | ✅ Done | ✅ Done |
-| 11.1 | Marquee component (CSS, no JS animation) | ✅ Done | ✅ Done |
-| 11.2 | Home page editorial overhaul (mobile-first, BrandStory, asymmetric grid, process accordion) | ✅ Done | ⬜ |
-| 11.x | Cart & Wishlist drawer styling overhaul (ad hoc — outside phase structure) | ✅ Done | ⬜ |
-| 11.3 | Header accent hover effects | 🔄 In Progress | ⬜ |
-| 11.4 | Shop & collection editorial layout, ProductCard redesign | ⬜ | ⬜ |
+### Foundation & Infrastructure (Done)
+
+| Phase | Description | Status |
+| ----- | ----------- | ------ |
+| 1–3 | Scaffolding, Shopify client, design tokens, layout shell, loading/error states | ✅ Done |
+| 4.1–4.3 | Home page, Collections index, Shop/Collection pages with filter + sort + pagination | ✅ Done |
+| 4.4 | Product Detail Page (standard) | ✅ Done |
+| 4.5 | About, Contact, Policies, Sitemap | ✅ Done |
+| 5 | Search + predictive search | ✅ Done |
+| 6 | Cart context, cart drawer, discount codes, free shipping bar | ✅ Done |
+| 7 | Customer auth: login, register, forgot password, account dashboard, orders | ✅ Done |
+| 8 | Wishlist, Recently Viewed, Related Products | ✅ Done |
+| 9 | Analytics (Vercel), SEO, structured data, sitemap, robots | ✅ Done |
+| 10 | GSAP removed — replaced by CSS/motion in Phase 11. View transitions added. | ✅ Done |
+
+### Phase 11 — UX Design Pass
+
+| Phase | Description | Status |
+| ----- | ----------- | ------ |
+| 11.1 | Marquee component (CSS, no JS) | ✅ Done |
+| 11.2 | Home page editorial overhaul (hero, brand story, collections, featured) | ✅ Done |
+| 11.x | Cart + Wishlist drawer styling overhaul (ad hoc) | ✅ Done |
+| 11.3 | Header accent hover effects (logo slash + nav color shift) | 🔄 In Progress |
+| 11.4 | Shop + collection editorial layout, ProductCard redesign (outline on hover) | ⬜ Pending |
+
+**Phase 11 note:** 11.5 (PDP redesign) is intentionally skipped — the PDP will be replaced by the TOTEM configurator.
 
 ---
 
-## Next Session — Phase 11 (continued)
+## TOTEM Configurator — Active Build Track
 
-**Done:** 11.1 (Marquee), 11.2 (home page overhaul), 11.x (cart/wishlist drawer styling).
+The TOTEM lamp is a modular ceiling light: stackable 3D-printed shapes, each sold as a separate Shopify product. The configurator at `/products/totem` lets customers build their lamp, then adds the whole configuration as a grouped cart bundle.
 
-**Remaining:**
+| Phase | Description | Status |
+| ----- | ----------- | ------ |
+| TOTEM 1 | `totem-config.ts`, cart line attributes, `addBundle()` in `useCart`, `TotemCartGroup` in cart drawer | ⬜ Pending |
+| TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total | ⬜ Pending |
+| TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish | ⬜ Pending |
 
-1. **11.3 — Header accent hover effects**: Verify whether the blurred accent slash behind the logo and nav link accent-on-hover effects from the phase spec are implemented. Complete or finish if partial.
-2. **11.4 — Shop & collection editorial layout**: Full-width grid, ProductCard redesign (outline on hover, no scale), collapsible filter panel, large collection heading at 8vw.
+### TOTEM Architecture Decisions
 
-After 11.4: move to pre-launch checklist.
+**Shopify product structure:** One product per shape (arch, dome, cylinder, cone, wave, sphere, torus, prism), one variant per color (chalk, stone, black, clay, sage, navy, cream, terracotta). Fixation kit and cable are two additional products. No fixed bundles — unlimited configuration.
 
-Note: Phase 11.5 (PDP redesign) is intentionally deferred — the PDP will be rebuilt
-as a custom product configurator in a dedicated phase.
+**Cart mechanism:** Each module = one cart line. All lines in a build share a hidden `_build_id` attribute. The cart drawer groups lines by `_build_id` and renders them as a single `TotemCartGroup` card (collapsed/expandable).
 
----
+**Presets:** Defined as TypeScript constants in `totem-config.ts` pointing at shape/color IDs. Clicking a preset populates configurator state — no separate Shopify products.
 
-## Deferred Items
+**UX model:** Composition, not shopping. Shapes are added to a stack (not toggled). Each piece has its own position and color. Reorder via ▲▼ arrows. Color picker appears contextually on selection.
 
-These were intentionally skipped or partially implemented and must be completed before launch.
+### TOTEM Pending Before Phase 2 Goes Live
 
-| Item | Deferred from | Notes |
-| ---- | ------------- | ----- |
-| `src/lib/utils/seo.ts` full implementation | Phase 1 | ✅ Done in Phase 9 |
-| `RelatedProducts` full implementation | Phase 4.4 | ✅ Done in Phase 8 |
-| `WishlistContext` full implementation | Phase 2.1 | ✅ Done in Phase 8 |
-| `CartContext` full implementation | Phase 2.1 | ✅ Done in Phase 6 |
-| Address management UI | Phase 7 | Auth core done; no addresses page in this scaffold |
-| Contact form email service (Resend/Postmark) | Phase 4.5 | API route logs only — wire before launch |
-| About / founder page real photography | Phase 4.5 | Placeholder divs — replace when assets ready |
-| Instagram / Pinterest real handles | Phase 9 | Placeholder URLs in Organization JSON-LD |
-| PDP redesign | Phase 11 | Deferred — will be rebuilt as custom product configurator |
-| Cart & Wishlist drawer styling | Phase 11.x | Done ad hoc outside phase structure — audit against phase 11 spec before launch |
-
----
-
-## Known Issues & Gotchas
-
-Issues discovered during development that affect future phases:
-
-- **`removeDiscountCode`** calls `CART_DISCOUNT_CODES_UPDATE` with an empty array — there is no separate remove mutation in Shopify's API.
-- **Shopify discount codes** do not throw on invalid codes — they return `discountCodes[].applicable: false`. Check this flag, not a caught error.
-- **`redirect()` in Server Actions** throws a special internal error — never wrap it in try/catch. See `customerLogout` in Phase 7.
-- **`useSearchParams()` in LoadingBar** requires a Suspense boundary in `layout.tsx` — should already be in place from Phase 2.3.
-- **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast — TypeScript does not recognise this property natively.
-- **`quantityAvailable`** can be `null` in Shopify when inventory tracking is disabled — treat as unlimited stock, not zero.
-- **`ImageZoom`** uses `createPortal` directly into `document.body`, not the `Dialog` component — Dialog has `max-w-md` constraints unsuitable for a fullscreen lightbox.
-- **`VariantSelector.tsx`** syncs `?variant=` to URL on selection. Initial variant from URL is read by `ProductInfoPanel` — ensure `useSearchParams` is available (wrap in Suspense if SSR issues arise).
-- **`PageWrapper`** is a `<div>` — `layout.tsx` wraps children in `<main id="main-content">`, so PageWrapper must not use `<main>` (duplicate landmark). PDP page likewise uses `<div>`, not `<main>`.
-- **`muted` color** is `#6B6560` in `tailwind.config.ts` — do not change to `#8A8580`, which fails WCAG AA contrast.
-- **`RevealOnScroll`** is currently a plain `<div>` passthrough — GSAP was removed. Rebuild with CSS scroll-driven animation when needed (Phase 11.4 or later).
-- **`ProductGrid`** is `'use client'` — was required for GSAP which has since been removed. Can be converted back to a server component if no client features are needed.
-- **`src/components/shop/`** contains only `FilterPanel.tsx` (canonical) and `SortSelect.tsx` (dead, can be deleted). `search/FilterPanel` re-exports from `shop/FilterPanel` — do not delete `shop/FilterPanel` without updating that re-export.
+- [ ] Create TOTEM products in Shopify admin (per-module, per-color variants)
+- [ ] Set `NEXT_PUBLIC_TOTEM_VARIANT_ID` env var (Phase 1 uses this placeholder)
+- [ ] Replace placeholder variant IDs in `addBundle()` with real Shopify variant IDs
 
 ---
 
 ## Pre-Launch Checklist
 
-- [ ] Replace placeholder founder name and bio (About page)
-- [ ] Replace placeholder photography (About page)
-- [ ] Update Instagram and Pinterest URLs in Footer and Organization JSON-LD
-- [ ] Wire contact form to email service (Resend recommended)
+- [ ] Remove `/` → `/coming-soon` redirect in `middleware.ts` and restore config matcher
+- [ ] Wire contact form to email service (Resend recommended) — `src/app/api/contact/route.ts` only logs
+- [ ] Wire newsletter to Shopify/Klaviyo — `src/app/api/newsletter/route.ts` only logs
+- [ ] Create TOTEM products in Shopify admin
+- [ ] Replace placeholder founder name, bio, photography on About page
+- [ ] Update Instagram + TikTok URLs in Footer and `src/app/layout.tsx` Organization JSON-LD
 - [ ] Set `NEXT_PUBLIC_SITE_URL` to production domain
-- [ ] Verify all `generateMetadata` canonical URLs match production domain
-- [ ] Test Shopify checkout handoff with real store credentials
-- [ ] Run Lighthouse audit — accessibility score ≥ 90
 - [ ] Run `npm run build` clean with zero warnings
-- [ ] Verify sitemap at `/sitemap.xml` includes all products and collections
+- [ ] Lighthouse accessibility score ≥ 90
+- [ ] Verify sitemap at `/sitemap.xml` includes all products + collections
+- [ ] Test Shopify checkout handoff with real store credentials
 - [ ] Verify `/robots.txt` disallows `/account/` and `/api/`
+
+---
+
+## Known Issues & Gotchas
+
+- **`cart.lines` is a flat array** — `ShopifyCart.lines: ShopifyCartLine[]` — not `.lines.edges`. The GraphQL queries return edges/nodes but the storefront client normalises to flat arrays. All component code uses flat array access; do not use `.edges`.
+- **`removeDiscountCode`** calls `CART_DISCOUNT_CODES_UPDATE` with empty array — no separate remove mutation in Shopify's API.
+- **Shopify discount codes** do not throw on invalid — check `discountCodes[].applicable: false`.
+- **`redirect()` in Server Actions** throws a special error — never wrap in try/catch.
+- **`quantityAvailable`** can be `null` when inventory tracking is disabled — treat as unlimited.
+- **`viewTransitionName`** as inline style requires `as React.CSSProperties` cast.
+- **`ImageZoom`** uses `createPortal` into `document.body`, not the `Dialog` component.
+- **`RevealOnScroll`** is a plain passthrough `<div>` — GSAP was removed. Rebuild with CSS if needed.
+- **`ProductGrid`** is `'use client'` — legacy from GSAP era, can be converted to server component.
+- **`src/components/search/FilterPanel`** re-exports from `src/components/shop/FilterPanel` — do not delete the shop version.
+- **`muted` color** is `#6B6560` — do not change to `#8A8580` (fails WCAG AA).
+- **`strict: false`** in `tsconfig.json` — TypeScript will not catch all type errors; run `type-check` explicitly.
