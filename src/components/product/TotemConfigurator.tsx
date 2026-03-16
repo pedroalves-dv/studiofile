@@ -294,7 +294,7 @@ export function TotemConfigurator() {
 
       <div className="flex flex-col gap-6">
         {/* ── Section C: Shape catalog with mode tabs ── */}
-        <div className="flex flex-col gap-6 pt-6">
+        <div className="flex flex-col gap-6">
           {/* Tab bar */}
           <div className="flex gap-6 border-b border-stroke pb-px">
             {(["build", "presets"] as Mode[]).map((tab) => (

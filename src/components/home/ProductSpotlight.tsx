@@ -14,15 +14,16 @@ export function ProductSpotlight() {
 
       <div className="relative h-full flex items-center justify-center">
         <p
-          className="font-serif text-5xl sm:text-6xl text-white text-right md:w-3/4
+          className="font-mono tracking-[-10px] text-xl sm:text-8xl text-white text-right md:w-3/4
           lg:w-2/3 self-center"
         >
           Introducing
-          <span className="inline-block font-display tracking-tight text-[4.2rem] text-ink pl-4 pr-2">
+          <span className="inline-block font-display tracking-tighter text-9xl text-accent pl-4 pr-2">
             {" "}
             TOTEM
           </span>
-          , a fully <span className="italic text-ink pr-3">
+          , a fully{" "}
+          <span className="tracking-[-5px] italic text-ink pr-3">
             modular lamp
           </span>{" "}
           that adapts to you.

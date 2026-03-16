@@ -3,12 +3,8 @@ import { Metadata } from "next";
 import { HeroContent } from "@/components/home/HeroContent";
 import Image from "next/image";
 import BrandStory from "@/components/home/BrandStory";
-
+import { ClipReveal } from "@/components/common/ClipReveal";
 import { ProductSpotlight } from "@/components/home/ProductSpotlight";
-// import {
-//   FeaturedProducts,
-//   FeaturedProductsSkeleton,
-// } from "@/components/home/FeaturedProducts";
 
 export const metadata: Metadata = {
   title: "3d printing & design studio",
@@ -55,21 +51,11 @@ function Hero() {
 export default async function HomePage() {
   return (
     <>
-      {/* Hero */}
       <Hero />
-      {/* Product Spotlight */}
+
       <ProductSpotlight />
 
-      {/* Featured Products */}
-      {/* <Suspense fallback={<FeaturedProductsSkeleton />}>
-        <FeaturedProducts />
-      </Suspense> */}
-
-      {/* Brand Story */}
       <BrandStory />
-
-      {/* Bottom Hero */}
-      {/* <FooterBackground /> */}
     </>
   );
 }

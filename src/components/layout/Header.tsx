@@ -22,18 +22,105 @@ import {
   type ShoppingBagIconHandle,
 } from "@/components/ui/ShoppingBagIcon";
 
-const NAV_LINKS = [
-  { label: "Shop", href: "/shop" },
-  // { label: 'Collections', href: '/collections' },
-  { label: "About", href: "/about" },
-  { label: "FAQ", href: "/faq" },
+const NAV_LINKS: {
+  label: string;
+  node?: React.ReactNode;
+  badge?: string;
+  href: string;
+}[] = [
+  {
+    label: "TOTEM",
+    node: (
+      <>
+        Totem
+        <span
+          className="
+          pl-[2px] 
+          text-ink font-serif tracking-tight
+          w-0 overflow-hidden
+          [clip-path:inset(0_100%_0_0)]
+          group-hover:w-auto
+          group-hover:animate-revealLTR
+          transition-[width] duration-300 ease-out
+        "
+        >
+          / New
+        </span>
+      </>
+    ),
+    badge: "/New",
+    href: "/products/totem",
+  },
+  {
+    label: "Studio",
+    node: (
+      <>
+        Studio
+        <span
+          className="
+          pl-[2px]
+          text-ink font-serif tracking-tight
+          w-0 overflow-hidden
+          [clip-path:inset(0_100%_0_0)]
+          group-hover:w-auto
+          group-hover:animate-revealLTR
+          transition-[width] duration-300 ease-out
+        "
+        >
+          / 01
+        </span>
+      </>
+    ),
+    href: "/about",
+  },
+  {
+    label: "FAQ",
+    node: (
+      <>
+        FAQ
+        <span
+          className="
+          pl-[2px] 
+          text-ink font-serif tracking-tight
+          w-0 overflow-hidden
+          [clip-path:inset(0_100%_0_0)]
+          group-hover:w-auto
+          group-hover:animate-revealLTR
+          transition-[width] duration-300 ease-out
+        "
+        >
+          / 02
+        </span>
+      </>
+    ),
+    href: "/faq",
+  },
   {
     label: "Contact",
+    node: (
+      <>
+        Contact
+        <span
+          className="
+          pl-[2px] 
+          text-ink font-serif tracking-tight
+          w-0 overflow-hidden
+          [clip-path:inset(0_100%_0_0)]
+          group-hover:w-auto
+          group-hover:animate-revealLTR
+          transition-[width] duration-300 ease-out
+        "
+        >
+          / 03
+        </span>
+      </>
+    ),
     href: "/contact",
   },
 ];
 
 export function Header() {
+  // all existing refs and state
   const sparklesRef = useRef<SparklesIconHandle>(null);
   const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -85,7 +172,7 @@ export function Header() {
   return (
     <>
       {/* Search overlay — full-screen */}
-      {isSearchOpen && (
+      {/* {isSearchOpen && (
         <div className="fixed inset-0 z-[60] backdrop-blur-md flex flex-col">
           <div className="p-6">
             <div className="flex items-center gap-4">
@@ -104,7 +191,7 @@ export function Header() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Backdrop for mobile menu */}
       {isMobileMenuOpen && (
@@ -118,25 +205,30 @@ export function Header() {
       <header className="fixed top-0 left-0 right-0 z-50">
         {" "}
         <div
-          className={`px-6 sm:px-36 backdrop-blur-xl border-b border-stroke transition-colors duration-300 ${
+          className={`px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
             isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
           <div className="flex items-center justify-between h-[var(--header-height)]">
             {/* Wordmark */}
-            <Link href="/" aria-label="Studiofile — Home" className="-ml-6">
+
+            <Link
+              href="/"
+              aria-label="Studiofile — Home"
+              className="-ml-6 pt-1"
+            >
               <span
                 className="group relative block"
                 style={{
                   aspectRatio: "22.203955 / 4.0943561",
-                  height: "2rem",
+                  height: "2.2rem",
                 }}
               >
                 {/* Default logo */}
                 <div
                   className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-100 group-hover:opacity-0"
                   style={{
-                    maskImage: "url(/images/logo/rect8.svg)",
+                    maskImage: "url(/images/logo/logo-black.svg)",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
@@ -144,9 +236,9 @@ export function Header() {
                 />
                 {/* Hover logo */}
                 <div
-                  className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                  className="absolute inset-0 bg-ink transition-opacity duration-150 opacity-0 group-hover:opacity-100"
                   style={{
-                    maskImage: "url(/images/logo/rect7.svg)",
+                    maskImage: "url(/images/logo/logo.svg)",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
@@ -157,25 +249,27 @@ export function Header() {
 
             {/* Desktop nav */}
             <nav
-              className="hidden md:flex items-center gap-16"
+              className="hidden md:flex md:gap-6 lg:gap-12 pt-2"
               aria-label="Main navigation"
             >
               {NAV_LINKS.map((link) => (
                 <ArrowButton
                   key={link.href}
                   href={link.href}
-                  label={link.label}
-                  className="text-xs tracking-normal text-ink "
+                  aria-label={link.label}
+                  showArrow={false}
+                  label={link.node ?? link.label}
+                  className="font-body tracking-tighter hover:text-light transition-colors duration-150 font-[500] text-[18px] text-ink py-2 px-2"
                 />
               ))}
             </nav>
 
             {/* Right icons */}
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-4 md:gap-4 lg:gap-8">
               {/* Search toggle */}
-              <button
+              {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className="hidden md:flex p-2"
+                className="hidden md:flex p-2 sm:p-0"
                 aria-label="Open search"
                 aria-expanded={isSearchOpen}
                 onMouseEnter={() => searchIconRef.current?.startAnimation()}
@@ -186,20 +280,20 @@ export function Header() {
                 ) : (
                   <MagnifyingGlassIcon ref={searchIconRef} />
                 )}
-              </button>
+              </button> */}
 
               {/* Wishlist (desktop) */}
               <button
                 ref={wishlistIconRef}
                 onClick={openWishlist}
-                className="hidden sm:flex p-2  relative"
+                className="hidden sm:flex p-2 sm:p-0 relative"
                 aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`}
                 onMouseEnter={() => sparklesRef.current?.startAnimation()}
                 onMouseLeave={() => sparklesRef.current?.stopAnimation()}
               >
                 <SparklesIcon ref={sparklesRef} />
                 {wishlistCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-canvas text-xs flex items-center justify-center rounded-full font-mono leading-none">
+                  <span className="absolute top-1 right-1 w-4 h-4 lex items-center justify-center rounded-full">
                     {wishlistCount}
                   </span>
                 )}
@@ -209,14 +303,14 @@ export function Header() {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-2 relative"
+                className="p-2 sm:p-0 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
               >
                 <ShoppingBagIcon ref={cartIconRef} />
                 {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-accent text-canvas text-xs flex items-center justify-center rounded-full font-mono leading-none">
+                  <span className="absolute top-1 right-1 w-4 h-4flex items-center justify-center rounded-full">
                     {cartCount}
                   </span>
                 )}
@@ -225,7 +319,7 @@ export function Header() {
               {/* Mobile hamburger */}
               <button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
-                className="md:hidden p-2 hover:text-accent transition-colors"
+                className="md:hidden p-2"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -237,41 +331,57 @@ export function Header() {
         {/* Mobile menu */}
         {isMobileMenuOpen && (
           <nav className="md:hidden bg-canvas" aria-label="Mobile navigation">
-            <div className="pt-8 space-y-0">
+            <div>
               {/* Mobile search */}
-              <div className="px-4 pb-4">
+              {/* <div className="px-4 pb-4">
                 <SearchBar
                   onClose={() => setIsMobileMenuOpen(false)}
                   hideBorder
                   className="bg-white rounded-2xl border border-ink px-2"
                 />
-              </div>
+              </div> */}
 
-              {NAV_LINKS.map((link) => (
+              {NAV_LINKS.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="
-                  block w-full 
-                  text-center py-6
-                  text-4xl tracking-normal text-ink 
-                  font-display uppercase tracking-[-2px]
-                  border-b border-ink
-                  active:bg-accent active:text-canvas"
+                    gap-1
+                    flex items-baseline w-full
+                    text-left py-4 px-8 
+                    text-4xl tracking-tighter font-medium text-ink
+                    font-body ligatures
+                    border-b border-ink"
                 >
                   {link.label}
+                  {/* ✏️ ADD — shows badge word if defined, e.g. "new" or "01" */}
+                  {link.badge && (
+                    <span
+                      className="
+                        text-white font-light
+                        tracking-tighter font-serif ligatures
+                        opacity-0 -translate-x-1
+                        animate-[badgeIn_0.3s_ease-out_forwards]
+                        "
+                      style={{
+                        animationDelay: `${index * 60 + 150}ms`,
+                        textShadow: "1px 1px 30px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
 
               <button
                 className="
                   gap-2 w-full 
-                  text-center py-6
-                  text-4xl tracking-normal text-ink 
-                  font-display uppercase tracking-[-2px]
-                  border-b border-ink
-                  active:bg-accent active:text-canvas"
+                  text-left py-4 px-8
+                  text-4xl text-ink 
+                  font-body tracking-tighter font-medium
+                  border-b border-ink ligatures"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   openWishlist();

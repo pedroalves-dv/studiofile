@@ -57,22 +57,15 @@ export function HeroContent() {
       });
     };
 
-    const raf = requestAnimationFrame(() => run()); // 👈 wrap here
-    return () => cancelAnimationFrame(raf); // 👈 and cleanup
+    const raf = requestAnimationFrame(() => run());
+    return () => cancelAnimationFrame(raf);
   }, [controls]);
 
   return (
-    <div
-      className="flex flex-col items-center justify-center"
-      style={{ minHeight: "calc(100dvh - var(--header-height))" }}
-    >
+    <div className="section-centered">
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-20 items-center w-full max-w-7xl">
         {/* Left — desktop only */}
-        <div className="px-4 py-4 self-start ">
-          {/* <p className="hidden sm:block italic font-serif text-8xl text-ink text-right tracking-tighter">
-            Introducing
-          </p> */}
-        </div>
+        <div className="hidden sm:block px-4 py-4 self-start "></div>
         {/* Center — TOTEM title, always visible */}
         <h1
           className="flex flex-col items-center leading-none text-ink
@@ -94,17 +87,15 @@ export function HeroContent() {
 
         {/* Right — desktop only */}
         <div className="hidden sm:flex flex-col items-start gap-1">
-          <div className="backdrop-blur-xl px-6 py-4 rounded-2xl">
-            <p className="font-mono font-bold text-xl text-ink tracking-tight">
-              $33 — $149
-            </p>
+          <div className="backdrop-blur-xl px-6 py-4 rounded-lg">
+            <p className="">$33 — $149</p>
           </div>
           <ArrowButton
             href="/shop"
             label="Shop"
             glowColor="var(--color-black)"
-            className="h-12 px-8 py-4 bg-ink text-white text-sm
-            tracking-display font-mono rounded-xl flex items-center justify-center"
+            className="h-12 px-8 py-4 bg-ink font-light text-md text-white
+            rounded-lg flex items-center justify-center"
           />
         </div>
       </div>

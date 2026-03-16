@@ -27,8 +27,10 @@ const config: Config = {
         display: ["var(--font-display)", "monospace"],
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+        mono2: ["var(--font-mono2)", "monospace"],
         serif: ["var(--font-serif)", "serif"],
-        logoserif: ["var(--font-logoserif)", "serif"],
+        sans: ["var(--font-sans)", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
       },
       borderRadius: {
         DEFAULT: "0px",
@@ -47,10 +49,20 @@ const config: Config = {
           from: { gridTemplateRows: "1fr" },
           to: { gridTemplateRows: "0fr" },
         },
+        badgeIn: {
+        from: { opacity: '0', transform: 'translateX(-6px)' },
+        to:   { opacity: '1', transform: 'translateX(0)' },
+      },
+      revealLTR: {     
+    from: { clipPath: 'inset(0 100% 0 0)' },
+    to:   { clipPath: 'inset(0 0% 0 0)' },
+  },
       },
       animation: {
         slideDown: "slideDown 0.15s ease-out",
         slideUp: "slideUp 0.15s ease-out",
+        badgeIn:   'badgeIn 0.3s ease-out forwards',
+        revealLTR: 'revealLTR 0.15s ease-out forwards',
       },
       
     },

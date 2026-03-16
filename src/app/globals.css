@@ -6,12 +6,11 @@
    FONTS
    ========================================== */
 
-@font-face {
-  font-family: "Instrument Serif";
-  src: url("/fonts/InstrumentSerif-Regular.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+.ligatures {
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
+  font-variant-ligatures: common-ligatures;
 }
 
 @font-face {
@@ -27,28 +26,31 @@
    ========================================== */
 @layer base {
   :root {
+    /* Typography */
+    --font-display: "Noka", monospace;
+    --font-body: var(--font-geist-sans), sans-serif;
+    --font-mono: var(--font-jetbrains), monospace;
+    --font-mono2: var(--font-geist-mono), monospace;
+    --font-serif: var(--font-instrument-serif), serif;
+    --font-sans: var(--font-instrument-sans), sans-serif;
+    --font-inter: var(--font-inter-tight), sans-serif;
+
     /* Palette */
     --color-black: #141414;
     --color-ink: #31302e;
-    --color-canvas: 250 247 242; /* #f9f5f0 */
+    /* --color-canvas: 250 247 242; */
+    --color-canvas: 250 245 240;
     --color-accent: #ffdaa7;
     --color-muted: #6b6560;
-    --color-light: #b4b0ac;
+    /* --color-light: #b4b0ac; */
+    --color-light: #c2bfbc;
     --color-stroke: #e5e0d8;
     --color-success: #4a7c59;
     --color-error: #b84040;
     --color-white: #ffffff;
 
-    /* Typography */
-    --font-display: "Noka", monospace;
-    --font-body: "JetBrains Mono", monospace;
-    --font-mono: "JetBrains Mono", monospace;
-    --font-serif: "Instrument Serif", serif;
-    --font-logoserif: "Apple Garamond", serif;
-
     /* Spacing */
     --spacing-xs: 0.25rem;
-    --spacing-xsm: 0.38rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
@@ -59,7 +61,10 @@
     --spacing-5xl: 6rem;
 
     /* Header height */
-    --header-height: 4rem;
+    --header-height: 3.2rem;
+
+    /* Footer height */
+    --footer-height: 28rem;
 
     /* Animation */
     --duration-fast: 150ms;
@@ -144,6 +149,13 @@
   }
 
   /* Layout utilities */
+  .section-centered {
+    min-height: calc(100dvh - var(--header-height));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .section-padding {
     @apply py-20;
   }

@@ -1,8 +1,8 @@
 export function FooterBackground() {
   return (
     <section
-      className="w-full h-full flex justify-center 
-    items-center mt-60"
+      className="w-full md:h-[30rem] flex flex-col justify-center 
+    items-center overflow-hidden"
     >
       {/* Mobile */}
       <div
@@ -15,10 +15,11 @@ export function FooterBackground() {
           maskPosition: "center left",
         }}
       />
-      {/* Tablet/Desktop */}
-      <div className="hidden sm:block w-full flex flex-col items-center">
+
+      {/* md+ */}
+      <div className="hidden sm:block w-full flex flex-col  md:items-center">
         <div
-          className="w-full bg-success mb-14"
+          className="w-full bg-accent"
           style={{
             aspectRatio: "237.04541 / 43.710445",
             maskImage: "url(/images/logo/logo-large-horizontal.svg)",

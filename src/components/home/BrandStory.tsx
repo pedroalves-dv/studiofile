@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { HoverWord } from "@/components/ui/HoverWord";
+import { RevealText } from "../common/RevealText";
 
 export default function BrandStory() {
   const [visible, setVisible] = useState(false);
@@ -20,7 +21,7 @@ export default function BrandStory() {
 
   return (
     <section
-      className="relative flex items-center min-h-dvh border border-red-500"
+      className="relative section-centered"
       onMouseMove={handleMouseMove}
     >
       {/* Cursor-following hover image — behind text */}
@@ -33,20 +34,18 @@ export default function BrandStory() {
           <img
             src={imgData.src}
             alt={imgData.alt}
-            className="max-w-96 max-h-96 w-auto h-auto"
+            className="max-w-md max-h-lg w-auto h-auto"
           />
         )}
       </div>
 
-      <div className="flex-1 h-full flex justify-center items-center px-2 border border-blue-500">
-        <div className="flex flex-col gap-8 z-10 md:w-3/4 lg:max-w-[65rem]">
+      <div className="container-wide lg:px-48 font-mono text-sm">
+        <div className="flex flex-col gap-8 z-10  text-ink text-justify ">
           {/* Story text */}
           <div className="flex flex-col gap-8">
-            <p className="font-serif text-4xl text-light leading-none text-justify tracking-(space-xsm)">
-              {/* <span className="font-display tracking-tighter text-ink">STUDIO</span>
-              <span className="font-logoserif tracking-tight text-ink mr-2">filé</span> */}
-              <span className="italic mr-3 text-ink text-4xl">STUDIO filé</span>{" "}
-              is a design studio founded in{" "}
+            <p className=" ligatures">
+              <span className="italic mr-1 text-light ">STUDIO filé</span> is a
+              design studio founded in{" "}
               <HoverWord
                 href="/about"
                 src="/images/page/paris-studio.jpg"
@@ -60,7 +59,7 @@ export default function BrandStory() {
                 Paris
               </HoverWord>
               , specializing in{" "}
-              <HoverWord
+              {/* <HoverWord
                 href="/shop"
                 src="/images/page/modular-furniture.jpg"
                 alt="Modular furniture"
@@ -69,10 +68,10 @@ export default function BrandStory() {
                   setVisible(true);
                 }}
                 onLeave={() => setVisible(false)}
-              >
-                modular furniture
-              </HoverWord>{" "}
-              and functional home decor solutions, created through{" "}
+              > */}
+              modular furniture
+              {/* </HoverWord>*/} and functional home decor solutions, created
+              through{" "}
               <HoverWord
                 href="/process"
                 src="/images/page/3d-printing1.jpg"
@@ -88,7 +87,7 @@ export default function BrandStory() {
               .
             </p>
 
-            <p className="font-serif text-4xl text-light leading-none text-justify tracking-(space-xsm)">
+            <p className="ligatures ">
               Our objects blend{" "}
               <span className="text-accent">architectural thinking</span> with a
               strong <span className="text-success pl-1">craft focus</span>,
@@ -96,7 +95,7 @@ export default function BrandStory() {
               human.
             </p>
 
-            <p className="font-serif text-4xl text-light leading-none text-justify tracking-(space-xsm)">
+            <p className="ligatures">
               Each piece is{" "}
               <HoverWord
                 href="/process"

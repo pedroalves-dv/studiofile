@@ -30,12 +30,13 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg  border-t py-20 sm:py-16 sm:px-36 tracking-tight">
+    // <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-16 md:py-20 md:px-16 lg:px-24 xl:px-36 tracking-tight">
+    <footer className="w-full flex items-center py-20 px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36 z-10 backdrop-blur-md border-t border-white">
       {/* Main footer content */}
-      <div className="px-6 sm:px-0">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+      <div className="w-full ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 sm:gap-16 md:gap-4">
           {/* Column 1: Wordmark + Tagline */}
-          <div className="flex flex-row sm:flex-col justify-between ">
+          <div className="flex flex-row sm:flex-col justify-between sm:justify-start md:justify-between ">
             <div
               className="h-7 bg-ink mb-4"
               style={{
@@ -46,19 +47,19 @@ export function Footer() {
                 maskPosition: "left center",
               }}
             />
-            <div className="text-[.65rem] text-ink flex flex-col sm:justify-end">
+            <div className="text-xs font-mono text-ink flex flex-col sm:justify-end tracking-tight">
               <p>© {new Date().getFullYear()} Studiofile</p>
             </div>
           </div>
           {/* Column 2: Links */}
-          <div className="space-y-4 text-light">
+          <div className="space-y-4 text-light tracking-tight">
             <h3 className="text-sm sm:text-xs font-mono">Navigation</h3>
             <nav className="space-y-4 flex flex-col pb-4">
               {FOOTER_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm sm:text-xs text-ink hover:text-light transition-colors"
+                  className="text-sm sm:text-xs font-mono text-ink hover:text-light transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -73,7 +74,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm sm:text-xs text-ink hover:text-light transition-colors"
+                  className="text-sm sm:text-xs font-mono text-ink hover:text-light transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -82,9 +83,9 @@ export function Footer() {
           </div>
 
           {/* Column 3: Social + Newsletter */}
-          <div className="space-y-10 sm:pl-32">
+          <div className="space-y-16 sm:col-span-2 md:col-span-1">
             {/* Social Links */}
-            <div className="space-y-3 px-1">
+            <div>
               <div className="flex flex-row justify-between">
                 <a
                   href="#"
@@ -93,7 +94,7 @@ export function Footer() {
                 >
                   <SimpleIcon
                     icon={siInstagram}
-                    size={24}
+                    size={28}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Instagram"
                   />
@@ -101,7 +102,7 @@ export function Footer() {
                 <a href="#" className="transition-colors" aria-label="Xt">
                   <SimpleIcon
                     icon={siX}
-                    size={24}
+                    size={28}
                     className="fill-ink hover:fill-light  transition-colors"
                     ariaLabel="Xt"
                   />
@@ -109,7 +110,7 @@ export function Footer() {
                 <a href="#" className="transition-colors" aria-label="TikTok">
                   <SimpleIcon
                     icon={siTiktok}
-                    size={24}
+                    size={28}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="TikTok"
                   />
@@ -121,7 +122,7 @@ export function Footer() {
                 >
                   <SimpleIcon
                     icon={siPinterest}
-                    size={24}
+                    size={28}
                     className="fill-ink hover:fill-light transition-colors"
                     ariaLabel="Pinterest"
                   />
