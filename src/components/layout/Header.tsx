@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from "lucide-react";
 import { useScroll } from "@/hooks/useScroll";
@@ -9,6 +10,7 @@ import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { SearchBar } from "@/components/search/SearchBar";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+import { HeartIcon, type HeartIconHandle } from "@/components/ui/HeartIcon";
 import {
   SparklesIcon,
   type SparklesIconHandle,
@@ -27,12 +29,14 @@ const NAV_LINKS: {
   node?: React.ReactNode;
   badge?: string;
   href: string;
+  linkClassName?: string;
 }[] = [
   {
     label: "TOTEM",
+    linkClassName: "tracking-tight",
     node: (
       <>
-        Totem
+        TOTEM
         <span
           className="
           pl-[2px] 
@@ -121,6 +125,7 @@ const NAV_LINKS: {
 
 export function Header() {
   // all existing refs and state
+  const heartRef = useRef<HeartIconHandle>(null);
   const sparklesRef = useRef<SparklesIconHandle>(null);
   const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -259,7 +264,10 @@ export function Header() {
                   aria-label={link.label}
                   showArrow={false}
                   label={link.node ?? link.label}
-                  className="font-body tracking-tighter hover:text-light transition-colors duration-150 font-[500] text-[18px] text-ink py-2 px-2"
+                  className={cn(
+                    "font-body tracking-tighter font-[500] text-[18px] text-ink py-2 px-2 hover:text-light transition-colors duration-200",
+                    link.linkClassName, // ✏️ ADD — overrides or extends for this link only
+                  )}
                 />
               ))}
             </nav>
@@ -283,21 +291,21 @@ export function Header() {
               </button> */}
 
               {/* Wishlist (desktop) */}
-              <button
+              {/* <button
                 ref={wishlistIconRef}
                 onClick={openWishlist}
                 className="hidden sm:flex p-2 sm:p-0 relative"
                 aria-label={`Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`}
-                onMouseEnter={() => sparklesRef.current?.startAnimation()}
-                onMouseLeave={() => sparklesRef.current?.stopAnimation()}
+                onMouseEnter={() => heartRef.current?.startAnimation()}
+                onMouseLeave={() => heartRef.current?.stopAnimation()}
               >
-                <SparklesIcon ref={sparklesRef} />
+                <HeartIcon ref={heartRef} />
                 {wishlistCount > 0 && (
                   <span className="absolute top-1 right-1 w-4 h-4 lex items-center justify-center rounded-full">
                     {wishlistCount}
                   </span>
                 )}
-              </button>
+              </button> */}
 
               {/* Cart */}
               <button
@@ -346,13 +354,10 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="
-                    gap-1
-                    flex items-baseline w-full
-                    text-left py-4 px-8 
-                    text-4xl tracking-tighter font-medium text-ink
-                    font-body ligatures
-                    border-b border-ink"
+                  className={cn(
+                    "gap-1 flex items-baseline w-full text-left py-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
+                    link.linkClassName, // ✏️ ADD — same field, works here too
+                  )}
                 >
                   {link.label}
                   {/* ✏️ ADD — shows badge word if defined, e.g. "new" or "01" */}
@@ -375,7 +380,7 @@ export function Header() {
                 </Link>
               ))}
 
-              <button
+              {/* <button
                 className="
                   gap-2 w-full 
                   text-left py-4 px-8
@@ -387,15 +392,14 @@ export function Header() {
                   openWishlist();
                 }}
                 aria-label="Open wishlist"
-              >
-                {/* <Heart size={18} /> */}
+                >
                 Wishlist
                 {wishlistCount > 0 && (
                   <span className="ml-auto font-mono text-xs bg-accent text-canvas px-2 py-0.5">
                     {wishlistCount}
                   </span>
                 )}
-              </button>
+              </button> */}
             </div>
           </nav>
         )}
