@@ -74,7 +74,7 @@ export function LandingSignup() {
           className="w-full bg-transparent border border-stroke text-ink font-body text-md tracking-tight
             px-4 py-3 placeholder:text-muted/60
             focus:outline-none focus:border-accent
-            transition-colors duration-200"
+            transition-colors duration-200 rounded-lg"
         />
       </div>
 
@@ -95,7 +95,7 @@ export function LandingSignup() {
           onChange={(e) => setEmail(e.target.value)}
           className={`w-full bg-transparent border text-ink font-body text-md tracking-tight
             px-4 py-3 placeholder:text-muted/60
-            focus:outline-none transition-colors duration-200
+            focus:outline-none transition-colors duration-200 rounded-lg
             ${emailError ? "border-error" : "border-stroke focus:border-accent"}`}
           required
         />
@@ -109,7 +109,7 @@ export function LandingSignup() {
            py-4 mt-1
           hover:bg-accent/90 active:scale-[0.99]
           transition-all duration-200
-          disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
       >
         {state === "loading" ? "Sending…" : "Notify me at launch →"}
       </button>
