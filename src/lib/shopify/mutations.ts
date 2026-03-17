@@ -192,7 +192,7 @@ export const CUSTOMER_UPDATE = `
 
 // Customer Address Mutations
 export const CUSTOMER_ADDRESS_CREATE = `
-  mutation customerAddressCreate($customerAccessToken: String!, $address: CustomerAddressInput!) {
+  mutation customerAddressCreate($customerAccessToken: String!, $address: MailingAddressInput!) {
     customerAddressCreate(customerAccessToken: $customerAccessToken, address: $address) {
       customerAddress {
         id
@@ -214,7 +214,7 @@ export const CUSTOMER_ADDRESS_CREATE = `
 `;
 
 export const CUSTOMER_ADDRESS_UPDATE = `
-  mutation customerAddressUpdate($customerAccessToken: String!, $id: ID!, $address: CustomerAddressInput!) {
+  mutation customerAddressUpdate($customerAccessToken: String!, $id: ID!, $address: MailingAddressInput!) {
     customerAddressUpdate(customerAccessToken: $customerAccessToken, id: $id, address: $address) {
       customerAddress {
         id
@@ -238,7 +238,25 @@ export const CUSTOMER_ADDRESS_UPDATE = `
 export const CUSTOMER_ADDRESS_DELETE = `
   mutation customerAddressDelete($customerAccessToken: String!, $id: ID!) {
     customerAddressDelete(customerAccessToken: $customerAccessToken, id: $id) {
-      deletedAddressId
+      deletedCustomerAddressId
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+export const CUSTOMER_DEFAULT_ADDRESS_UPDATE = `
+  mutation customerDefaultAddressUpdate($customerAccessToken: String!, $addressId: ID!) {
+    customerDefaultAddressUpdate(
+      customerAccessToken: $customerAccessToken
+      addressId: $addressId
+    ) {
+      customer {
+        id
+        defaultAddress { id }
+      }
       userErrors {
         field
         message

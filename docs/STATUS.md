@@ -34,6 +34,7 @@ Update this file at the end of every session.
 | 6 | Cart context, cart drawer, discount codes, free shipping bar | ✅ Done |
 | 7 | Customer auth: login, register, forgot password, account dashboard, orders | ✅ Done |
 | 7.x | Account settings page — profile update + password change, 4-tab nav synced | ✅ Done |
+| 7.y | Account addresses page — list, add, edit, delete, set-as-default | ✅ Done |
 | 8 | Wishlist, Recently Viewed, Related Products | ✅ Done |
 | 9 | Analytics (Vercel), SEO, structured data, sitemap, robots | ✅ Done |
 | 10 | GSAP removed — replaced by CSS/motion in Phase 11. View transitions added. | ✅ Done |

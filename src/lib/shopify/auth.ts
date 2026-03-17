@@ -9,6 +9,10 @@ import {
   CUSTOMER_CREATE,
   CUSTOMER_RECOVER,
   CUSTOMER_UPDATE,
+  CUSTOMER_ADDRESS_CREATE,
+  CUSTOMER_ADDRESS_UPDATE,
+  CUSTOMER_ADDRESS_DELETE,
+  CUSTOMER_DEFAULT_ADDRESS_UPDATE,
 } from './mutations'
 import { GET_CUSTOMER } from './queries'
 import type { ShopifyCustomer } from './types'
@@ -236,5 +240,154 @@ export async function customerUpdatePassword(
     return { success: true }
   } catch {
     return { success: false, error: 'Password update failed' }
+  }
+}
+
+// Address input — fields accepted by Shopify's CustomerAddressInput
+export interface AddressInput {
+  firstName?: string
+  lastName?: string
+  address1?: string
+  address2?: string
+  city?: string
+  province?: string
+  zip?: string
+  country?: string
+}
+
+interface CustomerAddressCreateResponse {
+  customerAddressCreate: {
+    customerAddress: { id: string } | null
+    userErrors: Array<{ field: string[]; message: string }>
+  }
+}
+
+interface CustomerAddressUpdateResponse {
+  customerAddressUpdate: {
+    customerAddress: { id: string } | null
+    userErrors: Array<{ field: string[]; message: string }>
+  }
+}
+
+interface CustomerAddressDeleteResponse {
+  customerAddressDelete: {
+    deletedCustomerAddressId: string | null
+    userErrors: Array<{ field: string[]; message: string }>
+  }
+}
+
+interface CustomerDefaultAddressUpdateResponse {
+  customerDefaultAddressUpdate: {
+    customer: { id: string } | null
+    userErrors: Array<{ field: string[]; message: string }>
+  }
+}
+
+export async function customerAddressCreate(
+  address: AddressInput
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    const data = await storefront<CustomerAddressCreateResponse>(
+      CUSTOMER_ADDRESS_CREATE,
+      { customerAccessToken: token, address },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerAddressCreate?.userErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    if (!data.customerAddressCreate?.customerAddress) {
+      return { success: false, error: 'Failed to create address' }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Failed to create address' }
+  }
+}
+
+export async function customerAddressUpdate(
+  addressId: string,
+  address: AddressInput
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    const data = await storefront<CustomerAddressUpdateResponse>(
+      CUSTOMER_ADDRESS_UPDATE,
+      { customerAccessToken: token, id: addressId, address },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerAddressUpdate?.userErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    if (!data.customerAddressUpdate?.customerAddress) {
+      return { success: false, error: 'Failed to update address' }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Failed to update address' }
+  }
+}
+
+export async function customerAddressDelete(
+  addressId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    const data = await storefront<CustomerAddressDeleteResponse>(
+      CUSTOMER_ADDRESS_DELETE,
+      { customerAccessToken: token, id: addressId },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerAddressDelete?.userErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Failed to delete address' }
+  }
+}
+
+export async function customerDefaultAddressUpdate(
+  addressId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    const data = await storefront<CustomerDefaultAddressUpdateResponse>(
+      CUSTOMER_DEFAULT_ADDRESS_UPDATE,
+      { customerAccessToken: token, addressId },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerDefaultAddressUpdate?.userErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    if (!data.customerDefaultAddressUpdate?.customer) {
+      return { success: false, error: 'Failed to update default address' }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Failed to update default address' }
   }
 }
