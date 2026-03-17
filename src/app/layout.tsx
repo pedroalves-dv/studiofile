@@ -19,6 +19,7 @@ import { LazyMotion, domAnimation } from "motion/react";
 
 // 4. Internal aliases (@/)  — grouped by type
 import { DEFAULT_METADATA, SITE_URL } from "@/lib/utils/seo";
+import { getCustomerToken } from "@/lib/shopify/auth";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { ToastProvider } from "@/components/common/Toast";
@@ -65,7 +66,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const token = await getCustomerToken();
   return (
     <html
       lang="en"
@@ -86,7 +88,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <WishlistProvider>
                 <ToastProvider>
                   {/* Layout */}
-                  <Header />
+                  <Header isLoggedIn={!!token} />
                   <main id="main-content" className="flex flex-col min-h-full">
                     {children}
                   </main>

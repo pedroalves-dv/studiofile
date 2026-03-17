@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef } from "react";
-import { Search, Heart, ShoppingCart, Menu, X, ArrowRight } from "lucide-react";
+import { Search, Heart, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
+import { customerLogout } from "@/lib/shopify/auth";
 import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { SearchBar } from "@/components/search/SearchBar";
@@ -123,7 +125,11 @@ const NAV_LINKS: {
   },
 ];
 
-export function Header() {
+interface HeaderProps {
+  isLoggedIn?: boolean;
+}
+
+export function Header({ isLoggedIn = false }: HeaderProps) {
   // all existing refs and state
   const heartRef = useRef<HeartIconHandle>(null);
   const sparklesRef = useRef<SparklesIconHandle>(null);
@@ -160,6 +166,9 @@ export function Header() {
   } = useWishlist();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+  useClickOutside(accountRef, () => setIsAccountOpen(false));
   useScrollLock(isSearchOpen);
 
   // Close both overlays on Escape
@@ -168,6 +177,7 @@ export function Header() {
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
         setIsSearchOpen(false);
+        setIsAccountOpen(false);
       }
     };
     window.addEventListener("keydown", handleEscape);
@@ -307,6 +317,57 @@ export function Header() {
                 )}
               </button> */}
 
+              {/* Account */}
+              {isLoggedIn ? (
+                <div ref={accountRef} className="relative">
+                  <button
+                    onClick={() => setIsAccountOpen((v) => !v)}
+                    className="p-2 sm:p-0 relative flex items-center"
+                    aria-label="My account"
+                    aria-expanded={isAccountOpen}
+                  >
+                    <User size={20} strokeWidth={1.5} />
+                    <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-ink" />
+                  </button>
+                  {isAccountOpen && (
+                    <div className="absolute top-full right-0 mt-1 min-w-[180px] bg-canvas border border-ink z-50">
+                      {[
+                        { label: "My Account", href: "/account" },
+                        { label: "Orders", href: "/account/orders" },
+                        { label: "Settings", href: "/account/settings" },
+                        { label: "Addresses", href: "/account/addresses" },
+                      ].map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsAccountOpen(false)}
+                          className="block w-full text-left px-4 py-3 font-body tracking-tighter text-sm text-ink hover:bg-accent/30 transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                      <hr className="border-t border-ink" />
+                      <form action={customerLogout}>
+                        <button
+                          type="submit"
+                          className="block w-full text-left px-4 py-3 font-body tracking-tighter text-sm text-ink hover:bg-accent/30 transition-colors"
+                        >
+                          Sign out
+                        </button>
+                      </form>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/account/login"
+                  className="p-2 sm:p-0 relative flex items-center"
+                  aria-label="Sign in"
+                >
+                  <User size={20} strokeWidth={1.5} />
+                </Link>
+              )}
+
               {/* Cart */}
               <button
                 ref={buttonRef}
@@ -382,9 +443,9 @@ export function Header() {
 
               {/* <button
                 className="
-                  gap-2 w-full 
+                  gap-2 w-full
                   text-left py-4 px-8
-                  text-4xl text-ink 
+                  text-4xl text-ink
                   font-body tracking-tighter font-medium
                   border-b border-ink ligatures"
                 onClick={() => {
@@ -400,6 +461,14 @@ export function Header() {
                   </span>
                 )}
               </button> */}
+
+              <Link
+                href={isLoggedIn ? "/account" : "/account/login"}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center w-full text-left py-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink"
+              >
+                {isLoggedIn ? "Account" : "Sign in"}
+              </Link>
             </div>
           </nav>
         )}

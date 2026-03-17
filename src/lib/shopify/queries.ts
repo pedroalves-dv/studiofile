@@ -347,7 +347,6 @@ export const GET_CUSTOMER = `
             lineItems(first: 5) {
               edges {
                 node {
-                  id
                   title
                   quantity
                   originalTotalPrice {

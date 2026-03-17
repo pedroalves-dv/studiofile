@@ -8,6 +8,7 @@ import {
   CUSTOMER_ACCESS_TOKEN_DELETE,
   CUSTOMER_CREATE,
   CUSTOMER_RECOVER,
+  CUSTOMER_UPDATE,
 } from './mutations'
 import { GET_CUSTOMER } from './queries'
 import type { ShopifyCustomer } from './types'
@@ -112,8 +113,19 @@ export async function customerRegister(
       return { success: false, error: 'Registration failed' }
     }
 
-    // Auto-login after successful registration
-    return customerLogin(email, password)
+    // Auto-login: inline token creation to stay within this action's cookie context
+    const loginData = await storefront<AccessTokenCreateResponse>(
+      CUSTOMER_ACCESS_TOKEN_CREATE,
+      { input: { email, password } },
+      { cache: 'no-store' }
+    )
+
+    const token = loginData.customerAccessTokenCreate?.customerAccessToken?.accessToken
+    if (token) {
+      ;(await cookies()).set(TOKEN_COOKIE, token, COOKIE_OPTIONS)
+    }
+
+    return { success: true }
   } catch {
     return { success: false, error: 'Registration failed' }
   }
@@ -144,4 +156,85 @@ export async function sendPasswordReset(
     await storefront(CUSTOMER_RECOVER, { email }, { cache: 'no-store' })
   } catch {}
   return { success: true }
+}
+
+interface CustomerUpdateResponse {
+  customerUpdate: {
+    customer: { id: string } | null
+    customerUserErrors: Array<{ field: string[]; message: string }>
+  }
+}
+
+export async function customerUpdateProfile(
+  firstName: string,
+  lastName: string,
+  email: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    const data = await storefront<CustomerUpdateResponse>(
+      CUSTOMER_UPDATE,
+      { customerAccessToken: token, customer: { firstName, lastName, email } },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerUpdate?.customerUserErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    if (!data.customerUpdate?.customer) {
+      return { success: false, error: 'Update failed' }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Update failed' }
+  }
+}
+
+export async function customerUpdatePassword(
+  currentEmail: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const token = await getCustomerToken()
+    if (!token) return { success: false, error: 'Not authenticated' }
+
+    // Verify current password before allowing the change
+    const verifyData = await storefront<AccessTokenCreateResponse>(
+      CUSTOMER_ACCESS_TOKEN_CREATE,
+      { input: { email: currentEmail, password: currentPassword } },
+      { cache: 'no-store' }
+    )
+
+    const verifyErrors = verifyData.customerAccessTokenCreate?.customerUserErrors
+    const verifyToken = verifyData.customerAccessTokenCreate?.customerAccessToken?.accessToken
+
+    if (verifyErrors?.length || !verifyToken) {
+      return { success: false, error: 'Current password is incorrect' }
+    }
+
+    const data = await storefront<CustomerUpdateResponse>(
+      CUSTOMER_UPDATE,
+      { customerAccessToken: token, customer: { password: newPassword } },
+      { cache: 'no-store' }
+    )
+
+    const userErrors = data.customerUpdate?.customerUserErrors
+    if (userErrors?.length) {
+      return { success: false, error: userErrors[0].message }
+    }
+
+    if (!data.customerUpdate?.customer) {
+      return { success: false, error: 'Password update failed' }
+    }
+
+    return { success: true }
+  } catch {
+    return { success: false, error: 'Password update failed' }
+  }
 }

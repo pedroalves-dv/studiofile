@@ -2,20 +2,18 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getCustomerToken, getCustomer } from '@/lib/shopify/auth'
-import { OrderCard } from '@/components/account/OrderCard'
+import { SettingsForm } from './SettingsForm'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'Orders' }
+  return { title: 'Settings' }
 }
 
-export default async function OrdersPage() {
+export default async function SettingsPage() {
   const token = await getCustomerToken()
   if (!token) redirect('/account/login')
 
   const customer = await getCustomer(token)
   if (!customer) redirect('/account/login')
-
-  const orders = customer.orders.edges.map(e => e.node)
 
   return (
     <main className="bg-canvas min-h-screen">
@@ -23,7 +21,9 @@ export default async function OrdersPage() {
         {/* Header */}
         <div className="mb-12">
           <p className="text-label text-muted mb-2">My Account</p>
-          <h1 className="font-display text-4xl md:text-5xl text-ink">Orders</h1>
+          <h1 className="font-display text-4xl md:text-5xl text-ink">
+            Hello, {customer.firstName ?? customer.email}.
+          </h1>
         </div>
 
         {/* Nav tabs */}
@@ -31,30 +31,16 @@ export default async function OrdersPage() {
           <Link href="/account" className="text-label text-muted hover:text-ink transition-colors pb-3">
             Overview
           </Link>
-          <span className="text-label text-ink border-b-2 border-ink pb-3">Orders</span>
-          <Link href="/account/settings" className="text-label text-muted hover:text-ink transition-colors pb-3">
-            Settings
+          <Link href="/account/orders" className="text-label text-muted hover:text-ink transition-colors pb-3">
+            Orders
           </Link>
+          <span className="text-label text-ink border-b-2 border-ink pb-3">Settings</span>
           <Link href="/account/addresses" className="text-label text-muted hover:text-ink transition-colors pb-3">
             Addresses
           </Link>
         </nav>
 
-        {/* Orders list */}
-        {orders.length === 0 ? (
-          <div className="py-16 text-center border border-stroke">
-            <p className="text-muted mb-4">You haven&apos;t placed any orders yet.</p>
-            <Link href="/shop" className="text-label text-ink hover:text-accent transition-colors">
-              Start shopping →
-            </Link>
-          </div>
-        ) : (
-          <div className="flex flex-col divide-y divide-stroke border border-stroke">
-            {orders.map(order => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-          </div>
-        )}
+        <SettingsForm customer={customer} />
       </div>
     </main>
   )

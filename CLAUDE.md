@@ -115,40 +115,24 @@ Re-read this file first, then `docs/STATUS.md`.
 src/
   app/               ← Next.js App Router pages (server components by default)
   components/
-    ui/              ← Accordion, ArrowButton, Badge, Button, Dialog, HoverWord,
-                        Input, MagneticButton, MagnifyingGlassIcon, ScrambleButton,
-                        ShoppingBagIcon, SimpleIcon, Skeleton, SparklesIcon,
-                        TextEffectWrapper, Tooltip
-    layout/          ← Header, Footer, Breadcrumb, PageWrapper
-    product/         ← ProductCard, ProductGrid, ProductImage, ImageGallery,
-                        ImageGalleryWithZoom, ImageZoom, ImageZoomGallery,
-                        ProductInfoPanel, VariantSelector, StockIndicator,
-                        RelatedProducts, RecentlyViewed, ProductViewTracker,
-                        ProductViewEvent
-    cart/            ← CartDrawer, CartItem, CartSummary, DiscountInput,
-                        CartNote, FreeShippingBar, EmptyCart
-    search/          ← SearchBar, PredictiveSearch, SearchResults, FilterPanel, SortSelect
-    account/         ← AccountDashboard, OrderCard, OrderList
-    wishlist/        ← WishlistButton, WishlistDrawer
-    contact/         ← ContactForm
-    common/          ← Toast, CookieConsent, LoadingBar, SkeletonCard,
-                        RevealOnScroll, Marquee, HorizontalScrollRow
-    home/            ← BrandStory, FeaturedProducts, HeroContent, NewsletterForm
+    ui/              
+    layout/          
+    product/         
+    cart/            
+    search/         
+    account/         
+    wishlist/        
+    contact/         
+    common/          
+    home/            
   lib/
-    shopify/         ← client.ts, queries.ts, mutations.ts, types.ts,
-                        products.ts, collections.ts, cart.ts, auth.ts,
-                        search.ts, policies.ts
-    utils/           ← format.ts, cn.ts, seo.ts, params.ts
-    constants.ts     ← FREE_SHIPPING_THRESHOLD, CURRENCY_CODE
-  hooks/             ← useCart, useWishlist, useScrollLock, useLocalStorage,
-                        useDebounce, useMediaQuery, useRecentlyViewed,
-                        useIsomorphicLayoutEffect, useClickOutside,
-                        useScramble, useScroll
-  context/           ← CartContext.tsx, WishlistContext.tsx, ToastContext.tsx
+    shopify/         
+    utils/           
+    constants.ts     
+  hooks/             
+  context/           
 docs/
   STATUS.md          ← current progress — update after every session
-  phases/            ← one file per phase with detailed build instructions
-  BUILD-ORDER.md     ← rationale for the build sequence
 ```
 
 ---
@@ -188,11 +172,10 @@ docs/
 
 #### Typography
 
-- Display/heading: `Noka` (`font-display`) — all `h1–h6`, large editorial text
-- Body: `JetBrains Mono` (`font-body`) — body copy
+- Display/heading: `Noka` (`font-display`) — all `h1–h6`, large display text
+- Body: `Geist Sans` (`font-body`) — body copy, paragraphs, main text font
 - Mono labels: `JetBrains Mono` (`font-mono`) — prices, tags, UI labels, button text
-- Narrative: `Instrument Serif` (`font-serif`) — long-form editorial paragraphs, pull quotes
-- Logo only: `Apple Garamond` (`font-logoserif`) — never use elsewhere
+- Accent Typography: `Instrument Serif` (`font-serif`) — details, pull quotes
 
 #### Colors
 
@@ -208,13 +191,6 @@ docs/
 | `error` | `#B84040` | Error states |
 
 All colors are defined as CSS custom properties in `globals.css` and consumed via Tailwind tokens.
-
-#### Corners
-
-- All elements: sharp by default — `borderRadius: DEFAULT: 0px`. Do not add rounding without explicit justification.
-- `sm: 2px` is the only non-zero radius defined — use only when a very subtle rounding is intentional.
-- Images: always sharp — no exceptions.
-- Exceptions must be deliberate and noted (e.g. mobile search uses `rounded-2xl` for a UX reason).
 
 #### Spacing & layout
 
@@ -294,6 +270,42 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 - `WishlistButton` uses `e.preventDefault()` + `e.stopPropagation()` — it sits inside `<Link>` cards.
 - `HorizontalScrollRow` is a shared component used by `RecentlyViewed` and `RelatedProducts`.
 - `ProductViewTracker` (records recently viewed) and `ProductViewEvent` (Vercel Analytics) both render `null` — place anywhere in the PDP page JSX.
+- **Wishlist icon is commented out in the Header** (both desktop and mobile) — the drawer and `WishlistButton` components still exist and work; the entry point from the header is deferred. Do not delete the wishlist components.
+
+### Header (Phase 11.3)
+
+- `Header` accepts `isLoggedIn?: boolean` (default `false`) — passed from `layout.tsx` via `await getCustomerToken()` so the server knows auth state before render.
+- **Logged-in state:** renders a `<User>` icon `<button>` that toggles an account dropdown. Dropdown links: My Account, Orders, Settings, Addresses, then a Sign out `<form action={customerLogout}>`. Dropdown state is `isAccountOpen`, closed via `useClickOutside(accountRef, ...)`.
+- **Logged-out state:** renders a `<User>` icon `<Link href="/account/login">`.
+- Mobile menu also conditionally shows "Account" vs "Sign in" based on `isLoggedIn`.
+- **Search overlay is commented out** — the full-screen search pattern (backdrop + `SearchBar`) is in the file but disabled. Do not delete it.
+- **Wishlist icon is commented out** — see Wishlist section.
+- Logo swap on hover: two SVG masks applied via `maskImage` CSS — `logo-black.svg` (default, no slash) fades out, `logo.svg` (with slash) fades in. Pure CSS opacity transition, no JS.
+- Nav link hover effect: each link uses a `node` prop containing a `<span>` with `[clip-path:inset(0_100%_0_0)]` that reveals "/ XX" text left-to-right on hover via `animate-revealLTR` + `group-hover:w-auto`. The label translate is disabled (`showArrow={false}`) so `ArrowButton` doesn't interfere.
+- Scroll state: `isScrolling` reduces header background to `bg-canvas/60` (+ `backdrop-blur-xl`) while the user is scrolling, resets after 1 second of inactivity.
+
+### ArrowButton (`src/components/ui/ArrowButton.tsx`)
+
+- Polymorphic: renders a `<Link>` when `href` is provided, a `<button>` otherwise.
+- `showArrow?: boolean` controls the animated `→` indicator and label translate on hover.
+  - Default (omitted or `true`): arrow slides in from left, label shifts right on group hover.
+  - `showArrow={false}`: arrow and translate are both disabled — use for nav links that have their own custom hover effect.
+- `glowColor?: string` — optional radial glow behind the button on hover (CSS filter blur).
+- `label: ReactNode` — accepts string or arbitrary JSX (e.g. the nav node with reveal spans).
+- Extra props (`aria-label`, etc.) fall through via `...rest`.
+
+### Custom animated icons (`src/components/ui/`)
+
+The following icons expose an imperative handle for animation control:
+
+| Component | Handle type | Methods |
+| --------- | ----------- | ------- |
+| `HeartIcon` | `HeartIconHandle` | `startAnimation()`, `stopAnimation()` |
+| `ShoppingBagIcon` | `ShoppingBagIconHandle` | `startAnimation()`, `stopAnimation()` |
+| `SparklesIcon` | `SparklesIconHandle` | `startAnimation()`, `stopAnimation()` |
+| `MagnifyingGlassIcon` | `MagnifyingGlassIconHandle` | `startAnimation()`, `stopAnimation()` |
+
+Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />` → call `ref.current?.startAnimation()` on `onMouseEnter` and `ref.current?.stopAnimation()` on `onMouseLeave`.
 
 ### Contact (Phase 4.5)
 
@@ -304,6 +316,15 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 
 - Valid handles: `'privacy-policy' | 'refund-policy' | 'terms-of-service' | 'shipping-policy'`.
 - `getShopPolicies()` fetches all four at once — page matches on handle.
+
+### TOTEM Configurator (`/products/totem`)
+
+- One Shopify product per module shape (arch, dome, cylinder, cone, wave, sphere, torus, prism), one variant per color. No fixed Shopify bundles.
+- Cart mechanism: each module = one cart line. All lines in a build share a hidden `_build_id` line attribute. `CartDrawer` groups lines by `_build_id` and renders them as `TotemCartGroup` (collapsible).
+- Presets are TypeScript constants in `src/lib/totem-config.ts` pointing at shape/color IDs — not separate Shopify products.
+- `addBundle()` on `useCart` handles the grouped add. Requires real Shopify variant IDs before going live.
+- The TOTEM configurator **replaces** the standard PDP for the totem product. Do not apply standard PDP patterns here.
+- Placeholder env var: `NEXT_PUBLIC_TOTEM_VARIANT_ID` — replace with real IDs before launch.
 
 ### Animation (Phase 10–11)
 
