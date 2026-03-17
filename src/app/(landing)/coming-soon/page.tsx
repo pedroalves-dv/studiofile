@@ -47,13 +47,13 @@ export default function ComingSoonPage() {
       <section className="bg-canvas border-t border-stroke">
         <div className="grid grid-cols-1 md:grid-cols-2 border-b border-stroke">
           {/* Left — headline + perks */}
-          <div className="px-6 md:px-12 py-16 md:py-24 border-b border-stroke md:border-b-0 md:border-r md:border-stroke">
-            <h2 className="font-display text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
+          <div className="px-6 md:px-12 py-8 md:py-16 border-b border-stroke md:border-b-0 md:border-r md:border-stroke">
+            <h2 className="font-inter tracking-tight text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
               Be first.
               <br />
               Get 30% off.
             </h2>
-            <p className="font-body text-muted text-sm leading-relaxed max-w-sm mb-10">
+            <p className="font-body tracking-tight text-muted text-md tracking-tight leading-5 max-w-sm mb-10">
               Join the list before launch and unlock a 30% founding discount on
               your first order.
             </p>
@@ -63,7 +63,7 @@ export default function ComingSoonPage() {
                 <li
                   key={perk}
                   className="flex items-center gap-3 py-3.5 border-b border-stroke
-                    font-mono text-[11px] tracking-[0.12em] uppercase text-ink"
+                    font-body text-md tracking-tight  text-ink"
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"
@@ -76,10 +76,28 @@ export default function ComingSoonPage() {
           </div>
 
           {/* Right — form */}
-          <div className="px-6 md:px-12 py-16 md:py-24 flex flex-col justify-center">
-            <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted mb-6">
-              Reserve your spot
-            </p>
+          <div className="px-6 md:px-12 py-16 md:py-24 flex flex-col justify-between">
+            <div className="flex items-center gap-6">
+              <a
+                href="https://www.instagram.com/studiofile.paris"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-md tracking-tight  text-muted
+              hover:text-ink transition-colors duration-200"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://www.tiktok.com/@studiofile.paris"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-body text-md tracking-tight text-muted
+              hover:text-ink transition-colors duration-200"
+              >
+                TikTok
+              </a>
+            </div>
+
             <LandingSignup />
           </div>
         </div>
@@ -92,47 +110,19 @@ export default function ComingSoonPage() {
               className={`px-6 md:px-10 py-10 flex flex-col gap-3
                 ${i < FEATURES.length - 1 ? "border-b border-stroke md:border-b-0 md:border-r md:border-stroke" : ""}`}
             >
-              <span className="font-mono text-[10px] tracking-[0.2em] text-muted">
+              <span className="font-body text-md tracking-tight text-muted">
                 {f.num}
               </span>
-              <h3 className="font-display text-ink text-xl">{f.title}</h3>
-              <p className="font-body text-muted text-sm leading-relaxed">
+              <h3 className="font-inter text-ink text-6xl tracking tight">
+                {f.title}
+              </h3>
+              <p className="font-body text-muted text-md tracking tight ">
                 {f.body}
               </p>
             </div>
           ))}
         </div>
       </section>
-
-      {/* 4. Footer */}
-      <footer
-        className="px-6 md:px-12 py-6 flex flex-col sm:flex-row justify-between items-center
-        gap-3 bg-canvas border-b border-stroke"
-      >
-        <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">
-          © 2025 Studiofile — Paris
-        </span>
-        <div className="flex items-center gap-6">
-          <a
-            href="https://www.instagram.com/studiofile.paris"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted
-              hover:text-ink transition-colors duration-200"
-          >
-            Instagram
-          </a>
-          <a
-            href="https://www.tiktok.com/@studiofile.paris"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted
-              hover:text-ink transition-colors duration-200"
-          >
-            TikTok
-          </a>
-        </div>
-      </footer>
     </div>
   );
 }

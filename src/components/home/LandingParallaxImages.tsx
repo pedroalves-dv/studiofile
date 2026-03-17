@@ -3,12 +3,13 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
+  useMotionValue, // ← add this back
   useScroll,
   useTransform,
-  useReducedMotion,
   useAnimationControls,
   type MotionValue,
 } from "motion/react";
+import { useLenis } from "@/components/common/SmoothScroll";
 
 // ── TOTEM animation constants ────────────────────────────────────────
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
@@ -22,7 +23,6 @@ const CARDS = [
   { id: "04", bg: "bg-ink/75", label: "Paris" },
 ] as const;
 
-// Approximate header height: py-5 (40px) + logo 2.2rem (35px) + border (1px)
 const HEADER_H = 64;
 
 // ── Scroll-animated card ─────────────────────────────────────────────
@@ -31,26 +31,26 @@ function Card({
   index,
   total,
   scrollYProgress,
-  vh,
-  reduced,
 }: {
   card: (typeof CARDS)[number];
   index: number;
   total: number;
   scrollYProgress: MotionValue<number>;
-  vh: number;
-  reduced: boolean;
 }) {
-  // Window 0 = initial TOTEM-only view. Cards arrive in windows 1…N.
   const step = 1 / (total + 1);
-  const start = (index + 1) * step;
-  const end = (index + 2) * step;
+  const start = (index + 0.3) * step;
+  const end = (index + 1.3) * step;
 
-  const y = useTransform(
-    scrollYProgress,
-    [start, end],
-    reduced ? [0, 0] : [vh + 100, 0],
-  );
+  // FIX: use a transform function instead of [vh+100, 0].
+  // This reads window.innerHeight live, so SSR/resize can't break it.
+  // It also gives us free control over easing.
+  const y = useTransform(scrollYProgress, (p: number) => {
+    if (p <= start) return window.innerHeight + 100;
+    if (p >= end) return 0;
+    const t = (p - start) / (end - start);
+    const eased = 1 - Math.pow(1 - t, 3);
+    return (1 - eased) * (window.innerHeight + 100);
+  });
 
   const textColor = card.bg.includes("stone")
     ? "text-ink/30"
@@ -60,7 +60,7 @@ function Card({
     <motion.div
       style={{
         position: "absolute",
-        right: 48, // matches md:px-12
+        right: 48,
         top: HEADER_H,
         y,
         width: "clamp(220px, 38vw, 540px)",
@@ -70,29 +70,96 @@ function Card({
       className={`${card.bg} flex flex-col justify-between p-5`}
     >
       <span
-        className={`font-mono text-[9px] tracking-[0.2em] uppercase self-end ${textColor}`}
+        className={`font-body text-md font-medium tracking-tight  self-end ${textColor}`}
       >
         {card.id}
       </span>
       <p
-        className={`font-mono text-[9px] tracking-[0.2em] uppercase ${textColor}`}
+        className={`font-body text-md font-medium tracking-tight  ${textColor}`}
       >
         {card.label}
       </p>
     </motion.div>
   );
 }
+// ── TEXT SCROLL ──────────────────────────
+function TextBlock({
+  scrollYProgress,
+}: {
+  scrollYProgress: MotionValue<number>;
+}) {
+  // Matches card index 1 timing
+  const total = CARDS.length;
+  const step = 1 / (total + 1);
+  const start = 1.3 * step;
+  const end = 2.3 * step;
 
+  const y = useTransform(scrollYProgress, (p: number) => {
+    if (p <= start) return window.innerHeight + 100;
+    if (p >= end) return 0;
+    const t = (p - start) / (end - start);
+    const eased = 1 - Math.pow(1 - t, 3);
+    return (1 - eased) * (window.innerHeight + 100);
+  });
+
+  return (
+    <motion.div
+      style={{
+        position: "absolute",
+        left: 48,
+        top: HEADER_H,
+        y,
+        width: "clamp(180px, 25vw, 320px)",
+        zIndex: 10,
+      }}
+      className="flex flex-col gap-4 pt-6"
+    >
+      <p className="font-body  text-md tracking  text-muted">01 / Concept</p>
+      <h2 className="font-inter text-ink text-9xl font-semibold leading-[100px] tracking-[-5px] ligatures">
+        Light,
+        <br />
+        stacked.
+      </h2>
+      <p className="font-body text-muted text-md tracking-tight leading-5">
+        A modular ceiling system built from 3D-printed shapes. Stack as many as
+        you want, in any order.
+      </p>
+    </motion.div>
+  );
+}
 // ── Desktop: unified sticky scroll sequence ──────────────────────────
 function ScrollSequence() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion() ?? false;
-  const [vh, setVh] = useState(900);
   const controls = useAnimationControls();
 
+  const rawScrollY = useMotionValue(0);
+  const [scrollRange, setScrollRange] = useState([0, 1]);
+
   useEffect(() => {
-    setVh(window.innerHeight);
+    const el = containerRef.current;
+    if (!el) return;
+    const top = el.offsetTop;
+    const scrollable = el.offsetHeight - window.innerHeight;
+    setScrollRange([top, top + scrollable]);
   }, []);
+
+  // Feed Lenis scroll position into our motion value
+  const lenis = useLenis();
+  // console.log("lenis instance:", lenis);
+
+  useEffect(() => {
+    if (!lenis) return;
+    const onScroll = ({ scroll }: { scroll: number }) => rawScrollY.set(scroll);
+    lenis.on("scroll", onScroll);
+    return () => lenis.off("scroll", onScroll);
+  }, [lenis, rawScrollY]);
+
+  const scrollYProgress = useTransform(rawScrollY, scrollRange, [0, 1], {
+    clamp: true,
+  });
+  // useEffect(() => {
+  //   return scrollYProgress.on("change", (v) => console.log("scroll:", v));
+  // }, [scrollYProgress]);
 
   // TOTEM letter animation — plays on mount
   useEffect(() => {
@@ -129,12 +196,7 @@ function ScrollSequence() {
         y: 0,
         scaleY: 1,
         scaleX: 1,
-        transition: {
-          type: "spring",
-          stiffness: 110,
-          damping: 20,
-          mass: 1.2,
-        },
+        transition: { type: "spring", stiffness: 110, damping: 20, mass: 1.2 },
       });
     };
 
@@ -142,19 +204,14 @@ function ScrollSequence() {
     return () => cancelAnimationFrame(raf);
   }, [controls]);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
   return (
     // Outer: tall container — provides scroll travel space.
-    // Height = (N + 2) × 100vh so each card arrives exactly 1 screen apart.
+    // (N + 2) × 100vh: 1 screen for initial TOTEM view, 1 per card, 1 for breathing room.
     <div
       ref={containerRef}
       style={{ height: `${(CARDS.length + 2) * 100}vh`, position: "relative" }}
     >
-      {/* Sticky viewport — pins to top while user scrolls through the outer container */}
+      {/* Sticky viewport — pins while user scrolls through the outer container */}
       <div
         style={{
           position: "sticky",
@@ -163,7 +220,7 @@ function ScrollSequence() {
           overflow: "hidden",
         }}
       >
-        {/* TOTEM — centered in the sticky viewport */}
+        {/* TOTEM — centered */}
         <div
           style={{
             position: "absolute",
@@ -193,7 +250,8 @@ function ScrollSequence() {
           </h1>
         </div>
 
-        {/* Cards — all same size, right-aligned, stacking (later = higher z) */}
+        <TextBlock scrollYProgress={scrollYProgress} />
+        {/* Cards — right-aligned, stacking (later = higher z) */}
         {CARDS.map((card, i) => (
           <Card
             key={card.id}
@@ -201,8 +259,6 @@ function ScrollSequence() {
             index={i}
             total={CARDS.length}
             scrollYProgress={scrollYProgress}
-            vh={vh}
-            reduced={reduced}
           />
         ))}
       </div>
@@ -239,32 +295,32 @@ export function LandingParallaxImages() {
           ))}
         </h1>
 
-        <div className="w-full flex flex-col gap-3">
+        {/* <div className="w-full flex flex-col gap-3">
           <div className="flex gap-3 items-start">
             <div className="bg-ink flex-1 aspect-[3/4] flex items-end p-4">
-              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-canvas/30">
+              <span className="font-body text-md tracking-[0.2em]  text-canvas/30">
                 01 / Modular
               </span>
             </div>
             <div className="bg-accent mt-10 w-2/5 aspect-[2/3] flex items-end p-3">
-              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-canvas/30">
+              <span className="font-body text-[9px] tracking-[0.2em]  text-canvas/30">
                 02
               </span>
             </div>
           </div>
           <div className="flex gap-3 items-end">
             <div className="bg-stone-200 w-2/5 aspect-[3/4] flex items-end p-3">
-              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-ink/30">
+              <span className="font-body text-[9px] tracking-[0.2em]  text-ink/30">
                 03
               </span>
             </div>
             <div className="bg-ink/75 flex-1 aspect-[2/3] flex items-end p-4">
-              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-canvas/20">
+              <span className="font-body text-[9px] tracking-[0.2em]  text-canvas/20">
                 04
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

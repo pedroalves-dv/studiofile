@@ -2,7 +2,7 @@
 
 export function LandingMinimalHeader() {
   return (
-    <header className="fixed w-full top-0 left-0 z-50 px-6 md:px-12 py-5 border-b border-ink pb-2 flex flex-col">
+    <header className="fixed bg-canvas w-full top-0 left-0 z-50 px-6 md:px-12 py-5 border-b border-ink pb-2 flex flex-col">
       <div className="flex flex-row items-center justify-between">
         <span
           className="group relative block"
@@ -30,9 +30,12 @@ export function LandingMinimalHeader() {
             }}
           />
         </span>
-        <div className="flex gap-8">
+        <div className="flex gap-12">
+          <p className="font-body text-md tracking-tighter font-medium pt-2 pr-44">
+            © 2026 Studio filé — Paris
+          </p>
           <p className="font-body text-md tracking-tighter font-medium pt-2">
-            Coming Soon
+            Coming Soon / [Countdown]
           </p>
           <p className="font-body text-md tracking-tighter font-medium pt-2">
             TOTEM Collection
