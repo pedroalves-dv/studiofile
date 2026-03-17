@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { LandingHero } from "@/components/home/LandingHero";
 import { LandingSignup } from "@/components/home/LandingSignup";
 import { LandingMinimalHeader } from "@/components/home/LandingMinimalHeader";
 import { LandingParallaxImages } from "@/components/home/LandingParallaxImages";
@@ -41,13 +40,7 @@ export default function ComingSoonPage() {
       {/* Logo-only fixed header */}
       <LandingMinimalHeader />
 
-      {/* 1. Hero — dark, full viewport */}
-      <LandingHero />
-
-      {/* Sentinel: IntersectionObserver target for logo color switch */}
-      <div id="hero-sentinel" aria-hidden="true" />
-
-      {/* 2. Parallax image section */}
+      {/* 1. TOTEM animation + image stack (unified scroll sequence) */}
       <LandingParallaxImages />
 
       {/* 3. Offer + form */}
@@ -56,12 +49,13 @@ export default function ComingSoonPage() {
           {/* Left — headline + perks */}
           <div className="px-6 md:px-12 py-16 md:py-24 border-b border-stroke md:border-b-0 md:border-r md:border-stroke">
             <h2 className="font-display text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
-              Be first.<br />
+              Be first.
+              <br />
               Get 30% off.
             </h2>
             <p className="font-body text-muted text-sm leading-relaxed max-w-sm mb-10">
-              Join the list before launch and unlock a 30% founding discount
-              on your first order.
+              Join the list before launch and unlock a 30% founding discount on
+              your first order.
             </p>
 
             <ul className="flex flex-col border-t border-stroke">
@@ -98,17 +92,23 @@ export default function ComingSoonPage() {
               className={`px-6 md:px-10 py-10 flex flex-col gap-3
                 ${i < FEATURES.length - 1 ? "border-b border-stroke md:border-b-0 md:border-r md:border-stroke" : ""}`}
             >
-              <span className="font-mono text-[10px] tracking-[0.2em] text-muted">{f.num}</span>
+              <span className="font-mono text-[10px] tracking-[0.2em] text-muted">
+                {f.num}
+              </span>
               <h3 className="font-display text-ink text-xl">{f.title}</h3>
-              <p className="font-body text-muted text-sm leading-relaxed">{f.body}</p>
+              <p className="font-body text-muted text-sm leading-relaxed">
+                {f.body}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       {/* 4. Footer */}
-      <footer className="px-6 md:px-12 py-6 flex flex-col sm:flex-row justify-between items-center
-        gap-3 bg-canvas border-b border-stroke">
+      <footer
+        className="px-6 md:px-12 py-6 flex flex-col sm:flex-row justify-between items-center
+        gap-3 bg-canvas border-b border-stroke"
+      >
         <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">
           © 2025 Studiofile — Paris
         </span>

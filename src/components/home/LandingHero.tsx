@@ -8,8 +8,8 @@ const STACK_Y = [44, 32, 21, 10, 0] as const;
 
 const GRID_OVERLAY = {
   backgroundImage:
-    "linear-gradient(rgba(255,218,167,0.04) 1px, transparent 1px), " +
-    "linear-gradient(90deg, rgba(255,218,167,0.04) 1px, transparent 1px)",
+    "linear-gradient(rgba(95, 85, 235, 0.04) 1px, transparent 1px), " +
+    "linear-gradient(90deg, rgba(255, 92, 63, 0.04) 1px, transparent 1px)",
   backgroundSize: "80px 80px",
 } as const;
 
@@ -65,25 +65,18 @@ export function LandingHero() {
 
   return (
     <section
-      className="relative w-full bg-black overflow-hidden border-b border-accent/10"
-      style={{
-        minHeight: "calc(100dvh - var(--header-height))",
-        ...GRID_OVERLAY,
-      }}
+      id="landing-hero"
+      className="relative w-full bg-canvas overflow-hidden border-b border-accent/10"
+      style={{ minHeight: "100dvh" }}
     >
       <div
         className="relative z-10 flex flex-col items-center justify-center gap-10
           w-full px-6 md:px-12 py-10 md:py-14"
-        style={{ minHeight: "calc(100dvh - var(--header-height))" }}
+        style={{ minHeight: "100dvh" }}
       >
-        {/* Top label */}
-        {/* <p className="font-mono text-[10px] tracking-[0.25em] uppercase text-accent/70">
-          Collection 01 — Ceiling Lighting
-        </p> */}
-
         {/* TOTEM title */}
         <h1
-          className="flex flex-col items-center leading-none text-canvas
+          className="flex flex-col items-center leading-none text-ink
                 text-9xl sm:text-10xl font-display -space-y-4 sm:-space-y-6 mx-auto"
         >
           {LETTERS.map((letter, i) => (
@@ -99,18 +92,6 @@ export function LandingHero() {
             </motion.span>
           ))}
         </h1>
-
-        {/* Description */}
-        <div className="flex flex-col items-center gap-4 text-center">
-          <p className="font-body text-canvas/55 text-sm leading-relaxed">
-            A modular lighting system built from stackable shapes.
-            <br />
-            Made to order. Ships worldwide.
-          </p>
-          <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-muted/60">
-            3D printed on demand · Designed in Paris
-          </p>
-        </div>
       </div>
     </section>
   );
