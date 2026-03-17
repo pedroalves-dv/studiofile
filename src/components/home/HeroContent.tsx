@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
-import { m, useAnimationControls } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 // Downward offset (px) each letter lands at relative to its final position.
@@ -72,7 +72,7 @@ export function HeroContent() {
         text-9xl sm:text-10xl font-display -space-y-4 sm:-space-y-6 mx-auto"
         >
           {LETTERS.map((letter, i) => (
-            <m.span
+            <motion.span
               key={i}
               animate={controls}
               initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
@@ -81,7 +81,7 @@ export function HeroContent() {
               style={{ willChange: "transform, opacity" }}
             >
               {letter}
-            </m.span>
+            </motion.span>
           ))}
         </h1>
 

@@ -15,7 +15,6 @@ import { GeistMono } from "geist/font/mono";
 // 3. Third-party libraries
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { LazyMotion, domAnimation } from "motion/react";
 
 // 4. Internal aliases (@/)  — grouped by type
 import { DEFAULT_METADATA, SITE_URL } from "@/lib/utils/seo";
@@ -76,7 +75,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <body className="grain relative bg-canvas">
         <SmoothScroll>
-          <LazyMotion features={domAnimation}>
             <ScrollToTop />
             {/* Skip to content link */}
             <a href="#main-content" className="skip-to-content">
@@ -146,7 +144,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             {/* Analytics */}
             <Analytics />
             <SpeedInsights />
-          </LazyMotion>
         </SmoothScroll>
       </body>
     </html>

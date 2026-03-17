@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { m, useAnimationControls } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 const STACK_Y = [44, 32, 21, 10, 0] as const;
@@ -87,7 +87,7 @@ export function LandingHero() {
                 text-9xl sm:text-10xl font-display -space-y-4 sm:-space-y-6 mx-auto"
         >
           {LETTERS.map((letter, i) => (
-            <m.span
+            <motion.span
               key={i}
               animate={controls}
               initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
@@ -96,7 +96,7 @@ export function LandingHero() {
               style={{ willChange: "transform, opacity" }}
             >
               {letter}
-            </m.span>
+            </motion.span>
           ))}
         </h1>
 

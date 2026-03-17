@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 import { HoverWord } from "@/components/ui/HoverWord";
-import { RevealText } from "../common/RevealText";
 
 export default function BrandStory() {
   const [visible, setVisible] = useState(false);
