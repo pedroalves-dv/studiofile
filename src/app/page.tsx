@@ -3,7 +3,6 @@ import { Metadata } from "next";
 import { HeroContent } from "@/components/home/HeroContent";
 import Image from "next/image";
 import BrandStory from "@/components/home/BrandStory";
-import { ClipReveal } from "@/components/common/ClipReveal";
 import { ProductSpotlight } from "@/components/home/ProductSpotlight";
 
 export const metadata: Metadata = {
@@ -18,26 +17,8 @@ function Hero() {
     <section className="relative w-full min-h-dvh overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 flex">
-        <div className="relative flex-1">
-          <Image
-            src="/images/hero/totem-3.png"
-            alt="TOTEM"
-            sizes="(max-width: 768px) 0vw, 50vw"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-        <div className="relative flex-1">
-          <Image
-            src="/images/hero/totem-2.png"
-            alt="TOTEM"
-            sizes="(max-width: 768px) 0vw, 50vw"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        <div className="relative flex-1 bg-accent"></div>
+        <div className="relative flex-1 bg-success"></div>
       </div>
 
       {/* Foreground */}

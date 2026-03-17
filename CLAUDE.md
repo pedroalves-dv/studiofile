@@ -328,10 +328,28 @@ Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />`
 
 ### Animation (Phase 10–11)
 
-- GSAP has been **removed** — `src/lib/gsap.ts` does not exist. Do not reference or reinstall it.
-- `motion` (Framer Motion v12 rebranded) is the JS animation library — use only when CSS cannot achieve the result.
+**Library split:**
+
+- `motion` (Framer Motion v12 rebranded) — component animations and spring physics only.
+- GSAP + ScrollTrigger — scroll-driven sequences only (landing page image effect). Do not use for component animations.
+- CSS `@keyframes` / transitions — always preferred when JS is not required.
+- `LazyMotion` has been **fully removed** — do not re-add it.
+
+**`motion` is used in exactly 6 files:**
+
+| File | Usage |
+| ---- | ----- |
+| `src/components/ui/HeartIcon.tsx` | `motion.svg` — scale pulse `[1,1.08,1]`, imperative handle |
+| `src/components/ui/ShoppingBagIcon.tsx` | `motion.svg` — wiggle+lift keyframes, imperative handle |
+| `src/components/ui/SparklesIcon.tsx` | `motion.path` × 3 — staggered opacity+scale flicker, imperative handle |
+| `src/components/ui/MagnifyingGlassIcon.tsx` | `motion.svg` — shimmy keyframes, imperative handle |
+| `src/components/home/HeroContent.tsx` | `motion.span` × 5 — two-phase TOTEM letter animation (staggered fall-in + spring settle) |
+| `src/components/home/LandingHero.tsx` | `motion.span` × 5 — same two-phase letter animation, used on `/coming-soon` |
+
+`MagneticButton`, `ClipReveal`, `RevealText`, `HeroParallax`, `TextEffectWrapper` — no longer use `motion`.
+
 - `RevealOnScroll` is currently a passthrough `<div>` with no animation logic.
-- `ProductGrid` is `'use client'` from GSAP era — can be converted to a server component if no client features are added.
+- `ProductGrid` is `'use client'` (legacy from GSAP era) — can be converted to a server component if no client features are added.
 - Marquee uses a CSS `@keyframes` animation — no JS. Keyframe defined in `globals.css`.
 
 ---
