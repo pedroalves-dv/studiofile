@@ -116,8 +116,8 @@ export const CUSTOMER_ACCESS_TOKEN_CREATE = `
 `;
 
 export const CUSTOMER_ACCESS_TOKEN_DELETE = `
-  mutation deleteAccessToken($accessToken: String!) {
-    customerAccessTokenDelete(accessToken: $accessToken) {
+  mutation customerAccessTokenDelete($customerAccessToken: String!) {
+    customerAccessTokenDelete(customerAccessToken: $customerAccessToken) {
       deletedAccessToken
       userErrors {
         field

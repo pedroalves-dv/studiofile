@@ -133,6 +133,10 @@ src/
   context/           
 docs/
   STATUS.md          ← current progress — update after every session
+tasks/
+  todo.md
+  lessons.md
+middleware.ts  
 ```
 
 ---

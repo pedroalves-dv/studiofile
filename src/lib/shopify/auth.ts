@@ -83,7 +83,7 @@ export async function customerLogout(): Promise<void> {
     try {
       await storefront(
         CUSTOMER_ACCESS_TOKEN_DELETE,
-        { accessToken: token },
+        { customerAccessToken: token },
         { cache: 'no-store' }
       )
     } catch {}

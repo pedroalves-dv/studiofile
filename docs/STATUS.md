@@ -48,6 +48,7 @@ Update this file at the end of every session.
 | 11.x | Cart + Wishlist drawer styling overhaul (ad hoc) | ✅ Done |
 | 11.3 | Header accent hover effects (logo slash + nav color shift) | 🔄 In Progress |
 | 11.4 | Shop + collection editorial layout, ProductCard redesign (outline on hover) | ⬜ Pending |
+| 11.x | Coming-soon page editorial rework — canvas aesthetic, parallax image section, logo-only header, LandingSignup re-skin | ✅ Done |
 
 **Phase 11 note:** 11.5 (PDP redesign) is intentionally skipped — the PDP will be replaced by the TOTEM configurator.
 

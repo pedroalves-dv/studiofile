@@ -180,7 +180,7 @@ Utility functions:
   - Security headers
 - **`tailwind.config.ts`** — Tailwind CSS configuration
 - **`postcss.config.js`** — PostCSS setup
-- **`src/middleware.ts`** — Route middleware (TODO: auth protection)
+- **`middleware.ts`** — Route middleware (TODO: auth protection)
 - **`.env.local.example`** — Environment variables template
 - **`public/robots.txt`** — SEO robots file
 
@@ -188,7 +188,7 @@ Utility functions:
 
 - **Frontend:** Next.js 15 (App Router), React 18, TypeScript
 - **Styling:** Tailwind CSS 3.4
-- **Animations:** GSAP + ScrollTrigger
+- **Animations:** GSAP + ScrollTrigger / Motion
 - **State:** React Context (Cart, Wishlist)
 - **API:** Shopify Storefront API (GraphQL)
 - **Icons:** Lucide React

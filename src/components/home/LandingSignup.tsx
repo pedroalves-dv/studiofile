@@ -42,8 +42,8 @@ export function LandingSignup() {
     return (
       <div className="py-10 text-center">
         <span className="block font-mono text-accent text-3xl mb-5">✦</span>
-        <p className="font-display text-canvas text-2xl mb-3">You&apos;re on the list.</p>
-        <p className="font-body text-canvas/50 text-sm">
+        <p className="font-display text-ink text-2xl mb-3">You&apos;re on the list.</p>
+        <p className="font-body text-muted text-sm">
           We&apos;ll send your 30% code when TOTEM launches.<br />
           Thank you for being here early.
         </p>
@@ -59,7 +59,7 @@ export function LandingSignup() {
           htmlFor="landing-name"
           className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted"
         >
-          Your name <span className="text-canvas/30">(optional)</span>
+          Your name <span className="text-ink/30">(optional)</span>
         </label>
         <input
           id="landing-name"
@@ -68,9 +68,9 @@ export function LandingSignup() {
           placeholder="e.g. Marie Dupont"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full bg-transparent border border-accent/20 text-canvas font-body text-sm
+          className="w-full bg-transparent border border-stroke text-ink font-body text-sm
             px-4 py-3 placeholder:text-muted/60
-            focus:outline-none focus:border-accent/60
+            focus:outline-none focus:border-accent
             transition-colors duration-200"
         />
       </div>
@@ -90,10 +90,10 @@ export function LandingSignup() {
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`w-full bg-transparent border text-canvas font-body text-sm
+          className={`w-full bg-transparent border text-ink font-body text-sm
             px-4 py-3 placeholder:text-muted/60
             focus:outline-none transition-colors duration-200
-            ${emailError ? "border-error" : "border-accent/20 focus:border-accent/60"}`}
+            ${emailError ? "border-error" : "border-stroke focus:border-accent"}`}
           required
         />
       </div>

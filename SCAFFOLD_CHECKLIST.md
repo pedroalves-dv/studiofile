@@ -49,7 +49,7 @@ Complete Next.js 15 project structure scaffolded for a premium e-commerce platfo
 | `tailwind.config.ts` | Tailwind CSS with custom theme | ✅ Complete |
 | `postcss.config.js` | PostCSS setup for Tailwind | ✅ Complete |
 | `tsconfig.json` | TypeScript configuration | ✅ Auto-generated |
-| `src/middleware.ts` | Route protection (TODO: auth) | ✅ Created |
+| `middleware.ts` | Route protection (TODO: auth) | ✅ Created |
 | `.env.local.example` | Environment variables template | ✅ Created |
 | `.gitignore` | Git ignore rules | ✅ Created |
 | `public/robots.txt` | SEO robots file | ✅ Created |

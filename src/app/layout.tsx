@@ -1,6 +1,6 @@
 // 1. Next.js built-ins
 import type { Metadata } from "next";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 
 // 2. Fonts (next/font + font packages)
 import {
@@ -16,20 +16,8 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// 4. Internal aliases (@/)  — grouped by type
+// 4. Internal aliases (@/)
 import { DEFAULT_METADATA, SITE_URL } from "@/lib/utils/seo";
-import { getCustomerToken } from "@/lib/shopify/auth";
-import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
-import { ToastProvider } from "@/components/common/Toast";
-import { SmoothScroll } from "@/components/common/SmoothScroll";
-import { ScrollToTop } from "@/components/common/ScrollToTop";
-import { CookieConsent } from "@/components/common/CookieConsent";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { FooterBackground } from "@/components/layout/FooterBackground";
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 
 // 5. Styles — always last
 import "./globals.css";
@@ -65,8 +53,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const token = await getCustomerToken();
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -74,77 +61,50 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${jetbrainsMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${GeistSans.variable} ${GeistMono.variable} ${interTight.variable}`}
     >
       <body className="grain relative bg-canvas">
-        <SmoothScroll>
-            <ScrollToTop />
-            {/* Skip to content link */}
-            <a href="#main-content" className="skip-to-content">
-              Skip to content
-            </a>
+        {children}
 
-            {/* Context Providers */}
-            <CartProvider>
-              <WishlistProvider>
-                <ToastProvider>
-                  {/* Layout */}
-                  <Header isLoggedIn={!!token} />
-                  <main id="main-content" className="flex flex-col min-h-full">
-                    {children}
-                  </main>
-                  <div className="relative w-full">
-                    <Footer />
-                  </div>
-                  <CartDrawer />
-                  <WishlistDrawer />
+        {/* JSON-LD — WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Studiofile",
+              url: SITE_URL,
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
 
-                  {/* Common components */}
-                  <CookieConsent />
-                </ToastProvider>
-              </WishlistProvider>
-            </CartProvider>
+        {/* JSON-LD — Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Studiofile",
+              url: SITE_URL,
+              logo: `${SITE_URL}/icon.png`,
+              sameAs: [
+                "https://instagram.com/studiofile",
+                "https://pinterest.com/studiofile",
+              ],
+            }),
+          }}
+        />
 
-            {/* JSON-LD — WebSite */}
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                  "@context": "https://schema.org",
-                  "@type": "WebSite",
-                  name: "Studiofile",
-                  url: SITE_URL,
-                  potentialAction: {
-                    "@type": "SearchAction",
-                    target: {
-                      "@type": "EntryPoint",
-                      urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-                    },
-                    "query-input": "required name=search_term_string",
-                  },
-                }),
-              }}
-            />
-
-            {/* JSON-LD — Organization */}
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                  "@context": "https://schema.org",
-                  "@type": "Organization",
-                  name: "Studiofile",
-                  url: SITE_URL,
-                  logo: `${SITE_URL}/icon.png`,
-                  sameAs: [
-                    "https://instagram.com/studiofile",
-                    "https://pinterest.com/studiofile",
-                  ],
-                }),
-              }}
-            />
-
-            {/* Analytics */}
-            <Analytics />
-            <SpeedInsights />
-        </SmoothScroll>
+        {/* Analytics */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
