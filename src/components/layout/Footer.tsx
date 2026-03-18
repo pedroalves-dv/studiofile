@@ -31,9 +31,9 @@ export function Footer() {
 
   return (
     // <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-16 md:py-20 md:px-16 lg:px-24 xl:px-36 tracking-tight">
-    <footer className="w-full flex items-center py-20 px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36 z-10 backdrop-blur-md border-t border-white">
+    <footer className="w-full flex flex-col z-10 backdrop-blur-md border-t border-white">
       {/* Main footer content */}
-      <div className="w-full ">
+      <div className="w-full flex flex-col items-center py-20 px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 sm:gap-16 md:gap-4">
           {/* Column 1: Wordmark + Tagline */}
           <div className="flex flex-row sm:flex-col justify-between sm:justify-start md:justify-between ">
@@ -41,7 +41,7 @@ export function Footer() {
               className="h-7 bg-ink mb-4"
               style={{
                 aspectRatio: "22.203955 / 4.0943561",
-                maskImage: "url(/images/logo/logo-small.svg)",
+                maskImage: "url(/images/logo/logo-black.svg)",
                 maskSize: "contain",
                 maskRepeat: "no-repeat",
                 maskPosition: "left center",
@@ -140,6 +140,18 @@ export function Footer() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="w-full flex flex-col">
+        <div
+          className="w-full bg-ink"
+          style={{
+            aspectRatio: "22.203955 / 4.0943561",
+            maskImage: "url(/images/logo/logo-black.svg)",
+            maskSize: "100% 100%",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
       </div>
     </footer>
   );

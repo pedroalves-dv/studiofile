@@ -3,28 +3,37 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef } from "react";
-import { Search, Heart, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
+import {
+  Search,
+  Heart,
+  ShoppingCart,
+  Menu,
+  X,
+  ArrowRight,
+  User,
+} from "lucide-react";
 import { customerLogout } from "@/lib/shopify/auth";
 import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
-import { SearchBar } from "@/components/search/SearchBar";
 import { ArrowButton } from "@/components/ui/ArrowButton";
-import { HeartIcon, type HeartIconHandle } from "@/components/ui/HeartIcon";
+import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
 import {
-  SparklesIcon,
-  type SparklesIconHandle,
-} from "@/components/ui/SparklesIcon";
-import {
-  MagnifyingGlassIcon,
-  type MagnifyingGlassIconHandle,
-} from "@/components/ui/MagnifyingGlassIcon";
+  UserRoundCheckIcon,
+  type UserRoundCheckIconHandle,
+} from "@/components/ui/UserRoundCheckIcon";
 import {
   ShoppingBagIcon,
   type ShoppingBagIconHandle,
 } from "@/components/ui/ShoppingBagIcon";
+// import { SearchBar } from "@/components/search/SearchBar";
+// import { HeartIcon, type HeartIconHandle } from "@/components/ui/HeartIcon";
+// import {
+//   MagnifyingGlassIcon,
+//   type MagnifyingGlassIconHandle,
+// } from "@/components/ui/MagnifyingGlassIcon";
 
 const NAV_LINKS: {
   label: string;
@@ -131,9 +140,11 @@ interface HeaderProps {
 
 export function Header({ isLoggedIn = false }: HeaderProps) {
   // all existing refs and state
-  const heartRef = useRef<HeartIconHandle>(null);
-  const sparklesRef = useRef<SparklesIconHandle>(null);
-  const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
+
+  // const heartRef = useRef<HeartIconHandle>(null);
+  // const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
+  const userIconRef = useRef<UserIconHandle>(null);
+  const userRoundCheckIconRef = useRef<UserRoundCheckIconHandle>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cartIconRef = useRef<ShoppingBagIconHandle>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -283,7 +294,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             </nav>
 
             {/* Right icons */}
-            <div className="flex items-center gap-4 md:gap-4 lg:gap-8">
+            <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
               {/* Search toggle */}
               {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
@@ -325,9 +336,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     className="p-2 sm:p-0 relative flex items-center"
                     aria-label="My account"
                     aria-expanded={isAccountOpen}
+                    onMouseEnter={() =>
+                      userRoundCheckIconRef.current?.startAnimation()
+                    }
+                    onMouseLeave={() =>
+                      userRoundCheckIconRef.current?.stopAnimation()
+                    }
                   >
-                    <User size={20} strokeWidth={1.5} />
-                    <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-ink" />
+                    <UserRoundCheckIcon ref={userRoundCheckIconRef} size={28} />
                   </button>
                   {isAccountOpen && (
                     <div className="absolute top-full right-0 mt-1 min-w-[180px] bg-canvas border border-ink z-50">
@@ -361,10 +377,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               ) : (
                 <Link
                   href="/account/login"
-                  className="p-2 sm:p-0 relative flex items-center"
+                  className="p-4 relative flex items-center"
                   aria-label="Sign in"
+                  onMouseEnter={() => userIconRef.current?.startAnimation()}
+                  onMouseLeave={() => userIconRef.current?.stopAnimation()}
                 >
-                  <User size={20} strokeWidth={1.5} />
+                  <UserIcon ref={userIconRef} size={28} />
                 </Link>
               )}
 
@@ -372,7 +390,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-2 sm:p-0 relative"
+                className="p-4 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
