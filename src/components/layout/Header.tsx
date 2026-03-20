@@ -20,6 +20,7 @@ import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
+import { MenuIcon, type MenuIconHandle } from "@/components/ui/MenuIcon";
 import {
   UserRoundCheckIcon,
   type UserRoundCheckIconHandle,
@@ -143,6 +144,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
   // const heartRef = useRef<HeartIconHandle>(null);
   // const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
+  const menuIconRef = useRef<MenuIconHandle>(null);
   const userIconRef = useRef<UserIconHandle>(null);
   const userRoundCheckIconRef = useRef<UserRoundCheckIconHandle>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -195,6 +197,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      menuIconRef.current?.startAnimation();
+    } else {
+      menuIconRef.current?.stopAnimation();
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <>
       {/* Search overlay — full-screen */}
@@ -228,20 +238,19 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)]">
         {" "}
         <div
-          className={`px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
+          className={`h-[var(--header-height)] px-6 lg:px-24 xl:px-36 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
             isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
-          <div className="flex items-center justify-between h-[var(--header-height)]">
+          <div className="h-[var(--header-height)] flex items-center justify-between">
             {/* Wordmark */}
-
             <Link
               href="/"
               aria-label="Studiofile — Home"
-              className="-ml-6 pt-1"
+              className="-ml-6 pt-2"
             >
               <span
                 className="group relative block"
@@ -272,7 +281,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 />
               </span>
             </Link>
-
             {/* Desktop nav */}
             <nav
               className="hidden md:flex md:gap-6 lg:gap-12 pt-2"
@@ -292,9 +300,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 />
               ))}
             </nav>
-
             {/* Right icons */}
-            <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
+            <div className="flex items-center pt-2 gap-2 md:gap-4 lg:gap-6">
               {/* Search toggle */}
               {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
@@ -333,7 +340,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 <div ref={accountRef} className="relative">
                   <button
                     onClick={() => setIsAccountOpen((v) => !v)}
-                    className="p-2 sm:p-0 relative flex items-center"
+                    className="p-2 sm:p-4 relative flex items-center"
                     aria-label="My account"
                     aria-expanded={isAccountOpen}
                     onMouseEnter={() =>
@@ -390,7 +397,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-4 relative"
+                className="p-2 sm:p-4 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
@@ -406,11 +413,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               {/* Mobile hamburger */}
               <button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
-                className="md:hidden p-2"
+                className="md:hidden py-4 pl-2 sm:pl-4"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                <MenuIcon ref={menuIconRef} size={28} />
               </button>
             </div>
           </div>
@@ -434,7 +441,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "gap-1 flex items-baseline w-full text-left py-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
+                    "gap-1 flex w-full text-left pt-6 pb-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
                     link.linkClassName, // ✏️ ADD — same field, works here too
                   )}
                 >
@@ -483,7 +490,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <Link
                 href={isLoggedIn ? "/account" : "/account/login"}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full text-left py-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink"
+                className="flex items-center w-full text-left pt-6 pb-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink"
               >
                 {isLoggedIn ? "Account" : "Sign in"}
               </Link>
