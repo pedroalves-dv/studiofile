@@ -283,7 +283,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             </Link>
             {/* Desktop nav */}
             <nav
-              className="hidden md:flex md:gap-6 lg:gap-12 pt-2"
+              className="hidden md:flex md:gap-6 lg:gap-12 pt-4"
               aria-label="Main navigation"
             >
               {NAV_LINKS.map((link) => (
@@ -294,8 +294,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   showArrow={false}
                   label={link.node ?? link.label}
                   className={cn(
-                    "font-body tracking-tighter font-[500] text-[18px] text-ink py-2 px-2 hover:text-light transition-colors duration-200",
-                    link.linkClassName, // ✏️ ADD — overrides or extends for this link only
+                    "font-body tracking-tighter font-medium text-[18px] text-ink py-2 px-2 hover:text-light transition-colors duration-200",
+                    link.linkClassName,
                   )}
                 />
               ))}

@@ -69,7 +69,7 @@ export function HeroContent() {
         {/* Center — TOTEM title, always visible */}
         <h1
           className="flex flex-col items-center leading-none text-ink
-        text-9xl sm:text-10xl font-display -space-y-4 sm:-space-y-6 mx-auto"
+        text-9xl sm:text-10xl font-display -space-y-6 sm:-space-y-8 mx-auto"
         >
           {LETTERS.map((letter, i) => (
             <motion.span
