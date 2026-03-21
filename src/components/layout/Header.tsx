@@ -3,22 +3,12 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef } from "react";
-import {
-  Search,
-  Heart,
-  ShoppingCart,
-  Menu,
-  X,
-  ArrowRight,
-  User,
-} from "lucide-react";
 import { customerLogout } from "@/lib/shopify/auth";
 import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
-import { ArrowButton } from "@/components/ui/ArrowButton";
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
 import { MenuIcon, type MenuIconHandle } from "@/components/ui/MenuIcon";
 import {
@@ -38,101 +28,13 @@ import {
 
 const NAV_LINKS: {
   label: string;
-  node?: React.ReactNode;
-  badge?: string;
   href: string;
   linkClassName?: string;
 }[] = [
-  {
-    label: "TOTEM",
-    linkClassName: "tracking-tight",
-    node: (
-      <>
-        TOTEM
-        <span
-          className="
-          pl-[2px] 
-          text-ink font-serif tracking-tight
-          w-0 overflow-hidden
-          [clip-path:inset(0_100%_0_0)]
-          group-hover:w-auto
-          group-hover:animate-revealLTR
-          transition-[width] duration-300 ease-out
-        "
-        >
-          / New
-        </span>
-      </>
-    ),
-    badge: "/New",
-    href: "/products/totem",
-  },
-  {
-    label: "Studio",
-    node: (
-      <>
-        Studio
-        <span
-          className="
-          pl-[2px]
-          text-ink font-serif tracking-tight
-          w-0 overflow-hidden
-          [clip-path:inset(0_100%_0_0)]
-          group-hover:w-auto
-          group-hover:animate-revealLTR
-          transition-[width] duration-300 ease-out
-        "
-        >
-          / 01
-        </span>
-      </>
-    ),
-    href: "/about",
-  },
-  {
-    label: "FAQ",
-    node: (
-      <>
-        FAQ
-        <span
-          className="
-          pl-[2px] 
-          text-ink font-serif tracking-tight
-          w-0 overflow-hidden
-          [clip-path:inset(0_100%_0_0)]
-          group-hover:w-auto
-          group-hover:animate-revealLTR
-          transition-[width] duration-300 ease-out
-        "
-        >
-          / 02
-        </span>
-      </>
-    ),
-    href: "/faq",
-  },
-  {
-    label: "Contact",
-    node: (
-      <>
-        Contact
-        <span
-          className="
-          pl-[2px] 
-          text-ink font-serif tracking-tight
-          w-0 overflow-hidden
-          [clip-path:inset(0_100%_0_0)]
-          group-hover:w-auto
-          group-hover:animate-revealLTR
-          transition-[width] duration-300 ease-out
-        "
-        >
-          / 03
-        </span>
-      </>
-    ),
-    href: "/contact",
-  },
+  { label: "TOTEM", href: "/products/totem", linkClassName: "tracking-tight" },
+  { label: "Studio", href: "/about" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
 ];
 
 interface HeaderProps {
@@ -140,8 +42,6 @@ interface HeaderProps {
 }
 
 export function Header({ isLoggedIn = false }: HeaderProps) {
-  // all existing refs and state
-
   // const heartRef = useRef<HeartIconHandle>(null);
   // const searchIconRef = useRef<MagnifyingGlassIconHandle>(null);
   const menuIconRef = useRef<MenuIconHandle>(null);
@@ -156,12 +56,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
     const handleScroll = () => {
       setIsScrolling(true);
 
-      // Clear previous timeout and reset it
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
 
       scrollTimeoutRef.current = setTimeout(() => {
         setIsScrolling(false);
-      }, 1000); // ms after last scroll event to consider scrolling "stopped"
+      }, 1000);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -184,7 +83,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   useClickOutside(accountRef, () => setIsAccountOpen(false));
   useScrollLock(isSearchOpen);
 
-  // Close both overlays on Escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -241,25 +139,29 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)]">
         {" "}
         <div
-          className={`h-[var(--header-height)] pl-6 pr-2 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
+          className={`h-[var(--header-height)] px-6 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
             isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
-          <div className="h-[var(--header-height)] grid grid-cols-2 sm:grid-cols-3 items-end">
+          <div className="h-[var(--header-height)] grid grid-cols-2 md:grid-cols-3 items-end">
             {/* Logo */}
-            <Link href="/" aria-label="Studiofile — Home" className="-ml-7">
+            <Link
+              href="/"
+              aria-label="Studiofile — Home"
+              className="justify-self-start pb-3"
+            >
               <span
                 className="group relative block"
                 style={{
                   aspectRatio: "22.203955 / 4.0943561",
-                  height: "2.2rem",
+                  height: "1.8rem",
                 }}
               >
                 {/* Default logo */}
                 <div
                   className="absolute inset-0 bg-ink transition-opacity duration-300 opacity-100 group-hover:opacity-0"
                   style={{
-                    maskImage: "url(/images/logo/logo-black.svg)",
+                    maskImage: "url(/images/logo/logo-footer.svg)",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
@@ -269,7 +171,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 <div
                   className="absolute inset-0 bg-ink transition-opacity duration-150 opacity-0 group-hover:opacity-100"
                   style={{
-                    maskImage: "url(/images/logo/logo.svg)",
+                    maskImage: "url(/images/logo/logo-footer-white.svg)",
                     maskSize: "contain",
                     maskRepeat: "no-repeat",
                     maskPosition: "center top",
@@ -277,27 +179,26 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 />
               </span>
             </Link>
-            {/* Desktop nav */}
+            {/* Desktop Nav */}
             <nav
-              className="hidden md:flex md:gap-6 lg:gap-12"
+              className="hidden md:flex md:gap-8 lg:gap-20 items-end justify-self-center pb-2"
               aria-label="Main navigation"
             >
               {NAV_LINKS.map((link) => (
-                <ArrowButton
+                <Link
                   key={link.href}
                   href={link.href}
-                  aria-label={link.label}
-                  showArrow={false}
-                  label={link.node ?? link.label}
                   className={cn(
                     "font-body tracking-tighter font-medium text-lg text-ink hover:text-light transition-colors duration-200",
                     link.linkClassName,
                   )}
-                />
+                >
+                  {link.label}
+                </Link>
               ))}
             </nav>
             {/* Right icons */}
-            <div className="flex items-center md:gap-4 justify-self-end">
+            <div className="flex items-end md:gap-4 justify-self-end pb-1">
               {/* Search toggle */}
               {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
@@ -336,7 +237,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 <div ref={accountRef} className="relative">
                   <button
                     onClick={() => setIsAccountOpen((v) => !v)}
-                    className="p-2 sm:p-4 relative flex items-center"
+                    className="p-2 relative flex items-center"
                     aria-label="My account"
                     aria-expanded={isAccountOpen}
                     onMouseEnter={() =>
@@ -380,7 +281,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               ) : (
                 <Link
                   href="/account/login"
-                  className="p-4 relative flex items-center"
+                  className="p-2 relative flex items-center"
                   aria-label="Sign in"
                   onMouseEnter={() => userIconRef.current?.startAnimation()}
                   onMouseLeave={() => userIconRef.current?.stopAnimation()}
@@ -393,7 +294,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-4 relative"
+                className="p-2 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
@@ -409,7 +310,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               {/* Mobile Hamburger */}
               <button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
-                className="md:hidden p-4"
+                className="md:hidden p-2"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -437,35 +338,16 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "gap-1 flex w-full text-left pt-6 pb-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
+                    "gap-1 flex w-full text-left pt-6 pb-4 px-6 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
                     link.linkClassName,
                   )}
-                >
-                  {link.label}
-                  {/* ✏️ ADD — shows badge word if defined, e.g. "new" or "01" */}
-                  {link.badge && (
-                    <span
-                      className="
-                        text-white font-light
-                        tracking-tighter font-serif ligatures
-                        opacity-0 -translate-x-1
-                        animate-[badgeIn_0.3s_ease-out_forwards]
-                        "
-                      style={{
-                        animationDelay: `${index * 60 + 150}ms`,
-                        textShadow: "1px 1px 30px rgba(0,0,0,0.1)",
-                      }}
-                    >
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
+                ></Link>
               ))}
 
               <Link
                 href={isLoggedIn ? "/account" : "/account/login"}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full text-left pt-6 pb-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink"
+                className="flex items-center w-full text-left pt-6 pb-4 px-6 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink"
               >
                 {isLoggedIn ? "Account" : "Sign in"}
               </Link>
