@@ -38,13 +38,15 @@ export default function BrandStory() {
         )}
       </div>
 
-      <div className="container-wide lg:px-48 font-mono text-sm">
-        <div className="flex flex-col gap-8 z-10  text-ink text-justify ">
+      <div className="container-wide lg:px-48">
+        <div className="flex flex-col gap-8 z-10 text-xl/6 font-medium tracking-tighter text-ink text-justify">
           {/* Story text */}
           <div className="flex flex-col gap-8">
             <p className=" ligatures">
-              <span className="italic mr-1 text-light ">STUDIO filé</span> is a
-              design studio founded in{" "}
+              <span className="italic mr-1 text-light font-normal">
+                STUDIO filé
+              </span>{" "}
+              is a design studio founded in{" "}
               <HoverWord
                 href="/about"
                 src="/images/page/paris-studio.jpg"

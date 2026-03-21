@@ -12,19 +12,16 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main id="main-content" className="section-padding-bottom">
-      <div className="">
+    <main id="main-content" className="px-6 section-height">
+      <section className="pt-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
-          <div className="space-y-8 md:sticky md:top-24">
-            <div className="px-6">
-              <p className="text-label text-muted mb-4">Get in touch</p>
-              <h1 className="font-display text-5xl md:text-6xl leading-tight tracking-tight">
-                Let&apos;s talk.
-              </h1>
-            </div>
+          <div className="space-y-6">
+            <h1 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+              Let&apos;s talk
+            </h1>
 
-            <p className="text-base text-ink tracking-tight px-6">
+            <p className="text-lg text-ink tracking-tight">
               We&apos;re a small studio — every enquiry is read and answered
               personally. Whether you&apos;re interested in a custom order, a
               press collaboration, or just want to learn more about our process,
@@ -56,7 +53,7 @@ export default function ContactPage() {
             <ContactForm />
           </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

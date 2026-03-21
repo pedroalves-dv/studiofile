@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { useToast } from '@/components/common/Toast';
+import { useState, useRef } from "react";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/common/Toast";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
-type Subject = 'General' | 'Custom Order Enquiry' | 'Press' | 'Other';
+type Subject = "General" | "Custom Order Enquiry" | "Press" | "Other";
 
 interface FormState {
   name: string;
@@ -21,25 +22,30 @@ interface FormErrors {
   message?: string;
 }
 
-const SUBJECTS: Subject[] = ['General', 'Custom Order Enquiry', 'Press', 'Other'];
+const SUBJECTS: Subject[] = [
+  "General",
+  "Custom Order Enquiry",
+  "Press",
+  "Other",
+];
 
 const EMPTY_FORM: FormState = {
-  name: '',
-  email: '',
-  subject: 'General',
-  message: '',
-  honeypot: '',
+  name: "",
+  email: "",
+  subject: "General",
+  message: "",
+  honeypot: "",
 };
 
 function validate(form: FormState): FormErrors {
   const errors: FormErrors = {};
-  if (!form.name.trim()) errors.name = 'Name is required';
+  if (!form.name.trim()) errors.name = "Name is required";
   if (!form.email.trim()) {
-    errors.email = 'Email is required';
+    errors.email = "Email is required";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = 'Enter a valid email address';
+    errors.email = "Enter a valid email address";
   }
-  if (!form.message.trim()) errors.message = 'Message is required';
+  if (!form.message.trim()) errors.message = "Message is required";
   return errors;
 }
 
@@ -50,9 +56,14 @@ export function ContactForm() {
   const toast = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const set = (field: keyof FormState) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  const set =
+    (field: keyof FormState) =>
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >,
+    ) =>
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,9 +77,9 @@ export function ContactForm() {
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: form.name,
           email: form.email,
@@ -80,28 +91,37 @@ export function ContactForm() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Something went wrong');
+        throw new Error(data.error || "Something went wrong");
       }
 
-      toast.success('Message sent — we\'ll be in touch soon.');
+      toast.success("Message sent — we'll be in touch soon.");
       setForm(EMPTY_FORM);
       setErrors({});
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to send. Please try again.');
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Failed to send. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-8 px-6">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      noValidate
+      className="space-y-8 px-6"
+    >
       {/* Honeypot — hidden from real users, visible to bots */}
       <div aria-hidden="true" className="hidden" tabIndex={-1}>
         <input
           type="text"
           name="website"
           value={form.honeypot}
-          onChange={set('honeypot')}
+          onChange={set("honeypot")}
           autoComplete="off"
           tabIndex={-1}
         />
@@ -114,7 +134,7 @@ export function ContactForm() {
           type="text"
           placeholder="Your name"
           value={form.name}
-          onChange={set('name')}
+          onChange={set("name")}
           error={errors.name}
           autoComplete="name"
           required
@@ -125,7 +145,7 @@ export function ContactForm() {
           type="email"
           placeholder="your@email.com"
           value={form.email}
-          onChange={set('email')}
+          onChange={set("email")}
           error={errors.email}
           autoComplete="email"
           required
@@ -133,28 +153,15 @@ export function ContactForm() {
       </div>
 
       {/* Subject */}
-      <div className="w-full">
-        <label
-          htmlFor="contact-subject"
-          className="block text-sm font-mono uppercase tracking-wider mb-2 text-ink"
-        >
-          Subject
-        </label>
-        <div className="border-b border-border focus-within:border-accent transition-colors">
-          <select
-            id="contact-subject"
-            value={form.subject}
-            onChange={set('subject')}
-            className="w-full px-0 py-2 bg-transparent text-ink focus:outline-none appearance-none cursor-pointer"
-          >
-            {SUBJECTS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      <CustomSelect
+        id="contact-subject"
+        label="Subject"
+        value={form.subject}
+        onChange={(val) =>
+          setForm((prev) => ({ ...prev, subject: val as Subject }))
+        }
+        options={SUBJECTS}
+      />
 
       {/* Message */}
       <div className="w-full">
@@ -168,7 +175,7 @@ export function ContactForm() {
           <textarea
             id="contact-message"
             value={form.message}
-            onChange={set('message')}
+            onChange={set("message")}
             rows={6}
             placeholder="Tell us about your project or enquiry…"
             className="w-full px-0 py-2 bg-transparent text-ink placeholder-muted focus:outline-none resize-none"
@@ -182,7 +189,13 @@ export function ContactForm() {
         )}
       </div>
 
-      <Button type="submit" variant="primary" size="lg" isLoading={submitting} disabled={submitting}>
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        isLoading={submitting}
+        disabled={submitting}
+      >
         Send message
       </Button>
     </form>

@@ -17,6 +17,7 @@ const config: Config = {
         ink: "var(--color-ink)",
         canvas: "rgb(var(--color-canvas) / <alpha-value>)",
         accent: "var(--color-accent)",
+        tamed: "var(--color-tamed)",
         muted: "var(--color-muted)",
         stroke: "var(--color-stroke)",
         light: "var(--color-light)",
@@ -50,21 +51,20 @@ const config: Config = {
           to: { gridTemplateRows: "0fr" },
         },
         badgeIn: {
-        from: { opacity: '0', transform: 'translateX(-6px)' },
-        to:   { opacity: '1', transform: 'translateX(0)' },
-      },
-      revealLTR: {     
-    from: { clipPath: 'inset(0 100% 0 0)' },
-    to:   { clipPath: 'inset(0 0% 0 0)' },
-  },
+          from: { opacity: "0", transform: "translateX(-6px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        revealLTR: {
+          from: { clipPath: "inset(0 100% 0 0)" },
+          to: { clipPath: "inset(0 0% 0 0)" },
+        },
       },
       animation: {
         slideDown: "slideDown 0.15s ease-out",
         slideUp: "slideUp 0.15s ease-out",
-        badgeIn:   'badgeIn 0.3s ease-out forwards',
-        revealLTR: 'revealLTR 0.15s ease-out forwards',
+        badgeIn: "badgeIn 0.3s ease-out forwards",
+        revealLTR: "revealLTR 0.15s ease-out forwards",
       },
-      
     },
   },
   plugins: [],

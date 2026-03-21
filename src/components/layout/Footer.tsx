@@ -30,51 +30,23 @@ export function Footer() {
   };
 
   return (
-    // <footer className="w-full absolute bottom-0 z-10 backdrop-blur-lg border-t py-16 md:py-20 md:px-16 lg:px-24 xl:px-36 tracking-tight">
     <footer className="w-full flex flex-col z-10 backdrop-blur-md border-t border-white">
       {/* Main footer content */}
-      <div className="w-full flex flex-col items-center py-20 px-6 sm:px-10 md:px-16 lg:px-24 xl:px-36">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 sm:gap-16 md:gap-4">
+      <div className="w-full flex flex-col items-center pt-20 px-6 justify-between">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_400px] gap-4">
           {/* Column 1: Wordmark + Tagline */}
-          <div className="flex flex-row sm:flex-col justify-between sm:justify-start md:justify-between ">
-            <div
-              className="h-7 bg-ink mb-4"
-              style={{
-                aspectRatio: "22.203955 / 4.0943561",
-                maskImage: "url(/images/logo/logo-black.svg)",
-                maskSize: "contain",
-                maskRepeat: "no-repeat",
-                maskPosition: "left center",
-              }}
-            />
-            <div className="text-xs font-mono text-ink flex flex-col sm:justify-end tracking-tight">
-              <p>© {new Date().getFullYear()} Studiofile</p>
-            </div>
+          <div className="text-lg font-medium text-ink tracking-tighter pb-4">
+            <p>© {new Date().getFullYear()} STUDIO filé</p>
           </div>
-          {/* Column 2: Links */}
-          <div className="space-y-4 text-light tracking-tight">
-            <h3 className="text-sm sm:text-xs font-mono">Navigation</h3>
-            <nav className="space-y-4 flex flex-col pb-4">
+          {/* Column 2: Navigation Links */}
+          <div className="space-y-4 tracking-tight sm:tracking-tighter font-medium">
+            <h3 className="text-base sm:text-lg text-light">Navigation</h3>
+            <nav className="space-y-2 flex flex-col pb-4">
               {FOOTER_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm sm:text-xs font-mono text-ink hover:text-light transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-            <h3 className="text-sm sm:text-xs font-mono">
-              Conditions & Policies
-            </h3>
-            <nav className="space-y-4 flex flex-col">
-              {CONDITIONS_POLICIES_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm sm:text-xs font-mono text-ink hover:text-light transition-colors"
+                  className="text-base sm:text-lg text-ink hover:text-light transition-colors w-fit"
                 >
                   {link.label}
                 </Link>
@@ -82,11 +54,30 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Column 3: Social + Newsletter */}
+          {/* Column 3: Conditions & Policies */}
+          <div className="space-y-4 tracking-tight sm:tracking-tighter font-medium pb-8 sm:pb-0">
+            <h3 className="text-base sm:text-lg text-light">
+              Conditions & Policies
+            </h3>
+            <nav className="space-y-2 flex flex-col">
+              {CONDITIONS_POLICIES_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-base sm:text-lg text-ink hover:text-light transition-colors w-fit"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Column 4: Social + Newsletter */}
           <div className="space-y-16 sm:col-span-2 md:col-span-1">
-            {/* Social Links */}
-            <div>
-              <div className="flex flex-row justify-between">
+            <div className="">
+              {/* Social Links */}
+
+              <div className="flex flex-row justify-between pb-12 px-1">
                 <a
                   href="#"
                   className="transition-colors"
@@ -128,25 +119,26 @@ export function Footer() {
                   />
                 </a>
               </div>
-            </div>
 
-            {/* Newsletter */}
-            <div className="space-y-4">
-              <h3 className="text-sm sm:text-xs tracking-tight font-mono text-ink pb-2">
-                Get updates and special offers on new products. No weekly spam,
-                we promise.
-              </h3>
-              <NewsletterForm />
+              {/* Newsletter */}
+              <div className="space-y-4">
+                <h3 className="text-base sm:text-lg/6 tracking-tight sm:tracking-tighter font-medium text-ink pb-2">
+                  Get updates and special offers on new products. <br /> No
+                  weekly spam, we promise.
+                </h3>
+                <NewsletterForm />
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col">
+
+      <div className="w-full pt-8 sm:pt-24 flex self-center px-4 sm:px-0 pb-6 sm:pb-3">
         <div
           className="w-full bg-ink"
           style={{
             aspectRatio: "22.203955 / 4.0943561",
-            maskImage: "url(/images/logo/logo-black.svg)",
+            maskImage: "url(/images/logo/logo-footer.svg)",
             maskSize: "100% 100%",
             maskRepeat: "no-repeat",
             maskPosition: "center",

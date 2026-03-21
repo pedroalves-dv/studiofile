@@ -21,7 +21,7 @@ export function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="w-full px-3 py-2 bg-canvas border rounded-xl border-stroke 
-        text-ink placeholder-light text-sm focus:outline-none focus:border-muted 
+        text-ink placeholder-light text-lg tracking-tighter focus:outline-none focus:border-muted 
         transition-colors"
         required
       />
@@ -29,8 +29,8 @@ export function NewsletterForm() {
         label="Subscribe"
         type="submit"
         glowColor="var(--color-black)"
-        className="w-full py-2.5 bg-ink text-canvas text-xs tracking-display 
-        font-mono rounded-xl"
+        className="w-full py-2.5 bg-ink text-canvas  font-body tracking
+         text-base rounded-xl border border-white"
       />
     </form>
   );

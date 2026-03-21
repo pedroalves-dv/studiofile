@@ -88,6 +88,7 @@ const MenuIcon = forwardRef<MenuIconHandle, MenuIconProps>(
           xmlns="http://www.w3.org/2000/svg"
         >
           <motion.line
+            initial="normal"
             animate={controls}
             custom={1}
             variants={LINE_VARIANTS}
@@ -97,6 +98,7 @@ const MenuIcon = forwardRef<MenuIconHandle, MenuIconProps>(
             y2="6"
           />
           <motion.line
+            initial="normal"
             animate={controls}
             custom={2}
             variants={LINE_VARIANTS}
@@ -106,6 +108,7 @@ const MenuIcon = forwardRef<MenuIconHandle, MenuIconProps>(
             y2="12"
           />
           <motion.line
+            initial="normal"
             animate={controls}
             custom={3}
             variants={LINE_VARIANTS}

@@ -40,7 +40,8 @@
     --color-ink: #31302e;
     /* --color-canvas: 250 247 242; */
     --color-canvas: 250 245 240;
-    --color-accent: #ffdaa7;
+    --color-accent: #ffaaff;
+    --color-tamed: #ebc7c5;
     --color-muted: #6b6560;
     /* --color-light: #b4b0ac; */
     --color-light: #c2bfbc;
@@ -94,15 +95,14 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: var(--letter-spacing-display);
+    font-family: var(--font-body);
+    /* font-weight: 500; */
     margin-top: 0;
   }
 
   /* Selection styles */
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--color-light);
     color: var(--color-ink);
   }
 
@@ -136,11 +136,6 @@
    ========================================== */
 @layer components {
   /* Typography utilities */
-  .font-display {
-    font-family: var(--font-display);
-    letter-spacing: var(--letter-spacing-display);
-  }
-
   .text-label {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -155,6 +150,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  .section-height {
+    min-height: calc(100dvh - var(--header-height));
   }
   .section-padding {
     @apply py-20;

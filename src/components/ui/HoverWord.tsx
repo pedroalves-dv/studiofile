@@ -2,7 +2,7 @@
 // Fires onHover/onLeave up to the parent. Image renders as a sibling
 // BELOW the text block in the section — never overlaps text.
 
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 type HoverWordProps = {
   href: string;
@@ -28,7 +28,7 @@ export const HoverWord = ({
   >
     <a
       href={href}
-      className="text-ink underline underline-offset-4 decoration-ink/30 
+      className="text-ink text-light font-normal underline underline-offset-4 decoration-ink/30 
       hover:decoration-ink transition-all"
     >
       {children}

@@ -241,16 +241,16 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)]">
         {" "}
         <div
-          className={`h-[var(--header-height)] px-6 lg:px-24 xl:px-36 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
+          className={`h-[var(--header-height)] pl-6 pr-2 backdrop-blur-xl border-b border-ink transition-colors duration-300 ${
             isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
-          <div className="h-[var(--header-height)] flex items-center justify-between">
-            {/* Wordmark */}
+          <div className="h-[var(--header-height)] flex items-center justify-between ">
+            {/* Logo */}
             <Link
               href="/"
               aria-label="Studiofile — Home"
-              className="-ml-6 pt-2"
+              className="-ml-7 pt-2"
             >
               <span
                 className="group relative block"
@@ -301,7 +301,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               ))}
             </nav>
             {/* Right icons */}
-            <div className="flex items-center pt-2 gap-2 md:gap-4 lg:gap-6">
+            <div className="flex items-center pt-2 md:gap-4">
               {/* Search toggle */}
               {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
@@ -397,7 +397,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <button
                 ref={buttonRef}
                 onClick={openCart}
-                className="p-2 sm:p-4 relative"
+                className="p-4 relative"
                 aria-label={`Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
                 onMouseEnter={() => cartIconRef.current?.startAnimation()}
                 onMouseLeave={() => cartIconRef.current?.stopAnimation()}
@@ -410,10 +410,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 )}
               </button>
 
-              {/* Mobile hamburger */}
+              {/* Mobile Hamburger */}
               <button
                 onClick={() => setIsMobileMenuOpen((v) => !v)}
-                className="md:hidden py-4 pl-2 sm:pl-4"
+                className="md:hidden p-4"
                 aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isMobileMenuOpen}
               >
@@ -422,7 +422,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             </div>
           </div>
         </div>
-        {/* Mobile menu */}
+        {/* Mobile Hamburger Dropdown */}
         {isMobileMenuOpen && (
           <nav className="md:hidden bg-canvas" aria-label="Mobile navigation">
             <div>
@@ -442,7 +442,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
                     "gap-1 flex w-full text-left pt-6 pb-4 px-8 text-4xl tracking-tighter font-medium text-ink font-body ligatures border-b border-ink",
-                    link.linkClassName, // ✏️ ADD — same field, works here too
+                    link.linkClassName,
                   )}
                 >
                   {link.label}
@@ -465,27 +465,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   )}
                 </Link>
               ))}
-
-              {/* <button
-                className="
-                  gap-2 w-full
-                  text-left py-4 px-8
-                  text-4xl text-ink
-                  font-body tracking-tighter font-medium
-                  border-b border-ink ligatures"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openWishlist();
-                }}
-                aria-label="Open wishlist"
-                >
-                Wishlist
-                {wishlistCount > 0 && (
-                  <span className="ml-auto font-mono text-xs bg-accent text-canvas px-2 py-0.5">
-                    {wishlistCount}
-                  </span>
-                )}
-              </button> */}
 
               <Link
                 href={isLoggedIn ? "/account" : "/account/login"}

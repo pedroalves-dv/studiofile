@@ -86,7 +86,7 @@ export function HeroContent() {
         </h1>
 
         {/* Right — desktop only */}
-        <div className="hidden sm:flex flex-col items-start gap-1">
+        {/* <div className="hidden sm:flex flex-col items-start gap-1">
           <div className="backdrop-blur-xl px-6 py-4 rounded-lg">
             <p className="">$33 — $149</p>
           </div>
@@ -94,20 +94,20 @@ export function HeroContent() {
             href="/shop"
             label="Shop"
             glowColor="var(--color-black)"
-            className="h-12 px-8 py-4 bg-ink font-light text-md text-white
-            rounded-lg flex items-center justify-center"
+            className="h-14 px-12 py-6 bg-ink text-base text-white
+            rounded-lg flex items-center justify-center text-lg"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Mobile-only button — below the title */}
-      <ArrowButton
+      {/* <ArrowButton
         href="/shop"
         label="Shop"
         glowColor="var(--color-black)"
         className="sm:hidden mt-12 h-12 w-24 px-8 py-3 bg-ink text-white text-xs
         tracking-display font-mono rounded-xl flex items-center justify-center"
-      />
+      /> */}
     </div>
   );
 }

@@ -9,13 +9,13 @@ Project-level instructions for Claude Code. Read this at the start of every sess
 Premium e-commerce + showcase website for a 3D printing and design studio.
 Modular, functional home decor and furniture. Premium brand aesthetic.
 
-| Layer | Choice |
-| ------- | -------- |
-| Frontend | Next.js 15 App Router, TypeScript |
-| Styling | Tailwind CSS v3 |
-| Backend | Shopify Storefront API (GraphQL) |
+| Layer      | Choice                                                |
+| ---------- | ----------------------------------------------------- |
+| Frontend   | Next.js 15 App Router, TypeScript                     |
+| Styling    | Tailwind CSS v3                                       |
+| Backend    | Shopify Storefront API (GraphQL)                      |
 | Animations | CSS transitions · `motion` v12 · View Transitions API |
-| Hosting | Vercel |
+| Hosting    | Vercel                                                |
 
 ---
 
@@ -55,7 +55,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 - If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
 - Skip this for simple, obvious fixes - don't over engineer
 - Challenge your own work before presenting it
-  
+
 ### 6. Autonomous Bug Fixing
 
 - When given a bug report: just fix it. Don't ask for hand-holding
@@ -115,28 +115,28 @@ Re-read this file first, then `docs/STATUS.md`.
 src/
   app/               ← Next.js App Router pages (server components by default)
   components/
-    ui/              
-    layout/          
-    product/         
-    cart/            
-    search/         
-    account/         
-    wishlist/        
-    contact/         
-    common/          
-    home/            
+    ui/
+    layout/
+    product/
+    cart/
+    search/
+    account/
+    wishlist/
+    contact/
+    common/
+    home/
   lib/
-    shopify/         
-    utils/           
-    constants.ts     
-  hooks/             
-  context/           
+    shopify/
+    utils/
+    constants.ts
+  hooks/
+  context/
 docs/
   STATUS.md          ← current progress — update after every session
 tasks/
   todo.md
   lessons.md
-middleware.ts  
+middleware.ts
 ```
 
 ---
@@ -176,23 +176,23 @@ middleware.ts
 
 #### Typography
 
-- Display/heading: `Noka` (`font-display`) — all `h1–h6`, large display text
-- Body: `Geist Sans` (`font-body`) — body copy, paragraphs, main text font
+- Display: `Noka` (`font-display`) — logo font, used sparingly
+- Body: `Geist Sans` (`font-body`) — Main font, all headings, body text
 - Mono labels: `JetBrains Mono` (`font-mono`) — prices, tags, UI labels, button text
 - Accent Typography: `Instrument Serif` (`font-serif`) — details, pull quotes
 
 #### Colors
 
-| Token | Hex | Usage |
-| ----- | --- | ----- |
-| `ink` | `#31302e` | Primary text, dark backgrounds |
-| `canvas` | `#faf7f2` | Page background |
-| `accent` | `#ffdaa7` | Highlights, selection, badges |
-| `muted` | `#6B6560` | Secondary text |
-| `light` | `#b4b0ac` | Tertiary/placeholder text (`text-light`) |
-| `stroke` | `#E5E0D8` | Borders, dividers |
-| `success` | `#4A7C59` | Success states |
-| `error` | `#B84040` | Error states |
+| Token     | Hex       | Usage                                    |
+| --------- | --------- | ---------------------------------------- |
+| `ink`     | `#31302e` | Primary text, dark backgrounds           |
+| `canvas`  | `#faf7f2` | Page background                          |
+| `accent`  | `#ffdaa7` | Highlights, selection, badges            |
+| `muted`   | `#6B6560` | Secondary text                           |
+| `light`   | `#b4b0ac` | Tertiary/placeholder text (`text-light`) |
+| `stroke`  | `#E5E0D8` | Borders, dividers                        |
+| `success` | `#4A7C59` | Success states                           |
+| `error`   | `#B84040` | Error states                             |
 
 All colors are defined as CSS custom properties in `globals.css` and consumed via Tailwind tokens.
 
@@ -302,11 +302,11 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 
 The following icons expose an imperative handle for animation control:
 
-| Component | Handle type | Methods |
-| --------- | ----------- | ------- |
-| `HeartIcon` | `HeartIconHandle` | `startAnimation()`, `stopAnimation()` |
-| `ShoppingBagIcon` | `ShoppingBagIconHandle` | `startAnimation()`, `stopAnimation()` |
-| `SparklesIcon` | `SparklesIconHandle` | `startAnimation()`, `stopAnimation()` |
+| Component             | Handle type                 | Methods                               |
+| --------------------- | --------------------------- | ------------------------------------- |
+| `HeartIcon`           | `HeartIconHandle`           | `startAnimation()`, `stopAnimation()` |
+| `ShoppingBagIcon`     | `ShoppingBagIconHandle`     | `startAnimation()`, `stopAnimation()` |
+| `SparklesIcon`        | `SparklesIconHandle`        | `startAnimation()`, `stopAnimation()` |
 | `MagnifyingGlassIcon` | `MagnifyingGlassIconHandle` | `startAnimation()`, `stopAnimation()` |
 
 Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />` → call `ref.current?.startAnimation()` on `onMouseEnter` and `ref.current?.stopAnimation()` on `onMouseLeave`.
@@ -341,14 +341,14 @@ Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />`
 
 **`motion` is used in exactly 6 files:**
 
-| File | Usage |
-| ---- | ----- |
-| `src/components/ui/HeartIcon.tsx` | `motion.svg` — scale pulse `[1,1.08,1]`, imperative handle |
-| `src/components/ui/ShoppingBagIcon.tsx` | `motion.svg` — wiggle+lift keyframes, imperative handle |
-| `src/components/ui/SparklesIcon.tsx` | `motion.path` × 3 — staggered opacity+scale flicker, imperative handle |
-| `src/components/ui/MagnifyingGlassIcon.tsx` | `motion.svg` — shimmy keyframes, imperative handle |
-| `src/components/home/HeroContent.tsx` | `motion.span` × 5 — two-phase TOTEM letter animation (staggered fall-in + spring settle) |
-| `src/components/home/LandingHero.tsx` | `motion.span` × 5 — same two-phase letter animation, used on `/coming-soon` |
+| File                                        | Usage                                                                                    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `src/components/ui/HeartIcon.tsx`           | `motion.svg` — scale pulse `[1,1.08,1]`, imperative handle                               |
+| `src/components/ui/ShoppingBagIcon.tsx`     | `motion.svg` — wiggle+lift keyframes, imperative handle                                  |
+| `src/components/ui/SparklesIcon.tsx`        | `motion.path` × 3 — staggered opacity+scale flicker, imperative handle                   |
+| `src/components/ui/MagnifyingGlassIcon.tsx` | `motion.svg` — shimmy keyframes, imperative handle                                       |
+| `src/components/home/HeroContent.tsx`       | `motion.span` × 5 — two-phase TOTEM letter animation (staggered fall-in + spring settle) |
+| `src/components/home/LandingHero.tsx`       | `motion.span` × 5 — same two-phase letter animation, used on `/coming-soon`              |
 
 `MagneticButton`, `ClipReveal`, `RevealText`, `HeroParallax`, `TextEffectWrapper` — no longer use `motion`.
 

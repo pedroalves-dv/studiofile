@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useCart } from '@/hooks/useCart';
-import { formatPrice } from '@/lib/utils/format';
-import { Button } from '@/components/ui/Button';
-import type { ShopifyCart } from '@/lib/shopify/types';
+import Link from "next/link";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils/format";
+import { Button } from "@/components/ui/Button";
+import type { ShopifyCart } from "@/lib/shopify/types";
 
 interface CartSummaryProps {
   cart: ShopifyCart;
@@ -22,7 +22,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
           sum +
           line.discountAllocations.reduce(
             (s, da) => s + parseFloat(da.allocatedAmount.amount),
-            0
+            0,
           )
         );
       }, 0)
@@ -49,7 +49,9 @@ export function CartSummary({ cart }: CartSummaryProps) {
       )}
 
       {/* Taxes & shipping note */}
-      <p className="text-label text-muted">Taxes and shipping calculated at checkout</p>
+      <p className="text-label text-muted">
+        Taxes and shipping calculated at checkout
+      </p>
 
       {/* Total */}
       <div className="flex items-center justify-between pt-2 border-t border-border">

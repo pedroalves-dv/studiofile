@@ -18,7 +18,7 @@ function Hero() {
       {/* Background */}
       <div className="absolute inset-0 flex">
         <div className="relative flex-1 bg-accent"></div>
-        <div className="relative flex-1 bg-success"></div>
+        <div className="relative flex-1 bg-tamed"></div>
       </div>
 
       {/* Foreground */}
