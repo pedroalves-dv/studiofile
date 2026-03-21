@@ -16,6 +16,7 @@ type ArrowButtonBase = {
 type AsButton = ArrowButtonBase & {
   href?: undefined;
   type?: "submit" | "button" | "reset";
+  disabled?: boolean;
 };
 
 type AsLink = ArrowButtonBase & {
@@ -37,7 +38,7 @@ export function ArrowButton({
     <span className="relative inline-flex items-center">
       {showArrow !== false && (
         <span
-          className="absolute -left-7 opacity-0 -translate-x-3 transition-all duration-400 
+          className="font-body  absolute -left-7 opacity-0 -translate-x-3 transition-all duration-400 
         ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3"
         >
           →
@@ -84,6 +85,7 @@ export function ArrowButton({
     <button
       type={type}
       onClick={onClick}
+      disabled={(rest as AsButton).disabled}
       className={cn("group relative", className)}
     >
       {glow}

@@ -61,7 +61,7 @@ export default function AboutPage() {
     <main id="main-content" className="px-6">
       {/* ─── Hero / Studio Story ─── */}
       <section className="border-b border-stroke section-height">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
           <div className="pt-12">
             {/* Left — info */}

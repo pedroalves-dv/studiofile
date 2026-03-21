@@ -245,13 +245,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             isScrolling ? "bg-canvas/60" : "bg-canvas"
           }`}
         >
-          <div className="h-[var(--header-height)] flex items-center justify-between ">
+          <div className="h-[var(--header-height)] grid grid-cols-2 sm:grid-cols-3 items-end">
             {/* Logo */}
-            <Link
-              href="/"
-              aria-label="Studiofile — Home"
-              className="-ml-7 pt-2"
-            >
+            <Link href="/" aria-label="Studiofile — Home" className="-ml-7">
               <span
                 className="group relative block"
                 style={{
@@ -283,7 +279,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             </Link>
             {/* Desktop nav */}
             <nav
-              className="hidden md:flex md:gap-6 lg:gap-12 pt-4"
+              className="hidden md:flex md:gap-6 lg:gap-12"
               aria-label="Main navigation"
             >
               {NAV_LINKS.map((link) => (
@@ -294,14 +290,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   showArrow={false}
                   label={link.node ?? link.label}
                   className={cn(
-                    "font-body tracking-tighter font-medium text-[18px] text-ink py-2 px-2 hover:text-light transition-colors duration-200",
+                    "font-body tracking-tighter font-medium text-lg text-ink hover:text-light transition-colors duration-200",
                     link.linkClassName,
                   )}
                 />
               ))}
             </nav>
             {/* Right icons */}
-            <div className="flex items-center pt-2 md:gap-4">
+            <div className="flex items-center md:gap-4 justify-self-end">
               {/* Search toggle */}
               {/* <button
                 onClick={() => setIsSearchOpen((v) => !v)}
@@ -404,7 +400,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               >
                 <ShoppingBagIcon ref={cartIconRef} />
                 {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4flex items-center justify-center rounded-full">
+                  <span className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center rounded-full">
                     {cartCount}
                   </span>
                 )}

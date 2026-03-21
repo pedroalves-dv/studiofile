@@ -29,8 +29,8 @@ export function NewsletterForm() {
         label="Subscribe"
         type="submit"
         glowColor="var(--color-black)"
-        className="w-full py-2.5 bg-ink text-canvas  font-body tracking
-         text-base rounded-xl border border-white"
+        className="w-full py-2.5 bg-ink text-canvas font-mono tracking-wide
+         text-sm rounded-xl border border-white"
       />
     </form>
   );

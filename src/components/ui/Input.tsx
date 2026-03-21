@@ -1,6 +1,9 @@
-'use client';
+"use client";
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'prefix' | 'suffix'> {
+interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "prefix" | "suffix"
+> {
   label?: string;
   error?: string;
   hint?: string;
@@ -18,26 +21,31 @@ export function Input({
   id,
   ...props
 }: InputProps) {
-  const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+  const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="w-full">
+    <div className="w-full border border-stroke rounded-lg p-1 bg-canvas">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-mono uppercase letter-spacing-display mb-2 text-ink">
+        <label
+          htmlFor={inputId}
+          className="px-1 block text-sm font-mono mb-1 text-light"
+        >
           {label}
         </label>
       )}
-      <div className="flex items-center border-b border-border focus-within:border-accent transition-colors">
+      <div className="flex items-center rounded-md border border-stroke focus-within:border-ink transition-colors bg-white">
         {prefix && <span className="text-muted text-sm mr-2">{prefix}</span>}
         <input
           id={inputId}
-          className={`w-full px-0 py-2 bg-transparent text-ink placeholder-muted focus:outline-none ${error ? 'text-error' : ''} ${className || ''}`}
+          className={`w-full px-4 py-2 bg-transparent text-ink placeholder-light text-sm font-mono focus:outline-none ${error ? "text-error" : ""} ${className || ""}`}
           {...props}
         />
         {suffix && <span className="text-muted text-sm ml-2">{suffix}</span>}
       </div>
-      {error && <p className="text-error text-xs font-mono mt-1 uppercase letter-spacing-display">{error}</p>}
-      {hint && !error && <p className="text-muted text-xs font-mono mt-1">{hint}</p>}
+      {error && <p className="text-error text-xs font-mono mt-1">{error}</p>}
+      {hint && !error && (
+        <p className="text-muted text-xs font-mono mt-1">{hint}</p>
+      )}
     </div>
   );
 }

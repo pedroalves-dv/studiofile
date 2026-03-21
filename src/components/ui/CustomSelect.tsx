@@ -25,17 +25,17 @@ export function CustomSelect({
   useClickOutside(ref, () => setIsOpen(false));
 
   return (
-    <div className="w-full">
+    <div className="w-full border border-stroke rounded-lg p-1 bg-canvas ">
       {label && (
         <label
           htmlFor={id}
-          className="block text-lg font-mono uppercase tracking-wider mb-2 text-ink"
+          className="px-1 block text-sm font-mono mb-1 text-light"
         >
           {label}
         </label>
       )}
 
-      <div ref={ref} className="relative">
+      <div ref={ref} className="relative rounded-md bg-white text-sm font-mono">
         {/* Trigger */}
         <button
           id={id}
@@ -43,10 +43,8 @@ export function CustomSelect({
           onClick={() => setIsOpen((v) => !v)}
           className={cn(
             "w-full px-4 py-2 flex items-center justify-between",
-            "border border-stroke rounded-lg",
-            "text-ink bg-transparent cursor-pointer",
-            "transition-colors",
-            isOpen && "border-accent",
+            "border border-stroke transition-colors text-ink bg-transparent cursor-pointer",
+            isOpen ? "rounded-t-lg border-ink" : "rounded-lg",
           )}
         >
           <span>{value}</span>
@@ -63,7 +61,7 @@ export function CustomSelect({
         {isOpen && (
           <ul
             role="listbox"
-            className="absolute z-50 w-full mt-1 border border-stroke rounded-lg bg-canvas overflow-hidden"
+            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-sm font-mono"
           >
             {options.map((option) => (
               <li
@@ -75,9 +73,9 @@ export function CustomSelect({
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "px-4 py-2 cursor-pointer text-ink",
-                  "hover:bg-accent/10 transition-colors",
-                  option === value && "bg-accent/20",
+                  "m-1 px-4 py-2 cursor-pointer text-ink rounded-md",
+                  "hover:bg-white transition-colors",
+                  option === value && "bg-white",
                 )}
               >
                 {option}

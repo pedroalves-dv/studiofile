@@ -2,9 +2,11 @@
 
 import { useState, useRef } from "react";
 import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useToast } from "@/components/common/Toast";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+
+import type { ChangeEvent } from "react";
 
 type Subject = "General" | "Custom Order Enquiry" | "Press" | "Other";
 
@@ -53,70 +55,99 @@ export function ContactForm() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const toast = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
   const set =
     (field: keyof FormState) =>
     (
-      e: React.ChangeEvent<
+      e: ChangeEvent<
         HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
       >,
     ) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Honeypot check — if filled, silently discard
-    if (form.honeypot) return;
-
-    const errs = validate(form);
-    setErrors(errs);
-    if (Object.keys(errs).length > 0) return;
-
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          subject: form.subject,
-          message: form.message,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Something went wrong");
-      }
-
-      toast.success("Message sent — we'll be in touch soon.");
-      setForm(EMPTY_FORM);
-      setErrors({});
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "Failed to send. Please try again.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    toast.success("Message sent — we'll be in touch soon.");
+    setSubmitted(true);
+    return;
   };
+
+  if (submitted) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 leading-[5rem]">
+          Thank you.
+        </h2>
+        <p className="text-ink font-mono text-sm">
+          We've received your message and will get back to you within 1–2
+          business days.
+        </p>
+        <ArrowButton
+          type="submit"
+          label="Send another message"
+          // glowColor="var(--color-canvas)"
+          disabled={submitting}
+          className="w-full py-2.5 bg-white text-ink font-mono tracking-wide
+         text-xs rounded-lg border border-stroke"
+        />
+      </div>
+    );
+  }
+  // const handleSubmit = async (e: SubmitEvent) => {
+  //   e.preventDefault();
+
+  //   // Honeypot check — if filled, silently discard
+  //   if (form.honeypot) return;
+
+  //   const errs = validate(form);
+  //   setErrors(errs);
+  //   if (Object.keys(errs).length > 0) return;
+
+  //   setSubmitting(true);
+  //   try {
+  //     const res = await fetch("/api/contact", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         name: form.name,
+  //         email: form.email,
+  //         subject: form.subject,
+  //         message: form.message,
+  //       }),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok || !data.success) {
+  //       throw new Error(data.error || "Something went wrong");
+  //     }
+
+  //     toast.success("Message sent — we'll be in touch soon.");
+  //     setForm(EMPTY_FORM);
+  //     setErrors({});
+  //   } catch (err) {
+  //     toast.error(
+  //       err instanceof Error
+  //         ? err.message
+  //         : "Failed to send. Please try again.",
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
 
   return (
     <form
       ref={formRef}
       onSubmit={handleSubmit}
       noValidate
-      className="space-y-8 px-6"
+      className="space-y-8"
     >
       {/* Honeypot — hidden from real users, visible to bots */}
-      <div aria-hidden="true" className="hidden" tabIndex={-1}>
+      <div aria-hidden="true" className="hidden" hidden tabIndex={-1}>
         <input
           type="text"
           name="website"
@@ -127,6 +158,7 @@ export function ContactForm() {
         />
       </div>
 
+      {/* Name & Email */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Name"
@@ -164,40 +196,37 @@ export function ContactForm() {
       />
 
       {/* Message */}
-      <div className="w-full">
+      <div className="w-full border border-stroke rounded-lg p-1 bg-canvas ">
         <label
           htmlFor="contact-message"
-          className="block text-sm font-mono uppercase tracking-wider mb-2 text-ink"
+          className="px-1 block text-sm font-mono mb-1 text-light"
         >
           Message
         </label>
-        <div className="border-b border-border focus-within:border-accent transition-colors">
+        <div className="bg-white border border-stroke rounded-md focus-within:border-ink transition-colors">
           <textarea
             id="contact-message"
             value={form.message}
             onChange={set("message")}
             rows={6}
             placeholder="Tell us about your project or enquiry…"
-            className="w-full px-0 py-2 bg-transparent text-ink placeholder-muted focus:outline-none resize-none"
+            className="w-full px-4 py-2 bg-transparent text-ink text-lg tracking-tight placeholder-light focus:outline-none text-sm font-mono"
             required
           />
         </div>
         {errors.message && (
-          <p className="text-error text-xs font-mono mt-1 uppercase tracking-wider">
-            {errors.message}
-          </p>
+          <p className="text-error text-xs font-mono mt-1">{errors.message}</p>
         )}
       </div>
 
-      <Button
+      <ArrowButton
         type="submit"
-        variant="primary"
-        size="lg"
-        isLoading={submitting}
+        label={submitting ? "Sending…" : "Send message"}
+        glowColor="var(--color-black)"
         disabled={submitting}
-      >
-        Send message
-      </Button>
+        className="w-full py-2.5 bg-ink text-canvas font-mono tracking-wide
+         text-sm rounded-lg border border-white"
+      />
     </form>
   );
 }
