@@ -75,27 +75,26 @@ export function ContactForm() {
     return;
   };
 
-  if (submitted) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 leading-[5rem]">
-          Thank you.
-        </h2>
-        <p className="text-ink font-mono text-sm">
-          We've received your message and will get back to you within 1–2
-          business days.
-        </p>
-        <ArrowButton
-          type="submit"
-          label="Send another message"
-          // glowColor="var(--color-canvas)"
-          disabled={submitting}
-          className="w-full py-2.5 bg-white text-ink font-mono tracking-wide
-         text-xs rounded-lg border border-stroke"
-        />
-      </div>
-    );
-  }
+  // if (submitted) {
+  //   return (
+  //     <div className="space-y-6">
+  //       <h2 className="text-[5.2rem] font-medium font-inter sm:text-9xl tracking-[-0.05em] pb-8 sm:leading-[0.9] leading-[0.9]">
+  //         Thank you.
+  //       </h2>
+  //       <p className="text-ink text-lg tracking-[-0.04em] leading-tight">
+  //         We've received your message and will get back to you shortly.
+  //       </p>
+  //       <ArrowButton
+  //         type="button"
+  //         label="Send another message"
+  //         onClick={() => setSubmitted(false)}
+  //         disabled={submitting}
+  //         className="w-full py-2.5 bg-white text-ink font-mono tracking-wide
+  //        text-xs rounded-lg border border-stroke"
+  //       />
+  //     </div>
+  //   );
+  // }
   // const handleSubmit = async (e: SubmitEvent) => {
   //   e.preventDefault();
 

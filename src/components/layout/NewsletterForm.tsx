@@ -14,23 +14,23 @@ export function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="email"
-        aria-label="Email address"
-        placeholder="your@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full px-3 py-2 bg-canvas border rounded-xl border-stroke 
-        text-ink placeholder-light text-lg tracking-tighter focus:outline-none focus:border-muted 
-        transition-colors"
-        required
-      />
+      <div className="bg-white border border-stroke rounded-md focus-within:border-ink transition-colors">
+        <input
+          id="newsletter-email"
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-2.5 bg-transparent text-ink text-sm font-mono tracking-tight placeholder-light focus:outline-none"
+          required
+        />
+      </div>
+
       <ArrowButton
         label="Subscribe"
         type="submit"
-        glowColor="var(--color-black)"
-        className="w-full py-2.5 bg-ink text-canvas font-mono tracking-wide
-         text-sm rounded-xl border border-white"
+        className="w-full py-2.5 bg-ink text-white font-mono tracking-tight
+         text-sm rounded-lg border border-stroke"
       />
     </form>
   );

@@ -58,37 +58,37 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="px-6">
+    <main id="main-content" className="px-5">
       {/* ─── Hero / Studio Story ─── */}
       <section className="border-b border-stroke section-height">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
-          <div className="pt-12">
+          <div className="space-y-6 md:sticky md:top-28">
             {/* Left — info */}
 
-            <h1 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
               Made to last
             </h1>
-            <div className="space-y-6">
-              <p className="text-lg text-ink tracking-tight">
+            <div className="text-lg text-ink tracking-[-0.04em] leading-tight">
+              <p className="">
                 Studiofile began with a simple frustration: the objects we
                 wanted for our homes didn&apos;t exist. Too much furniture was
                 made to be disposable, too little was made to be beautiful and
                 functional at the same time.
               </p>
-              <p className="text-lg text-ink tracking-tight">
+              <p className="">
                 We started experimenting with 3D printing not as a novelty, but
                 as a genuine design tool — one that allowed us to iterate fast,
                 eliminate waste, and produce things that couldn&apos;t be made
                 any other way.
               </p>
-              <p className="text-lg text-ink tracking-tight">
+              <p className="">
                 Every object in the Studiofile collection is designed from the
                 ground up for additive manufacturing. The layer lines, the
                 geometric precision, the material properties — these aren&apos;t
                 limitations to hide. They&apos;re part of the aesthetic.
               </p>
-              <p className="text-lg text-ink tracking-tight">
+              <p className="">
                 We work in small batches, print to order, and ship from our
                 Paris studio. No warehouses. No middlemen. Just objects made
                 with intent, sent directly to the people who want them.
@@ -110,22 +110,26 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Studio Values / Process ─── */}
-      <section className="border-b border-stroke pt-12 pb-8 section-height">
-        <p className=" text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+      <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
+        <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:leading-[0.9] leading-[0.9]">
           What we stand for
-        </p>
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
-              <h3 className="text-4xl mt-8 tracking-tight">{value.title}</h3>
-              <p className="text-lg text-ink">{value.description}</p>
+              <h3 className="text-4xl mt-8 tracking-tighter">{value.title}</h3>
+              <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+                {value.description}
+              </p>
             </div>
           ))}
           {PROCESS_STEPS.map((step) => (
             <div key={step.number} className="space-y-4">
               {/* <span className="text-4xl tracking-tight">{step.number}</span> */}
-              <h3 className="text-4xl tracking-tight">{step.title}</h3>
-              <p className="text-lg text-ink">{step.description}</p>
+              <h3 className="text-4xl tracking-tighter">{step.title}</h3>
+              <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>
@@ -133,26 +137,26 @@ export default function AboutPage() {
 
       {/* ─── Team / Studio ─── */}
       <section className="border-b border-stroke pb-8 section-height">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
-          <div className="space-y-6 pt-12">
-            <p className=" text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+          <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28">
+            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[0px] sm:leading-[0.9] leading-[0.9]">
               The studio
-            </p>
-            <h2 className="text-4xl md:text-5xl leading-tight tracking-tight">
+            </h1>
+            <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">
               Alex Dumont
             </h2>
-            <p className="text-lg text-lg tracking-tight font-semibold">
+            <p className="text-lg text-lg tracking-[-0.04em] leading-tight">
               Designer & Creative Director
             </p>
-            <p className="text-lg text-ink ">
+            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
               Alex trained as an industrial designer before spending a decade
               working across product, furniture, and spatial design studios in
               Paris and Amsterdam. Studiofile is the convergence of everything
               he&apos;s learned: rigorous process, honest materials, and design
               that earns its place in a home.
             </p>
-            <p className="text-lg text-light ">
+            <p className="text-lg text-light tracking-[-0.04em] leading-tight">
               &ldquo;I wanted to make things that get better as they age —
               objects that develop a patina, that you remember acquiring. Not
               things you replace.&rdquo;

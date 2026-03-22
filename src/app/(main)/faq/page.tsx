@@ -69,36 +69,42 @@ export default function FaqPage() {
     },
   ];
   return (
-    <main id="main-content" className="section-padding-bottom">
-      <div className="">
+    <main id="main-content" className="px-6">
+      <section className="section-height border-b border-stroke pt-[var(--header-height)]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
-          <div className="space-y-8 md:sticky md:top-24">
-            <div className="px-6">
-              <p className="text-label text-muted mb-4">FAQ</p>
-              <h1 className="font-display text-5xl md:text-6xl leading-tight tracking-tight">
-                Any questions?
+          <div className="space-y-8 md:sticky md:top-28">
+            <div className="">
+              <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
+                FAQ
               </h1>
             </div>
 
-            <p className="text-base text-ink tracking-tight px-6">
+            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
               We&apos;ve compiled answers to our most frequently asked questions
-              here. If you can&apos;t find what you&apos;re looking for, feel
-              free to reach out to us directly. We&apos;re always happy to help!
+              here. <br />
+              If you can&apos;t find what you&apos;re looking for, feel free to
+              reach out to us directly.
             </p>
+            {/* <ArrowButton
+              href="/contact"
+              label="Contact Us"
+              className="block w-full text-center py-2.5 bg-white text-ink font-mono tracking-wide
+         text-sm rounded-lg border border-stroke"
+            /> */}
           </div>
 
-          <section className="relative flex flex-col w-full items-center border-t border-stroke tracking-tight">
+          <div className="relative flex flex-col w-full items-center rounded-lg border border-stroke tracking-tight">
             <AccordionRoot type="single" collapsible className="w-full">
               {steps.map((step, i) => (
                 <AccordionItem
                   key={i}
                   value={`step-${i}`}
-                  className="border-b border-stroke"
+                  className="border-b border-stroke last:border-b-0"
                 >
                   <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-6 pt-4">
                     <div className="flex flex-col text-left">
-                      <p className="font-mono text-sm text-ink pb-4">
+                      <p className="text-lg text-ink tracking-[-0.04em] leading-tight pb-4">
                         {step.title}
                       </p>
                       {/* <p className="font-mono text-sm text-light leading-none">
@@ -107,37 +113,37 @@ export default function FaqPage() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="p-2">
-                    <p className="font-mono text-sm text-ink p-4">
+                    <p className="text-lg text-ink tracking-[-0.04em] leading-tight p-4">
                       {step.detail}
                     </p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
             </AccordionRoot>
-          </section>
-          <div className="space-y-8 md:sticky md:top-24 px-6">
-            <div>
-              <p className="text-label text-muted mb-4">Uh oh</p>
-              <h1 className="font-display text-5xl md:text-6xl leading-tight tracking-tight">
-                No dice, huh?
-              </h1>
-            </div>
-
-            <p className="text-base text-ink tracking-tight">
-              We&apos;re here to help. Please reach out to us directly, and
-              we&apos;ll do our best to assist you.
-            </p>
-            <ArrowButton
-              href="/contact"
-              label="Contact Us"
-              glowColor="var(--color-black)"
-              className="py-2.5 bg-ink text-white text-xs 
-                              tracking-display font-mono rounded-xl flex items-center 
-                              justify-center mx-auto"
-            />
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* <section className="pt-12 section-height">
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
+              No dice, huh?
+            </h1>
+          </div>
+
+          <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+            We&apos;re here to help. Please reach out to us directly, and
+            we&apos;ll do our best to assist you.
+          </p>
+          <ArrowButton
+            href="/contact"
+            label="Contact Us"
+            className="block w-full text-center py-2.5 bg-white text-ink font-mono tracking-wide
+         text-sm rounded-lg border border-stroke"
+          />
+        </div>
+      </section> */}
     </main>
   );
 }

@@ -21,15 +21,9 @@ export default async function MainLayout({
       <WishlistProvider>
         <ToastProvider>
           <SmoothScroll>
-            {/* Skip to content link */}
-            <a href="#main-content" className="skip-to-content">
-              Skip to content
-            </a>
-
             <Header isLoggedIn={!!token} />
-            <main id="main-content" className="flex flex-col">
-              {children}
-            </main>
+
+            {children}
 
             <Footer />
 

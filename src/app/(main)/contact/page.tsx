@@ -14,14 +14,14 @@ export default function ContactPage() {
   return (
     <main id="main-content" className="px-6 section-height tracking-tight">
       <section className="pt-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
-          <div className="space-y-6">
-            <h1 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+          <div className="space-y-6 md:sticky md:top-28">
+            <h1 className=" text-[5.2rem] sm:text-9xl font-inter font-medium tracking-[-0.05em] pb-8 sm:-ml-[8px] sm:leading-[0.9] leading-[0.9] whitespace-nowrap">
               Let&apos;s talk
             </h1>
 
-            <p className="text-sm font-mono text-ink tracking-tight">
+            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
               We&apos;re a small studio — every enquiry is read and answered
               personally. Whether you&apos;re interested in a custom order, a
               press collaboration, or just want to learn more about our process,
@@ -29,20 +29,18 @@ export default function ContactPage() {
             </p>
           </div>
           {/* Information */}
-          <div className="space-y-4 md:order-last tracking-tight ">
+          <div className="space-y-4 lg:order-last text-lg tracking-[-0.04em] leading-tight pb-8">
             <div className="">
-              <p className="text-sm font-mono text-light mb-1">Email</p>
-              <p className="font-mono text-sm text-ink">hello@studiofile.com</p>
+              <p className="text-light mb-1">Email</p>
+              <p className="text-ink">hello@studiofile.com</p>
             </div>
             <div className="">
-              <p className="text-sm font-mono text-light mb-1">Based in</p>
-              <p className="font-mono text-sm text-ink">Paris, France</p>
+              <p className="text-light mb-1">Based in</p>
+              <p className="text-ink">Paris, FR</p>
             </div>
             <div className="">
-              <p className="text-sm font-mono text-light mb-1">Response time</p>
-              <p className="font-mono text-sm text-ink">
-                Within 1–2 business days
-              </p>
+              <p className="text-light mb-1">Response time</p>
+              <p className="text-ink">Within 1–2 business days</p>
             </div>
           </div>
           {/* Form */}

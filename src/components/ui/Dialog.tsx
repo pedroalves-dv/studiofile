@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ReactNode, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { ReactNode, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 interface DialogProps {
   open: boolean;
@@ -17,17 +17,17 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     if (open) {
       // Store the element that had focus before opening
       previousFocusRef.current = document.activeElement as HTMLElement;
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       // Focus inside dialog
       setTimeout(() => dialogRef.current?.focus(), 0);
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
       // Restore focus
       previousFocusRef.current?.focus();
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [open]);
 
@@ -35,20 +35,20 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     if (!open) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onOpenChange(false);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onOpenChange]);
 
   if (!open) return null;
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      className="fixed top-[var(--header-height)] inset-x-0 bottom-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onOpenChange(false);
@@ -64,6 +64,6 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
