@@ -15,7 +15,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="flex pt-12 justify-center section-height px-6">
       <div className="w-full max-w-md">
-        <h1 className="text-[5.2rem] sm:text-9xl tracking-tighter pb-8 sm:-ml-[10px] leading-[5rem]">
+        <h1 className="text-[5.2rem] font-semibold sm:text-9xl font-inter font-medium tracking-[-0.05em] pb-8 sm:-ml-[8px] sm:leading-[0.9] leading-[0.9]">
           Sign in
         </h1>
         <LoginForm nextPath={nextPath} />

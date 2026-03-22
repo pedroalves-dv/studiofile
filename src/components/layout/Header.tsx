@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { LogoHover } from "@/components/ui/LogoHover";
@@ -26,7 +27,7 @@ const NAV_LINKS: {
   href: string;
   linkClassName?: string;
 }[] = [
-  { label: "TOTEM", href: "/products/totem", linkClassName: "tracking-tight" },
+  { label: "TOTEM", href: "/products/totem" },
   { label: "Studio", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
@@ -43,6 +44,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const cartIconRef = useRef<ShoppingBagIconHandle>(null);
 
+  const pathname = usePathname();
   const { isScrolled } = useScroll(60);
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,6 +67,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   }, []);
 
   useEffect(() => {
+    setIsAccountOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     if (isMobileMenuOpen) {
       menuIconRef.current?.startAnimation();
     } else {
@@ -83,10 +89,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
-        <div className="h-[var(--header-height)] mx-5 border-b border-ink">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height-mobile)] sm:h-[var(--header-height)] bg-canvas">
+        <div className="h-[var(--header-height-mobile)] sm:h-[var(--header-height)] px-5 sm:mx-5 sm:px-0 border-b border-ink">
           {/* 2-column grid: logo left, nav+icons right */}
-          <div className="h-[var(--header-height)] grid grid-cols-2 items-end">
+          <div className="h-[var(--header-height-mobile)] sm:h-[var(--header-height)] grid grid-cols-2 items-end">
             {/* Logo */}
             <Link
               href="/"
@@ -108,7 +114,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-body tracking-[-0.04em] font-medium text-lg text-ink hover:text-light transition-colors duration-200",
+                      "font-body tracking-[-0.04em] font-medium text-lg hover:text-light transition-colors duration-200",
+                      pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
                   >
@@ -182,9 +189,20 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {/* Cart Icon */}
                 <button
                   ref={buttonRef}
-                  onClick={isOpen ? closeCart : openCart}
-                  className="p-2 pr-0 relative"
-                  aria-label={isOpen ? "Close cart" : `Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`}
+                  onClick={() => {
+                    if (isOpen) {
+                      closeCart();
+                    } else {
+                      openCart();
+                      setIsMobileMenuOpen(false);
+                    }
+                  }}
+                  className="p-2 sm:pr-0 relative"
+                  aria-label={
+                    isOpen
+                      ? "Close cart"
+                      : `Open cart${cartCount > 0 ? ` — ${cartCount} items` : ""}`
+                  }
                   onMouseEnter={() => cartIconRef.current?.startAnimation()}
                   onMouseLeave={() => cartIconRef.current?.stopAnimation()}
                 >
@@ -198,8 +216,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
                 {/* Mobile Hamburger */}
                 <button
-                  onClick={() => setIsMobileMenuOpen((v) => !v)}
-                  className="md:hidden p-2"
+                  onClick={() => {
+                    const opening = !isMobileMenuOpen;
+                    setIsMobileMenuOpen(opening);
+                    if (opening) closeCart();
+                  }}
+                  className="md:hidden py-2 pl-1"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
                 >
@@ -212,7 +234,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
         {/* Mobile Hamburger Dropdown */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden bg-canvas" aria-label="Mobile navigation">
+          <nav
+            className="md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between"
+            aria-label="Mobile navigation"
+          >
             <div>
               {NAV_LINKS.map((link) => (
                 <Link
@@ -220,7 +245,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "gap-1 flex w-full text-left pt-6 pb-4 px-6 text-4xl tracking-tight font-medium text-ink font-body ligatures border-b border-ink",
+                    "flex w-full text-left text-7xl tracking-[-4px] font-semibold font-body ligatures",
+                    pathname === link.href ? "text-light" : "text-ink",
                     link.linkClassName,
                   )}
                 >
@@ -231,10 +257,13 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               <Link
                 href={isLoggedIn ? "/account" : "/account/login"}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center w-full text-left pt-6 pb-4 px-6 text-4xl tracking-tight font-medium text-ink font-body ligatures border-b border-ink"
+                className="flex pt-4 border-t border-ink mt-4 w-full text-left  text-7xl tracking-[-4px] font-semibold text-ink font-body ligatures"
               >
                 {isLoggedIn ? "Account" : "Sign in"}
               </Link>
+            </div>
+            <div className="text-lg font-medium text-light tracking-[-0.04em] pb-12 pt-4 border-t border-light">
+              <p>© {new Date().getFullYear()} STUDIO filé</p>
             </div>
           </nav>
         )}

@@ -64,6 +64,9 @@
     /* Header height */
     --header-height: 3.5rem;
 
+    /* Header height Mobile */
+    --header-height-mobile: 4rem;
+
     /* Footer height */
     --footer-height: 28rem;
 

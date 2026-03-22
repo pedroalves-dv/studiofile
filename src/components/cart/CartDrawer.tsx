@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { useCart } from "@/hooks/useCart";
 import { CartItem } from "./CartItem";
@@ -15,28 +15,38 @@ import type { ShopifyCartLine } from "@/lib/shopify/types";
 
 export function CartDrawer() {
   const { cart, isOpen, closeCart } = useCart();
+  const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
-  const handleClose = useCallback(() => {
-    setIsClosing(true);
-    setTimeout(() => {
-      closeCart();
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
       setIsClosing(false);
-    }, 150);
-  }, [closeCart]);
+    } else if (isVisible) {
+      setIsClosing(true);
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        setIsClosing(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   return (
-    <Dialog open={isOpen || isClosing} onOpenChange={handleClose}>
+    <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
-        className="fixed top-0 bottom-0 right-[20px] w-full max-w-md flex flex-col bg-canvas shadow-2xl px-5 border-x border-ink"
-        style={{ animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out` }}
+        className="fixed  top-0 bottom-0 right-0 sm:right-[20px] w-full max-w-md flex flex-col bg-canvas px-5 sm:border-x sm:border-ink"
+        style={{
+          animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between py-4 border-b border-stroke ">
           <h2 className="text-lg font-medium text-ink tracking-[-0.04em] leading-tight">
             Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
           </h2>
-          <button onClick={handleClose} aria-label="Close cart">
+          <button onClick={closeCart} aria-label="Close cart">
             <X size={20} />
           </button>
         </div>
@@ -45,7 +55,7 @@ export function CartDrawer() {
         <FreeShippingBar cart={cart} />
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto py-4">
           {!cart || cart.lines.length === 0 ? (
             <EmptyCart />
           ) : (

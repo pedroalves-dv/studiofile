@@ -60,7 +60,7 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="px-5">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="border-b border-stroke section-height">
+      <section className="border-b border-stroke section-height  pt-[var(--header-height)] sm:pt-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
           <div className="space-y-6 md:sticky md:top-28">
