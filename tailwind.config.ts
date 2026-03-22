@@ -32,6 +32,10 @@ const config: Config = {
         serif: ["var(--font-serif)", "serif"],
         sans: ["var(--font-sans)", "sans-serif"],
         inter: ["var(--font-inter)", "sans-serif"],
+        stack: ["var(--font-stack)", "sans-serif"],
+        stacktext: ["var(--font-stacktext)", "sans-serif"],
+        host: ["var(--font-host)", "sans-serif"],
+        tasa: ["var(--font-tasa)", "sans-serif"],
       },
       borderRadius: {
         DEFAULT: "0px",

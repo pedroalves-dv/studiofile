@@ -95,7 +95,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       {(isMobileMenuOpen || isClosingMenu) && (
         <div
           className="fixed inset-0 backdrop-blur-xl z-40 md:hidden"
-          onClick={() => { if (!isClosingMenu) closeMenu(); }}
+          onClick={() => {
+            if (!isClosingMenu) closeMenu();
+          }}
         />
       )}
 
@@ -125,7 +127,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-body tracking-[-0.04em] font-medium text-lg hover:text-light transition-colors duration-200",
+                      "font-sans tracking-[-0.04em] font-medium text-xl hover:text-light transition-colors duration-200",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
@@ -245,13 +247,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             </div>
           </div>
         </div>
-
       </header>
 
       {/* Mobile Hamburger Dropdown */}
       {(isMobileMenuOpen || isClosingMenu) && (
         <nav
-          style={{ animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards` }}
+          style={{
+            animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
+          }}
           className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between"
           aria-label="Mobile navigation"
         >

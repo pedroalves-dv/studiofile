@@ -21,6 +21,46 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Stack";
+  src: url("/fonts/StackSansHeadline.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "StackText";
+  src: url("/fonts/StackSansText.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fliege Mono";
+  src: url("/fonts/FliegeMono.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Host";
+  src: url("/fonts/HostGrotesk.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tasa";
+  src: url("/fonts/TASAOrbiter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ==========================================
    CSS CUSTOM PROPERTIES
    ========================================== */
@@ -30,10 +70,14 @@
     --font-display: "Noka", monospace;
     --font-body: var(--font-geist-sans), sans-serif;
     --font-mono: var(--font-jetbrains), monospace;
-    --font-mono2: var(--font-geist-mono), monospace;
+    --font-mono2: "Fliege Mono", monospace;
     --font-serif: var(--font-instrument-serif), serif;
     --font-sans: var(--font-instrument-sans), sans-serif;
     --font-inter: var(--font-inter-tight), sans-serif;
+    --font-stack: "Stack", sans-serif;
+    --font-stacktext: "StackText", sans-serif;
+    --font-host: "Host", sans-serif;
+    --font-tasa: "Tasa", sans-serif;
 
     /* Palette */
     --color-black: #141414;
@@ -251,13 +295,25 @@
 }
 
 @keyframes navSlideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes navSlideUp {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-12px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
 }
 
 @keyframes marquee {

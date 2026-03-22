@@ -66,15 +66,16 @@ export default function AboutPage() {
           <div className="space-y-6 md:sticky md:top-28">
             {/* Left — info */}
 
-            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
+            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-semibold tracking-[-0.06em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
               Made to last
             </h1>
-            <div className="text-lg text-ink tracking-[-0.04em] leading-tight">
+            <div className="text-lg text-ink font-body font-medium tracking-[-0.04em] leading-snug space-y-6">
               <p className="">
-                Studiofile began with a simple frustration: the objects we
-                wanted for our homes didn&apos;t exist. Too much furniture was
-                made to be disposable, too little was made to be beautiful and
-                functional at the same time.
+                <span className="italic mr-1">STUDIO filé</span> began with a
+                simple frustration: the objects we wanted for our homes
+                didn&apos;t exist. Too much furniture was made to be disposable,
+                too little was made to be beautiful and functional at the same
+                time.
               </p>
               <p className="">
                 We started experimenting with 3D printing not as a novelty, but
@@ -111,13 +112,15 @@ export default function AboutPage() {
 
       {/* ─── Studio Values / Process ─── */}
       <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
-        <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:leading-[0.9] leading-[0.9]">
-          What we stand for
+        <h1 className="text-[5.2rem] sm:text-9xl font-tasa font-semibold tracking-[-0.08em] pb-8 sm:leading-[0.9] leading-[0.9]">
+          <span className="">W</span>hat we stand for
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
-              <h3 className="text-4xl mt-8 tracking-tighter">{value.title}</h3>
+              <h3 className="text-4xl font-body font-medium mt-8 tracking-tighter">
+                {value.title}
+              </h3>
               <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
                 {value.description}
               </p>
@@ -126,7 +129,9 @@ export default function AboutPage() {
           {PROCESS_STEPS.map((step) => (
             <div key={step.number} className="space-y-4">
               {/* <span className="text-4xl tracking-tight">{step.number}</span> */}
-              <h3 className="text-4xl tracking-tighter">{step.title}</h3>
+              <h3 className="text-4xl font-tasa font-medium tracking-tighter">
+                {step.title}
+              </h3>
               <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
                 {step.description}
               </p>
@@ -140,8 +145,8 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
           <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28">
-            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[0px] sm:leading-[0.9] leading-[0.9]">
-              The studio
+            <h1 className="text-[5.2rem] sm:text-9xl font-tasa font-semibold tracking-[-0.06em] pb-8 sm:-ml-[0px] sm:leading-[0.9] leading-[0.9]">
+              <span className="text-[8.4rem]">T</span>he studio
             </h1>
             <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">
               Alex Dumont
