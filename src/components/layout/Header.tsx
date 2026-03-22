@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { LogoHover } from "@/components/ui/LogoHover";
 import { customerLogout } from "@/lib/shopify/auth";
 import { useScroll } from "@/hooks/useScroll";
@@ -48,6 +48,15 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const { isScrolled } = useScroll(60);
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isClosingMenu, setIsClosingMenu] = useState(false);
+
+  const closeMenu = useCallback(() => {
+    setIsClosingMenu(true);
+    setTimeout(() => {
+      setIsMobileMenuOpen(false);
+      setIsClosingMenu(false);
+    }, 250);
+  }, []);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
@@ -57,17 +66,19 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setIsMobileMenuOpen(false);
+        closeMenu();
         setIsSearchOpen(false);
         setIsAccountOpen(false);
       }
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, []);
+  }, [closeMenu]);
 
   useEffect(() => {
     setIsAccountOpen(false);
+    setIsMobileMenuOpen(false);
+    setIsClosingMenu(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -81,10 +92,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   return (
     <>
       {/* Backdrop for mobile menu */}
-      {isMobileMenuOpen && (
+      {(isMobileMenuOpen || isClosingMenu) && (
         <div
           className="fixed inset-0 backdrop-blur-xl z-40 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={() => { if (!isClosingMenu) closeMenu(); }}
         />
       )}
 
@@ -194,7 +205,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       closeCart();
                     } else {
                       openCart();
-                      setIsMobileMenuOpen(false);
+                      closeMenu();
                     }
                   }}
                   className="p-2 sm:pr-0 relative"
@@ -217,9 +228,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {/* Mobile Hamburger */}
                 <button
                   onClick={() => {
-                    const opening = !isMobileMenuOpen;
-                    setIsMobileMenuOpen(opening);
-                    if (opening) closeCart();
+                    if (isMobileMenuOpen && !isClosingMenu) {
+                      closeMenu();
+                    } else if (!isMobileMenuOpen) {
+                      setIsMobileMenuOpen(true);
+                      closeCart();
+                    }
                   }}
                   className="md:hidden py-2 pl-1"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -232,42 +246,44 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           </div>
         </div>
 
-        {/* Mobile Hamburger Dropdown */}
-        {isMobileMenuOpen && (
-          <nav
-            className="md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between"
-            aria-label="Mobile navigation"
-          >
-            <div>
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={cn(
-                    "flex w-full text-left text-7xl tracking-[-4px] font-semibold font-body ligatures",
-                    pathname === link.href ? "text-light" : "text-ink",
-                    link.linkClassName,
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              <Link
-                href={isLoggedIn ? "/account" : "/account/login"}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex pt-4 border-t border-ink mt-4 w-full text-left  text-7xl tracking-[-4px] font-semibold text-ink font-body ligatures"
-              >
-                {isLoggedIn ? "Account" : "Sign in"}
-              </Link>
-            </div>
-            <div className="text-lg font-medium text-light tracking-[-0.04em] pb-12 pt-4 border-t border-light">
-              <p>© {new Date().getFullYear()} STUDIO filé</p>
-            </div>
-          </nav>
-        )}
       </header>
+
+      {/* Mobile Hamburger Dropdown */}
+      {(isMobileMenuOpen || isClosingMenu) && (
+        <nav
+          style={{ animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards` }}
+          className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between"
+          aria-label="Mobile navigation"
+        >
+          <div>
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={cn(
+                  "flex w-full text-left text-7xl tracking-[-4px] font-semibold font-body ligatures",
+                  pathname === link.href ? "text-light" : "text-ink",
+                  link.linkClassName,
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            <Link
+              href={isLoggedIn ? "/account" : "/account/login"}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex pt-4 border-t border-ink mt-4 w-full text-left  text-7xl tracking-[-4px] font-semibold text-ink font-body ligatures"
+            >
+              {isLoggedIn ? "Account" : "Sign in"}
+            </Link>
+          </div>
+          <div className="text-lg font-medium text-light tracking-[-0.04em] pb-12 pt-4 border-t border-light">
+            <p>© {new Date().getFullYear()} STUDIO filé</p>
+          </div>
+        </nav>
+      )}
 
       {/* Spacer */}
       <div className="h-[var(--header-height)]" aria-hidden="true" />
