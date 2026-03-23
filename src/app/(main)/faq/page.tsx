@@ -75,12 +75,12 @@ export default function FaqPage() {
           {/* Left — info */}
           <div className="space-y-8 md:sticky md:top-28">
             <div className="">
-              <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
+              <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
                 FAQ
               </h1>
             </div>
 
-            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+            <p className="text-lg text-ink font-body tracking-[-0.02em] leading-tight">
               We&apos;ve compiled answers to our most frequently asked questions
               here. <br />
               If you can&apos;t find what you&apos;re looking for, feel free to
@@ -104,7 +104,7 @@ export default function FaqPage() {
                 >
                   <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-6 pt-4">
                     <div className="flex flex-col text-left">
-                      <p className="text-lg text-ink tracking-[-0.04em] leading-tight pb-4">
+                      <p className="text-lg font-body text-ink tracking-[-0.03em] leading-tight pb-4">
                         {step.title}
                       </p>
                       {/* <p className="font-mono text-sm text-light leading-none">
@@ -113,7 +113,7 @@ export default function FaqPage() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="p-2">
-                    <p className="text-lg text-ink tracking-[-0.04em] leading-tight p-4">
+                    <p className="text-lg font-body text-ink tracking-[-0.03em] leading-tight p-4">
                       {step.detail}
                     </p>
                   </AccordionContent>

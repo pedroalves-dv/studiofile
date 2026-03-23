@@ -29,8 +29,8 @@ export function NewsletterForm() {
       <ArrowButton
         label="Subscribe"
         type="submit"
-        className="w-full py-2.5 bg-ink text-white font-mono tracking-tight
-         text-sm rounded-lg border border-stroke"
+        className="w-full py-2.5 bg-ink text-white font-body tracking-normal
+         text-base rounded-lg border border-stroke"
       />
     </form>
   );

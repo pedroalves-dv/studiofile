@@ -10,6 +10,7 @@ import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
+import Image from "next/image";
 
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
 import { MenuIcon, type MenuIconHandle } from "@/components/ui/MenuIcon";
@@ -29,8 +30,9 @@ const NAV_LINKS: {
 }[] = [
   { label: "TOTEM", href: "/products/totem" },
   { label: "Studio", href: "/about" },
-  { label: "FAQ", href: "/faq" },
+
   { label: "Contact", href: "/contact" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 interface HeaderProps {
@@ -103,23 +105,30 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height-mobile)] sm:h-[var(--header-height)] bg-canvas">
-        <div className="h-[var(--header-height-mobile)] sm:h-[var(--header-height)] px-5 sm:mx-5 sm:px-0 border-b border-ink">
+        <div className="h-full pl-5 border-b border-ink">
           {/* 2-column grid: logo left, nav+icons right */}
-          <div className="h-[var(--header-height-mobile)] sm:h-[var(--header-height)] grid grid-cols-2 items-end">
+          <div className="h-full grid grid-cols-2 items-end">
             {/* Logo */}
             <Link
               href="/"
               aria-label="Studiofile — Home"
-              className="group justify-self-start pb-4"
+              className="group justify-self-start pb-2.5"
             >
-              <LogoHover className="h-6 w-auto" />
+              <Image
+                src="/images/logo/new-logo.svg"
+                alt="Studiofile"
+                width={130}
+                height={32}
+                priority
+              />
+              {/* <LogoHover className="h-7 w-auto" /> */}
             </Link>
 
             {/* _________ Nav + Icons _________ */}
-            <div className="flex items-end justify-self-end gap-0">
+            <div className="h-full flex justify-self-end">
               {/* Desktop Nav */}
               <nav
-                className="hidden md:flex md:gap-8 lg:gap-16 items-end mr-8 lg:mr-36 pb-2"
+                className="h-full hidden md:flex md:gap-8 lg:gap-16 items-end mr-8 lg:mr-36 pb-1"
                 aria-label="Main navigation"
               >
                 {NAV_LINKS.map((link) => (
@@ -127,7 +136,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-sans tracking-[-0.04em] font-medium text-xl hover:text-light transition-colors duration-200",
+                      "font-body font-semibold tracking-[-0.03em] text-lg hover:text-light transition-colors duration-200",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
@@ -137,13 +146,13 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ))}
               </nav>
               {/* _________ Icons _________ */}
-              <div className="flex items-end justify-self-end gap-4 pb-1">
+              <div className="flex items-center jsutify-center border-x border-ink">
                 {/* Account Icon */}
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">
                     <button
                       onClick={() => setIsAccountOpen((v) => !v)}
-                      className="p-2 relative flex items-center"
+                      className="h-full flex w-18 justify-center items-center py-3 px-5 relative"
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
                       onMouseEnter={() =>
@@ -159,7 +168,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       />
                     </button>
                     {isAccountOpen && (
-                      <div className="absolute top-full right-0 mt-1 min-w-[180px] bg-canvas border border-ink z-50">
+                      <div className="absolute top-[53px] right-[-1px] min-w-[200px] bg-white border border-ink z-50 p-1 flex flex-col gap-1">
                         {[
                           { label: "My Account", href: "/account" },
                           { label: "Orders", href: "/account/orders" },
@@ -170,7 +179,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                             key={item.href}
                             href={item.href}
                             onClick={() => setIsAccountOpen(false)}
-                            className="block w-full text-left px-4 py-3 font-body tracking-tight text-sm text-ink hover:bg-accent/30 transition-colors"
+                            className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-stroke transition-colors font-semibold"
                           >
                             {item.label}
                           </Link>
@@ -179,7 +188,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         <form action={customerLogout}>
                           <button
                             type="submit"
-                            className="block w-full text-left px-4 py-3 font-body tracking-tight text-sm text-ink hover:bg-accent/30 transition-colors"
+                            className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-error hover:bg-stroke transition-colors font-semibold"
                           >
                             Sign out
                           </button>
@@ -210,7 +219,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       closeMenu();
                     }
                   }}
-                  className="p-2 sm:pr-0 relative"
+                  className="h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative"
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -255,7 +264,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between"
+          className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between "
           aria-label="Mobile navigation"
         >
           <div>
@@ -265,7 +274,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "flex w-full text-left text-7xl tracking-[-4px] font-semibold font-body ligatures",
+                  "flex w-full font-body text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures",
                   pathname === link.href ? "text-light" : "text-ink",
                   link.linkClassName,
                 )}
@@ -277,7 +286,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex pt-4 border-t border-ink mt-4 w-full text-left  text-7xl tracking-[-4px] font-semibold text-ink font-body ligatures"
+              className="flex pt-4 border-t border-ink mt-4 w-full font-body text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink  ligatures"
             >
               {isLoggedIn ? "Account" : "Sign in"}
             </Link>

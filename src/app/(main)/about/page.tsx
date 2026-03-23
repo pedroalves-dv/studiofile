@@ -58,7 +58,7 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="px-5">
+    <main id="main-content" className="px-5 border-r border-ink">
       {/* ─── Hero / Studio Story ─── */}
       <section className="border-b border-stroke section-height  pt-[var(--header-height)] sm:pt-0">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -66,10 +66,10 @@ export default function AboutPage() {
           <div className="space-y-6 md:sticky md:top-28">
             {/* Left — info */}
 
-            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-semibold tracking-[-0.06em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
-              Made to last
+            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
+              The studio
             </h1>
-            <div className="text-lg text-ink font-body font-medium tracking-[-0.04em] leading-snug space-y-6">
+            <div className="text-ink font-body tracking-[-0.03em] text-lg leading-tight space-y-6">
               <p className="">
                 <span className="italic mr-1">STUDIO filé</span> began with a
                 simple frustration: the objects we wanted for our homes
@@ -112,16 +112,16 @@ export default function AboutPage() {
 
       {/* ─── Studio Values / Process ─── */}
       <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
-        <h1 className="text-[5.2rem] sm:text-9xl font-tasa font-semibold tracking-[-0.08em] pb-8 sm:leading-[0.9] leading-[0.9]">
+        <h1 className="text-7xl sm:text-9xl font-body font-semibold  tracking-[-0.07em] pb-8 sm:leading-[0.9] leading-[4rem]">
           <span className="">W</span>hat we stand for
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
-              <h3 className="text-4xl font-body font-medium mt-8 tracking-tighter">
+              <h3 className="text-4xl font-body mt-8 tracking-tighter">
                 {value.title}
               </h3>
-              <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+              <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
                 {value.description}
               </p>
             </div>
@@ -129,10 +129,10 @@ export default function AboutPage() {
           {PROCESS_STEPS.map((step) => (
             <div key={step.number} className="space-y-4">
               {/* <span className="text-4xl tracking-tight">{step.number}</span> */}
-              <h3 className="text-4xl font-tasa font-medium tracking-tighter">
+              <h3 className="text-4xl font-body mt-8 tracking-tighter">
                 {step.title}
               </h3>
-              <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+              <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
                 {step.description}
               </p>
             </div>
@@ -145,23 +145,23 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
           <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28">
-            <h1 className="text-[5.2rem] sm:text-9xl font-tasa font-semibold tracking-[-0.06em] pb-8 sm:-ml-[0px] sm:leading-[0.9] leading-[0.9]">
-              <span className="text-[8.4rem]">T</span>he studio
+            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:-ml-[0px] sm:leading-[0.9] leading-[4rem]">
+              The team
             </h1>
-            <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">
+            <h2 className="text-4xl md:text-5xl font-body leading-tight tracking-tighter">
               Alex Dumont
             </h2>
-            <p className="text-lg text-lg tracking-[-0.04em] leading-tight">
+            <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
               Designer & Creative Director
             </p>
-            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+            <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
               Alex trained as an industrial designer before spending a decade
               working across product, furniture, and spatial design studios in
               Paris and Amsterdam. Studiofile is the convergence of everything
               he&apos;s learned: rigorous process, honest materials, and design
               that earns its place in a home.
             </p>
-            <p className="text-lg text-light tracking-[-0.04em] leading-tight">
+            <p className="text-lg text-light font-body tracking-[-0.03em] leading-tight">
               &ldquo;I wanted to make things that get better as they age —
               objects that develop a patina, that you remember acquiring. Not
               things you replace.&rdquo;

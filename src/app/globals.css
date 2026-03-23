@@ -22,8 +22,24 @@
 }
 
 @font-face {
-  font-family: "Stack";
-  src: url("/fonts/StackSansHeadline.woff2") format("woff2");
+  font-family: "KH Regular";
+  src: url("/fonts/KHTeka-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KH Bold";
+  src: url("/fonts/KHTekaSite-Bold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Stack Regular";
+  src: url("/fonts/stack-regular.otf") format("opentype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -46,8 +62,8 @@
 }
 
 @font-face {
-  font-family: "Host";
-  src: url("/fonts/HostGrotesk.woff2") format("woff2");
+  font-family: "Hubot";
+  src: url("/fonts/hubot.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -55,12 +71,34 @@
 
 @font-face {
   font-family: "Tasa";
-  src: url("/fonts/TASAOrbiter.woff2") format("woff2");
+  src: url("/fonts/Tasa.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: "mona";
+  src: url("/fonts/mona.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Zalando";
+  src: url("/fonts/Zalando.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Funnel";
+  src: url("/fonts/Funnel.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 /* ==========================================
    CSS CUSTOM PROPERTIES
    ========================================== */
@@ -72,12 +110,16 @@
     --font-mono: var(--font-jetbrains), monospace;
     --font-mono2: "Fliege Mono", monospace;
     --font-serif: var(--font-instrument-serif), serif;
-    --font-sans: var(--font-instrument-sans), sans-serif;
     --font-inter: var(--font-inter-tight), sans-serif;
-    --font-stack: "Stack", sans-serif;
+    --font-stack: "Stack Regular", sans-serif;
     --font-stacktext: "StackText", sans-serif;
-    --font-host: "Host", sans-serif;
+    --font-hubot: "Hubot", sans-serif;
     --font-tasa: "Tasa", sans-serif;
+    --font-mona: "mona", sans-serif;
+    --font-zal: "Zalando", sans-serif;
+    --font-funnel: "Funnel", sans-serif;
+    --font-khregular: "KH Regular", sans-serif;
+    --font-khbold: "KH Bold", sans-serif;
 
     /* Palette */
     --color-black: #141414;
@@ -157,7 +199,7 @@
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
+    height: 18px;
   }
 
   ::-webkit-scrollbar-track {
@@ -165,8 +207,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #c8c3bb;
-    /* background-color: #f0f5fa; */
+    background-color: var(--color-light);
   }
 
   ::-webkit-scrollbar-thumb:hover {

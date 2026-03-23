@@ -30,17 +30,17 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full flex flex-col z-10 backdrop-blur-md">
-      <div className="mx-5 border-t border-stroke">
+    <footer className="w-full flex flex-col z-10 backdrop-blur-md border-r border-ink">
+      <div className="px-5 border-t border-stroke">
         {/* Main footer content */}
-        <div className="w-full flex flex-col items-center pt-20 justify-between ">
+        <div className="w-full flex flex-col items-center pt-2 justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_400px] gap-4">
             {/* Column 1: Wordmark + Tagline */}
-            <div className="text-lg font-medium text-ink tracking-[-0.04em]">
+            <div className="text-base sm:text-lg font-medium text-ink tracking-[-0.03em]">
               <p>© {new Date().getFullYear()} STUDIO filé</p>
             </div>
             {/* Column 2: Navigation Links */}
-            <div className="space-y-4 tracking-[-0.04em] font-medium">
+            <div className="space-y-4 tracking-[-0.03em] font-medium">
               <h3 className="text-base sm:text-lg text-light">Navigation</h3>
               <nav className="space-y-2 flex flex-col pb-4">
                 {FOOTER_LINKS.map((link) => (
@@ -56,7 +56,7 @@ export function Footer() {
             </div>
 
             {/* Column 3: Conditions & Policies */}
-            <div className="space-y-4 tracking-[-0.04em] font-medium pb-8 sm:pb-0">
+            <div className="space-y-4 tracking-[-0.03em] font-medium pb-8 sm:pb-0">
               <h3 className="text-base sm:text-lg text-light">
                 Conditions & Policies
               </h3>
@@ -75,10 +75,10 @@ export function Footer() {
 
             {/* Column 4: Social + Newsletter */}
             <div className="space-y-16 sm:col-span-2 md:col-span-1">
-              <div className="">
+              <div className="pt-1">
                 {/* Social Links */}
 
-                <div className="flex flex-row justify-between pb-8 px-1">
+                <div className="flex flex-row justify-between pb-12 px-1">
                   <a
                     href="#"
                     className="transition-colors"
@@ -122,8 +122,8 @@ export function Footer() {
                 </div>
 
                 {/* Newsletter */}
-                <div className="space-y-4">
-                  <h3 className="text-base sm:text-lg/6 tracking-[-0.04em] font-medium text-light pb-2">
+                <div className="">
+                  <h3 className="text-base sm:text-lg/6 tracking-[-0.03em] font-medium text-ink leading-tight pb-3">
                     Get updates and special offers on new products. <br /> No
                     weekly spam.
                   </h3>
@@ -134,9 +134,9 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="w-full pt-8 sm:pt-24 pb-6 sm:pb-3">
+        <div className="w-full pt-12 sm:pt-24 pb-4 sm:pb-3">
           <div
-            className="w-full bg-ink"
+            className="w-full bg-ink sm:bg-stroke"
             style={{
               aspectRatio: "22.203955 / 4.0943561",
               maskImage: "url(/images/logo/logo-footer.svg)",

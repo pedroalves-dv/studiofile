@@ -209,7 +209,7 @@ export function ContactForm() {
             onChange={set("message")}
             rows={6}
             placeholder="Tell us about your project or enquiry…"
-            className="w-full px-4 py-2 bg-transparent text-ink text-lg tracking-tight placeholder-light focus:outline-none text-sm font-mono"
+            className="w-full px-4 py-2 bg-transparent text-ink tracking-tighter placeholder-light focus:outline-none text-sm font-mono"
             required
           />
         </div>
@@ -221,10 +221,9 @@ export function ContactForm() {
       <ArrowButton
         type="submit"
         label={submitting ? "Sending…" : "Send message"}
-        glowColor="var(--color-black)"
         disabled={submitting}
-        className="w-full py-2.5 bg-ink text-canvas font-mono tracking-wide
-         text-sm rounded-lg border border-white"
+        className="w-full py-2.5 bg-ink text-canvas font-body tracking-wide
+         text-base rounded-lg border border-white"
       />
     </form>
   );

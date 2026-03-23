@@ -17,11 +17,11 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
           <div className="space-y-6 md:sticky md:top-28">
-            <h1 className=" text-[5.2rem] sm:text-9xl font-inter font-medium tracking-[-0.05em] pb-8 sm:-ml-[8px] sm:leading-[0.9] leading-[0.9] whitespace-nowrap">
+            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap">
               Let&apos;s talk
             </h1>
 
-            <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
               We&apos;re a small studio — every enquiry is read and answered
               personally. Whether you&apos;re interested in a custom order, a
               press collaboration, or just want to learn more about our process,
@@ -29,7 +29,7 @@ export default function ContactPage() {
             </p>
           </div>
           {/* Information */}
-          <div className="space-y-4 lg:order-last text-lg tracking-[-0.04em] leading-tight pb-8">
+          <div className="space-y-4 lg:order-last text-lg tracking-[-0.03em] leading-tight pb-8">
             <div className="">
               <p className="text-light mb-1">Email</p>
               <p className="text-ink">hello@studiofile.com</p>
