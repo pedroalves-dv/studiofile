@@ -21,6 +21,7 @@ const config: Config = {
         muted: "var(--color-muted)",
         stroke: "var(--color-stroke)",
         light: "var(--color-light)",
+        lighter: "var(--color-lighter)",
         success: "var(--color-success)",
         error: "var(--color-error)",
       },

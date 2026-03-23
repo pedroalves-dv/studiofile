@@ -11,6 +11,7 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
+import Logo from "public/images/logo/newlogov2.svg";
 
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
 import { MenuIcon, type MenuIconHandle } from "@/components/ui/MenuIcon";
@@ -114,13 +115,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               aria-label="Studiofile — Home"
               className="group justify-self-start pb-2.5"
             >
-              <Image
-                src="/images/logo/new-logo.svg"
-                alt="Studiofile"
-                width={130}
-                height={32}
-                priority
-              />
+              <Logo className="h-7 w-30 fill-current text-ink group-hover:text-accent transition-colors" />
               {/* <LogoHover className="h-7 w-auto" /> */}
             </Link>
 
@@ -168,31 +163,34 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       />
                     </button>
                     {isAccountOpen && (
-                      <div className="absolute top-[53px] right-[-1px] min-w-[200px] bg-white border border-ink z-50 p-1 flex flex-col gap-1">
-                        {[
-                          { label: "My Account", href: "/account" },
-                          { label: "Orders", href: "/account/orders" },
-                          { label: "Settings", href: "/account/settings" },
-                          { label: "Addresses", href: "/account/addresses" },
-                        ].map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setIsAccountOpen(false)}
-                            className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-stroke transition-colors font-semibold"
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                        <hr className="border-t border-ink" />
-                        <form action={customerLogout}>
-                          <button
-                            type="submit"
-                            className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-error hover:bg-stroke transition-colors font-semibold"
-                          >
-                            Sign out
-                          </button>
-                        </form>
+                      <div className="absolute top-[53px] right-[-1px] min-w-[200px] bg-white border border-ink z-50 flex flex-col">
+                        <div className="p-1">
+                          {[
+                            { label: "My Account", href: "/account" },
+                            { label: "Orders", href: "/account/orders" },
+                            { label: "Settings", href: "/account/settings" },
+                            { label: "Addresses", href: "/account/addresses" },
+                          ].map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setIsAccountOpen(false)}
+                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
+                            >
+                              {item.label}
+                            </Link>
+                          ))}
+                        </div>
+                        <div className="border-t border-ink p-1 bg-lighter">
+                          <form action={customerLogout}>
+                            <button
+                              type="submit"
+                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
+                            >
+                              Sign out
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     )}
                   </div>

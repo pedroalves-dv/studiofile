@@ -31,7 +31,7 @@ export function Footer() {
 
   return (
     <footer className="w-full flex flex-col z-10 backdrop-blur-md border-r border-ink">
-      <div className="px-5 border-t border-stroke">
+      <div className="px-5 border-t border-stroke pt-8">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center pt-2 justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_400px] gap-4">
@@ -134,7 +134,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="w-full pt-12 sm:pt-24 pb-4 sm:pb-3">
+        <div className="w-full pt-8 sm:pt-24 pb-4 sm:pb-3">
           <div
             className="w-full bg-ink sm:bg-stroke"
             style={{
