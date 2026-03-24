@@ -195,6 +195,7 @@ function AddressForm({
             onBlur={() => handleBlur("firstName")}
             disabled={isPending}
             className={inputClass}
+            aria-invalid={!!(touched.firstName && errors.firstName)}
             aria-describedby={touched.firstName && errors.firstName ? "addr-firstName-error" : undefined}
           />
           {touched.firstName && errors.firstName && (
@@ -222,6 +223,7 @@ function AddressForm({
             onBlur={() => handleBlur("lastName")}
             disabled={isPending}
             className={inputClass}
+            aria-invalid={!!(touched.lastName && errors.lastName)}
             aria-describedby={touched.lastName && errors.lastName ? "addr-lastName-error" : undefined}
           />
           {touched.lastName && errors.lastName && (
@@ -251,6 +253,7 @@ function AddressForm({
           onBlur={() => handleBlur("phone")}
           disabled={isPending}
           className={inputClass}
+          aria-invalid={!!(touched.phone && errors.phone)}
           aria-describedby={touched.phone && errors.phone ? "addr-phone-error" : undefined}
         />
         {touched.phone && errors.phone && (
@@ -280,6 +283,7 @@ function AddressForm({
           onBlur={() => handleBlur("address1")}
           disabled={isPending}
           className={inputClass}
+          aria-invalid={!!(touched.address1 && errors.address1)}
           aria-describedby={touched.address1 && errors.address1 ? "addr-address1-error" : undefined}
         />
         {touched.address1 && errors.address1 && (
@@ -326,6 +330,7 @@ function AddressForm({
           onBlur={() => handleBlur("city")}
           disabled={isPending}
           className={inputClass}
+          aria-invalid={!!(touched.city && errors.city)}
           aria-describedby={touched.city && errors.city ? "addr-city-error" : undefined}
         />
         {touched.city && errors.city && (
@@ -352,6 +357,7 @@ function AddressForm({
           onBlur={() => handleBlur("country")}
           disabled={isPending}
           className={selectClass}
+          aria-invalid={!!(touched.country && errors.country)}
           aria-describedby={touched.country && errors.country ? "addr-country-error" : undefined}
         >
           <option value="">Select a country</option>
@@ -386,6 +392,7 @@ function AddressForm({
               onBlur={() => handleBlur("province")}
               disabled={isPending}
               className={selectClass}
+              aria-invalid={!!(touched.province && errors.province)}
               aria-describedby={
                 touched.province && errors.province ? "addr-province-error" : undefined
               }
@@ -426,6 +433,7 @@ function AddressForm({
           onBlur={() => handleBlur("zip")}
           disabled={isPending}
           className={inputClass}
+          aria-invalid={!!(touched.zip && errors.zip)}
           aria-describedby={touched.zip && errors.zip ? "addr-zip-error" : undefined}
         />
         {touched.zip && errors.zip && (
@@ -500,19 +508,21 @@ export function AddressManager({ customer, countries }: Props) {
     });
   }
 
-  async function handleUpdate(addressId: string, address: AddressInput) {
+  function handleUpdate(addressId: string, address: AddressInput) {
     setPendingId(addressId);
-    const result = await customerAddressUpdate(addressId, address);
-    setPendingId(null);
-    if (result.success) {
-      setFormServerErrors({});
-      afterSuccess("Address updated.");
-    } else if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
-      setFormServerErrors(result.fieldErrors as FormErrors);
-      if (result.error) toast.error(result.error);
-    } else {
-      toast.error(result.error ?? "Failed to update address");
-    }
+    startFormTransition(async () => {
+      const result = await customerAddressUpdate(addressId, address);
+      setPendingId(null);
+      if (result.success) {
+        setFormServerErrors({});
+        afterSuccess("Address updated.");
+      } else if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
+        setFormServerErrors(result.fieldErrors as FormErrors);
+        if (result.error) toast.error(result.error);
+      } else {
+        toast.error(result.error ?? "Failed to update address");
+      }
+    });
   }
 
   async function handleDelete(addressId: string) {

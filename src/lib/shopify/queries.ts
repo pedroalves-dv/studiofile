@@ -369,6 +369,7 @@ export const GET_CUSTOMER = `
         province
         country
         zip
+        phone
       }
       addresses(first: 10) {
         edges {
@@ -382,6 +383,7 @@ export const GET_CUSTOMER = `
             province
             country
             zip
+            phone
           }
         }
       }
