@@ -7,6 +7,8 @@ import {
   customerUpdatePassword,
 } from "@/lib/shopify/auth";
 import type { ShopifyCustomer } from "@/lib/shopify/types";
+import { ArrowButton } from "@/components/ui/ArrowButton";
+import { useToast } from "@/components/common/Toast";
 
 interface SettingsFormProps {
   customer: ShopifyCustomer;
@@ -15,53 +17,44 @@ interface SettingsFormProps {
 const inputClass =
   "w-full border border-stroke bg-canvas rounded-md px-4 py-3 text-md text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors disabled:opacity-50";
 
-const labelClass = "font-body text-muted text-md";
+const labelClass = "font-body text-light text-base tracking-tight";
 
 export function SettingsForm({ customer }: SettingsFormProps) {
   const router = useRouter();
+  const toast = useToast();
 
-  // Profile form state — initialised from server-fetched customer, updated on success
   const [firstName, setFirstName] = useState(customer.firstName ?? "");
   const [lastName, setLastName] = useState(customer.lastName ?? "");
   const [email, setEmail] = useState(customer.email);
   const [isPendingProfile, startProfileTransition] = useTransition();
-  const [profileError, setProfileError] = useState<string | null>(null);
-  const [profileSuccess, setProfileSuccess] = useState(false);
 
-  // Password form state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPendingPassword, startPasswordTransition] = useTransition();
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
 
   function handleProfileSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setProfileError(null);
-    setProfileSuccess(false);
     startProfileTransition(async () => {
       const result = await customerUpdateProfile(firstName, lastName, email);
       if (result.success) {
-        setProfileSuccess(true);
+        toast.success("Profile updated.");
         router.refresh();
       } else {
-        setProfileError(result.error ?? "Update failed");
+        toast.error(result.error ?? "Update failed");
       }
     });
   }
 
   function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setPasswordError(null);
-    setPasswordSuccess(false);
 
     if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
     if (newPassword.length < 5) {
-      setPasswordError("Password must be at least 5 characters");
+      toast.error("Password must be at least 5 characters");
       return;
     }
 
@@ -72,12 +65,12 @@ export function SettingsForm({ customer }: SettingsFormProps) {
         newPassword,
       );
       if (result.success) {
-        setPasswordSuccess(true);
+        toast.success("Password updated.");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        setPasswordError(result.error ?? "Password update failed");
+        toast.error(result.error ?? "Password update failed");
       }
     });
   }
@@ -93,17 +86,6 @@ export function SettingsForm({ customer }: SettingsFormProps) {
           onSubmit={handleProfileSubmit}
           className="flex flex-col gap-5 max-w-md"
         >
-          {profileError && (
-            <p className="text-sm font-body  text-error border border-error/30 bg-error/5 px-4 py-3">
-              {profileError}
-            </p>
-          )}
-          {profileSuccess && (
-            <p className="text-sm font-body text-success border border-success/30 bg-success/5 px-4 py-3">
-              Profile updated.
-            </p>
-          )}
-
           <div className="flex gap-4">
             <div className="flex flex-col gap-1.5 flex-1">
               <label htmlFor="firstName" className={labelClass}>
@@ -152,13 +134,12 @@ export function SettingsForm({ customer }: SettingsFormProps) {
           </div>
 
           <div>
-            <button
+            <ArrowButton
               type="submit"
               disabled={isPendingProfile}
-              className="bg-ink rounded-lg font-body text-xs text-label text-canvas py-3 px-8 hover:bg-ink/90 transition-colors disabled:opacity-50"
-            >
-              {isPendingProfile ? "Saving…" : "Save profile"}
-            </button>
+              label={isPendingProfile ? "Saving…" : "Save profile"}
+              className="mt-4 px-6 py-2 bg-canvas text-ink text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink justify-center w-fit disabled:opacity-50"
+            />
           </div>
         </form>
       </section>
@@ -174,17 +155,6 @@ export function SettingsForm({ customer }: SettingsFormProps) {
           onSubmit={handlePasswordSubmit}
           className="flex flex-col gap-5 max-w-md"
         >
-          {passwordError && (
-            <p className="text-sm font-body text-error border border-error/30 bg-error/5 px-4 py-3">
-              {passwordError}
-            </p>
-          )}
-          {passwordSuccess && (
-            <p className="text-sm font-body text-success border border-success/30 bg-success/5 px-4 py-3">
-              Password updated.
-            </p>
-          )}
-
           <div className="flex flex-col gap-1.5">
             <label htmlFor="currentPassword" className={labelClass}>
               Current password
@@ -237,13 +207,12 @@ export function SettingsForm({ customer }: SettingsFormProps) {
           </div>
 
           <div>
-            <button
+            <ArrowButton
               type="submit"
               disabled={isPendingPassword}
-              className="bg-ink font-body text-xs rounded-lg text-canvas py-3 px-8 text-label hover:bg-ink/90 transition-colors disabled:opacity-50"
-            >
-              {isPendingPassword ? "Updating…" : "Update password"}
-            </button>
+              label={isPendingPassword ? "Updating…" : "Update password"}
+              className="mt-4 px-6 py-2 bg-canvas text-ink text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink justify-center w-fit disabled:opacity-50"
+            />
           </div>
         </form>
       </section>

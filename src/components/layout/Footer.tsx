@@ -30,7 +30,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full flex flex-col z-10 backdrop-blur-md border-r border-ink">
+    <footer className="w-full flex flex-col z-10 backdrop-blur-md">
       <div className="px-5 border-t border-stroke pt-8">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center pt-2 justify-between ">

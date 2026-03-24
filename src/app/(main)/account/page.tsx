@@ -15,9 +15,9 @@ export default async function AccountPage() {
 
   return (
     <main className="bg-canvas">
-      <section>
+      <section className="">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-body font-regular tracking-[-0.04em] text-2xl text-ink">
+          <h2 className="font-body tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
             Recent orders
           </h2>
           {customer!.orders.edges.length > 3 && (

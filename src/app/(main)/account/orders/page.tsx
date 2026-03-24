@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { OrderCard } from "@/components/account/OrderCard";
 
@@ -14,10 +14,10 @@ export default async function OrdersPage() {
   const orders = customer!.orders.edges.map((e) => e.node);
 
   return (
-    <main className="bg-canvas min-h-screen">
-      <div className="container-wide section-padding">
+    <main className="bg-canvas">
+      <div className="">
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-6">
           <h1 className="font-body tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
             Orders
           </h1>
@@ -25,16 +25,16 @@ export default async function OrdersPage() {
 
         {/* Orders list */}
         {orders.length === 0 ? (
-          <div className="py-16 text-center border border-stroke">
+          <div className="py-16 text-center border border-stroke rounded-md">
             <p className="text-muted mb-4">
               You haven&apos;t placed any orders yet.
             </p>
-            <Link
+            <ArrowButton
               href="/shop"
-              className="text-label text-ink hover:text-accent transition-colors"
-            >
-              Start shopping →
-            </Link>
+              label="Start shopping"
+              className="mt-4 h-12 px-8 py-3 bg-canvas text-ink text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink
+        justify-center w-fit mx-auto"
+            />
           </div>
         ) : (
           <div className="flex flex-col divide-y divide-stroke border border-stroke">

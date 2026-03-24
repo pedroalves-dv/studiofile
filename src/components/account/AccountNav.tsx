@@ -38,7 +38,14 @@ export function AccountNav() {
   }, [activeIndex]);
 
   return (
-    <nav ref={navRef} className="relative flex justify-between  mb-10">
+    <nav ref={navRef} className="relative flex gap-1 mb-10">
+      {indicator && (
+        <div
+          aria-hidden
+          className="absolute inset-y-0 rounded-lg border border-ink transition-all duration-300 ease-in-out"
+          style={{ left: indicator.left, width: indicator.width }}
+        />
+      )}
       {NAV_LINKS.map((link, i) => {
         const isActive = i === activeIndex;
         return (
@@ -48,7 +55,7 @@ export function AccountNav() {
             ref={(el) => {
               itemRefs.current[i] = el;
             }}
-            className={`text-base font-medium tracking-[-0.04em] font-body pb-3 transition-colors ${
+            className={`relative text-base font-medium tracking-[-0.04em] font-body px-4 py-2 rounded-lg transition-colors ${
               isActive ? "text-ink" : "text-light hover:text-ink"
             }`}
           >
@@ -56,13 +63,6 @@ export function AccountNav() {
           </Link>
         );
       })}
-      {indicator && (
-        <div
-          aria-hidden
-          className="absolute bottom-0 h-[3px] bg-ink transition-all duration-300 ease-in-out"
-          style={{ left: indicator.left, width: indicator.width }}
-        />
-      )}
     </nav>
   );
 }

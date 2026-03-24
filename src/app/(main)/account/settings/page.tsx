@@ -11,16 +11,17 @@ export default async function SettingsPage() {
   const customer = await getCustomer(token!);
 
   return (
-    <main className="bg-canvas min-h-screen">
-      <div className="container-wide section-padding">
+    <main className="bg-canvas">
+      <div className="">
         {/* Header */}
-        <div className="mb-12">
+        <div className="mb-6">
           <h1 className="font-body font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
             Settings
           </h1>
         </div>
-
-        <SettingsForm customer={customer!} />
+        <div className="border border-stroke rounded-md p-4 mb-12">
+          <SettingsForm customer={customer!} />
+        </div>
       </div>
     </main>
   );

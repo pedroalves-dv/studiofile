@@ -17,7 +17,7 @@ export default async function AccountLayout({
 
   return (
     <div className="px-5 pt-[var(--header-height)]">
-      <div className="-mx-5 px-5 pb-4 mb-4 border-b border-stroke">
+      <div className="-mx-5 px-5 pb-4 mb-2 border-b border-stroke">
         <CustomerAvatar
           firstName={customer.firstName}
           lastName={customer.lastName}
