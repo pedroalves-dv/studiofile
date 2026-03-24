@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { getCustomerToken, getCustomer } from '@/lib/shopify/auth'
 import { AddressManager } from './AddressManager'
+import { AccountNav } from '@/components/account/AccountNav'
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: 'Addresses' }
@@ -26,19 +26,7 @@ export default async function AddressesPage() {
           </h1>
         </div>
 
-        {/* Nav tabs */}
-        <nav className="flex gap-8 border-b border-stroke mb-10">
-          <Link href="/account" className="text-label text-muted hover:text-ink transition-colors pb-3">
-            Overview
-          </Link>
-          <Link href="/account/orders" className="text-label text-muted hover:text-ink transition-colors pb-3">
-            Orders
-          </Link>
-          <Link href="/account/settings" className="text-label text-muted hover:text-ink transition-colors pb-3">
-            Settings
-          </Link>
-          <span className="text-label text-ink border-b-2 border-ink pb-3">Addresses</span>
-        </nav>
+        <AccountNav />
 
         <AddressManager customer={customer} />
       </div>

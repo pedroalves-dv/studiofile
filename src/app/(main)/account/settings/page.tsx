@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { SettingsForm } from "./SettingsForm";
+import { AccountNav } from "@/components/account/AccountNav";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: "Settings" };
@@ -26,30 +26,7 @@ export default async function SettingsPage() {
           </h1>
         </div>
 
-        {/* Nav tabs */}
-        <nav className="flex gap-8 border-b border-stroke mb-10">
-          <Link
-            href="/account"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Overview
-          </Link>
-          <Link
-            href="/account/orders"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Orders
-          </Link>
-          <span className="text-label font-body text-ink border-b-2 border-ink pb-3">
-            Settings
-          </span>
-          <Link
-            href="/account/addresses"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Addresses
-          </Link>
-        </nav>
+        <AccountNav />
 
         <SettingsForm customer={customer} />
       </div>

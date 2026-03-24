@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { OrderCard } from "@/components/account/OrderCard";
 import { CustomerAvatar } from "@/components/ui/CustomerAvatar";
+import { AccountNav } from "@/components/account/AccountNav";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: "My Account" };
@@ -38,30 +39,7 @@ export default async function AccountPage() {
             </h1>
           </div>
 
-          {/* Nav tabs */}
-          <nav className="flex justify-between border-b border-stroke mb-10 -mx-5 px-5">
-            <span className="text-lg tracking-[-0.04em] font-body text-ink border-b-4 border-ink pb-2">
-              Overview
-            </span>
-            <Link
-              href="/account/orders"
-              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
-            >
-              Orders
-            </Link>
-            <Link
-              href="/account/settings"
-              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
-            >
-              Settings
-            </Link>
-            <Link
-              href="/account/addresses"
-              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
-            >
-              Addresses
-            </Link>
-          </nav>
+          <AccountNav />
         </div>
         {/* Recent orders */}
         <section>

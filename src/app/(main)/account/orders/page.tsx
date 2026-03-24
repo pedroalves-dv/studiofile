@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { OrderCard } from "@/components/account/OrderCard";
+import { AccountNav } from "@/components/account/AccountNav";
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: "Orders" };
@@ -28,30 +29,7 @@ export default async function OrdersPage() {
           </h1>
         </div>
 
-        {/* Nav tabs */}
-        <nav className="flex gap-8 border-b border-stroke mb-10">
-          <Link
-            href="/account"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Overview
-          </Link>
-          <span className="text-label font-body text-ink border-b-2 border-ink pb-3">
-            Orders
-          </span>
-          <Link
-            href="/account/settings"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Settings
-          </Link>
-          <Link
-            href="/account/addresses"
-            className="text-label font-body text-muted hover:text-ink transition-colors pb-3"
-          >
-            Addresses
-          </Link>
-        </nav>
+        <AccountNav />
 
         {/* Orders list */}
         {orders.length === 0 ? (
