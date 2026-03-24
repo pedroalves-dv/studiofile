@@ -41,6 +41,7 @@ function AddressForm({
 }: AddressFormProps) {
   const [firstName, setFirstName] = useState(initial?.firstName ?? "");
   const [lastName, setLastName] = useState(initial?.lastName ?? "");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
   const [address1, setAddress1] = useState(initial?.address1 ?? "");
   const [address2, setAddress2] = useState(initial?.address2 ?? "");
   const [city, setCity] = useState(initial?.city ?? "");
@@ -53,6 +54,7 @@ function AddressForm({
     onSubmit({
       firstName,
       lastName,
+      phone,
       address1,
       address2,
       city,
@@ -93,6 +95,21 @@ function AddressForm({
             className={inputClass}
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="addr-phone" className={labelClass}>
+          Phone
+        </label>
+        <input
+          id="addr-phone"
+          type="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          disabled={isPending}
+          className={inputClass}
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -214,7 +231,11 @@ export function AddressManager({ customer }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [mode, setMode] = useState<Mode>("list");
-  const [isPending, startTransition] = useTransition();
+  const [isFormPending, startFormTransition] = useTransition();
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(
+    null,
+  );
 
   const addresses = customer.addresses.edges.map((e) => e.node);
   const defaultId = customer.defaultAddress?.id ?? null;
@@ -226,35 +247,36 @@ export function AddressManager({ customer }: Props) {
   }
 
   function handleCreate(address: AddressInput) {
-    startTransition(async () => {
+    startFormTransition(async () => {
       const result = await customerAddressCreate(address);
       if (result.success) afterSuccess("Address added.");
       else toast.error(result.error ?? "Failed to add address");
     });
   }
 
-  function handleUpdate(addressId: string, address: AddressInput) {
-    startTransition(async () => {
-      const result = await customerAddressUpdate(addressId, address);
-      if (result.success) afterSuccess("Address updated.");
-      else toast.error(result.error ?? "Failed to update address");
-    });
+  async function handleUpdate(addressId: string, address: AddressInput) {
+    setPendingId(addressId);
+    const result = await customerAddressUpdate(addressId, address);
+    setPendingId(null);
+    if (result.success) afterSuccess("Address updated.");
+    else toast.error(result.error ?? "Failed to update address");
   }
 
-  function handleDelete(addressId: string) {
-    startTransition(async () => {
-      const result = await customerAddressDelete(addressId);
-      if (result.success) afterSuccess("Address removed.");
-      else toast.error(result.error ?? "Failed to delete address");
-    });
+  async function handleDelete(addressId: string) {
+    setConfirmingDeleteId(null);
+    setPendingId(addressId);
+    const result = await customerAddressDelete(addressId);
+    setPendingId(null);
+    if (result.success) afterSuccess("Address removed.");
+    else toast.error(result.error ?? "Failed to delete address");
   }
 
-  function handleSetDefault(addressId: string) {
-    startTransition(async () => {
-      const result = await customerDefaultAddressUpdate(addressId);
-      if (result.success) afterSuccess("Default address updated.");
-      else toast.error(result.error ?? "Failed to update default address");
-    });
+  async function handleSetDefault(addressId: string) {
+    setPendingId(addressId);
+    const result = await customerDefaultAddressUpdate(addressId);
+    setPendingId(null);
+    if (result.success) afterSuccess("Default address updated.");
+    else toast.error(result.error ?? "Failed to update default address");
   }
 
   return (
@@ -266,7 +288,7 @@ export function AddressManager({ customer }: Props) {
         {mode === "list" && (
           <button
             onClick={() => setMode("add")}
-            disabled={isPending}
+            disabled={pendingId !== null}
             className="text-base font-medium tracking-[-0.04em] font-body text-light hover:text-ink transition-colors disabled:opacity-50"
           >
             + Add new
@@ -280,7 +302,7 @@ export function AddressManager({ customer }: Props) {
             New address
           </h3>
           <AddressForm
-            isPending={isPending}
+            isPending={isFormPending}
             onSubmit={handleCreate}
             onCancel={() => setMode("list")}
             submitLabel="Save address"
@@ -300,9 +322,11 @@ export function AddressManager({ customer }: Props) {
             const isDefault = address.id === defaultId;
             const isEditing =
               typeof mode === "object" && mode.edit.id === address.id;
+            const isThisPending = pendingId === address.id;
+            const isConfirmingDelete = confirmingDeleteId === address.id;
 
             return (
-              <div key={address.id} className="p-6">
+              <div key={address.id} className="relative p-6">
                 {isEditing ? (
                   <>
                     <h3 className="font-body font-medium tracking-tighter text-xl text-ink mb-5">
@@ -310,69 +334,106 @@ export function AddressManager({ customer }: Props) {
                     </h3>
                     <AddressForm
                       initial={address}
-                      isPending={isPending}
+                      isPending={isThisPending}
                       onSubmit={(addr) => handleUpdate(address.id, addr)}
                       onCancel={() => setMode("list")}
                       submitLabel="Save changes"
                     />
                   </>
                 ) : (
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex flex-col gap-1">
-                      {isDefault && (
-                        <span className="text-label text-xs bg-ink text-canvas px-2 py-0.5 self-start mb-1 rounded-sm">
-                          Default
-                        </span>
-                      )}
-                      {(address.firstName || address.lastName) && (
-                        <p className="font-body text-base font-medium tracking-tight text-ink">
-                          {[address.firstName, address.lastName]
-                            .filter(Boolean)
-                            .join(" ")}
+                  <div className="">
+                    {/* Confirmation overlay */}
+                    {isConfirmingDelete && (
+                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[rgba(250,245,240,0.95)] rounded-md">
+                        <p className="font-body text-base tracking-tight text-ink">
+                          Remove this address?
                         </p>
-                      )}
-                      <p className="font-body text-sm text-muted">
-                        {address.address1}
-                      </p>
-                      {address.address2 && (
-                        <p className="font-body text-sm text-muted">
-                          {address.address2}
-                        </p>
-                      )}
-                      <p className="font-body text-sm text-muted">
-                        {[address.city, address.province, address.zip]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </p>
-                      <p className="font-body text-sm text-muted">
-                        {address.country}
-                      </p>
-                    </div>
+                        <div className="flex gap-3">
+                          <ArrowButton
+                            type="button"
+                            label="Confirm"
+                            onClick={() => handleDelete(address.id)}
+                            disabled={isThisPending}
+                            showArrow={false}
+                            className="px-6 py-2 bg-error text-white text-base font-medium tracking-[-0.04em] rounded-md flex items-center justify-center w-fit disabled:opacity-50"
+                          />
+                          <ArrowButton
+                            type="button"
+                            label="Cancel"
+                            onClick={() => setConfirmingDeleteId(null)}
+                            disabled={isThisPending}
+                            showArrow={false}
+                            className="px-6 py-2 bg-canvas text-light text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-stroke justify-center w-fit hover:text-ink hover:border-ink transition-colors disabled:opacity-50"
+                          />
+                        </div>
+                      </div>
+                    )}
 
-                    <div className="flex items-center gap-5 shrink-0">
-                      <button
-                        onClick={() => setMode({ edit: address })}
-                        disabled={isPending}
-                        className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(address.id)}
-                        disabled={isPending}
-                        className="font-body text-base tracking-[-0.04em] text-error hover:text-error/70 transition-colors disabled:opacity-50"
-                      >
-                        Delete
-                      </button>
-                      {!isDefault && (
+                    {/* Card content */}
+                    <div
+                      className={`flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between ${isConfirmingDelete ? "pointer-events-none select-none" : ""}`}
+                    >
+                      <div className="flex flex-col gap-1">
+                        {isDefault && (
+                          <span className="text-label text-xs bg-ink text-canvas px-2 py-0.5 self-start mb-1 rounded-sm">
+                            Default
+                          </span>
+                        )}
+                        {(address.firstName || address.lastName) && (
+                          <p className="font-body text-base font-medium tracking-tight text-ink">
+                            {[address.firstName, address.lastName]
+                              .filter(Boolean)
+                              .join(" ")}
+                          </p>
+                        )}
+                        <p className="font-body text-sm text-muted">
+                          {address.address1}
+                        </p>
+                        {address.address2 && (
+                          <p className="font-body text-sm text-muted">
+                            {address.address2}
+                          </p>
+                        )}
+                        <p className="font-body text-sm text-muted">
+                          {[address.city, address.province, address.zip]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
+                        <p className="font-body text-sm text-muted">
+                          {address.country}
+                        </p>
+                        {address.phone && (
+                          <p className="font-body text-sm text-muted">
+                            {address.phone}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-5 shrink-0">
                         <button
-                          onClick={() => handleSetDefault(address.id)}
-                          disabled={isPending}
+                          onClick={() => setMode({ edit: address })}
+                          disabled={isThisPending}
                           className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
                         >
-                          Set as default
+                          Edit
                         </button>
-                      )}
+                        <button
+                          onClick={() => setConfirmingDeleteId(address.id)}
+                          disabled={isThisPending}
+                          className="font-body text-base tracking-[-0.04em] text-error hover:text-error/70 transition-colors disabled:opacity-50"
+                        >
+                          Delete
+                        </button>
+                        {!isDefault && (
+                          <button
+                            onClick={() => handleSetDefault(address.id)}
+                            disabled={isThisPending}
+                            className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
+                          >
+                            Set as default
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

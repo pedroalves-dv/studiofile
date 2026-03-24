@@ -401,3 +401,19 @@ export const GET_SHOP_INFO = `
     }
   }
 `;
+
+// Localization
+export const GET_LOCALIZATION = `
+  query getLocalization {
+    localization {
+      availableCountries {
+        isoCode
+        name
+        provinces {
+          code
+          name
+        }
+      }
+    }
+  }
+`;

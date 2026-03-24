@@ -253,6 +253,7 @@ export interface AddressInput {
   province?: string
   zip?: string
   country?: string
+  phone?: string
 }
 
 interface CustomerAddressCreateResponse {

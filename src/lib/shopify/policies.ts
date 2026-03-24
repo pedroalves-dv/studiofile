@@ -1,7 +1,7 @@
 // Policies-specific Shopify API functions
 import { storefront } from './client';
-import { GET_SHOP_POLICIES, GET_SHOP_INFO } from './queries';
-import type { ShopifyPolicy, ShopifyShop } from './types';
+import { GET_SHOP_POLICIES, GET_SHOP_INFO, GET_LOCALIZATION } from './queries';
+import type { ShopifyPolicy, ShopifyShop, LocalizationCountry } from './types';
 
 interface PoliciesResponse {
   shop: {
@@ -72,4 +72,22 @@ export async function getShopInfo(): Promise<ShopifyShop> {
   );
 
   return response.shop;
+}
+
+interface LocalizationResponse {
+  localization: {
+    availableCountries: LocalizationCountry[];
+  };
+}
+
+/**
+ * Fetch available countries and provinces for localization
+ */
+export async function getLocalization(): Promise<LocalizationCountry[]> {
+  const data = await storefront<LocalizationResponse>(
+    GET_LOCALIZATION,
+    {},
+    { next: { revalidate: 86400 } } // Cache for 24 hours
+  );
+  return data.localization.availableCountries;
 }
