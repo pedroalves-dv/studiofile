@@ -176,10 +176,12 @@ middleware.ts
 
 #### Typography
 
-- Display: `Noka` (`font-display`) — logo font, used sparingly
+- Display: `Noka` (`font-display`) — logo font, used sparingly for product type animations
 - Body: `Geist Sans` (`font-body`) — Main font, all headings, body text
-- Mono labels: `JetBrains Mono` (`font-mono`) — prices, tags, UI labels, button text
-- Accent Typography: `Instrument Serif` (`font-serif`) — details, pull quotes
+- Mono labels: `JetBrains Mono` (`font-mono`) — small details: prices, tags, UI labels
+- Accent Typography: `Instrument Serif` (`font-serif`) — not yet used.
+
+**Experimental tokens:** `tailwind.config.ts` also exposes `font-tasa`, `font-hubot`, `font-mona`, `font-zal`, `font-funnel`, `font-khregular`, `font-khbold`, `font-stack`, `font-stacktext`, and `font-mono2` (Fliege Mono). These exist for type testing only — do not use in production components until a decision is made.
 
 #### Colors
 
@@ -284,7 +286,7 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 - Mobile menu also conditionally shows "Account" vs "Sign in" based on `isLoggedIn`.
 - **Search overlay is commented out** — the full-screen search pattern (backdrop + `SearchBar`) is in the file but disabled. Do not delete it.
 - **Wishlist icon is commented out** — see Wishlist section.
-- Logo swap on hover: two SVG masks applied via `maskImage` CSS — `logo-black.svg` (default, no slash) fades out, `logo.svg` (with slash) fades in. Pure CSS opacity transition, no JS.
+- Logo swap on hover: two SVG masks applied via `maskImage` CSS — `logo-black.svg` (default, no slash) fades out, `logo.svg` (with slash) fades in. Pure CSS opacity transition, no JS. Implemented in `src/components/ui/LogoHover.tsx`.
 - Nav link hover effect: each link uses a `node` prop containing a `<span>` with `[clip-path:inset(0_100%_0_0)]` that reveals "/ XX" text left-to-right on hover via `animate-revealLTR` + `group-hover:w-auto`. The label translate is disabled (`showArrow={false}`) so `ArrowButton` doesn't interfere.
 - Scroll state: `isScrolling` reduces header background to `bg-canvas/60` (+ `backdrop-blur-xl`) while the user is scrolling, resets after 1 second of inactivity.
 

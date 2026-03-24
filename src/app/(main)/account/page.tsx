@@ -22,7 +22,7 @@ export default async function AccountPage() {
   const recentOrders = customer.orders.edges.slice(0, 3).map((e) => e.node);
 
   return (
-    <main className="bg-canvas min-h-screen border-r border-ink">
+    <main className="bg-canvas ">
       <div className="px-5 section-height pb-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
         {/* Header */}
         <div className="px-5 ">

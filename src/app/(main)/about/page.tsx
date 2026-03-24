@@ -58,7 +58,7 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="border-r border-ink">
+    <main id="main-content" className="">
       {/* ─── Hero / Studio Story ─── */}
       <section className="border-b border-stroke section-height pt-[var(--header-height)] sm:pt-0 pb-12">
         <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">

@@ -1,6 +1,6 @@
 # STATUS.md — Studiofile
 
-Current position: **Phase 11 partially done — 11.3 header effects + 11.4 shop layout remaining. TOTEM Phase 3 complete. TOTEM Phase 4 (real SVG shapes) is next on the TOTEM track.**
+Current position: **Phase 11 in progress — 11.3 header effects done, account page styling + 11.4 shop layout remaining. TOTEM Phase 3 complete. TOTEM Phase 4 (real SVG shapes) pending.**
 
 Update this file at the end of every session.
 
@@ -46,7 +46,10 @@ Update this file at the end of every session.
 | 11.1 | Marquee component (CSS, no JS) | ✅ Done |
 | 11.2 | Home page editorial overhaul (hero, brand story, collections, featured) | ✅ Done |
 | 11.x | Cart + Wishlist drawer styling overhaul (ad hoc) | ✅ Done |
-| 11.3 | Header accent hover effects (logo slash + nav color shift) | 🔄 In Progress |
+| 11.3 | Header accent hover effects (logo slash + nav color shift) | ✅ Done |
+| 11.x | Mobile menu UX polish — interactions, drawer animations, dialog refinements | ✅ Done |
+| 11.x | Font stack consolidation + UI overhaul — removed experimental fonts, tightened type system | ✅ Done |
+| 11.x | Account pages audit + layout refactor — prep for full site styling pass | 🔄 In Progress |
 | 11.4 | Shop + collection editorial layout, ProductCard redesign (outline on hover) | ⬜ Pending |
 | 11.x | Coming-soon page editorial rework — canvas aesthetic, parallax image section, logo-only header, LandingSignup re-skin | ✅ Done |
 
@@ -113,3 +116,4 @@ The TOTEM lamp is a modular ceiling light: stackable 3D-printed shapes, each sol
 - **`src/components/search/FilterPanel`** re-exports from `src/components/shop/FilterPanel` — do not delete the shop version.
 - **`muted` color** is `#6B6560` — do not change to `#8A8580` (fails WCAG AA).
 - **`strict: false`** in `tsconfig.json` — TypeScript will not catch all type errors; run `type-check` explicitly.
+- **Experimental font tokens in `tailwind.config.ts`** — `font-tasa`, `font-hubot`, `font-mona`, `font-zal`, `font-funnel`, `font-khregular`, `font-khbold`, `font-stack`, `font-stacktext`, `font-mono2` exist for type testing only. Only the canonical tokens (`font-display`, `font-body`, `font-mono`, `font-serif`) should be used in production components. Do not remove the experimental tokens until the font decision is finalised.
