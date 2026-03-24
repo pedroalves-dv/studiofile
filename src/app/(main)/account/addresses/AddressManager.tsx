@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   customerAddressCreate,
@@ -99,28 +99,82 @@ function AddressForm({
   onCancel,
   submitLabel,
 }: AddressFormProps) {
+  const initialCountryCode = initial?.country
+    ? findCountryCode(initial.country, countries)
+    : "";
+
   const [firstName, setFirstName] = useState(initial?.firstName ?? "");
   const [lastName, setLastName] = useState(initial?.lastName ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [address1, setAddress1] = useState(initial?.address1 ?? "");
   const [address2, setAddress2] = useState(initial?.address2 ?? "");
   const [city, setCity] = useState(initial?.city ?? "");
-  const [province, setProvince] = useState(initial?.province ?? "");
+  const initialProvinceCode = initial?.province && initialCountryCode
+    ? findProvinceCode(initial.province, initialCountryCode, countries)
+    : "";
+  const [provinceCode, setProvinceCode] = useState(initialProvinceCode);
   const [zip, setZip] = useState(initial?.zip ?? "");
-  const [country, setCountry] = useState(initial?.country ?? "");
+  const [country, setCountry] = useState(initialCountryCode);
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof AddressInput, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  useEffect(() => {
+    if (serverErrors && Object.keys(serverErrors).length > 0) {
+      setErrors((prev) => ({ ...prev, ...serverErrors }));
+      setTouched((prev) => {
+        const updated = { ...prev };
+        for (const key of Object.keys(serverErrors)) {
+          (updated as Record<string, boolean>)[key] = true;
+        }
+        return updated;
+      });
+    }
+  }, [serverErrors]);
+
+  function handleBlur(field: keyof AddressInput) {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const current: AddressInput = {
+      firstName, lastName, phone, address1, address2,
+      city, province: provinceCode, zip, country,
+    };
+    setErrors((prev) => ({
+      ...prev,
+      [field]: validateAddress(current, country)[field],
+    }));
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitAttempted(true);
+    const trimmed: AddressInput = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      phone: phone.trim(),
+      address1: address1.trim(),
+      address2: address2.trim(),
+      city: city.trim(),
+      zip: zip.trim(),
+      country,   // code — validated here, converted below
+      province: provinceCode || undefined,
+    };
+    const newErrors = validateAddress(trimmed, country);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setTouched({
+        firstName: true, lastName: true, phone: true,
+        address1: true, city: true, zip: true, country: true,
+      });
+      return;
+    }
+    // Convert codes → names before sending to Shopify
     onSubmit({
-      firstName,
-      lastName,
-      phone,
-      address1,
-      address2,
-      city,
-      province,
-      zip,
-      country,
+      ...trimmed,
+      country: lookupCountryName(country, countries),
+      province: provinceCode
+        ? lookupProvinceName(provinceCode, country, countries)
+        : undefined,
     });
   }
 
@@ -227,8 +281,8 @@ function AddressForm({
             id="addr-province"
             type="text"
             autoComplete="address-level1"
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
+            value={provinceCode}
+            onChange={(e) => setProvinceCode(e.target.value)}
             disabled={isPending}
             className={inputClass}
           />
