@@ -12,9 +12,15 @@ import type { ShopifyCustomer, ShopifyAddress } from "@/lib/shopify/types";
 import type { AddressInput } from "@/lib/shopify/auth";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useToast } from "@/components/common/Toast";
+import { isValidPhoneNumber } from "libphonenumber-js/min";
+import type { CountryCode } from "libphonenumber-js/min";
+import type { LocalizationCountry } from "@/lib/shopify/types";
+
+type FormErrors = Partial<Record<keyof AddressInput, string>>;
 
 interface Props {
   customer: ShopifyCustomer;
+  countries: LocalizationCountry[];
 }
 
 type Mode = "list" | "add" | { edit: ShopifyAddress };
@@ -22,10 +28,62 @@ type Mode = "list" | "add" | { edit: ShopifyAddress };
 const inputClass =
   "w-full border border-stroke bg-canvas rounded-md px-4 py-3 text-base text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors disabled:opacity-50";
 
+const selectClass =
+  "w-full border border-stroke bg-canvas rounded-md px-4 py-3 text-base text-ink focus:outline-none focus:border-ink transition-colors disabled:opacity-50 appearance-none cursor-pointer";
+
 const labelClass = "font-body text-light text-base tracking-tight";
+
+function lookupCountryName(code: string, countries: LocalizationCountry[]): string {
+  return countries.find((c) => c.isoCode === code)?.name ?? code;
+}
+
+function lookupProvinceName(
+  provinceCode: string,
+  countryCode: string,
+  countries: LocalizationCountry[]
+): string {
+  const country = countries.find((c) => c.isoCode === countryCode);
+  return country?.provinces.find((p) => p.code === provinceCode)?.name ?? provinceCode;
+}
+
+function findCountryCode(name: string, countries: LocalizationCountry[]): string {
+  return countries.find((c) => c.name === name)?.isoCode ?? "";
+}
+
+function findProvinceCode(
+  provinceName: string,
+  countryCode: string,
+  countries: LocalizationCountry[]
+): string {
+  const country = countries.find((c) => c.isoCode === countryCode);
+  return country?.provinces.find((p) => p.name === provinceName)?.code ?? "";
+}
+
+function validateAddress(f: AddressInput, countryCode: string): FormErrors {
+  const errors: FormErrors = {};
+  if (!f.firstName?.trim()) errors.firstName = "First name is required.";
+  if (!f.lastName?.trim()) errors.lastName = "Last name is required.";
+  if (!f.address1?.trim()) errors.address1 = "Address is required.";
+  else if (f.address1.trim().length < 5) errors.address1 = "Enter a valid address.";
+  if (!f.city?.trim()) errors.city = "City is required.";
+  if (!f.zip?.trim()) errors.zip = "Postcode is required.";
+  if (!f.country?.trim()) errors.country = "Country is required.";
+  if (f.phone?.trim()) {
+    try {
+      if (!isValidPhoneNumber(f.phone.trim(), countryCode as CountryCode)) {
+        errors.phone = "Enter a valid phone number for this country.";
+      }
+    } catch {
+      errors.phone = "Enter a valid phone number.";
+    }
+  }
+  return errors;
+}
 
 interface AddressFormProps {
   initial?: ShopifyAddress;
+  countries: LocalizationCountry[];
+  serverErrors?: FormErrors;
   isPending: boolean;
   onSubmit: (address: AddressInput) => void;
   onCancel: () => void;
@@ -34,6 +92,8 @@ interface AddressFormProps {
 
 function AddressForm({
   initial,
+  countries,
+  serverErrors,
   isPending,
   onSubmit,
   onCancel,
@@ -227,10 +287,11 @@ function AddressForm({
   );
 }
 
-export function AddressManager({ customer }: Props) {
+export function AddressManager({ customer, countries }: Props) {
   const router = useRouter();
   const toast = useToast();
   const [mode, setMode] = useState<Mode>("list");
+  const [formServerErrors, setFormServerErrors] = useState<FormErrors>({});
   const [isFormPending, startFormTransition] = useTransition();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(
@@ -239,6 +300,11 @@ export function AddressManager({ customer }: Props) {
 
   const addresses = customer.addresses.edges.map((e) => e.node);
   const defaultId = customer.defaultAddress?.id ?? null;
+
+  function handleModeChange(newMode: Mode) {
+    setFormServerErrors({});
+    setMode(newMode);
+  }
 
   function afterSuccess(msg: string) {
     toast.success(msg);
@@ -287,7 +353,7 @@ export function AddressManager({ customer }: Props) {
         </h2>
         {mode === "list" && (
           <button
-            onClick={() => setMode("add")}
+            onClick={() => handleModeChange("add")}
             disabled={pendingId !== null}
             className="text-base font-medium tracking-[-0.04em] font-body text-light hover:text-ink transition-colors disabled:opacity-50"
           >
@@ -302,9 +368,11 @@ export function AddressManager({ customer }: Props) {
             New address
           </h3>
           <AddressForm
+            countries={countries}
+            serverErrors={formServerErrors}
             isPending={isFormPending}
             onSubmit={handleCreate}
-            onCancel={() => setMode("list")}
+            onCancel={() => handleModeChange("list")}
             submitLabel="Save address"
           />
         </div>
@@ -334,9 +402,11 @@ export function AddressManager({ customer }: Props) {
                     </h3>
                     <AddressForm
                       initial={address}
+                      countries={countries}
+                      serverErrors={formServerErrors}
                       isPending={isThisPending}
                       onSubmit={(addr) => handleUpdate(address.id, addr)}
-                      onCancel={() => setMode("list")}
+                      onCancel={() => handleModeChange("list")}
                       submitLabel="Save changes"
                     />
                   </>
@@ -411,7 +481,7 @@ export function AddressManager({ customer }: Props) {
 
                       <div className="flex items-center gap-5 shrink-0">
                         <button
-                          onClick={() => setMode({ edit: address })}
+                          onClick={() => handleModeChange({ edit: address })}
                           disabled={isThisPending}
                           className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
                         >
