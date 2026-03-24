@@ -34,15 +34,16 @@ export function Footer() {
       <div className="px-5 border-t border-stroke pt-8">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center pt-2 justify-between ">
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1fr_1fr_1fr_400px] gap-4">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_minmax(0,380px)] md:grid-cols-[auto_auto_minmax(0,380px)] xl:grid-cols-[1fr_1fr_1fr_minmax(0,380px)]">
             {/* Column 1: Wordmark + Tagline */}
-            <div className="text-base sm:text-lg font-medium text-ink tracking-[-0.03em]">
+            <div className="hidden sm:block sm:order-3 md:hidden xl:block xl:order-1 text-base sm:text-lg font-medium text-light tracking-[-0.04em] pb-8">
               <p>© {new Date().getFullYear()} STUDIO filé</p>
             </div>
+
             {/* Column 2: Navigation Links */}
-            <div className="space-y-4 tracking-[-0.03em] font-medium">
+            <div className="space-y-4 tracking-[-0.04em] font-medium order-2 sm:oder-1 md:orde-1 lg:order-1 xl:order-2 pb-8 sm:pb-12">
               <h3 className="text-base sm:text-lg text-light">Navigation</h3>
-              <nav className="space-y-2 flex flex-col pb-4">
+              <nav className="space-y-2 flex flex-col">
                 {FOOTER_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -56,7 +57,7 @@ export function Footer() {
             </div>
 
             {/* Column 3: Conditions & Policies */}
-            <div className="space-y-4 tracking-[-0.03em] font-medium pb-8 sm:pb-0">
+            <div className="space-y-4 tracking-[-0.04em] font-medium order-3 sm:order-2 pb-12">
               <h3 className="text-base sm:text-lg text-light">
                 Conditions & Policies
               </h3>
@@ -74,7 +75,7 @@ export function Footer() {
             </div>
 
             {/* Column 4: Social + Newsletter */}
-            <div className="space-y-16 sm:col-span-2 md:col-span-1">
+            <div className="space-y-16 sm:col-span-1 md:col-span-1 order-4">
               <div className="pt-1">
                 {/* Social Links */}
 
@@ -123,7 +124,7 @@ export function Footer() {
 
                 {/* Newsletter */}
                 <div className="">
-                  <h3 className="text-base sm:text-lg/6 tracking-[-0.03em] font-medium text-ink leading-tight pb-3">
+                  <h3 className="text-base sm:text-lg/5 tracking-[-0.03em] font-medium text-ink leading-tight pb-3">
                     Get updates and special offers on new products. <br /> No
                     weekly spam.
                   </h3>
@@ -134,12 +135,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="w-full pt-8 sm:pt-24 pb-4 sm:pb-3">
+        <div className="w-full pt-28 pb-4 sm:pb-3">
           <div
-            className="w-full bg-ink sm:bg-stroke"
+            className="w-full bg-white"
             style={{
               aspectRatio: "22.203955 / 4.0943561",
-              maskImage: "url(/images/logo/logo-footer.svg)",
+              maskImage: "url(/images/logo/newlogov1.svg)",
               maskSize: "100% 100%",
               maskRepeat: "no-repeat",
               maskPosition: "center",

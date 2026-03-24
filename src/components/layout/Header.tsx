@@ -108,7 +108,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height-mobile)] sm:h-[var(--header-height)] bg-canvas">
         <div className="h-full pl-5 border-b border-ink">
           {/* 2-column grid: logo left, nav+icons right */}
-          <div className="h-full grid grid-cols-2 items-end">
+          <div className="h-full grid grid-cols-2 items-end ">
             {/* Logo */}
             <Link
               href="/"
@@ -131,7 +131,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-body font-semibold tracking-[-0.03em] text-lg hover:text-light transition-colors duration-200",
+                      "font-body font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
@@ -175,7 +175,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                               key={item.href}
                               href={item.href}
                               onClick={() => setIsAccountOpen(false)}
-                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
+                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
                             >
                               {item.label}
                             </Link>
@@ -185,7 +185,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                           <form action={customerLogout}>
                             <button
                               type="submit"
-                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.03em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
+                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
                             >
                               Sign out
                             </button>
@@ -244,7 +244,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       closeCart();
                     }
                   }}
-                  className="md:hidden py-2 pl-1"
+                  className="md:hidden h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
                 >

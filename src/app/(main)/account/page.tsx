@@ -22,45 +22,46 @@ export default async function AccountPage() {
   const recentOrders = customer.orders.edges.slice(0, 3).map((e) => e.node);
 
   return (
-    <main className="bg-canvas min-h-screen">
-      <div className="container-wide section-padding">
+    <main className="bg-canvas min-h-screen border-r border-ink">
+      <div className="px-5 section-height pb-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
         {/* Header */}
-        <div className="mb-12">
-          {/* <p className="text-label font-body text-muted mb-2">My Account</p> */}
-          <h1 className="font-body font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
-            Hello, {customer.firstName ?? customer.email}.
-          </h1>
+        <div className="px-5 ">
+          <div className="mb-12">
+            {/* <p className="text-label font-body text-muted mb-2">My Account</p> */}
+            <h1 className="font-body font-semibold tracking-tighter text-4xl md:text-7xl text-ink">
+              Hello, {customer.firstName ?? customer.email}.
+            </h1>
+          </div>
+
+          {/* Nav tabs */}
+          <nav className="flex gap-8 border-b border-stroke mb-10">
+            <span className="text-lg tracking-[-0.04em] font-body text-ink border-b-4 border-ink pb-3">
+              Overview
+            </span>
+            <Link
+              href="/account/orders"
+              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
+            >
+              Orders
+            </Link>
+            <Link
+              href="/account/settings"
+              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
+            >
+              Settings
+            </Link>
+            <Link
+              href="/account/addresses"
+              className="text-lg tracking-[-0.04em] text-light font-body hover:text-ink transition-colors pb-3"
+            >
+              Addresses
+            </Link>
+          </nav>
         </div>
-
-        {/* Nav tabs */}
-        <nav className="flex gap-8 border-b border-stroke mb-10">
-          <span className="text-label font-body text-ink border-b-2 border-ink pb-3">
-            Overview
-          </span>
-          <Link
-            href="/account/orders"
-            className="text-label text-muted font-body hover:text-ink transition-colors pb-3"
-          >
-            Orders
-          </Link>
-          <Link
-            href="/account/settings"
-            className="text-label text-muted font-body hover:text-ink transition-colors pb-3"
-          >
-            Settings
-          </Link>
-          <Link
-            href="/account/addresses"
-            className="text-label text-muted font-body hover:text-ink transition-colors pb-3"
-          >
-            Addresses
-          </Link>
-        </nav>
-
         {/* Recent orders */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-body font-light tracking-tight text-2xl text-ink">
+            <h2 className="font-body font-regular tracking-[-0.04em] text-2xl text-ink">
               Recent orders
             </h2>
             {customer.orders.edges.length > 3 && (

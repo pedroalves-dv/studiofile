@@ -60,16 +60,16 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="border-r border-ink">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="border-b border-stroke section-height pt-[var(--header-height)] sm:pt-0 ">
-        <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start ">
+      <section className="border-b border-stroke section-height pt-[var(--header-height)] sm:pt-0 pb-12">
+        <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
           <div className="space-y-6 md:sticky md:top-28 ">
             {/* Left — info */}
 
-            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:leading-[0.9] leading-[4rem]">
+            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The studio
             </h1>
-            <div className="text-ink font-body tracking-[-0.03em] text-lg leading-tight space-y-6">
+            <div className="text-ink font-body tracking-[-0.03em] text-lg leading-tight space-y-6 pr-12">
               <p className="">
                 <span className="italic mr-1">STUDIO filé</span> began with a
                 simple frustration: the objects we wanted for our homes
@@ -112,10 +112,10 @@ export default function AboutPage() {
 
       {/* ─── Studio Values / Process ─── */}
       <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
-        <h1 className="px-5 text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:leading-[0.9] leading-[4rem]">
-          <span className="">W</span>hat we stand for
+        <h1 className="px-5 text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+          What we stand for
         </h1>
-        <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
               <h3 className="text-4xl font-body mt-8 tracking-tighter">
@@ -144,8 +144,8 @@ export default function AboutPage() {
       <section className="border-b border-stroke pb-8 section-height">
         <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
-          <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28">
-            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-8 sm:leading-[0.9] leading-[4rem]">
+          <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28 pr-12">
+            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The team
             </h1>
             <h2 className="text-4xl md:text-5xl font-body leading-tight tracking-tighter">
