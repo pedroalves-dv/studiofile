@@ -284,9 +284,26 @@ interface CustomerDefaultAddressUpdateResponse {
   }
 }
 
+type AddressActionResult = {
+  success: boolean
+  error?: string
+  fieldErrors?: Record<string, string>
+}
+
+function mapUserErrors(
+  userErrors: Array<{ field: string[] | null; message: string }>
+): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const err of userErrors) {
+    const key = err.field?.[err.field.length - 1]
+    if (key && !out[key]) out[key] = err.message
+  }
+  return out
+}
+
 export async function customerAddressCreate(
   address: AddressInput
-): Promise<{ success: boolean; error?: string }> {
+): Promise<AddressActionResult> {
   try {
     const token = await getCustomerToken()
     if (!token) return { success: false, error: 'Not authenticated' }
@@ -299,7 +316,12 @@ export async function customerAddressCreate(
 
     const userErrors = data.customerAddressCreate?.userErrors
     if (userErrors?.length) {
-      return { success: false, error: userErrors[0].message }
+      const fieldErrors = mapUserErrors(userErrors)
+      return {
+        success: false,
+        error: userErrors[0].message,
+        fieldErrors: Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
+      }
     }
 
     if (!data.customerAddressCreate?.customerAddress) {
@@ -315,7 +337,7 @@ export async function customerAddressCreate(
 export async function customerAddressUpdate(
   addressId: string,
   address: AddressInput
-): Promise<{ success: boolean; error?: string }> {
+): Promise<AddressActionResult> {
   try {
     const token = await getCustomerToken()
     if (!token) return { success: false, error: 'Not authenticated' }
@@ -328,7 +350,12 @@ export async function customerAddressUpdate(
 
     const userErrors = data.customerAddressUpdate?.userErrors
     if (userErrors?.length) {
-      return { success: false, error: userErrors[0].message }
+      const fieldErrors = mapUserErrors(userErrors)
+      return {
+        success: false,
+        error: userErrors[0].message,
+        fieldErrors: Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
+      }
     }
 
     if (!data.customerAddressUpdate?.customerAddress) {
