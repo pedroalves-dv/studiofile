@@ -29,16 +29,16 @@ export function CustomerAvatar({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center flex-shrink-0">
-        <span className="font-body text-sm tracking-wide uppercase">
+      <div className="w-14 h-14 rounded-full bg-ink text-white flex items-center justify-center flex-shrink-0">
+        <span className="font-body text-lg tracking-wide uppercase">
           {initials}
         </span>
       </div>
       <div>
-        <p className="font-body font-semibold tracking-tighter text-2xl text-ink leading-tight">
+        <p className="font-body font-semibold tracking-tighter text-3xl text-ink leading-tight">
           {firstName} {lastName}
         </p>
-        <p className="font-body text-sm text-muted tracking-tight">{email}</p>
+        <p className="font-body text-base text-light tracking-tight">{email}</p>
       </div>
     </div>
   );

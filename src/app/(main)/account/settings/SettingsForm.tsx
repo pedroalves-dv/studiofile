@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   customerUpdateProfile,
   customerUpdatePassword,
@@ -17,6 +18,8 @@ const inputClass =
 const labelClass = "font-body text-muted text-md";
 
 export function SettingsForm({ customer }: SettingsFormProps) {
+  const router = useRouter();
+
   // Profile form state — initialised from server-fetched customer, updated on success
   const [firstName, setFirstName] = useState(customer.firstName ?? "");
   const [lastName, setLastName] = useState(customer.lastName ?? "");
@@ -41,6 +44,7 @@ export function SettingsForm({ customer }: SettingsFormProps) {
       const result = await customerUpdateProfile(firstName, lastName, email);
       if (result.success) {
         setProfileSuccess(true);
+        router.refresh();
       } else {
         setProfileError(result.error ?? "Update failed");
       }
