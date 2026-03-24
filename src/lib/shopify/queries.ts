@@ -411,10 +411,6 @@ export const GET_LOCALIZATION = `
       availableCountries {
         isoCode
         name
-        provinces {
-          code
-          name
-        }
       }
     }
   }

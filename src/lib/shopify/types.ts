@@ -130,15 +130,9 @@ export interface ShopifyAddress {
   phone?: string | null;
 }
 
-export interface LocalizationProvince {
-  code: string;
-  name: string;
-}
-
 export interface LocalizationCountry {
   isoCode: string;
   name: string;
-  provinces: LocalizationProvince[];
 }
 
 export interface ShopifyCustomer {

@@ -15,6 +15,7 @@ import { useToast } from "@/components/common/Toast";
 import { isValidPhoneNumber } from "libphonenumber-js/min";
 import type { CountryCode } from "libphonenumber-js/min";
 import type { LocalizationCountry } from "@/lib/shopify/types";
+import { State } from "country-state-city";
 
 type FormErrors = Partial<Record<keyof AddressInput, string>>;
 
@@ -37,26 +38,16 @@ function lookupCountryName(code: string, countries: LocalizationCountry[]): stri
   return countries.find((c) => c.isoCode === code)?.name ?? code;
 }
 
-function lookupProvinceName(
-  provinceCode: string,
-  countryCode: string,
-  countries: LocalizationCountry[]
-): string {
-  const country = countries.find((c) => c.isoCode === countryCode);
-  return country?.provinces.find((p) => p.code === provinceCode)?.name ?? provinceCode;
+function lookupProvinceName(provinceCode: string, countryCode: string): string {
+  return State.getStatesOfCountry(countryCode).find((s) => s.isoCode === provinceCode)?.name ?? provinceCode;
 }
 
 function findCountryCode(name: string, countries: LocalizationCountry[]): string {
   return countries.find((c) => c.name === name)?.isoCode ?? "";
 }
 
-function findProvinceCode(
-  provinceName: string,
-  countryCode: string,
-  countries: LocalizationCountry[]
-): string {
-  const country = countries.find((c) => c.isoCode === countryCode);
-  return country?.provinces.find((p) => p.name === provinceName)?.code ?? "";
+function findProvinceCode(provinceName: string, countryCode: string): string {
+  return State.getStatesOfCountry(countryCode).find((s) => s.name === provinceName)?.isoCode ?? "";
 }
 
 function validateAddress(f: AddressInput, countryCode: string): FormErrors {
@@ -110,7 +101,7 @@ function AddressForm({
   const [address2, setAddress2] = useState(initial?.address2 ?? "");
   const [city, setCity] = useState(initial?.city ?? "");
   const initialProvinceCode = initial?.province && initialCountryCode
-    ? findProvinceCode(initial.province, initialCountryCode, countries)
+    ? findProvinceCode(initial.province, initialCountryCode)
     : "";
   const [provinceCode, setProvinceCode] = useState(initialProvinceCode);
   const [zip, setZip] = useState(initial?.zip ?? "");
@@ -171,7 +162,7 @@ function AddressForm({
       ...trimmed,
       country: lookupCountryName(country, countries),
       province: provinceCode
-        ? lookupProvinceName(provinceCode, country, countries)
+        ? lookupProvinceName(provinceCode, country)
         : undefined,
     });
   }
@@ -378,8 +369,8 @@ function AddressForm({
 
       {/* Province / State — dependent select, only when country has provinces */}
       {(() => {
-        const selectedCountry = countries.find((c) => c.isoCode === country);
-        if (!selectedCountry || selectedCountry.provinces.length === 0) return null;
+        const states = country ? State.getStatesOfCountry(country) : [];
+        if (states.length === 0) return null;
         return (
           <div className="flex flex-col gap-1.5">
             <label htmlFor="addr-province" className={labelClass}>
@@ -398,9 +389,9 @@ function AddressForm({
               }
             >
               <option value="">Select a province</option>
-              {selectedCountry.provinces.map((p) => (
-                <option key={p.code} value={p.code}>
-                  {p.name}
+              {states.map((s) => (
+                <option key={s.isoCode} value={s.isoCode}>
+                  {s.name}
                 </option>
               ))}
             </select>
