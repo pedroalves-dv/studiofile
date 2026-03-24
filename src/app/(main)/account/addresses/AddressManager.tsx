@@ -14,10 +14,28 @@ import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useToast } from "@/components/common/Toast";
 import { isValidPhoneNumber } from "libphonenumber-js/min";
 import type { CountryCode } from "libphonenumber-js/min";
+import { getExampleNumber } from "libphonenumber-js";
+import type { Examples } from "libphonenumber-js";
+// mobile/examples is a JS module — no resolveJsonModule needed
+import mobileExamples from "libphonenumber-js/mobile/examples";
 import type { LocalizationCountry } from "@/lib/shopify/types";
 import { State } from "country-state-city";
 
 type FormErrors = Partial<Record<keyof AddressInput, string>>;
+
+const ZIP_PATTERNS: Record<string, { regex: RegExp; hint: string }> = {
+  FR: { regex: /^\d{5}$/, hint: "Enter a valid French postcode (5 digits)" },
+  US: { regex: /^\d{5}(-\d{4})?$/, hint: "Enter a valid US ZIP code (e.g. 10001)" },
+  GB: { regex: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i, hint: "Enter a valid UK postcode (e.g. SW1A 1AA)" },
+  DE: { regex: /^\d{5}$/, hint: "Enter a valid German postcode (5 digits)" },
+  CA: { regex: /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i, hint: "Enter a valid Canadian postal code (e.g. K1A 0B1)" },
+  ES: { regex: /^\d{5}$/, hint: "Enter a valid Spanish postcode (5 digits)" },
+  IT: { regex: /^\d{5}$/, hint: "Enter a valid Italian postcode (5 digits)" },
+  NL: { regex: /^\d{4}\s?[A-Z]{2}$/i, hint: "Enter a valid Dutch postcode (e.g. 1234 AB)" },
+  BE: { regex: /^\d{4}$/, hint: "Enter a valid Belgian postcode (4 digits)" },
+  AU: { regex: /^\d{4}$/, hint: "Enter a valid Australian postcode (4 digits)" },
+  JP: { regex: /^\d{3}-?\d{4}$/, hint: "Enter a valid Japanese postcode (e.g. 100-0001)" },
+};
 
 interface Props {
   customer: ShopifyCustomer;
@@ -47,7 +65,15 @@ function findCountryCode(name: string, countries: LocalizationCountry[]): string
 }
 
 function findProvinceCode(provinceName: string, countryCode: string): string {
-  return State.getStatesOfCountry(countryCode).find((s) => s.name === provinceName)?.isoCode ?? "";
+  if (!provinceName || !countryCode) return "";
+  const states = State.getStatesOfCountry(countryCode);
+  return (
+    states.find((s) => s.name === provinceName)?.isoCode ??
+    states.find((s) => s.name.toLowerCase() === provinceName.toLowerCase())?.isoCode ??
+    states.find((s) => s.isoCode === provinceName)?.isoCode ??
+    states.find((s) => s.isoCode.toLowerCase() === provinceName.toLowerCase())?.isoCode ??
+    ""
+  );
 }
 
 function validateAddress(f: AddressInput, countryCode: string): FormErrors {
@@ -57,9 +83,18 @@ function validateAddress(f: AddressInput, countryCode: string): FormErrors {
   if (!f.address1?.trim()) errors.address1 = "Address is required.";
   else if (f.address1.trim().length < 5) errors.address1 = "Enter a valid address.";
   if (!f.city?.trim()) errors.city = "City is required.";
-  if (!f.zip?.trim()) errors.zip = "Postcode is required.";
+  if (!f.zip?.trim()) {
+    errors.zip = "Postcode is required.";
+  } else {
+    const zipPattern = ZIP_PATTERNS[countryCode];
+    if (zipPattern && !zipPattern.regex.test(f.zip.trim())) {
+      errors.zip = zipPattern.hint;
+    }
+  }
   if (!f.country?.trim()) errors.country = "Country is required.";
-  if (f.phone?.trim()) {
+  if (!f.phone?.trim()) {
+    errors.phone = "Phone number is required.";
+  } else {
     try {
       if (!isValidPhoneNumber(f.phone.trim(), countryCode as CountryCode)) {
         errors.phone = "Enter a valid phone number for this country.";
@@ -123,6 +158,51 @@ function AddressForm({
     }
   }, [serverErrors]);
 
+  async function handleZipAutoFill() {
+    const trimmedZip = zip.trim();
+    if (!country || !trimmedZip) return;
+    // Skip if pattern exists and value is already invalid (saves a wasted request)
+    const pattern = ZIP_PATTERNS[country];
+    if (pattern && !pattern.regex.test(trimmedZip)) return;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+    try {
+      const res = await fetch(
+        `https://api.zippopotam.us/${country}/${encodeURIComponent(trimmedZip)}`,
+        { signal: controller.signal },
+      );
+      if (!res.ok) return;
+      const data = await res.json() as { places?: Array<{ "place name": string; state: string; "state abbreviation": string }> };
+      const place = data.places?.[0];
+      if (!place) return;
+
+      if (!city) setCity(place["place name"]);
+
+      const states = State.getStatesOfCountry(country);
+      if (states.length > 0 && !provinceCode) {
+        const match =
+          states.find((s) => s.isoCode === place["state abbreviation"]) ??
+          states.find((s) => s.name.toLowerCase() === place["state"].toLowerCase());
+        if (match) setProvinceCode(match.isoCode);
+      }
+    } catch {
+      // silent — network errors or aborts are expected
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  let phonePlaceholder = "Phone number";
+  if (country) {
+    try {
+      const ex = getExampleNumber(country as CountryCode, mobileExamples as unknown as Examples);
+      if (ex) phonePlaceholder = ex.formatNational();
+    } catch {
+      // unsupported country — keep default
+    }
+  }
+
   function handleBlur(field: keyof AddressInput) {
     setTouched((prev) => ({ ...prev, [field]: true }));
     const current: AddressInput = {
@@ -153,7 +233,7 @@ function AddressForm({
       setErrors(newErrors);
       setTouched({
         firstName: true, lastName: true, phone: true,
-        address1: true, city: true, zip: true, country: true,
+        address1: true, city: true, zip: true, country: true, province: true,
       });
       return;
     }
@@ -237,8 +317,10 @@ function AddressForm({
         <input
           id="addr-phone"
           type="tel"
+          required
           maxLength={20}
           autoComplete="tel"
+          placeholder={phonePlaceholder}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           onBlur={() => handleBlur("phone")}
@@ -421,7 +503,7 @@ function AddressForm({
           autoComplete="postal-code"
           value={zip}
           onChange={(e) => setZip(e.target.value)}
-          onBlur={() => handleBlur("zip")}
+          onBlur={() => { handleBlur("zip"); void handleZipAutoFill(); }}
           disabled={isPending}
           className={inputClass}
           aria-invalid={!!(touched.zip && errors.zip)}
