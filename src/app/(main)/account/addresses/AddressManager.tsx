@@ -315,8 +315,15 @@ export function AddressManager({ customer, countries }: Props) {
   function handleCreate(address: AddressInput) {
     startFormTransition(async () => {
       const result = await customerAddressCreate(address);
-      if (result.success) afterSuccess("Address added.");
-      else toast.error(result.error ?? "Failed to add address");
+      if (result.success) {
+        setFormServerErrors({});
+        afterSuccess("Address added.");
+      } else if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
+        setFormServerErrors(result.fieldErrors as FormErrors);
+        if (result.error) toast.error(result.error);
+      } else {
+        toast.error(result.error ?? "Failed to add address");
+      }
     });
   }
 
@@ -324,8 +331,15 @@ export function AddressManager({ customer, countries }: Props) {
     setPendingId(addressId);
     const result = await customerAddressUpdate(addressId, address);
     setPendingId(null);
-    if (result.success) afterSuccess("Address updated.");
-    else toast.error(result.error ?? "Failed to update address");
+    if (result.success) {
+      setFormServerErrors({});
+      afterSuccess("Address updated.");
+    } else if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
+      setFormServerErrors(result.fieldErrors as FormErrors);
+      if (result.error) toast.error(result.error);
+    } else {
+      toast.error(result.error ?? "Failed to update address");
+    }
   }
 
   async function handleDelete(addressId: string) {
