@@ -105,7 +105,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height-mobile)] sm:h-[var(--header-height)] bg-canvas">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] sm:h-[var(--header-height)] bg-canvas">
         <div className="h-full pl-5 border-b border-ink">
           {/* 2-column grid: logo left, nav+icons right */}
           <div className="h-full grid grid-cols-2 items-end ">
@@ -214,7 +214,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       closeCart();
                     } else {
                       openCart();
-                      closeMenu();
+                      if (isMobileMenuOpen) closeMenu();
                     }
                   }}
                   className="h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative"
@@ -262,7 +262,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between "
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between "
           aria-label="Mobile navigation"
         >
           <div>

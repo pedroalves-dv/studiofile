@@ -148,11 +148,8 @@
     --spacing-4xl: 5rem;
     --spacing-5xl: 6rem;
 
-    /* Header height */
-    --header-height: 3.5rem;
-
-    /* Header height Mobile */
-    --header-height-mobile: 4rem;
+    /* Header height (Mobile first) */
+    --header-height: 4rem;
 
     /* Footer height */
     --footer-height: 28rem;
@@ -163,7 +160,12 @@
     --duration-slow: 500ms;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   }
-
+  /* Dynamic sm+  Header height */
+  @media (min-width: 640px) {
+    :root {
+      --header-height: 3.5rem;
+    }
+  }
   /* Base styles */
   html {
     scroll-behavior: auto;

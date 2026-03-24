@@ -48,7 +48,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
   return createPortal(
     <div
-      className="fixed top-[var(--header-height-mobile)] sm:top-[var(--header-height)] inset-x-0 bottom-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      className="fixed top-[var(--header-height)] inset-x-0 bottom-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onOpenChange(false);
