@@ -118,7 +118,6 @@ function AddressForm({
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Partial<Record<keyof AddressInput, boolean>>>({});
-  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   useEffect(() => {
     if (serverErrors && Object.keys(serverErrors).length > 0) {
@@ -147,7 +146,6 @@ function AddressForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitAttempted(true);
     const trimmed: AddressInput = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -203,7 +201,7 @@ function AddressForm({
             <p
               id="addr-firstName-error"
               className="text-xs text-error font-mono mt-1"
-              role={submitAttempted ? "alert" : undefined}
+              role="alert"
             >
               {errors.firstName}
             </p>
@@ -230,7 +228,7 @@ function AddressForm({
             <p
               id="addr-lastName-error"
               className="text-xs text-error font-mono mt-1"
-              role={submitAttempted ? "alert" : undefined}
+              role="alert"
             >
               {errors.lastName}
             </p>
@@ -259,7 +257,7 @@ function AddressForm({
           <p
             id="addr-phone-error"
             className="text-xs text-error font-mono mt-1"
-            role={submitAttempted ? "alert" : undefined}
+            role="alert"
           >
             {errors.phone}
           </p>
@@ -288,7 +286,7 @@ function AddressForm({
           <p
             id="addr-address1-error"
             className="text-xs text-error font-mono mt-1"
-            role={submitAttempted ? "alert" : undefined}
+            role="alert"
           >
             {errors.address1}
           </p>
@@ -334,7 +332,7 @@ function AddressForm({
           <p
             id="addr-city-error"
             className="text-xs text-error font-mono mt-1"
-            role={submitAttempted ? "alert" : undefined}
+            role="alert"
           >
             {errors.city}
           </p>
@@ -365,7 +363,7 @@ function AddressForm({
           <p
             id="addr-country-error"
             className="text-xs text-error font-mono mt-1"
-            role={submitAttempted ? "alert" : undefined}
+            role="alert"
           >
             {errors.country}
           </p>
@@ -403,7 +401,7 @@ function AddressForm({
               <p
                 id="addr-province-error"
                 className="text-xs text-error font-mono mt-1"
-                role={submitAttempted ? "alert" : undefined}
+                role="alert"
               >
                 {errors.province}
               </p>
@@ -434,7 +432,7 @@ function AddressForm({
           <p
             id="addr-zip-error"
             className="text-xs text-error font-mono mt-1"
-            role={submitAttempted ? "alert" : undefined}
+            role="alert"
           >
             {errors.zip}
           </p>
