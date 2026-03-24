@@ -180,6 +180,7 @@ function AddressForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-lg">
+      {/* First name + Last name */}
       <div className="flex gap-4">
         <div className="flex flex-col gap-1.5 flex-1">
           <label htmlFor="addr-firstName" className={labelClass}>
@@ -188,12 +189,25 @@ function AddressForm({
           <input
             id="addr-firstName"
             type="text"
+            required
+            maxLength={100}
             autoComplete="given-name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            onBlur={() => handleBlur("firstName")}
             disabled={isPending}
             className={inputClass}
+            aria-describedby={touched.firstName && errors.firstName ? "addr-firstName-error" : undefined}
           />
+          {touched.firstName && errors.firstName && (
+            <p
+              id="addr-firstName-error"
+              className="text-xs text-error font-mono mt-1"
+              role={submitAttempted ? "alert" : undefined}
+            >
+              {errors.firstName}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-1.5 flex-1">
           <label htmlFor="addr-lastName" className={labelClass}>
@@ -202,15 +216,29 @@ function AddressForm({
           <input
             id="addr-lastName"
             type="text"
+            required
+            maxLength={100}
             autoComplete="family-name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            onBlur={() => handleBlur("lastName")}
             disabled={isPending}
             className={inputClass}
+            aria-describedby={touched.lastName && errors.lastName ? "addr-lastName-error" : undefined}
           />
+          {touched.lastName && errors.lastName && (
+            <p
+              id="addr-lastName-error"
+              className="text-xs text-error font-mono mt-1"
+              role={submitAttempted ? "alert" : undefined}
+            >
+              {errors.lastName}
+            </p>
+          )}
         </div>
       </div>
 
+      {/* Phone */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="addr-phone" className={labelClass}>
           Phone
@@ -218,14 +246,27 @@ function AddressForm({
         <input
           id="addr-phone"
           type="tel"
+          maxLength={20}
           autoComplete="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          onBlur={() => handleBlur("phone")}
           disabled={isPending}
           className={inputClass}
+          aria-describedby={touched.phone && errors.phone ? "addr-phone-error" : undefined}
         />
+        {touched.phone && errors.phone && (
+          <p
+            id="addr-phone-error"
+            className="text-xs text-error font-mono mt-1"
+            role={submitAttempted ? "alert" : undefined}
+          >
+            {errors.phone}
+          </p>
+        )}
       </div>
 
+      {/* Address line 1 */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="addr-address1" className={labelClass}>
           Address line 1
@@ -234,14 +275,27 @@ function AddressForm({
           id="addr-address1"
           type="text"
           required
+          maxLength={255}
           autoComplete="address-line1"
           value={address1}
           onChange={(e) => setAddress1(e.target.value)}
+          onBlur={() => handleBlur("address1")}
           disabled={isPending}
           className={inputClass}
+          aria-describedby={touched.address1 && errors.address1 ? "addr-address1-error" : undefined}
         />
+        {touched.address1 && errors.address1 && (
+          <p
+            id="addr-address1-error"
+            className="text-xs text-error font-mono mt-1"
+            role={submitAttempted ? "alert" : undefined}
+          >
+            {errors.address1}
+          </p>
+        )}
       </div>
 
+      {/* Address line 2 — no error */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="addr-address2" className={labelClass}>
           Address line 2 <span className="text-muted/50">(optional)</span>
@@ -249,6 +303,7 @@ function AddressForm({
         <input
           id="addr-address2"
           type="text"
+          maxLength={255}
           autoComplete="address-line2"
           value={address2}
           onChange={(e) => setAddress2(e.target.value)}
@@ -257,70 +312,136 @@ function AddressForm({
         />
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-1.5 flex-1">
-          <label htmlFor="addr-city" className={labelClass}>
-            City
-          </label>
-          <input
-            id="addr-city"
-            type="text"
-            required
-            autoComplete="address-level2"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            disabled={isPending}
-            className={inputClass}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5 flex-1">
-          <label htmlFor="addr-province" className={labelClass}>
-            Province / State
-          </label>
-          <input
-            id="addr-province"
-            type="text"
-            autoComplete="address-level1"
-            value={provinceCode}
-            onChange={(e) => setProvinceCode(e.target.value)}
-            disabled={isPending}
-            className={inputClass}
-          />
-        </div>
+      {/* City */}
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="addr-city" className={labelClass}>
+          City
+        </label>
+        <input
+          id="addr-city"
+          type="text"
+          required
+          maxLength={100}
+          autoComplete="address-level2"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          onBlur={() => handleBlur("city")}
+          disabled={isPending}
+          className={inputClass}
+          aria-describedby={touched.city && errors.city ? "addr-city-error" : undefined}
+        />
+        {touched.city && errors.city && (
+          <p
+            id="addr-city-error"
+            className="text-xs text-error font-mono mt-1"
+            role={submitAttempted ? "alert" : undefined}
+          >
+            {errors.city}
+          </p>
+        )}
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-1.5 flex-1">
-          <label htmlFor="addr-zip" className={labelClass}>
-            ZIP / Postcode
-          </label>
-          <input
-            id="addr-zip"
-            type="text"
-            autoComplete="postal-code"
-            value={zip}
-            onChange={(e) => setZip(e.target.value)}
-            disabled={isPending}
-            className={inputClass}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5 flex-1">
-          <label htmlFor="addr-country" className={labelClass}>
-            Country
-          </label>
-          <input
-            id="addr-country"
-            type="text"
-            required
-            autoComplete="country-name"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            disabled={isPending}
-            className={inputClass}
-          />
-        </div>
+      {/* Country select */}
+      <div className="flex flex-col gap-1.5 flex-1">
+        <label htmlFor="addr-country" className={labelClass}>
+          Country
+        </label>
+        <select
+          id="addr-country"
+          required
+          value={country}
+          onChange={(e) => { setCountry(e.target.value); setProvinceCode(""); }}
+          onBlur={() => handleBlur("country")}
+          disabled={isPending}
+          className={selectClass}
+          aria-describedby={touched.country && errors.country ? "addr-country-error" : undefined}
+        >
+          <option value="">Select a country</option>
+          {countries.map((c) => (
+            <option key={c.isoCode} value={c.isoCode}>{c.name}</option>
+          ))}
+        </select>
+        {touched.country && errors.country && (
+          <p
+            id="addr-country-error"
+            className="text-xs text-error font-mono mt-1"
+            role={submitAttempted ? "alert" : undefined}
+          >
+            {errors.country}
+          </p>
+        )}
       </div>
 
+      {/* Province / State — dependent select, only when country has provinces */}
+      {(() => {
+        const selectedCountry = countries.find((c) => c.isoCode === country);
+        if (!selectedCountry || selectedCountry.provinces.length === 0) return null;
+        return (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="addr-province" className={labelClass}>
+              Province / State
+            </label>
+            <select
+              id="addr-province"
+              value={provinceCode}
+              onChange={(e) => setProvinceCode(e.target.value)}
+              onBlur={() => handleBlur("province")}
+              disabled={isPending}
+              className={selectClass}
+              aria-describedby={
+                touched.province && errors.province ? "addr-province-error" : undefined
+              }
+            >
+              <option value="">Select a province</option>
+              {selectedCountry.provinces.map((p) => (
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            {touched.province && errors.province && (
+              <p
+                id="addr-province-error"
+                className="text-xs text-error font-mono mt-1"
+                role={submitAttempted ? "alert" : undefined}
+              >
+                {errors.province}
+              </p>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* ZIP / Postcode — full width, own row */}
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="addr-zip" className={labelClass}>
+          ZIP / Postcode
+        </label>
+        <input
+          id="addr-zip"
+          type="text"
+          required
+          maxLength={12}
+          autoComplete="postal-code"
+          value={zip}
+          onChange={(e) => setZip(e.target.value)}
+          onBlur={() => handleBlur("zip")}
+          disabled={isPending}
+          className={inputClass}
+          aria-describedby={touched.zip && errors.zip ? "addr-zip-error" : undefined}
+        />
+        {touched.zip && errors.zip && (
+          <p
+            id="addr-zip-error"
+            className="text-xs text-error font-mono mt-1"
+            role={submitAttempted ? "alert" : undefined}
+          >
+            {errors.zip}
+          </p>
+        )}
+      </div>
+
+      {/* Submit / Cancel */}
       <div className="flex gap-3 mt-2">
         <ArrowButton
           type="submit"
