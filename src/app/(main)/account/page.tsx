@@ -27,10 +27,9 @@ export default async function AccountPage() {
       <div className="px-5 section-height pt-[var(--header-height)] pb-12 grid grid-cols-1 sm:grid-cols-2 gap-12 lg:gap-20 items-start">
         {/* Header */}
         <div className="">
-          <div className="mb-12">
+          <div className="mb-4 pb-8 border-b border-ink -mx-5 px-5">
             {/* <p className="text-label font-body text-muted mb-2">My Account</p> */}
-            <h1 className="font-body font-semibold tracking-tighter text-6xl text-ink">
-              {/* Hello, {customer.firstName ?? customer.email}! */}
+            <h1 className="">
               <CustomerAvatar
                 firstName={customer.firstName}
                 lastName={customer.lastName}
@@ -40,8 +39,8 @@ export default async function AccountPage() {
           </div>
 
           {/* Nav tabs */}
-          <nav className="flex justify-between border-b border-stroke mb-10">
-            <span className="text-lg tracking-[-0.04em] font-body text-ink border-b-4 border-ink pb-3">
+          <nav className="flex justify-between border-b border-stroke mb-10 -mx-5 px-5">
+            <span className="text-lg tracking-[-0.04em] font-body text-ink border-b-4 border-ink pb-2">
               Overview
             </span>
             <Link

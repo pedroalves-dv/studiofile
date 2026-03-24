@@ -20,18 +20,22 @@ export function CustomerAvatar({
   if (size === "sm") {
     return (
       <div className="w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center flex-shrink-0">
-        <span className="font-body text-xs tracking-tight">{initials}</span>
+        <span className="font-body text-xs tracking-wide uppercase">
+          {initials}
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-4 mb-12">
+    <div className="flex items-center gap-4">
       <div className="w-12 h-12 rounded-full bg-ink text-white flex items-center justify-center flex-shrink-0">
-        <span className="font-body text-sm tracking-tight">{initials}</span>
+        <span className="font-body text-sm tracking-wide uppercase">
+          {initials}
+        </span>
       </div>
       <div>
-        <p className="font-body font-semibold tracking-tighter text-xl text-ink leading-tight">
+        <p className="font-body font-semibold tracking-tighter text-2xl text-ink leading-tight">
           {firstName} {lastName}
         </p>
         <p className="font-body text-sm text-muted tracking-tight">{email}</p>
