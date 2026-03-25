@@ -49,11 +49,15 @@ Update this file at the end of every session.
 | 11.3 | Header accent hover effects (logo slash + nav color shift) | ✅ Done |
 | 11.x | Mobile menu UX polish — interactions, drawer animations, dialog refinements | ✅ Done |
 | 11.x | Font stack consolidation + UI overhaul — removed experimental fonts, tightened type system | ✅ Done |
+| 11.x | Hero sticky columns — staggered image placeholders (bg-light/bg-lighter), sticky TOTEM title on scroll | ✅ Done |
 | 11.x | Account pages audit + layout refactor — prep for full site styling pass | 🔄 In Progress |
 | 11.4 | Shop + collection editorial layout, ProductCard redesign (outline on hover) | ⬜ Pending |
 | 11.x | Coming-soon page editorial rework — canvas aesthetic, parallax image section, logo-only header, LandingSignup re-skin | ✅ Done |
 
-**Phase 11 note:** 11.5 (PDP redesign) is intentionally skipped — the PDP will be replaced by the TOTEM configurator.
+**Phase 11 notes:**
+
+- Hero sticky columns are complete with placeholder color blocks. Real product/lifestyle images will be swapped in during a future phase.
+- 11.5 (PDP redesign) is intentionally skipped — the PDP will be replaced by the TOTEM configurator.
 
 ---
 
