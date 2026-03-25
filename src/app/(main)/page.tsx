@@ -14,15 +14,37 @@ export const metadata: Metadata = {
 // Hero Section
 function Hero() {
   return (
-    <section className="relative w-full min-h-dvh overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 flex">
-        <div className="relative flex-1 bg-accent"></div>
-        <div className="relative flex-1 bg-tamed"></div>
+    <section className="relative w-full min-h-dvh md:h-[300dvh]">
+      {/* Image columns — absolute, decorative, clipped at section boundary */}
+      <div aria-hidden="true" className="absolute inset-0 hidden md:flex overflow-hidden">
+        {/* Column 1 — md+, no offset */}
+        <div className="flex-1 flex flex-col">
+          {/* placeholder — swap for next/image */}
+          <div className="h-dvh w-full bg-light" />
+          <div className="h-dvh w-full bg-lighter" />
+          <div className="h-dvh w-full bg-light" />
+        </div>
+        {/* Column 2 — md+, staggered 50dvh */}
+        <div className="flex-1 flex flex-col pt-[50dvh]">
+          {/* placeholder — swap for next/image */}
+          <div className="h-dvh w-full bg-lighter" />
+          <div className="h-dvh w-full bg-light" />
+          <div className="h-dvh w-full bg-lighter" />
+        </div>
+        {/* Column 3 — xl+ only, staggered 100dvh */}
+        <div className="hidden xl:flex flex-1 flex-col pt-[100dvh]">
+          {/* placeholder — swap for next/image */}
+          <div className="h-dvh w-full bg-light" />
+          <div className="h-dvh w-full bg-lighter" />
+          <div className="h-dvh w-full bg-light" />
+        </div>
       </div>
 
-      {/* Foreground */}
-      <div className="relative z-10 w-full min-h-dvh">
+      {/* Mobile fallback background */}
+      <div className="absolute inset-0 md:hidden bg-light" />
+
+      {/* Sticky TOTEM — in normal document flow */}
+      <div className="sticky top-0 z-10">
         <HeroContent />
       </div>
     </section>
