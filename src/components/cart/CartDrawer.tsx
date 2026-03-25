@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { useCart } from "@/hooks/useCart";
 import { CartItem } from "./CartItem";
+// TotemCartGroup: preserved for future Storefront cart integration.
+// Currently unused — Totem checkout uses draft orders instead.
 import { TotemCartGroup } from "./TotemCartGroup";
 import { CartSummary } from "./CartSummary";
 import { DiscountInput } from "./DiscountInput";

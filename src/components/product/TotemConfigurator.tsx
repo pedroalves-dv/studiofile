@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronUp, ChevronDown, Trash2, Plus, RotateCcw } from "lucide-react";
+import { useToast } from "@/components/common/Toast";
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
@@ -27,6 +28,7 @@ const SHAPE_HEIGHTS: Record<string, number> = {
 type Mode = "build" | "presets";
 
 export function TotemConfigurator() {
+  const toast = useToast();
   const [pieces, setPieces] = useState<TotemPiece[]>([]);
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [fixationId, setFixationId] = useState(TOTEM_FIXATIONS[0].id);
@@ -124,13 +126,12 @@ export function TotemConfigurator() {
       });
       const data = (await res.json()) as { invoice_url?: string; error?: string };
       if (!res.ok || !data.invoice_url) {
-        console.error("[TotemConfigurator]", data.error ?? "Unknown error");
-        // TODO: surface error via toast before launch
+        toast.error("Unable to process order. Please try again.");
         return;
       }
       window.location.href = data.invoice_url;
-    } catch (err) {
-      console.error("[TotemConfigurator] checkout failed:", err);
+    } catch {
+      toast.error("Unable to process order. Please try again.");
     } finally {
       setIsAdding(false);
     }
@@ -461,7 +462,7 @@ export function TotemConfigurator() {
               disabled={pieces.length === 0 || isAdding}
               className="bg-ink text-canvas font-mono text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              {isAdding ? "Adding…" : "Add to cart"}
+              {isAdding ? "Ordering…" : "Order now"}
             </button>
           </div>
         </div>
