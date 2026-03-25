@@ -206,7 +206,7 @@ export const GET_CART = `
         subtotalAmount { amount currencyCode }
         totalAmount { amount currencyCode }
         totalTaxAmount { amount currencyCode }
-        totalDiscountAmount { amount currencyCode }
+     
       }
       lines(first: 100) {
         edges {

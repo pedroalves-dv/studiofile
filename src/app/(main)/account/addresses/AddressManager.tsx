@@ -12,16 +12,16 @@ import type { ShopifyCustomer, ShopifyAddress } from "@/lib/shopify/types";
 import type { AddressInput } from "@/lib/shopify/auth";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useToast } from "@/components/common/Toast";
-import { isValidPhoneNumber } from "libphonenumber-js/min";
+import { isValidPhoneNumber, getCountryCallingCode } from "libphonenumber-js/min";
 import type { CountryCode } from "libphonenumber-js/min";
-import { getExampleNumber } from "libphonenumber-js";
-import type { Examples } from "libphonenumber-js";
-// mobile/examples is a JS module — no resolveJsonModule needed
-import mobileExamples from "libphonenumber-js/mobile/examples";
 import type { LocalizationCountry } from "@/lib/shopify/types";
 import { State } from "country-state-city";
 
 type FormErrors = Partial<Record<keyof AddressInput, string>>;
+
+const COUNTRIES_WITHOUT_PROVINCES = new Set([
+  "FR", "DE", "IT", "ES", "NL", "BE", "PT", "AT", "CH", "SE", "NO", "DK", "FI", "PL", "CZ", "HU", "RO", "BG", "HR", "SK", "SI",
+]);
 
 const ZIP_PATTERNS: Record<string, { regex: RegExp; hint: string }> = {
   FR: { regex: /^\d{5}$/, hint: "Enter a valid French postcode (5 digits)" },
@@ -177,29 +177,29 @@ function AddressForm({
       const place = data.places?.[0];
       if (!place) return;
 
-      if (!city) setCity(place["place name"]);
+      if (!city) {
+        setCity(place["place name"]);
+        setErrors((prev) => ({ ...prev, city: undefined }));
+        setTouched((prev) => ({ ...prev, city: true }));
+      }
 
-      const states = State.getStatesOfCountry(country);
-      if (states.length > 0 && !provinceCode) {
-        const match =
-          states.find((s) => s.isoCode === place["state abbreviation"]) ??
-          states.find((s) => s.name.toLowerCase() === place["state"].toLowerCase());
-        if (match) setProvinceCode(match.isoCode);
+      if (!COUNTRIES_WITHOUT_PROVINCES.has(country)) {
+        const states = State.getStatesOfCountry(country);
+        if (states.length > 0 && !provinceCode) {
+          const match =
+            states.find((s) => s.isoCode === place["state abbreviation"]) ??
+            states.find((s) => s.name.toLowerCase() === place["state"].toLowerCase());
+          if (match) {
+            setProvinceCode(match.isoCode);
+            setErrors((prev) => ({ ...prev, province: undefined }));
+            setTouched((prev) => ({ ...prev, province: true }));
+          }
+        }
       }
     } catch {
       // silent — network errors or aborts are expected
     } finally {
       clearTimeout(timer);
-    }
-  }
-
-  let phonePlaceholder = "Phone number";
-  if (country) {
-    try {
-      const ex = getExampleNumber(country as CountryCode, mobileExamples as unknown as Examples);
-      if (ex) phonePlaceholder = ex.formatNational();
-    } catch {
-      // unsupported country — keep default
     }
   }
 
@@ -226,7 +226,7 @@ function AddressForm({
       city: city.trim(),
       zip: zip.trim(),
       country,   // code — validated here, converted below
-      province: provinceCode || undefined,
+      province: COUNTRIES_WITHOUT_PROVINCES.has(country) ? undefined : (provinceCode || undefined),
     };
     const newErrors = validateAddress(trimmed, country);
     if (Object.keys(newErrors).length > 0) {
@@ -241,9 +241,11 @@ function AddressForm({
     onSubmit({
       ...trimmed,
       country: lookupCountryName(country, countries),
-      province: provinceCode
-        ? lookupProvinceName(provinceCode, country)
-        : undefined,
+      province: COUNTRIES_WITHOUT_PROVINCES.has(country)
+        ? undefined
+        : provinceCode
+          ? lookupProvinceName(provinceCode, country)
+          : undefined,
     });
   }
 
@@ -310,35 +312,50 @@ function AddressForm({
       </div>
 
       {/* Phone */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="addr-phone" className={labelClass}>
-          Phone
-        </label>
-        <input
-          id="addr-phone"
-          type="tel"
-          required
-          maxLength={20}
-          autoComplete="tel"
-          placeholder={phonePlaceholder}
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          onBlur={() => handleBlur("phone")}
-          disabled={isPending}
-          className={inputClass}
-          aria-invalid={!!(touched.phone && errors.phone)}
-          aria-describedby={touched.phone && errors.phone ? "addr-phone-error" : undefined}
-        />
-        {touched.phone && errors.phone && (
-          <p
-            id="addr-phone-error"
-            className="text-xs text-error font-mono mt-1"
-            role="alert"
-          >
-            {errors.phone}
-          </p>
-        )}
-      </div>
+      {(() => {
+        let callingCode = "";
+        if (country) {
+          try { callingCode = "+" + getCountryCallingCode(country as CountryCode); } catch { /* ignore */ }
+        }
+        return (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="addr-phone" className={labelClass}>
+              Phone
+            </label>
+            <div className="flex gap-0">
+              {callingCode && (
+                <span className="flex items-center px-3 border border-r-0 border-stroke bg-canvas text-base text-muted select-none shrink-0">
+                  {callingCode}
+                </span>
+              )}
+              <input
+                id="addr-phone"
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                onBlur={() => handleBlur("phone")}
+                required
+                maxLength={20}
+                disabled={isPending}
+                placeholder="Phone number"
+                className={`${inputClass} ${callingCode ? "rounded-l-none" : ""}`}
+                aria-invalid={!!(touched.phone && errors.phone)}
+                aria-describedby={touched.phone && errors.phone ? "addr-phone-error" : undefined}
+              />
+            </div>
+            {touched.phone && errors.phone && (
+              <p
+                id="addr-phone-error"
+                className="text-xs text-error font-mono mt-1"
+                role="alert"
+              >
+                {errors.phone}
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Address line 1 */}
       <div className="flex flex-col gap-1.5">
@@ -451,8 +468,12 @@ function AddressForm({
 
       {/* Province / State — dependent select, only when country has provinces */}
       {(() => {
-        const states = country ? State.getStatesOfCountry(country) : [];
-        if (states.length === 0) return null;
+        const shouldShowProvince =
+          !!country &&
+          !COUNTRIES_WITHOUT_PROVINCES.has(country) &&
+          State.getStatesOfCountry(country).length > 0;
+        if (!shouldShowProvince) return null;
+        const states = State.getStatesOfCountry(country);
         return (
           <div className="flex flex-col gap-1.5">
             <label htmlFor="addr-province" className={labelClass}>

@@ -11,7 +11,7 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 
 | Layer      | Choice                                                |
 | ---------- | ----------------------------------------------------- |
-| Frontend   | Next.js 15 App Router, TypeScript                     |
+| Frontend   | Next.js 16 App Router, TypeScript                     |
 | Styling    | Tailwind CSS v3                                       |
 | Backend    | Shopify Storefront API (GraphQL)                      |
 | Animations | CSS transitions · `motion` v12 · View Transitions API |

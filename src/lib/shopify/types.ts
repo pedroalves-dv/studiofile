@@ -21,7 +21,7 @@ export interface ShopifyProductVariant {
   id: string;
   title: string;
   availableForSale: boolean;
-  quantityAvailable: number | null;  // null = inventory tracking disabled = treat as unlimited
+  quantityAvailable: number | null; // null = inventory tracking disabled = treat as unlimited
   selectedOptions: Array<{
     name: string;
     value: string;
@@ -76,7 +76,7 @@ export interface ShopifyCartMerchandise {
   id: string;
   title: string;
   availableForSale: boolean;
-  quantityAvailable: number | null;  // null = inventory tracking disabled
+  quantityAvailable: number | null; // null = inventory tracking disabled
   selectedOptions: Array<{ name: string; value: string }>;
   price: MoneyV2;
   compareAtPrice: MoneyV2 | null;
@@ -106,7 +106,6 @@ export interface ShopifyCart {
     subtotalAmount: MoneyV2;
     totalAmount: MoneyV2;
     totalTaxAmount: MoneyV2;
-    totalDiscountAmount: MoneyV2;
   };
   lines: ShopifyCartLine[];
   discountCodes: Array<{
@@ -227,9 +226,12 @@ export class ShopifyError extends Error {
   constructor(
     message: string,
     public statusCode?: number,
-    public errors?: Array<{ message: string; extensions?: Record<string, unknown> }>
+    public errors?: Array<{
+      message: string;
+      extensions?: Record<string, unknown>;
+    }>,
   ) {
     super(message);
-    this.name = 'ShopifyError';
+    this.name = "ShopifyError";
   }
 }

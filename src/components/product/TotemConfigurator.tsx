@@ -134,7 +134,7 @@ export function TotemConfigurator() {
       {/* ── Section A: Compound Viewer ── */}
 
       <div
-        className="border border-stroke col-span-2 cursor-default"
+        className="border border-ink rounded-md col-span-2 cursor-default"
         onClick={() => setSelectedUid(null)}
       >
         <div className="flex flex-col sm:flex-row sm:items-stretch">
@@ -184,7 +184,7 @@ export function TotemConfigurator() {
           {/* Right half — named list */}
           <div className="flex-1 divide-y divide-stroke">
             {pieces.length === 0 ? (
-              <p className="font-mono text-sm text-muted px-4 py-6">
+              <p className="font-body text-sm text-muted px-4 py-6">
                 Add shapes →
               </p>
             ) : (
@@ -205,10 +205,10 @@ export function TotemConfigurator() {
                     }}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-mono text-sm">
+                      <p className="font-body text-sm">
                         {shape?.name ?? piece.shapeId}
                       </p>
-                      <p className="font-mono text-xs text-muted">
+                      <p className="font-body text-xs text-muted">
                         {color?.name ?? piece.colorId}
                       </p>
                     </div>
@@ -260,8 +260,8 @@ export function TotemConfigurator() {
 
         <div className="border-t border-stroke px-4 py-3">
           {!selectedPiece && (
-            <p className="font-mono text-xs text-muted mb-2">
-              Select a piece to change its colour
+            <p className="font-body text-base tracking-tight text-muted mb-2">
+              Colors
             </p>
           )}
           <div
@@ -296,17 +296,17 @@ export function TotemConfigurator() {
         {/* ── Section C: Shape catalog with mode tabs ── */}
         <div className="flex flex-col gap-6">
           {/* Tab bar */}
-          <div className="flex gap-6 border-b border-stroke pb-px">
+          <div className="flex gap-2 pb-px">
             {(["build", "presets"] as Mode[]).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setMode(tab)}
                 className={cn(
-                  "font-mono text-xs uppercase tracking-wider pb-2 -mb-px border-b-2 transition-colors",
+                  "font-body text-base tracking-tight py-1 px-3 border rounded-md transition-colors",
                   mode === tab
                     ? "border-ink text-ink"
-                    : "border-transparent text-muted hover:text-ink",
+                    : "border-transparent text-light hover:text-ink",
                 )}
               >
                 {tab === "build" ? "Custom" : "Models"}
@@ -316,21 +316,19 @@ export function TotemConfigurator() {
 
           {/* Build your own tab */}
           {mode === "build" && (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-stroke">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-1">
               {TOTEM_SHAPES.map((shape) => (
                 <button
                   key={shape.id}
                   type="button"
                   aria-label={`Add ${shape.name}`}
                   onClick={() => addShape(shape.id)}
-                  className="group relative bg-canvas border border-stroke hover:border-ink transition-colors text-left flex flex-col"
+                  className="group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col"
                 >
-                  <div className="aspect-square w-full bg-stone-100 group-hover:bg-stone-200 transition-colors" />
+                  <div className="aspect-square w-full bg-light border-t border-light rounded-md group-hover:bg-muted transition-colors" />
                   <div className="px-3 py-2.5 flex items-end justify-between gap-2">
                     <div>
-                      <p className="font-mono text-sm uppercase">
-                        {shape.name}
-                      </p>
+                      <p className="font-body text-sm">{shape.name}</p>
                       <p className="font-mono text-xs text-muted">
                         €{shape.price}
                       </p>

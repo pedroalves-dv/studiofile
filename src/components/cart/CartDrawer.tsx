@@ -44,10 +44,10 @@ export function CartDrawer() {
         {/* Header */}
         <div className="flex items-center justify-between py-4 border-b border-stroke px-5">
           <h2 className="text-lg font-medium text-ink tracking-[-0.03em] leading-tight">
-            Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
+            Shopping Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
           </h2>
           <button onClick={closeCart} aria-label="Close cart">
-            <X size={20} />
+            <X size={28} />
           </button>
         </div>
 

@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         />
         <ProductViewTracker handle={product.handle} />
         <ProductViewEvent handle={product.handle} title={product.title} />
-        <div className="container-wide py-8 md:py-10">
+        <div className="container-wide section-centered">
           <TotemConfigurator />
         </div>
       </>

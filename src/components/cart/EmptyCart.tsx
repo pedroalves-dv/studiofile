@@ -11,17 +11,15 @@ export function EmptyCart() {
     <div className="flex flex-col h-full gap-6 pb-24">
       {/* <ShoppingBag size={48} className="text-light" /> */}
       <div className="py-4">
-        <p className="font-inter font-medium tracking-tighter text-7xl leading-none">
+        <p className="text-7xl font-body font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
           Your cart is empty
         </p>
         {/* <p className="font-mono text-light mt-4">Add something beautiful.</p> */}
       </div>
       <ArrowButton
-        href="/shop"
+        href="/products/totem"
         label="Shop"
-        className="h-12 w-28 px-8 py-3 bg-ink text-white text-xs 
-                          tracking-display font-mono rounded-xl flex items-center 
-                          justify-center self-start "
+        className="mt-4 px-8 py-2.5 bg-white text-ink text-lg font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink justify-center w-fit disabled:opacity-50"
       />
     </div>
   );

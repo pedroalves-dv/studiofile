@@ -2,6 +2,9 @@
   "name": "studiofile",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
     "build": "next build",
@@ -25,7 +28,7 @@
     "libphonenumber-js": "^1.12.40",
     "lucide-react": "^0.408.0",
     "motion": "^12.37.0",
-    "next": "^15.0.0",
+    "next": "^16.2.1",
     "postcss": "^8.4.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
@@ -42,7 +45,7 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^25.3.5",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "15.0.0"
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.2.1"
   }
 }
