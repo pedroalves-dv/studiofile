@@ -1,15 +1,16 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
 
-  // SVG as React components
-  webpack(config: any) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"],
-    });
-    return config;
+  // SVG as React components (Turbopack config)
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
   },
 
   // Image optimization for Shopify CDN
@@ -25,37 +26,23 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // View transitions for smooth page transitions
   experimental: {
     viewTransition: true,
   },
 
-  // Security headers
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          {
-            key: "X-DNS-Prefetch-Control",
-            value: "on",
-          },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
         ],
       },
     ];
@@ -68,13 +55,8 @@ const nextConfig = {
     ];
   },
 
-  // Rewrites (example)
   async rewrites() {
-    return {
-      beforeFiles: [],
-      afterFiles: [],
-      fallback: [],
-    };
+    return { beforeFiles: [], afterFiles: [], fallback: [] };
   },
 };
 
