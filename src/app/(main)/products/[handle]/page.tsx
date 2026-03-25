@@ -9,7 +9,6 @@ import { ProductViewTracker } from "@/components/product/ProductViewTracker";
 import { ProductViewEvent } from "@/components/product/ProductViewEvent";
 import { ImageGalleryWithZoomClient } from "@/components/product/ImageGalleryWithZoom";
 import { ImageZoomGallery } from "@/components/product/ImageZoomGallery";
-import { TotemConfigurator } from "@/components/product/TotemConfigurator";
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>;
@@ -57,22 +56,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       url: `${SITE_URL}/products/${handle}`,
     },
   };
-
-  if (handle === "totem") {
-    return (
-      <>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <ProductViewTracker handle={product.handle} />
-        <ProductViewEvent handle={product.handle} title={product.title} />
-        <div className="container-wide section-centered">
-          <TotemConfigurator />
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
