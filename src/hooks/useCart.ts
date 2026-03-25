@@ -13,13 +13,6 @@ import {
 } from '@/lib/shopify/cart';
 import { useToast } from '@/components/common/Toast';
 import type { MoneyV2, ShopifyCart } from '@/lib/shopify/types';
-import {
-  type TotemBuildConfig,
-  TOTEM_SHAPES,
-  TOTEM_COLORS,
-  TOTEM_FIXATIONS,
-  TOTEM_CABLES,
-} from '@/lib/totem-config';
 
 export function useCart() {
   const { state, dispatch, cartIconRef } = useCartContext();
@@ -127,65 +120,6 @@ export function useCart() {
     }
   };
 
-  const addBundle = async (config: TotemBuildConfig) => {
-    dispatch({ type: 'SET_LOADING', loading: true });
-    try {
-      const buildId = 'build_' + Math.random().toString(36).slice(2, 10);
-      // TODO: replace with per-shape variant IDs once Shopify products are created
-      const variantId = process.env.NEXT_PUBLIC_TOTEM_VARIANT_ID ?? 'TOTEM_VARIANT_PLACEHOLDER';
-
-      const lines = [
-        // One line per piece
-        ...config.pieces.map((piece) => {
-          const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
-          const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
-          return {
-            merchandiseId: variantId,
-            quantity: 1,
-            attributes: [
-              { key: '_build_id', value: buildId },
-              { key: 'Shape', value: shape?.name ?? piece.shapeId },
-              { key: 'Color', value: color?.name ?? piece.colorId },
-            ],
-          };
-        }),
-        // Fixation line
-        {
-          merchandiseId: variantId,
-          quantity: 1,
-          attributes: [
-            { key: '_build_id', value: buildId },
-            { key: 'Fixation', value: TOTEM_FIXATIONS.find((f) => f.id === config.fixationId)?.name ?? config.fixationId },
-          ],
-        },
-        // Cable line
-        {
-          merchandiseId: variantId,
-          quantity: 1,
-          attributes: [
-            { key: '_build_id', value: buildId },
-            { key: 'Cable', value: TOTEM_CABLES.find((c) => c.id === config.cableId)?.name ?? config.cableId },
-          ],
-        },
-      ];
-
-      let updatedCart: ShopifyCart;
-      if (state.cartId) {
-        updatedCart = await addToCart(state.cartId, lines);
-      } else {
-        updatedCart = await createCart(lines);
-      }
-      dispatch({ type: 'SET_CART', cart: updatedCart });
-      toast.success('TOTEM added to cart');
-      openCart();
-      track('AddToCart', { productHandle: 'totem', pieces: config.pieces.length });
-    } catch {
-      toast.error('Failed to add to cart. Please try again.');
-    } finally {
-      dispatch({ type: 'SET_LOADING', loading: false });
-    }
-  };
-
   const isItemInCart = (variantId: string): boolean => {
     if (!cart) return false;
     return cart.lines.some((line) => line.merchandise.id === variantId);
@@ -207,7 +141,6 @@ export function useCart() {
     openCart,
     closeCart,
     addItem,
-    addBundle,
     updateItem,
     removeItem,
     applyDiscount,

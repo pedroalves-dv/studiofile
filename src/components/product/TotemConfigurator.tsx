@@ -11,7 +11,6 @@ import {
   calcTotemPrice,
   type TotemPiece,
 } from "@/lib/totem-config";
-import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils/cn";
 
 const SHAPE_HEIGHTS: Record<string, number> = {
@@ -28,8 +27,6 @@ const SHAPE_HEIGHTS: Record<string, number> = {
 type Mode = "build" | "presets";
 
 export function TotemConfigurator() {
-  const { addBundle } = useCart();
-
   const [pieces, setPieces] = useState<TotemPiece[]>([]);
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
   const [fixationId, setFixationId] = useState(TOTEM_FIXATIONS[0].id);
@@ -116,15 +113,28 @@ export function TotemConfigurator() {
     setMode("build");
   }
 
-  async function handleAddToCart() {
-    if (pieces.length === 0 || isAdding) return;
+  const handleAddToCart = async () => {
+    if (pieces.length === 0) return;
     setIsAdding(true);
-    await addBundle({ pieces, fixationId, cableId });
-    setPieces([]);
-    setSelectedUid(null);
-    setMode("build");
-    setIsAdding(false);
-  }
+    try {
+      const res = await fetch("/api/totem-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pieces, fixationId, cableId }),
+      });
+      const data = (await res.json()) as { invoice_url?: string; error?: string };
+      if (!res.ok || !data.invoice_url) {
+        console.error("[TotemConfigurator]", data.error ?? "Unknown error");
+        // TODO: surface error via toast before launch
+        return;
+      }
+      window.location.href = data.invoice_url;
+    } catch (err) {
+      console.error("[TotemConfigurator] checkout failed:", err);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   const totalPrice = calcTotemPrice({ pieces, fixationId, cableId });
   const selectedPiece = pieces.find((p) => p.uid === selectedUid);
