@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   ChevronUp,
   ChevronDown,
@@ -11,6 +12,7 @@ import {
   ZoomOut,
   Maximize2,
   ChevronRight,
+  GripVertical,
 } from "lucide-react";
 
 import { useToast } from "@/components/common/Toast";
@@ -52,11 +54,110 @@ export function TotemConfigurator() {
   const [draggedUid, setDraggedUid] = useState<string | null>(null);
   const [zoomIdx, setZoomIdx] = useState(DEFAULT_ZOOM_IDX);
   const [showList, setShowList] = useState(true);
+  const [pendingPresetId, setPendingPresetId] = useState<string | null>(null);
 
-  // Ref on the outer viewer box — used to intercept all wheel events inside it
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Ref on the outer viewer box
   const viewerRef = useRef<HTMLDivElement>(null);
   // Ref on the visual panel so we can measure its height for fit-to-viewer
   const visualPanelRef = useRef<HTMLDivElement>(null);
+  // Drag ghost refs
+  const ghostRef = useRef<HTMLDivElement>(null);
+  const dragImageRef = useRef<HTMLDivElement>(null);
+
+  // Apply data-lenis-prevent only on desktop (sm+) so mobile can scroll past the viewer
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    const mq = window.matchMedia("(min-width: 640px)");
+    const sync = () => {
+      if (mq.matches) viewer.setAttribute("data-lenis-prevent", "");
+      else viewer.removeAttribute("data-lenis-prevent");
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  // Touch drag-to-reorder (mobile) — shared between visual shapes and list items
+  const touchDragRef = useRef<string | null>(null);
+
+  const updateGhost = useCallback(
+    (uid: string, x: number, y: number) => {
+      const el = ghostRef.current;
+      if (!el) return;
+      const piece = pieces.find((p) => p.uid === uid);
+      const shape = TOTEM_SHAPES.find((s) => s.id === piece?.shapeId);
+      const color = TOTEM_COLORS.find((c) => c.id === piece?.colorId);
+      const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
+      const label = el.querySelector("[data-label]") as HTMLElement | null;
+      if (swatch) swatch.style.backgroundColor = color?.hex ?? "#F2F0EB";
+      if (label) label.textContent = shape?.name ?? piece?.shapeId ?? "";
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.display = "flex";
+    },
+    [pieces],
+  );
+
+  const hideGhost = useCallback(() => {
+    if (ghostRef.current) ghostRef.current.style.display = "none";
+  }, []);
+
+  const startTouchDrag = useCallback(
+    (uid: string, touch?: { clientX: number; clientY: number }) => {
+      touchDragRef.current = uid;
+      setDraggedUid(uid);
+      if (touch) updateGhost(uid, touch.clientX, touch.clientY);
+    },
+    [updateGhost],
+  );
+
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer || !draggedUid || !touchDragRef.current) return;
+
+    const onMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      // Move ghost to follow finger
+      const ghost = ghostRef.current;
+      if (ghost) {
+        ghost.style.left = `${touch.clientX}px`;
+        ghost.style.top = `${touch.clientY}px`;
+      }
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const target = el?.closest("[data-uid]") as HTMLElement | null;
+      const targetUid = target?.dataset.uid;
+      if (targetUid && targetUid !== touchDragRef.current) {
+        setPieces((prev) => {
+          const next = [...prev];
+          const dIdx = next.findIndex((p) => p.uid === touchDragRef.current);
+          const tIdx = next.findIndex((p) => p.uid === targetUid);
+          if (dIdx === -1 || tIdx === -1) return prev;
+          [next[dIdx], next[tIdx]] = [next[tIdx], next[dIdx]];
+          return next;
+        });
+      }
+    };
+
+    const onEnd = () => {
+      touchDragRef.current = null;
+      setDraggedUid(null);
+      hideGhost();
+    };
+
+    viewer.addEventListener("touchmove", onMove, { passive: false });
+    viewer.addEventListener("touchend", onEnd);
+    viewer.addEventListener("touchcancel", onEnd);
+    return () => {
+      viewer.removeEventListener("touchmove", onMove);
+      viewer.removeEventListener("touchend", onEnd);
+      viewer.removeEventListener("touchcancel", onEnd);
+    };
+  }, [draggedUid, hideGhost]);
 
   const zoom = ZOOM_STEPS[zoomIdx];
 
@@ -135,7 +236,6 @@ export function TotemConfigurator() {
     setFixationId(preset.fixationId);
     setCableId(preset.cableId);
     setSelectedUid(null);
-    setMode("build");
   }
 
   // Snaps to the closest ZOOM_STEPS entry that makes the full stack fit the panel
@@ -191,22 +291,26 @@ export function TotemConfigurator() {
   const selectedPiece = pieces.find((p) => p.uid === selectedUid);
 
   return (
-    <div className="flex flex-col gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
+    <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
+      {/* ── Product title — mobile only, above viewer ── */}
+      <h1 className="sm:hidden text-left text-6xl font-display tracking-[-0.04em] leading-[4rem] whitespace-nowrap mb-4">
+        TOTEM
+      </h1>
+
       {/* ── Section A: Viewer + Panels ── */}
       <div
         ref={viewerRef}
-        data-lenis-prevent
-        className="bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[500px] sm:h-[680px]"
+        className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[500px] sm:h-[680px] mb-6"
         onClick={() => setSelectedUid(null)}
       >
         {/* Inner row: visual panel + list panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
           {/* ── Left: visual stack ── */}
           {/* Outer wrapper: not scrollable, anchors the zoom buttons */}
-          <div className="relative flex-1 min-h-0 border-b sm:border-b-0 sm:border-r border-stroke">
+          <div className="relative flex-1 min-h-0 sm:border-r border-stroke">
             {/* Zoom controls — always visible, outside scroll container */}
             <div
-              className="absolute top-2 left-2 flex items-center gap-2 z-10"
+              className="absolute top-2 left-2 flex flex-col gap-1 z-10"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -253,6 +357,9 @@ export function TotemConfigurator() {
                   style={{ gap: 4 * zoom }}
                 >
                   {pieces.map((piece) => {
+                    const shape = TOTEM_SHAPES.find(
+                      (s) => s.id === piece.shapeId,
+                    );
                     const color = TOTEM_COLORS.find(
                       (c) => c.id === piece.colorId,
                     );
@@ -261,10 +368,32 @@ export function TotemConfigurator() {
                     return (
                       <div
                         key={piece.uid}
+                        data-uid={piece.uid}
                         draggable
-                        onDragStart={() => setDraggedUid(piece.uid)}
+                        onDragStart={(e) => {
+                          setDraggedUid(piece.uid);
+                          if (dragImageRef.current) {
+                            const el = dragImageRef.current;
+                            const swatch = el.querySelector(
+                              "[data-swatch]",
+                            ) as HTMLElement | null;
+                            const label = el.querySelector(
+                              "[data-label]",
+                            ) as HTMLElement | null;
+                            if (swatch)
+                              swatch.style.backgroundColor =
+                                color?.hex ?? "#F2F0EB";
+                            if (label)
+                              label.textContent = shape?.name ?? piece.shapeId;
+                            e.dataTransfer.setDragImage(el, 40, 20);
+                          }
+                        }}
+                        onDragEnd={() => setDraggedUid(null)}
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={() => handleDrop(piece.uid)}
+                        onTouchStart={(e) =>
+                          startTouchDrag(piece.uid, e.touches[0])
+                        }
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedUid(isSelected ? null : piece.uid);
@@ -292,7 +421,7 @@ export function TotemConfigurator() {
           {/* ── Right: named list ── */}
           <div
             className={cn(
-              "flex-shrink-0 flex flex-col border-l border-stroke transition-all duration-200",
+              "flex-shrink-0 flex flex-col min-h-0 border-l border-stroke transition-all duration-200",
               showList ? "w-fit" : "w-fit",
             )}
           >
@@ -319,7 +448,10 @@ export function TotemConfigurator() {
 
             {/* Collapsible list */}
             {showList && (
-              <div className="flex-1 overflow-y-auto">
+              <div
+                className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
+                data-lenis-prevent-touch
+              >
                 {pieces.length === 0 ? (
                   <p className="font-body text-sm text-muted px-4 py-4">
                     Add shapes →
@@ -336,9 +468,36 @@ export function TotemConfigurator() {
                     return (
                       <div
                         key={piece.uid}
+                        data-uid={piece.uid}
+                        draggable
+                        onDragStart={(e) => {
+                          setDraggedUid(piece.uid);
+                          if (dragImageRef.current) {
+                            const el = dragImageRef.current;
+                            const swatch = el.querySelector(
+                              "[data-swatch]",
+                            ) as HTMLElement | null;
+                            const labelEl = el.querySelector(
+                              "[data-label]",
+                            ) as HTMLElement | null;
+                            if (swatch)
+                              swatch.style.backgroundColor =
+                                color?.hex ?? "#F2F0EB";
+                            if (labelEl)
+                              labelEl.textContent =
+                                shape?.name ?? piece.shapeId;
+                            e.dataTransfer.setDragImage(el, 40, 20);
+                          }
+                        }}
+                        onDragEnd={() => setDraggedUid(null)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleDrop(piece.uid)}
                         className={cn(
-                          "flex items-center gap-2 px-3 py-4 cursor-pointer transition-colors border-b-4",
-                          isSelected ? "bg-lighter" : "hover:bg-lighter",
+                          "flex items-center gap-3 sm:gap-2 px-2 sm:px-3 py-4 cursor-pointer transition-colors border-b-4",
+                          isSelected
+                            ? "bg-lighter"
+                            : "[@media(hover:hover)]:hover:bg-lighter",
+                          draggedUid === piece.uid && "opacity-50",
                         )}
                         style={{ borderBottomColor: color?.hex ?? "#E5E0D8" }}
                         onClick={(e) => {
@@ -346,7 +505,18 @@ export function TotemConfigurator() {
                           setSelectedUid(isSelected ? null : piece.uid);
                         }}
                       >
-                        <p className="font-body hidden sm:block sm:text-sm flex-1 min-w-0 truncate">
+                        {/* Drag handle */}
+                        <div
+                          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none text-light"
+                          onTouchStart={(e) => {
+                            e.stopPropagation();
+                            startTouchDrag(piece.uid, e.touches[0]);
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <GripVertical size={14} />
+                        </div>
+                        <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
                           {shape?.name ?? piece.shapeId}
                         </p>
                         <div
@@ -354,12 +524,13 @@ export function TotemConfigurator() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="flex items-center gap-2">
+                            {/* Chevrons hidden on mobile — use drag handle instead */}
                             <button
                               type="button"
                               aria-label="Move piece up"
                               disabled={idx === 0}
                               onClick={() => moveUp(piece.uid)}
-                              className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              className="hidden sm:block p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                             >
                               <ChevronUp size={12} />
                             </button>
@@ -368,7 +539,7 @@ export function TotemConfigurator() {
                               aria-label="Move piece down"
                               disabled={idx === pieces.length - 1}
                               onClick={() => moveDown(piece.uid)}
-                              className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              className="hidden sm:block p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                             >
                               <ChevronDown size={12} />
                             </button>
@@ -398,6 +569,39 @@ export function TotemConfigurator() {
             )}
           </div>
         </div>
+
+        {/* ── Preset confirmation overlay ── */}
+        {pendingPresetId && (
+          <div
+            className="absolute inset-0 z-20 flex items-center justify-center bg-white/90 backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center gap-4 px-6 text-center">
+              <p className="font-body text-sm text-ink">
+                This will replace your current build.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPendingPresetId(null)}
+                  className="font-body text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    applyPreset(pendingPresetId);
+                    setPendingPresetId(null);
+                  }}
+                  className="font-body text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
+                >
+                  Replace
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Color picker — always pinned at bottom ── */}
         <div className="flex-shrink-0 border-t border-stroke px-4 py-3">
@@ -434,7 +638,7 @@ export function TotemConfigurator() {
 
       {/* ── Section C: Shape catalog with mode tabs ── */}
       <div className="flex flex-col gap-6">
-        <h1 className="text-left text-6xl sm:text-8xl font-display tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap pb-4">
+        <h1 className="hidden sm:block text-left sm:text-8xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
           TOTEM
         </h1>
         <div className="flex flex-col gap-6">
@@ -488,7 +692,7 @@ export function TotemConfigurator() {
 
           {/* Ready-made presets tab */}
           {mode === "presets" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-stroke">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {TOTEM_PRESETS.map((preset) => {
                 const presetPrice = calcTotemPrice({
                   pieces: preset.pieces.map((p) => ({
@@ -503,11 +707,13 @@ export function TotemConfigurator() {
                 return (
                   <div
                     key={preset.id}
-                    className="bg-canvas border border-stroke flex flex-col gap-3 p-4"
+                    className="bg-white border border-stroke rounded-md flex flex-col gap-3 p-4"
                   >
                     <div>
-                      <h3 className="font-display text-lg">{preset.name}</h3>
-                      <p className="font-mono text-xs text-muted mt-0.5">
+                      <h3 className="font-body font-bold tracking-tight text-lg">
+                        {preset.name}
+                      </h3>
+                      <p className="font-body text-xs text-muted mt-0.5">
                         {preset.description}
                       </p>
                     </div>
@@ -529,10 +735,16 @@ export function TotemConfigurator() {
                       <p className="font-mono text-sm">€{presetPrice}</p>
                       <button
                         type="button"
-                        onClick={() => applyPreset(preset.id)}
-                        className="font-mono text-xs border border-stroke px-3 py-1.5 hover:border-ink transition-colors"
+                        onClick={() => {
+                          if (pieces.length > 0) {
+                            setPendingPresetId(preset.id);
+                          } else {
+                            applyPreset(preset.id);
+                          }
+                        }}
+                        className="font-body text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
                       >
-                        Use this
+                        Use
                       </button>
                     </div>
                   </div>
@@ -546,13 +758,13 @@ export function TotemConfigurator() {
         <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="font-mono text-xs uppercase tracking-wider text-muted">
+              <label className="font-body text-sm tracking-tight text-muted">
                 Fixation
               </label>
               <select
                 value={fixationId}
                 onChange={(e) => setFixationId(e.target.value)}
-                className="font-mono text-sm border border-stroke bg-canvas text-ink px-3 py-2 focus:outline-none focus:border-ink"
+                className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
               >
                 {TOTEM_FIXATIONS.map((f) => (
                   <option key={f.id} value={f.id}>
@@ -562,13 +774,13 @@ export function TotemConfigurator() {
               </select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-mono text-xs uppercase tracking-wider text-muted">
+              <label className="font-body text-sm tracking-tight text-muted">
                 Cable
               </label>
               <select
                 value={cableId}
                 onChange={(e) => setCableId(e.target.value)}
-                className="font-mono text-sm border border-stroke bg-canvas text-ink px-3 py-2 focus:outline-none focus:border-ink"
+                className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
               >
                 {TOTEM_CABLES.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -583,7 +795,7 @@ export function TotemConfigurator() {
             <div>
               <p className="font-mono text-2xl text-ink">€{totalPrice}</p>
               {pieces.length > 0 && (
-                <p className="font-mono text-xs text-muted mt-0.5">
+                <p className="font-body text-xs text-muted mt-0.5">
                   {pieces.length} piece{pieces.length === 1 ? "" : "s"}
                 </p>
               )}
@@ -592,16 +804,16 @@ export function TotemConfigurator() {
               type="button"
               onClick={handleAddToCart}
               disabled={pieces.length === 0 || isAdding}
-              className="bg-ink text-canvas font-mono text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
             >
-              {isAdding ? "Ordering…" : "Order now"}
+              {isAdding ? "Adding to Cart…" : "Add to Cart"}
             </button>
           </div>
 
           {/* ── Description ── */}
           <div className="flex flex-col gap-4 border-t border-stroke pt-6">
-            <h2 className="font-display text-xs uppercase tracking-widest text-muted">
-              About
+            <h2 className="font-body text-3xl font-medium tracking-tighter text-ink">
+              TOTEM - Modular Lamp
             </h2>
             <p className="font-body text-sm text-ink leading-relaxed">
               TOTEM is a modular lighting object built from stackable geometric
@@ -631,6 +843,34 @@ export function TotemConfigurator() {
           </div>
         </div>
       </div>
+
+      {/* Off-screen element used by setDragImage for desktop drag */}
+      {mounted &&
+        createPortal(
+          <div
+            ref={dragImageRef}
+            className="fixed flex items-center gap-2 font-body text-xs text-ink bg-white px-3 py-1.5 border border-stroke shadow-sm pointer-events-none"
+            style={{ top: -9999, left: -9999, zIndex: -1 }}
+          >
+            <span data-swatch className="w-3 h-3 flex-shrink-0" />
+            <span data-label />
+          </div>,
+          document.body,
+        )}
+
+      {/* Touch drag ghost — positioned via ref, hidden by default */}
+      {mounted &&
+        createPortal(
+          <div
+            ref={ghostRef}
+            className="fixed z-50 pointer-events-none flex items-center gap-2 font-body text-xs text-ink bg-white/90 backdrop-blur-sm px-3 py-1.5 border border-stroke shadow-sm"
+            style={{ display: "none", transform: "translate(-50%, -120%)" }}
+          >
+            <span data-swatch className="w-3 h-3 flex-shrink-0" />
+            <span data-label />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
