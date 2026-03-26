@@ -16,8 +16,8 @@ export default async function AccountLayout({
   if (!customer) redirect("/account/login");
 
   return (
-    <div className="px-5 pt-[var(--header-height)]">
-      <div className="-mx-5 px-5 pb-4 mb-2 border-b border-stroke">
+    <div className="px-5 pt-12 sm:pt-[var(--header-height)]">
+      <div className="-mx-5 px-5 pb-6 mb-2 border-b border-stroke">
         <CustomerAvatar
           firstName={customer.firstName}
           lastName={customer.lastName}

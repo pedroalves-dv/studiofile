@@ -222,8 +222,7 @@ export function ContactForm() {
         type="submit"
         label={submitting ? "Sending…" : "Send message"}
         disabled={submitting}
-        className="w-full py-2.5 bg-ink text-canvas font-body tracking-wide
-         text-base rounded-lg border border-white"
+        className="w-full mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md  border border-ink  disabled:opacity-50"
       />
     </form>
   );

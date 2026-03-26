@@ -17,9 +17,9 @@ export function EmptyCart() {
         {/* <p className="font-mono text-light mt-4">Add something beautiful.</p> */}
       </div>
       <ArrowButton
-        href="/products/totem"
+        href="/shop"
         label="Shop"
-        className="mt-4 px-8 py-2.5 bg-white text-ink text-lg font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink justify-center w-fit disabled:opacity-50"
+        className="w-fit px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md border border-ink disabled:opacity-50"
       />
     </div>
   );

@@ -58,12 +58,12 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="">
+    <main id="main-content" className="px-5 section-height ">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="border-b border-stroke section-height pt-[var(--header-height)] sm:pt-0 pb-12">
-        <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <section className="border-b border-stroke pb-12 sm:-mr-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
-          <div className="space-y-6 md:sticky md:top-28 ">
+          <div className="pt-12 sm:pt-[var(--header-height)] space-y-6 md:sticky md:top-0">
             {/* Left — info */}
 
             <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
@@ -184,10 +184,7 @@ export default function AboutPage() {
           <ArrowButton
             href="/shop"
             label="Shop"
-            glowColor="var(--color-black)"
-            className="mt-12 h-12 w-24 px-8 py-3 bg-ink text-white text-xs 
-                    tracking-display font-mono rounded-xl flex items-center 
-                    justify-center self-start mx-auto"
+            className="w-fit mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md  border border-ink  disabled:opacity-50"
           />
         </div>
       </section>

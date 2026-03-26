@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main id="main-content" className="px-6 section-height tracking-tight">
-      <section className=" pt-[var(--header-height)]">
+    <main id="main-content" className="px-5 section-height tracking-tight">
+      <section className="pt-12 sm:pt-[var(--header-height)]">
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
           <div className="space-y-6 md:sticky md:top-28">
@@ -36,7 +36,7 @@ export default function ContactPage() {
             </div>
             <div className="">
               <p className="text-light mb-1">Based in</p>
-              <p className="text-ink">Paris, FR</p>
+              <p className="text-ink">Paris, France (GMT +01:00)</p>
             </div>
             <div className="">
               <p className="text-light mb-1">Response time</p>

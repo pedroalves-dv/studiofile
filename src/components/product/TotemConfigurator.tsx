@@ -1,7 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronUp, ChevronDown, Trash2, Plus, RotateCcw } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Plus,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  ChevronRight,
+} from "lucide-react";
+
 import { useToast } from "@/components/common/Toast";
 import {
   TOTEM_SHAPES,
@@ -25,6 +36,9 @@ const SHAPE_HEIGHTS: Record<string, number> = {
   prism: 52,
 };
 
+const ZOOM_STEPS = [0.5, 0.65, 0.8, 1.0, 1.2, 1.4];
+const DEFAULT_ZOOM_IDX = 3;
+
 type Mode = "build" | "presets";
 
 export function TotemConfigurator() {
@@ -36,6 +50,30 @@ export function TotemConfigurator() {
   const [isAdding, setIsAdding] = useState(false);
   const [mode, setMode] = useState<Mode>("build");
   const [draggedUid, setDraggedUid] = useState<string | null>(null);
+  const [zoomIdx, setZoomIdx] = useState(DEFAULT_ZOOM_IDX);
+  const [showList, setShowList] = useState(true);
+
+  // Ref on the visual panel so we can measure its height for fit-to-viewer
+  const visualPanelRef = useRef<HTMLDivElement>(null);
+
+  // Capture wheel events inside the viewer so they scroll the panel, not the page
+  useEffect(() => {
+    const el = visualPanelRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const canDown = scrollTop + clientHeight < scrollHeight - 1;
+      const canUp = scrollTop > 0;
+      if ((e.deltaY > 0 && canDown) || (e.deltaY < 0 && canUp)) {
+        e.preventDefault();
+        el.scrollBy({ top: e.deltaY });
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
+  const zoom = ZOOM_STEPS[zoomIdx];
 
   function addShape(shapeId: string) {
     const uid = Math.random().toString(36).slice(2, 10);
@@ -115,6 +153,24 @@ export function TotemConfigurator() {
     setMode("build");
   }
 
+  // Snaps to the closest ZOOM_STEPS entry that makes the full stack fit the panel
+  function fitToViewer() {
+    if (pieces.length === 0) return;
+    const el = visualPanelRef.current;
+    const containerHeight = el?.clientHeight ?? 400;
+    const available = containerHeight - 80; // py-6 padding + button row clearance
+    const ideal = available / totalStackHeight;
+    const closestIdx = ZOOM_STEPS.reduce(
+      (best, step, idx) =>
+        Math.abs(step - ideal) < Math.abs(ZOOM_STEPS[best] - ideal)
+          ? idx
+          : best,
+      0,
+    );
+    setZoomIdx(closestIdx);
+    el?.scrollTo({ top: 0 });
+  }
+
   const handleAddToCart = async () => {
     if (pieces.length === 0) return;
     setIsAdding(true);
@@ -124,7 +180,10 @@ export function TotemConfigurator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pieces, fixationId, cableId }),
       });
-      const data = (await res.json()) as { invoice_url?: string; error?: string };
+      const data = (await res.json()) as {
+        invoice_url?: string;
+        error?: string;
+      };
       if (!res.ok || !data.invoice_url) {
         toast.error("Unable to process order. Please try again.");
         return;
@@ -137,144 +196,227 @@ export function TotemConfigurator() {
     }
   };
 
+  const totalStackHeight =
+    pieces.length === 0
+      ? 0
+      : pieces.reduce((sum, p) => sum + (SHAPE_HEIGHTS[p.shapeId] ?? 44), 0) +
+        (pieces.length - 1) * 4;
+
   const totalPrice = calcTotemPrice({ pieces, fixationId, cableId });
   const selectedPiece = pieces.find((p) => p.uid === selectedUid);
 
   return (
-    <div className="flex flex-col gap-10 sm:grid sm:grid-cols-3">
+    <div className="flex flex-col gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
       {/* ── Section A: Compound Viewer ── */}
-
       <div
-        className="border border-ink rounded-md col-span-2 cursor-default"
+        className="bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[500px] sm:h-[680px]"
         onClick={() => setSelectedUid(null)}
       >
-        <div className="flex flex-col sm:flex-row sm:items-stretch">
-          {/* Left half — visual stack */}
+        {/* Inner row: visual panel + list panel */}
+        <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
+          {/* ── Left: visual stack ── */}
+          {/* Outer wrapper: not scrollable, anchors the zoom buttons */}
+          <div className="relative flex-1 min-h-0 border-b sm:border-b-0 sm:border-r border-stroke">
+            {/* Zoom controls — always visible, outside scroll container */}
+            <div
+              className="absolute top-2 left-2 flex items-center gap-2 z-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                aria-label="Zoom out"
+                disabled={zoomIdx === 0}
+                onClick={() => setZoomIdx((i) => Math.max(0, i - 1))}
+                className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <ZoomOut size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Zoom in"
+                disabled={zoomIdx === ZOOM_STEPS.length - 1}
+                onClick={() =>
+                  setZoomIdx((i) => Math.min(ZOOM_STEPS.length - 1, i + 1))
+                }
+                className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <ZoomIn size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Fit to viewer"
+                disabled={pieces.length === 0}
+                onClick={fitToViewer}
+                className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <Maximize2 size={18} />
+              </button>
+            </div>
 
-          <div className="w-full border-b sm:border-b-0 sm:border-r border-stroke flex items-center justify-center py-6 min-h-52">
-            {pieces.length === 0 ? (
-              <div className="w-0.5 border-l-2 border-dashed border-stroke h-40" />
-            ) : (
-              <div className="flex flex-col items-center" style={{ gap: 4 }}>
-                {pieces.map((piece) => {
-                  const color = TOTEM_COLORS.find(
-                    (c) => c.id === piece.colorId,
-                  );
-                  const height = SHAPE_HEIGHTS[piece.shapeId] ?? 44;
-                  const isSelected = selectedUid === piece.uid;
-                  return (
-                    <div
-                      key={piece.uid}
-                      draggable
-                      onDragStart={() => setDraggedUid(piece.uid)}
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={() => handleDrop(piece.uid)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedUid(isSelected ? null : piece.uid);
-                      }}
-                      className={cn(
-                        "cursor-grab active:cursor-grabbing transition-all",
-                        isSelected && "ring-2 ring-ink",
-                      )}
-                      style={{
-                        width: 80,
-                        height,
-                        backgroundColor: color?.hex ?? "#F2F0EB",
-                        borderRadius: 4,
-                        transform: piece.flipped ? "scaleY(-1)" : undefined,
-                        flexShrink: 0,
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            )}
+            {/* Scrollable inner panel */}
+            <div
+              ref={visualPanelRef}
+              className="w-full h-full flex items-center justify-center py-6 overflow-y-auto"
+            >
+              {pieces.length === 0 ? (
+                <div className="w-0.5 border-l-2 border-dashed border-stroke h-40" />
+              ) : (
+                <div
+                  className="flex flex-col items-center"
+                  style={{ gap: 4 * zoom }}
+                >
+                  {pieces.map((piece) => {
+                    const color = TOTEM_COLORS.find(
+                      (c) => c.id === piece.colorId,
+                    );
+                    const height = SHAPE_HEIGHTS[piece.shapeId] ?? 44;
+                    const isSelected = selectedUid === piece.uid;
+                    return (
+                      <div
+                        key={piece.uid}
+                        draggable
+                        onDragStart={() => setDraggedUid(piece.uid)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleDrop(piece.uid)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedUid(isSelected ? null : piece.uid);
+                        }}
+                        className={cn(
+                          "cursor-grab active:cursor-grabbing transition-all",
+                          isSelected && "ring-2 ring-ink",
+                        )}
+                        style={{
+                          width: 80 * zoom,
+                          height: height * zoom,
+                          backgroundColor: color?.hex ?? "#F2F0EB",
+                          borderRadius: 4,
+                          transform: piece.flipped ? "scaleY(-1)" : undefined,
+                          flexShrink: 0,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Right half — named list */}
-          <div className="flex-1 divide-y divide-stroke">
-            {pieces.length === 0 ? (
-              <p className="font-body text-sm text-muted px-4 py-6">
-                Add shapes →
-              </p>
-            ) : (
-              pieces.map((piece, idx) => {
-                const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
-                const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
-                const isSelected = selectedUid === piece.uid;
-                return (
-                  <div
-                    key={piece.uid}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors",
-                      isSelected ? "bg-stroke/30" : "hover:bg-stroke/10",
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedUid(isSelected ? null : piece.uid);
-                    }}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="font-body text-sm">
-                        {shape?.name ?? piece.shapeId}
-                      </p>
-                      <p className="font-body text-xs text-muted">
-                        {color?.name ?? piece.colorId}
-                      </p>
-                    </div>
-                    <div
-                      className="flex items-center gap-0.5"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button
-                        type="button"
-                        aria-label="Move piece up"
-                        disabled={idx === 0}
-                        onClick={() => moveUp(piece.uid)}
-                        className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+          {/* ── Right: named list ── */}
+          <div
+            className={cn(
+              "flex-shrink-0 flex flex-col border-l border-stroke transition-all duration-200",
+              showList ? "w-44" : "w-8",
+            )}
+          >
+            {/* Toggle button — always visible */}
+            <div
+              className="flex justify-end p-1 border-b border-stroke"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                aria-label={showList ? "Hide list" : "Show list"}
+                onClick={() => setShowList((v) => !v)}
+                className="p-1 text-muted hover:text-ink transition-colors"
+              >
+                <ChevronRight
+                  size={18}
+                  className={cn(
+                    "transition-transform duration-200",
+                    !showList && "rotate-180",
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Collapsible list */}
+            {showList && (
+              <div className="flex-1 overflow-y-auto">
+                {pieces.length === 0 ? (
+                  <p className="font-body text-sm text-muted px-4 py-4">
+                    Add shapes →
+                  </p>
+                ) : (
+                  pieces.map((piece, idx) => {
+                    const shape = TOTEM_SHAPES.find(
+                      (s) => s.id === piece.shapeId,
+                    );
+                    const color = TOTEM_COLORS.find(
+                      (c) => c.id === piece.colorId,
+                    );
+                    const isSelected = selectedUid === piece.uid;
+                    return (
+                      <div
+                        key={piece.uid}
+                        className={cn(
+                          "flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors border-b-2",
+                          isSelected ? "bg-stroke/30" : "hover:bg-lighter",
+                        )}
+                        style={{ borderBottomColor: color?.hex ?? "#E5E0D8" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedUid(isSelected ? null : piece.uid);
+                        }}
                       >
-                        <ChevronUp size={13} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Move piece down"
-                        disabled={idx === pieces.length - 1}
-                        onClick={() => moveDown(piece.uid)}
-                        className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <ChevronDown size={13} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Flip shape"
-                        onClick={() => flipPiece(piece.uid)}
-                        className="p-1 text-muted hover:text-ink transition-colors"
-                      >
-                        <RotateCcw size={13} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Remove piece"
-                        onClick={() => removeShape(piece.uid)}
-                        className="p-1 text-muted hover:text-error transition-colors ml-0.5"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
+                        <p className="font-body text-sm flex-1 min-w-0 truncate">
+                          {shape?.name ?? piece.shapeId}
+                        </p>
+                        <div
+                          className="flex flex-col items-end gap-0.5 flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              aria-label="Move piece up"
+                              disabled={idx === 0}
+                              onClick={() => moveUp(piece.uid)}
+                              className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <ChevronUp size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="Move piece down"
+                              disabled={idx === pieces.length - 1}
+                              onClick={() => moveDown(piece.uid)}
+                              className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <ChevronDown size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="Flip shape"
+                              onClick={() => flipPiece(piece.uid)}
+                              className="p-0.5 text-muted hover:text-ink transition-colors"
+                            >
+                              <RotateCcw size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="Remove piece"
+                              onClick={() => removeShape(piece.uid)}
+                              className="p-0.5 text-muted hover:text-error transition-colors"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             )}
           </div>
         </div>
 
-        <div className="border-t border-stroke px-4 py-3">
-          {!selectedPiece && (
-            <p className="font-body text-base tracking-tight text-muted mb-2">
-              Colors
-            </p>
-          )}
+        {/* ── Color picker — always pinned at bottom ── */}
+        <div className="flex-shrink-0 border-t border-stroke px-4 py-3">
+          {/* <p className="font-body text-sm tracking-tight text-muted mb-2">
+            Colors
+          </p> */}
           <div
             className={cn(
               "flex flex-wrap gap-1.5 transition-opacity",
@@ -287,7 +429,7 @@ export function TotemConfigurator() {
                 type="button"
                 aria-label={c.name}
                 onClick={(e) => {
-                  e.stopPropagation(); // don't bubble up to deselect
+                  e.stopPropagation();
                   if (selectedPiece) setColorForPiece(selectedPiece.uid, c.id);
                 }}
                 className={cn(
@@ -303,8 +445,11 @@ export function TotemConfigurator() {
         </div>
       </div>
 
+      {/* ── Section C: Shape catalog with mode tabs ── */}
       <div className="flex flex-col gap-6">
-        {/* ── Section C: Shape catalog with mode tabs ── */}
+        <h1 className="text-left text-6xl sm:text-8xl font-display tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap pb-4">
+          TOTEM
+        </h1>
         <div className="flex flex-col gap-6">
           {/* Tab bar */}
           <div className="flex gap-2 pb-px">
@@ -464,6 +609,38 @@ export function TotemConfigurator() {
             >
               {isAdding ? "Ordering…" : "Order now"}
             </button>
+          </div>
+
+          {/* ── Description ── */}
+          <div className="flex flex-col gap-4 border-t border-stroke pt-6">
+            <h2 className="font-display text-xs uppercase tracking-widest text-muted">
+              About
+            </h2>
+            <p className="font-body text-sm text-ink leading-relaxed">
+              TOTEM is a modular lighting object built from stackable geometric
+              forms. Each piece is cast in powder-coated aluminium and connects
+              through a central cable — no tools, no hardware.
+            </p>
+            <p className="font-body text-sm text-muted leading-relaxed">
+              Choose your shapes, set the order, pick a finish. The fixation
+              mounts flush to ceiling or wall. Cable length determines how low
+              the stack hangs.
+            </p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+              {[
+                ["Material", "Powder-coated aluminium"],
+                ["Assembly", "Tool-free, 5 min"],
+                ["Cable", "Textile, 2 or 3 m"],
+                ["Bulb", "E27, max 40 W"],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                    {label}
+                  </p>
+                  <p className="font-body text-sm text-ink mt-0.5">{value}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

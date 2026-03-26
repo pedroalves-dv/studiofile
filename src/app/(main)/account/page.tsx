@@ -14,7 +14,7 @@ export default async function AccountPage() {
   const recentOrders = customer!.orders.edges.slice(0, 3).map((e) => e.node);
 
   return (
-    <main className="bg-canvas">
+    <main className="">
       <section className="">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-body tracking-tighter font-semibold text-4xl md:text-5xl text-ink">

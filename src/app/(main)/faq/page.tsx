@@ -69,8 +69,8 @@ export default function FaqPage() {
     },
   ];
   return (
-    <main id="main-content" className="px-6">
-      <section className="section-height border-b border-stroke pt-[var(--header-height)]">
+    <main id="main-content" className="px-5 section-height">
+      <section className="pt-12 sm:pt-[var(--header-height)]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
           <div className="space-y-8 md:sticky md:top-28">
@@ -86,15 +86,10 @@ export default function FaqPage() {
               If you can&apos;t find what you&apos;re looking for, feel free to
               reach out to us directly.
             </p>
-            {/* <ArrowButton
-              href="/contact"
-              label="Contact Us"
-              className="block w-full text-center py-2.5 bg-white text-ink font-mono tracking-wide
-         text-sm rounded-lg border border-stroke"
-            /> */}
           </div>
 
-          <div className="relative flex flex-col w-full items-center rounded-lg border border-stroke tracking-tight">
+          {/* Right — Accordion */}
+          <div className="relative flex flex-col w-full items-center rounded-lg bg-white border border-stroke tracking-tight">
             <AccordionRoot type="single" collapsible className="w-full">
               {steps.map((step, i) => (
                 <AccordionItem

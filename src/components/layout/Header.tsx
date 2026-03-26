@@ -115,7 +115,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               aria-label="Studiofile — Home"
               className="group justify-self-start pb-2.5"
             >
-              <Logo className="h-7 w-30 fill-current text-ink group-hover:text-accent transition-colors" />
+              <Logo className="h-7 w-30 fill-current text-ink group-hover:text-light transition-colors" />
               {/* <LogoHover className="h-7 w-auto" /> */}
             </Link>
 
@@ -147,7 +147,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <div ref={accountRef} className="relative">
                     <button
                       onClick={() => setIsAccountOpen((v) => !v)}
-                      className="relative h-full flex w-18 justify-center items-center py-3 px-5 relative"
+                      className={cn(
+                        "relative h-full flex w-18 justify-center items-center py-3 px-5",
+                        isAccountOpen && "bg-white",
+                      )}
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
                       onMouseEnter={() =>
@@ -217,7 +220,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       if (isMobileMenuOpen) closeMenu();
                     }
                   }}
-                  className="h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative"
+                  className={cn(
+                    "h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
+                    isOpen && "bg-white",
+                  )}
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -244,7 +250,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       closeCart();
                     }
                   }}
-                  className="md:hidden h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative"
+                  className={cn(
+                    "md:hidden h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
+                    (isMobileMenuOpen || isClosingMenu) && "bg-white",
+                  )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
                 >

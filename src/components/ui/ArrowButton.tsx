@@ -9,7 +9,6 @@ type ArrowButtonProps = {
   label: ReactNode;
   className?: string;
   onClick?: () => void;
-  glowColor?: string;
   showArrow?: boolean;
   href?: string;
   type?: "submit" | "button" | "reset";
@@ -20,7 +19,7 @@ export function ArrowButton({
   label,
   onClick,
   className,
-  glowColor,
+
   showArrow,
   href,
   type = "button",
@@ -44,17 +43,6 @@ export function ArrowButton({
     </span>
   );
 
-  const glow = glowColor ? (
-    <span
-      className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none rounded-[inherit]"
-      aria-hidden="true"
-      style={{
-        willChange: "opacity",
-        background: `radial-gradient(ellipse 80% 60% at 50% 50%, ${glowColor}, transparent)`,
-      }}
-    />
-  ) : null;
-
   if (href) {
     return (
       <Link
@@ -62,7 +50,6 @@ export function ArrowButton({
         onClick={onClick}
         className={cn("group relative", className)}
       >
-        {glow}
         {inner}
       </Link>
     );
@@ -75,7 +62,6 @@ export function ArrowButton({
       disabled={disabled}
       className={cn("group relative", className)}
     >
-      {glow}
       {inner}
     </button>
   );
