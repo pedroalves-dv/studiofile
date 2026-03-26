@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import {
   ChevronUp,
   ChevronDown,
@@ -53,25 +53,10 @@ export function TotemConfigurator() {
   const [zoomIdx, setZoomIdx] = useState(DEFAULT_ZOOM_IDX);
   const [showList, setShowList] = useState(true);
 
+  // Ref on the outer viewer box — used to intercept all wheel events inside it
+  const viewerRef = useRef<HTMLDivElement>(null);
   // Ref on the visual panel so we can measure its height for fit-to-viewer
   const visualPanelRef = useRef<HTMLDivElement>(null);
-
-  // Capture wheel events inside the viewer so they scroll the panel, not the page
-  useEffect(() => {
-    const el = visualPanelRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      const canDown = scrollTop + clientHeight < scrollHeight - 1;
-      const canUp = scrollTop > 0;
-      if ((e.deltaY > 0 && canDown) || (e.deltaY < 0 && canUp)) {
-        e.preventDefault();
-        el.scrollBy({ top: e.deltaY });
-      }
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, []);
 
   const zoom = ZOOM_STEPS[zoomIdx];
 
@@ -207,8 +192,10 @@ export function TotemConfigurator() {
 
   return (
     <div className="flex flex-col gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
-      {/* ── Section A: Compound Viewer ── */}
+      {/* ── Section A: Viewer + Panels ── */}
       <div
+        ref={viewerRef}
+        data-lenis-prevent
         className="bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[500px] sm:h-[680px]"
         onClick={() => setSelectedUid(null)}
       >
@@ -256,7 +243,7 @@ export function TotemConfigurator() {
             {/* Scrollable inner panel */}
             <div
               ref={visualPanelRef}
-              className="w-full h-full flex items-center justify-center py-6 overflow-y-auto"
+              className="w-full h-full flex items-center justify-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
             >
               {pieces.length === 0 ? (
                 <div className="w-0.5 border-l-2 border-dashed border-stroke h-40" />
@@ -306,7 +293,7 @@ export function TotemConfigurator() {
           <div
             className={cn(
               "flex-shrink-0 flex flex-col border-l border-stroke transition-all duration-200",
-              showList ? "w-44" : "w-8",
+              showList ? "w-fit" : "w-fit",
             )}
           >
             {/* Toggle button — always visible */}
@@ -350,8 +337,8 @@ export function TotemConfigurator() {
                       <div
                         key={piece.uid}
                         className={cn(
-                          "flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors border-b-2",
-                          isSelected ? "bg-stroke/30" : "hover:bg-lighter",
+                          "flex items-center gap-2 px-3 py-4 cursor-pointer transition-colors border-b-4",
+                          isSelected ? "bg-lighter" : "hover:bg-lighter",
                         )}
                         style={{ borderBottomColor: color?.hex ?? "#E5E0D8" }}
                         onClick={(e) => {
@@ -359,7 +346,7 @@ export function TotemConfigurator() {
                           setSelectedUid(isSelected ? null : piece.uid);
                         }}
                       >
-                        <p className="font-body text-sm flex-1 min-w-0 truncate">
+                        <p className="font-body hidden sm:block sm:text-sm flex-1 min-w-0 truncate">
                           {shape?.name ?? piece.shapeId}
                         </p>
                         <div
