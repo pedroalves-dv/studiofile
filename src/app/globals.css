@@ -169,7 +169,7 @@
   /* Base styles */
   html {
     scroll-behavior: auto;
-    scrollbar-gutter: stable;
+    /* scrollbar-gutter: stable; */
     /* scrollbar-color: var(--color-light) var(--color-ink); */
   }
 
@@ -203,7 +203,6 @@
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
-    height: 18px;
   }
 
   ::-webkit-scrollbar-track {

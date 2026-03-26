@@ -22,7 +22,7 @@ export default async function MainLayout({
         <ToastProvider>
           <SmoothScroll>
             <Header isLoggedIn={!!token} />
-            <div className="min-w-dvw min-h-dvh"> {children}</div>
+            <div className="min-h-dvh"> {children}</div>
 
             <Footer />
 

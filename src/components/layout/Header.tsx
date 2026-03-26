@@ -159,7 +159,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     >
                       <UserRoundCheckIcon
                         ref={userRoundCheckIconRef}
-                        size={28}
+                        size={27}
                       />
                     </button>
                     {isAccountOpen && (
@@ -202,7 +202,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     onMouseEnter={() => userIconRef.current?.startAnimation()}
                     onMouseLeave={() => userIconRef.current?.stopAnimation()}
                   >
-                    <UserIcon ref={userIconRef} size={28} />
+                    <UserIcon ref={userIconRef} size={27} />
                   </Link>
                 )}
 
