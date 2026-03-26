@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function TotemPage() {
   return (
-    <div className="container-wide section-centered pt-12 sm:pt-[var(--header-height)] pb-20 sm:pb-0">
+    <div className="px-5 sm:container-wide section-centered pt-12 sm:pt-[var(--header-height)] pb-20 sm:pb-0">
       <TotemConfigurator />
     </div>
   );
