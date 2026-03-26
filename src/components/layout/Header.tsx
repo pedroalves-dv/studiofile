@@ -147,7 +147,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <div ref={accountRef} className="relative">
                     <button
                       onClick={() => setIsAccountOpen((v) => !v)}
-                      className="h-full flex w-18 justify-center items-center py-3 px-5 relative"
+                      className="relative h-full flex w-18 justify-center items-center py-3 px-5 relative"
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
                       onMouseEnter={() =>

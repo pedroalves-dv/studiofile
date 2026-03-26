@@ -36,12 +36,12 @@ export function Footer() {
         <div className="w-full flex flex-col items-center pt-2 justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_minmax(0,380px)] md:grid-cols-[auto_auto_minmax(0,380px)] xl:grid-cols-[1fr_1fr_1fr_minmax(0,380px)]">
             {/* Column 1: Wordmark + Tagline */}
-            <div className="hidden sm:block sm:order-3 md:hidden xl:block xl:order-1 text-base sm:text-lg font-medium text-light tracking-[-0.04em] pb-8">
+            <div className="hidden sm:block sm:order-3 md:hidden xl:block xl:order-1 text-base sm:text-lg font-medium text-ink tracking-[-0.04em] pb-8">
               <p>© {new Date().getFullYear()} STUDIO filé</p>
             </div>
 
             {/* Column 2: Navigation Links */}
-            <div className="space-y-4 tracking-[-0.04em] font-medium order-2 sm:oder-1 md:orde-1 lg:order-1 xl:order-2 pb-8 sm:pb-12">
+            <div className="space-y-4 tracking-[-0.04em] font-medium order-2 sm:oder-1 md:orde-1 lg:order-1 xl:order-2 pb-8 sm:pb-12 ">
               <h3 className="text-base sm:text-lg text-light">Navigation</h3>
               <nav className="space-y-2 flex flex-col">
                 {FOOTER_LINKS.map((link) => (
