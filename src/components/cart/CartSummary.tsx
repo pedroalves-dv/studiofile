@@ -33,7 +33,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       {/* Subtotal */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-muted">Subtotal</span>
-        <span className="font-mono text-sm">
+        <span className="text-sm">
           {formatPrice(subtotal.amount, subtotal.currencyCode)}
         </span>
       </div>
@@ -42,7 +42,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       {hasDiscount && savings > 0 && (
         <div className="flex items-center justify-between">
           <span className="text-sm text-success">Discount</span>
-          <span className="font-mono text-sm text-success">
+          <span className="text-sm text-success">
             -{formatPrice(savings.toString(), subtotal.currencyCode)}
           </span>
         </div>
@@ -56,7 +56,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       {/* Total */}
       <div className="flex items-center justify-between pt-2 border-t border-border">
         <span className="text-sm font-medium">Total</span>
-        <span className="font-mono text-sm font-medium">
+        <span className="text-sm font-medium">
           {formatPrice(total.amount, total.currencyCode)}
         </span>
       </div>

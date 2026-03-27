@@ -11,7 +11,7 @@ export function EmptyCart() {
     <div className="flex flex-col h-full gap-6 pb-24">
       {/* <ShoppingBag size={48} className="text-light" /> */}
       <div className="py-4">
-        <p className="text-7xl font-body font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
+        <p className="text-7xl font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
           Your cart is empty
         </p>
         {/* <p className="font-mono text-light mt-4">Add something beautiful.</p> */}

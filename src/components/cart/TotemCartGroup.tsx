@@ -71,14 +71,14 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
         <div className="flex-1 min-w-0">
           <p className="font-display uppercase text-lg leading-none text-ink">TOTEM</p>
           {shapeSummary && (
-            <p className="font-mono text-xs text-muted mt-1 truncate">{shapeSummary}</p>
+            <p className="text-xs text-muted mt-1 truncate">{shapeSummary}</p>
           )}
           {systemSummary && (
-            <p className="font-mono text-xs text-muted truncate">{systemSummary}</p>
+            <p className="text-xs text-muted truncate">{systemSummary}</p>
           )}
         </div>
         <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-          <span className="font-mono text-sm text-ink">
+          <span className="text-sm text-ink">
             {formatPrice(totalAmount.toFixed(2), currencyCode)}
           </span>
           <ChevronDown
@@ -101,11 +101,11 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
                 key={line.id}
                 className="flex items-center justify-between py-2 border-b border-stroke last:border-b-0"
               >
-                <p className="font-mono text-xs text-muted">
+                <p className="text-xs text-muted">
                   {primary}
                   {secondary && ` · ${secondary}`}
                 </p>
-                <span className="font-mono text-xs text-muted ml-4 flex-shrink-0">
+                <span className="text-xs text-muted ml-4 flex-shrink-0">
                   {formatPrice(
                     line.cost.totalAmount.amount,
                     line.cost.totalAmount.currencyCode
@@ -118,7 +118,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
             <button
               type="button"
               onClick={removeBundle}
-              className="font-mono text-xs text-muted hover:text-error transition-colors"
+              className="text-xs text-muted hover:text-error transition-colors"
             >
               Remove bundle
             </button>

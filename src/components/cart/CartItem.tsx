@@ -53,7 +53,7 @@ export function CartItem({ line }: CartItemProps) {
             {line.attributes.filter((a) => !a.key.startsWith('_')).map((a) => a.value).join(' · ')}
           </p>
         )}
-        <p className="font-mono text-xs text-muted mt-1">
+        <p className="text-xs text-muted mt-1">
           {formatPrice(merchandise.price.amount, merchandise.price.currencyCode)}
         </p>
 
@@ -72,7 +72,7 @@ export function CartItem({ line }: CartItemProps) {
             >
               <Minus size={12} />
             </button>
-            <span className="font-mono text-xs w-4 text-center">{localQuantity}</span>
+            <span className="text-xs w-4 text-center">{localQuantity}</span>
             <button
               onClick={() => setLocalQuantity((q) => q + 1)}
               aria-label="Increase quantity"
@@ -83,7 +83,7 @@ export function CartItem({ line }: CartItemProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs">
+            <span className="text-xs">
               {formatPrice(line.cost.totalAmount.amount, line.cost.totalAmount.currencyCode)}
             </span>
             <button
