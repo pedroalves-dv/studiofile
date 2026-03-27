@@ -176,10 +176,9 @@ middleware.ts
 
 #### Typography
 
-- Display: `Noka` (`font-display`) — logo font, used sparingly for product type animations
-- Body: `Geist Sans` (`font-body`) — Main font, all headings, body text
-- Mono labels: `JetBrains Mono` (`font-mono`) — small details: prices, tags, UI labels
-- Accent Typography: `Instrument Serif` (`font-serif`) — not yet used.
+- Display: `Noka` (`font-display`) — product font; used for product titles, section headings, and type animations. The only font class used in components.
+- Body: `Geist Sans` — default font, set on `body` in `globals.css`; inherited by all elements. Do not add `font-body` to components — it is redundant.
+- `font-mono`, `font-serif` — removed from all components. Tokens remain in config for potential future use but must not be added to components.
 
 **Experimental tokens:** `tailwind.config.ts` also exposes `font-tasa`, `font-hubot`, `font-mona`, `font-zal`, `font-funnel`, `font-khregular`, `font-khbold`, `font-stack`, `font-stacktext`, and `font-mono2` (Fliege Mono). These exist for type testing only — do not use in production components until a decision is made.
 
