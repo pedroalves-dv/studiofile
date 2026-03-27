@@ -25,7 +25,7 @@ export function CustomSelect({
   useClickOutside(ref, () => setIsOpen(false));
 
   return (
-    <div className="w-full border border-stroke rounded-lg p-1 bg-canvas ">
+    <div className="">
       {label && (
         <label
           htmlFor={id}

@@ -33,6 +33,7 @@ import {
   type TotemCable,
   type TotemPiece,
 } from "@/lib/totem-config";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/utils/cn";
 
@@ -448,7 +449,7 @@ export function TotemConfigurator() {
         {/* Inner row: visual panel + list/action panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
           {/* ── Left: visual stack ── */}
-          <div className="relative flex-1 min-h-0 sm:border-r border-stroke">
+          <div className="relative flex-1 min-h-0">
             {/* Zoom controls */}
             <div
               className="absolute top-2 left-2 flex flex-col gap-1 z-10"
@@ -935,7 +936,7 @@ export function TotemConfigurator() {
           {/* Build your own tab */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-md tracking-tight text-muted px-2">
+            <span className="font-body text-sm tracking-tight text-muted px-2">
               Shapes
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
@@ -957,8 +958,10 @@ export function TotemConfigurator() {
                       onClick={() => addShape(shape.id)}
                       className="group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col"
                     >
-                      <div className="aspect-square w-full bg-light border-t border-light rounded-md group-hover:bg-muted transition-colors" />
-                      <div className="px-3 py-2.5 flex items-end justify-between gap-2">
+                      {/* image placeholder  */}
+                      <div className="aspect-square w-full rounded-md transition-colors bg-lighter" />
+                      {/* bottom label  */}
+                      <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
                         <div>
                           <p className="font-body text-sm">{shape.name}</p>
                           <p className="font-mono text-xs text-muted">
@@ -1032,7 +1035,7 @@ export function TotemConfigurator() {
           {/* ── Fixation catalog ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-md tracking-tight text-muted px-2">
+            <span className="font-body text-sm tracking-tight text-muted px-2">
               Fixation
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
@@ -1044,7 +1047,7 @@ export function TotemConfigurator() {
                 type="button"
                 onClick={() => setFixationId(f.id)}
                 className={cn(
-                  "relative bg-canvas border transition-colors text-left p-3",
+                  "relative bg-canvas border transition-colors text-left p-3 rounded-md",
                   fixationId === f.id
                     ? "border-ink bg-lighter"
                     : "border-stroke hover:border-ink",
@@ -1059,22 +1062,25 @@ export function TotemConfigurator() {
           {/* ── Cable ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-md tracking-tight text-muted px-2">
+            <span className="font-body text-sm tracking-tight text-muted px-2">
               Cable
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
-          <select
-            value={cableId}
-            onChange={(e) => setCableId(e.target.value)}
-            className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
-          >
-            {catalogCables.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name} — €{c.price}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+            id="cable-select"
+            value={(() => {
+              const c = catalogCables.find((c) => c.id === cableId);
+              return c ? `${c.name} — €${c.price}` : "";
+            })()}
+            onChange={(label) => {
+              const cable = catalogCables.find(
+                (c) => `${c.name} — €${c.price}` === label,
+              );
+              if (cable) setCableId(cable.id);
+            }}
+            options={catalogCables.map((c) => `${c.name} — €${c.price}`)}
+          />
         </div>
 
         {/* ── Section C: Price + Add to Cart ── */}
