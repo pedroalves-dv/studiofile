@@ -1,0 +1,287 @@
+.
+├── CLAUDE.md
+├── README.md
+├── SHOPIFY_API_REFERENCE.md
+├── components.json
+├── docs
+│   ├── STATUS.md
+│   ├── prompt_templates
+│   │   ├── SESSION_TEMPLATE_AUDIT.md
+│   │   ├── SESSION_TEMPLATE_BUILD.md
+│   │   ├── SESSION_TEMPLATE_RECONCILE.md
+│   │   └── new.md
+│   ├── superpowers
+│   │   ├── plans
+│   │   │   └── 2026-03-26-hero-sticky-columns.md
+│   │   └── specs
+│   │       └── 2026-03-26-hero-redesign-design.md
+│   ├── totem-phase1.md
+│   ├── totem-phase2.md
+│   └── totem-phase3.md
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   ├── fonts
+│   │   ├── InstrumentSerif-Italic.woff2
+│   │   ├── InstrumentSerif-Regular.woff2
+│   │   ├── InterTight-Regular.woff2
+│   │   ├── Noka-Black.woff2
+│   │   └── Tasa.woff2
+│   ├── icon-192.png
+│   ├── icon-512.png
+│   ├── images
+│   │   ├── hero
+│   │   │   ├── totem-1.png
+│   │   │   ├── totem-2.png
+│   │   │   └── totem-3.png
+│   │   ├── logo
+│   │   │   ├── logo-black.svg
+│   │   │   ├── logo-footer-white.svg
+│   │   │   ├── logo-footer.svg
+│   │   │   ├── logo-large-horizontal.svg
+│   │   │   ├── logo-large-vertical.svg
+│   │   │   ├── logo-small.svg
+│   │   │   ├── logo.svg
+│   │   │   ├── new-logo.svg
+│   │   │   ├── newlogov1.svg
+│   │   │   └── newlogov2.svg
+│   │   └── page
+│   │       ├── 3d-printing.jpg
+│   │       ├── 3d-printing1.jpg
+│   │       ├── made-to-order.jpg
+│   │       ├── modular-furniture.jpg
+│   │       └── paris-studio.jpg
+│   └── manifest.json
+├── src
+│   ├── app
+│   │   ├── (landing)
+│   │   │   ├── coming-soon
+│   │   │   │   └── page.tsx
+│   │   │   └── layout.tsx
+│   │   ├── (main)
+│   │   │   ├── about
+│   │   │   │   └── page.tsx
+│   │   │   ├── account
+│   │   │   │   ├── (auth)
+│   │   │   │   │   ├── forgot-password
+│   │   │   │   │   │   ├── ForgotPasswordForm.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── login
+│   │   │   │   │   │   ├── LoginForm.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── register
+│   │   │   │   │       ├── RegisterForm.tsx
+│   │   │   │   │       └── page.tsx
+│   │   │   │   └── (protected)
+│   │   │   │       ├── addresses
+│   │   │   │       │   ├── AddressManager.tsx
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       ├── orders
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── page.tsx
+│   │   │   │       └── settings
+│   │   │   │           ├── SettingsForm.tsx
+│   │   │   │           └── page.tsx
+│   │   │   ├── collections
+│   │   │   │   ├── [handle]
+│   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   ├── opengraph-image.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── contact
+│   │   │   │   └── page.tsx
+│   │   │   ├── faq
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── policies
+│   │   │   │   └── [handle]
+│   │   │   │       └── page.tsx
+│   │   │   ├── products
+│   │   │   │   ├── [handle]
+│   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   ├── opengraph-image.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── totem
+│   │   │   │       └── page.tsx
+│   │   │   ├── search
+│   │   │   │   ├── loading.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── shop
+│   │   │       ├── loading.tsx
+│   │   │       └── page.tsx
+│   │   ├── api
+│   │   │   ├── contact
+│   │   │   │   └── route.ts
+│   │   │   ├── newsletter
+│   │   │   │   └── route.ts
+│   │   │   ├── products
+│   │   │   │   └── batch
+│   │   │   │       └── route.ts
+│   │   │   ├── search
+│   │   │   │   ├── predictive
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── products
+│   │   │   │       └── route.ts
+│   │   │   └── totem-checkout
+│   │   │       └── route.ts
+│   │   ├── apple-icon.tsx
+│   │   ├── error.tsx
+│   │   ├── global-error.tsx
+│   │   ├── globals.css
+│   │   ├── icon.tsx
+│   │   ├── layout.tsx
+│   │   ├── loading.tsx
+│   │   ├── not-found.tsx
+│   │   ├── opengraph-image.tsx
+│   │   ├── robots.ts
+│   │   └── sitemap.ts
+│   ├── components
+│   │   ├── account
+│   │   │   ├── AccountNav.tsx
+│   │   │   └── OrderCard.tsx
+│   │   ├── cart
+│   │   │   ├── CartDrawer.tsx
+│   │   │   ├── CartItem.tsx
+│   │   │   ├── CartNote.tsx
+│   │   │   ├── CartSummary.tsx
+│   │   │   ├── DiscountInput.tsx
+│   │   │   ├── EmptyCart.tsx
+│   │   │   ├── FreeShippingBar.tsx
+│   │   │   └── TotemCartGroup.tsx
+│   │   ├── common
+│   │   │   ├── CookieConsent.tsx
+│   │   │   ├── HorizontalScrollRow.tsx
+│   │   │   ├── LoadingBar.tsx
+│   │   │   ├── ScrollToTop.tsx
+│   │   │   ├── SkeletonCard.tsx
+│   │   │   ├── SmoothScroll.tsx
+│   │   │   └── Toast.tsx
+│   │   ├── contact
+│   │   │   └── ContactForm.tsx
+│   │   ├── home
+│   │   │   ├── BrandStory.tsx
+│   │   │   ├── Collections.tsx
+│   │   │   ├── FeaturedProducts.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── HeroContent.tsx
+│   │   │   ├── LandingHero.tsx
+│   │   │   ├── LandingMinimalHeader.tsx
+│   │   │   ├── LandingParallaxImages.tsx
+│   │   │   ├── LandingSignup.tsx
+│   │   │   ├── LandingStackSection.tsx
+│   │   │   ├── Process.tsx
+│   │   │   └── ProductSpotlight.tsx
+│   │   ├── layout
+│   │   │   ├── Breadcrumb.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── FooterBackground.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── NewsletterForm.tsx
+│   │   │   └── PageWrapper.tsx
+│   │   ├── product
+│   │   │   ├── ImageGallery.tsx
+│   │   │   ├── ImageGalleryWithZoom.tsx
+│   │   │   ├── ImageZoom.tsx
+│   │   │   ├── ImageZoomGallery.tsx
+│   │   │   ├── ProductCard.tsx
+│   │   │   ├── ProductGrid.tsx
+│   │   │   ├── ProductImage.tsx
+│   │   │   ├── ProductInfoPanel.tsx
+│   │   │   ├── ProductViewEvent.tsx
+│   │   │   ├── ProductViewTracker.tsx
+│   │   │   ├── RecentlyViewed.tsx
+│   │   │   ├── RelatedProducts.tsx
+│   │   │   ├── StockIndicator.tsx
+│   │   │   ├── TotemConfigurator.tsx
+│   │   │   └── VariantSelector.tsx
+│   │   ├── search
+│   │   │   ├── FilterPanel.tsx
+│   │   │   ├── PredictiveSearch.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   ├── SearchResults.tsx
+│   │   │   └── SortSelect.tsx
+│   │   ├── shop
+│   │   │   └── FilterPanel.tsx
+│   │   ├── ui
+│   │   │   ├── Accordion.tsx
+│   │   │   ├── ArrowButton.tsx
+│   │   │   ├── Badge.tsx
+│   │   │   ├── Button.tsx
+│   │   │   ├── CustomSelect.tsx
+│   │   │   ├── CustomerAvatar.tsx
+│   │   │   ├── Dialog.tsx
+│   │   │   ├── HeartIcon.tsx
+│   │   │   ├── HoverWord.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── LogoHover.tsx
+│   │   │   ├── MagnifyingGlassIcon.tsx
+│   │   │   ├── MenuIcon.tsx
+│   │   │   ├── ScrambleButton.tsx
+│   │   │   ├── ShoppingBagIcon.tsx
+│   │   │   ├── SimpleIcon.tsx
+│   │   │   ├── Skeleton.tsx
+│   │   │   ├── SparklesIcon.tsx
+│   │   │   ├── Tooltip.tsx
+│   │   │   ├── UserCircleIcon.tsx
+│   │   │   ├── UserIcon.tsx
+│   │   │   └── UserRoundCheckIcon.tsx
+│   │   └── wishlist
+│   │       ├── WishlistButton.tsx
+│   │       └── WishlistDrawer.tsx
+│   ├── context
+│   │   ├── CartContext.tsx
+│   │   ├── ToastContext.tsx
+│   │   └── WishlistContext.tsx
+│   ├── hooks
+│   │   ├── useCart.ts
+│   │   ├── useClickOutside.ts
+│   │   ├── useDebounce.ts
+│   │   ├── useIsomorphicLayoutEffect.ts
+│   │   ├── useLocalStorage.ts
+│   │   ├── useMediaQuery.ts
+│   │   ├── useRecentlyViewed.ts
+│   │   ├── useScramble.ts
+│   │   ├── useScroll.ts
+│   │   ├── useScrollLock.ts
+│   │   └── useWishlist.ts
+│   └── lib
+│       ├── constants.ts
+│       ├── shopify
+│       │   ├── admin.ts
+│       │   ├── auth.ts
+│       │   ├── cart.ts
+│       │   ├── client.ts
+│       │   ├── collections.ts
+│       │   ├── mutations.ts
+│       │   ├── policies.ts
+│       │   ├── products.ts
+│       │   ├── queries.ts
+│       │   ├── search.ts
+│       │   └── types.ts
+│       ├── totem-config.ts
+│       ├── totem-variant-map.ts
+│       ├── utils
+│       │   ├── cn.ts
+│       │   ├── cx.ts
+│       │   ├── format.ts
+│       │   ├── is-react-component.ts
+│       │   ├── params.ts
+│       │   ├── seo.ts
+│       │   └── uid.ts
+│       ├── utils.ts
+│       └── virtual-products.ts
+├── tailwind.config.ts
+├── tasks
+│   ├── lessons.md
+│   └── todo.md
+├── tree.txt
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
+
+65 directories, 220 files
