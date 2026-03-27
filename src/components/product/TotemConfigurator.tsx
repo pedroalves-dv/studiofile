@@ -602,26 +602,26 @@ export function TotemConfigurator() {
                 <>
                   {/* Mobile empty-state helper */}
                   <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
-                    <p className="font-body font-medium text-xl tracking-tighter text-ink">
+                    <p className="font-medium text-xl tracking-tighter text-ink">
                       Add shapes &amp; start building!
                     </p>
-                    <p className="absolute top-20 right-2 font-body text-sm tracking-tight text-muted text-right">
+                    <p className="absolute top-20 right-2 text-sm tracking-tight text-muted text-right">
                       Reorder &amp; flip →
                     </p>
-                    <p className="absolute bottom-2 left-8 inset-x-0 text-left font-body text-sm tracking-tight leading-tight text-muted">
+                    <p className="absolute bottom-2 left-8 inset-x-0 text-left text-sm tracking-tight leading-tight text-muted">
                       Select a shape <br />
                       &amp; Pick a color ↓
                     </p>
                   </div>
                   {/* Desktop empty-state helper */}
                   <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
-                    <p className="font-body font-medium text-2xl tracking-tighter text-ink">
+                    <p className="font-medium text-2xl tracking-tighter text-ink">
                       Add shapes &amp; start building!
                     </p>
-                    <p className="absolute top-24 right-2 font-body text-sm tracking-tight leading-tight text-muted text-right">
+                    <p className="absolute top-24 right-2 text-sm tracking-tight leading-tight text-muted text-right">
                       Piece list &amp; controls →
                     </p>
-                    <p className="absolute bottom-2 left-8 inset-x-0 text-left font-body text-sm tracking-tight leading-tight text-muted">
+                    <p className="absolute bottom-2 left-8 inset-x-0 text-left text-sm tracking-tight leading-tight text-muted">
                       Select a shape <br />
                       &amp; Pick a color ↓
                     </p>
@@ -739,14 +739,14 @@ export function TotemConfigurator() {
                           COLOR_MAP.get(fixationColorId)?.hex ?? "#E8E0CF",
                       }}
                     />
-                    <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
+                    <p className="text-xs sm:text-sm flex-1 min-w-0 truncate">
                       {fixationMap.get(fixationId)?.name ?? fixationId}
                     </p>
                   </div>
 
                   {/* Shape pieces */}
                   {pieces.length === 0 ? (
-                    <p className="absolute right-2 top-52 font-body text-sm text-muted px-4 py-4">
+                    <p className="absolute right-2 top-52 text-sm text-muted px-4 py-4">
                       Add shapes →
                     </p>
                   ) : (
@@ -789,7 +789,7 @@ export function TotemConfigurator() {
                           >
                             <GripVertical size={18} />
                           </div>
-                          <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
+                          <p className="text-xs sm:text-sm flex-1 min-w-0 truncate">
                             {shape?.name ?? piece.shapeId}
                           </p>
                           <div
@@ -850,14 +850,14 @@ export function TotemConfigurator() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col items-center gap-4 px-6 text-center">
-              <p className="font-body text-sm text-ink">
+              <p className="text-sm text-ink">
                 This will replace your current build.
               </p>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setPendingPresetId(null)}
-                  className="font-body text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
+                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
                 >
                   Cancel
                 </button>
@@ -867,7 +867,7 @@ export function TotemConfigurator() {
                     applyPreset(pendingPresetId);
                     setPendingPresetId(null);
                   }}
-                  className="font-body text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
+                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
                 >
                   Replace
                 </button>
@@ -922,7 +922,7 @@ export function TotemConfigurator() {
                 type="button"
                 onClick={() => setMode(tab)}
                 className={cn(
-                  "font-body text-base tracking-tight py-1 px-3 border rounded-md transition-colors",
+                  "text-base tracking-tight py-1 px-3 border rounded-md transition-colors",
                   mode === tab
                     ? "border-ink text-ink"
                     : "border-transparent text-light hover:text-ink",
@@ -936,7 +936,7 @@ export function TotemConfigurator() {
           {/* Build your own tab */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-sm tracking-tight text-muted px-2">
+            <span className="text-sm tracking-tight text-muted px-2">
               Shapes
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
@@ -963,8 +963,8 @@ export function TotemConfigurator() {
                       {/* bottom label  */}
                       <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
                         <div>
-                          <p className="font-body text-sm">{shape.name}</p>
-                          <p className="font-mono text-xs text-muted">
+                          <p className="text-sm">{shape.name}</p>
+                          <p className="text-xs text-muted">
                             €{shape.price}
                           </p>
                         </div>
@@ -989,10 +989,10 @@ export function TotemConfigurator() {
                     className="bg-white border border-stroke rounded-md flex flex-col gap-3 p-4"
                   >
                     <div>
-                      <h3 className="font-body font-bold tracking-tight text-lg">
+                      <h3 className="font-bold tracking-tight text-lg">
                         {preset.name}
                       </h3>
-                      <p className="font-body text-xs text-muted mt-0.5">
+                      <p className="text-xs text-muted mt-0.5">
                         {preset.description}
                       </p>
                     </div>
@@ -1011,7 +1011,7 @@ export function TotemConfigurator() {
                       })}
                     </div>
                     <div className="flex items-center justify-between mt-auto pt-1">
-                      <p className="font-mono text-sm">€{presetPrice}</p>
+                      <p className="text-sm">€{presetPrice}</p>
                       <button
                         type="button"
                         onClick={() => {
@@ -1021,7 +1021,7 @@ export function TotemConfigurator() {
                             applyPreset(preset.id);
                           }
                         }}
-                        className="font-body text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
+                        className="text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
                       >
                         Use
                       </button>
@@ -1035,7 +1035,7 @@ export function TotemConfigurator() {
           {/* ── Fixation catalog ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-sm tracking-tight text-muted px-2">
+            <span className="text-sm tracking-tight text-muted px-2">
               Fixation
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
@@ -1053,8 +1053,8 @@ export function TotemConfigurator() {
                     : "border-stroke hover:border-ink",
                 )}
               >
-                <p className="font-body text-sm">{f.name}</p>
-                <p className="font-mono text-xs text-muted">€{f.price}</p>
+                <p className="text-sm">{f.name}</p>
+                <p className="text-xs text-muted">€{f.price}</p>
               </button>
             ))}
           </div>
@@ -1062,7 +1062,7 @@ export function TotemConfigurator() {
           {/* ── Cable ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-body text-sm tracking-tight text-muted px-2">
+            <span className="text-sm tracking-tight text-muted px-2">
               Cable
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
@@ -1087,9 +1087,11 @@ export function TotemConfigurator() {
         <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="flex items-center justify-between gap-6">
             <div>
-              <p className="font-mono text-2xl text-ink">€{totalPrice}</p>
+              <p className="tracking-tight text-4xl text-ink">
+                €{totalPrice}
+              </p>
               {pieces.length > 0 && (
-                <p className="font-body text-xs text-muted mt-0.5">
+                <p className="text-xs text-muted mt-0.5">
                   {pieces.length} piece{pieces.length === 1 ? "" : "s"}
                 </p>
               )}
@@ -1099,7 +1101,7 @@ export function TotemConfigurator() {
                 <button
                   type="button"
                   disabled
-                  className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
+                  className="bg-ink text-canvas text-md tracking-tight py-3 px-8 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
                 >
                   Add to Cart
                 </button>
@@ -1109,7 +1111,7 @@ export function TotemConfigurator() {
                 type="button"
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
+                className="bg-ink text-canvas text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
               >
                 {isAdding ? "Adding to Cart…" : "Add to Cart"}
               </button>
@@ -1118,15 +1120,15 @@ export function TotemConfigurator() {
 
           {/* ── Description ── */}
           <div className="flex flex-col gap-4 border-t border-stroke pt-6">
-            <h2 className="font-body text-3xl font-medium tracking-tighter text-ink">
+            <h2 className="text-3xl font-medium tracking-tighter text-ink">
               TOTEM - Modular Lamp
             </h2>
-            <p className="font-body text-sm text-ink leading-relaxed">
+            <p className="text-sm text-ink leading-relaxed">
               TOTEM is a modular lighting object built from stackable geometric
               forms. Each piece is cast in powder-coated aluminium and connects
               through a central cable — no tools, no hardware.
             </p>
-            <p className="font-body text-sm text-muted leading-relaxed">
+            <p className="text-sm text-muted leading-relaxed">
               Choose your shapes, set the order, pick a finish. The fixation
               mounts flush to ceiling or wall. Cable length determines how low
               the stack hangs.
@@ -1139,10 +1141,10 @@ export function TotemConfigurator() {
                 ["Bulb", "E27, max 40 W"],
               ].map(([label, value]) => (
                 <div key={label}>
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                  <p className="text-[10px] uppercase tracking-wider text-muted">
                     {label}
                   </p>
-                  <p className="font-body text-sm text-ink mt-0.5">{value}</p>
+                  <p className="text-sm text-ink mt-0.5">{value}</p>
                 </div>
               ))}
             </div>
@@ -1155,7 +1157,7 @@ export function TotemConfigurator() {
         createPortal(
           <div
             ref={dragImageRef}
-            className="fixed flex items-center gap-2 font-body text-xs text-ink bg-white px-3 py-1.5 border border-stroke shadow-sm pointer-events-none"
+            className="fixed flex items-center gap-2 text-xs text-ink bg-white px-3 py-1.5 border border-stroke shadow-sm pointer-events-none"
             style={{ top: -9999, left: -9999, zIndex: -1 }}
           >
             <span data-swatch className="w-3 h-3 flex-shrink-0" />
@@ -1169,7 +1171,7 @@ export function TotemConfigurator() {
         createPortal(
           <div
             ref={ghostRef}
-            className="fixed z-50 pointer-events-none flex items-center gap-2 font-body text-xs text-ink bg-white/90 backdrop-blur-sm px-3 py-1.5 border border-stroke shadow-sm"
+            className="fixed z-50 pointer-events-none flex items-center gap-2 text-xs text-ink bg-white/90 backdrop-blur-sm px-3 py-1.5 border border-stroke shadow-sm"
             style={{ display: "none", transform: "translate(-50%, -120%)" }}
           >
             <span data-swatch className="w-3 h-3 flex-shrink-0" />
