@@ -55,7 +55,7 @@ export function AccountNav() {
             ref={(el) => {
               itemRefs.current[i] = el;
             }}
-            className={`relative text-base font-medium tracking-[-0.04em] font-body px-4 py-2 rounded-lg transition-colors ${
+            className={`relative text-base font-medium tracking-[-0.04em] px-4 py-2 rounded-lg transition-colors ${
               isActive ? "text-ink" : "text-light hover:text-ink"
             }`}
           >

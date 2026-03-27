@@ -42,7 +42,7 @@ export function OrderCard({ order }: OrderCardProps) {
       </div>
 
       <div className="flex items-center gap-4">
-        <span className="font-mono text-sm text-ink">
+        <span className="text-sm text-ink">
           {formatPrice(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}
         </span>
         <Link

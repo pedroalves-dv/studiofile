@@ -50,7 +50,7 @@ const inputClass =
 const selectClass =
   "w-full border border-stroke bg-canvas rounded-md px-4 py-3 text-base text-ink focus:outline-none focus:border-ink transition-colors disabled:opacity-50 appearance-none cursor-pointer";
 
-const labelClass = "font-body text-light text-base tracking-tight";
+const labelClass = "text-light text-base tracking-tight";
 
 function lookupCountryName(code: string, countries: LocalizationCountry[]): string {
   return countries.find((c) => c.isoCode === code)?.name ?? code;
@@ -274,7 +274,7 @@ function AddressForm({
           {touched.firstName && errors.firstName && (
             <p
               id="addr-firstName-error"
-              className="text-xs text-error font-mono mt-1"
+              className="text-xs text-error mt-1"
               role="alert"
             >
               {errors.firstName}
@@ -302,7 +302,7 @@ function AddressForm({
           {touched.lastName && errors.lastName && (
             <p
               id="addr-lastName-error"
-              className="text-xs text-error font-mono mt-1"
+              className="text-xs text-error mt-1"
               role="alert"
             >
               {errors.lastName}
@@ -347,7 +347,7 @@ function AddressForm({
             {touched.phone && errors.phone && (
               <p
                 id="addr-phone-error"
-                className="text-xs text-error font-mono mt-1"
+                className="text-xs text-error mt-1"
                 role="alert"
               >
                 {errors.phone}
@@ -379,7 +379,7 @@ function AddressForm({
         {touched.address1 && errors.address1 && (
           <p
             id="addr-address1-error"
-            className="text-xs text-error font-mono mt-1"
+            className="text-xs text-error mt-1"
             role="alert"
           >
             {errors.address1}
@@ -426,7 +426,7 @@ function AddressForm({
         {touched.city && errors.city && (
           <p
             id="addr-city-error"
-            className="text-xs text-error font-mono mt-1"
+            className="text-xs text-error mt-1"
             role="alert"
           >
             {errors.city}
@@ -458,7 +458,7 @@ function AddressForm({
         {touched.country && errors.country && (
           <p
             id="addr-country-error"
-            className="text-xs text-error font-mono mt-1"
+            className="text-xs text-error mt-1"
             role="alert"
           >
             {errors.country}
@@ -501,7 +501,7 @@ function AddressForm({
             {touched.province && errors.province && (
               <p
                 id="addr-province-error"
-                className="text-xs text-error font-mono mt-1"
+                className="text-xs text-error mt-1"
                 role="alert"
               >
                 {errors.province}
@@ -533,7 +533,7 @@ function AddressForm({
         {touched.zip && errors.zip && (
           <p
             id="addr-zip-error"
-            className="text-xs text-error font-mono mt-1"
+            className="text-xs text-error mt-1"
             role="alert"
           >
             {errors.zip}
@@ -639,14 +639,14 @@ export function AddressManager({ customer, countries }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-body tracking-tighter font-medium text-2xl text-light">
+        <h2 className="tracking-tighter font-medium text-2xl text-light">
           Saved addresses
         </h2>
         {mode === "list" && (
           <button
             onClick={() => handleModeChange("add")}
             disabled={pendingId !== null}
-            className="text-base font-medium tracking-[-0.04em] font-body text-light hover:text-ink transition-colors disabled:opacity-50"
+            className="text-base font-medium tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
           >
             + Add new
           </button>
@@ -655,7 +655,7 @@ export function AddressManager({ customer, countries }: Props) {
 
       {mode === "add" && (
         <div className="mb-8">
-          <h3 className="font-body font-medium tracking-tighter text-xl text-ink mb-5">
+          <h3 className="font-medium tracking-tighter text-xl text-ink mb-5">
             New address
           </h3>
           <AddressForm
@@ -688,7 +688,7 @@ export function AddressManager({ customer, countries }: Props) {
               <div key={address.id} className="relative p-6">
                 {isEditing ? (
                   <>
-                    <h3 className="font-body font-medium tracking-tighter text-xl text-ink mb-5">
+                    <h3 className="font-medium tracking-tighter text-xl text-ink mb-5">
                       Edit address
                     </h3>
                     <AddressForm
@@ -706,7 +706,7 @@ export function AddressManager({ customer, countries }: Props) {
                     {/* Confirmation overlay */}
                     {isConfirmingDelete && (
                       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[rgba(250,245,240,0.95)] rounded-md">
-                        <p className="font-body text-base tracking-tight text-ink">
+                        <p className="text-base tracking-tight text-ink">
                           Remove this address?
                         </p>
                         <div className="flex gap-3">
@@ -741,30 +741,30 @@ export function AddressManager({ customer, countries }: Props) {
                           </span>
                         )}
                         {(address.firstName || address.lastName) && (
-                          <p className="font-body text-base font-medium tracking-tight text-ink">
+                          <p className="text-base font-medium tracking-tight text-ink">
                             {[address.firstName, address.lastName]
                               .filter(Boolean)
                               .join(" ")}
                           </p>
                         )}
-                        <p className="font-body text-sm text-muted">
+                        <p className="text-sm text-muted">
                           {address.address1}
                         </p>
                         {address.address2 && (
-                          <p className="font-body text-sm text-muted">
+                          <p className="text-sm text-muted">
                             {address.address2}
                           </p>
                         )}
-                        <p className="font-body text-sm text-muted">
+                        <p className="text-sm text-muted">
                           {[address.city, address.province, address.zip]
                             .filter(Boolean)
                             .join(", ")}
                         </p>
-                        <p className="font-body text-sm text-muted">
+                        <p className="text-sm text-muted">
                           {address.country}
                         </p>
                         {address.phone && (
-                          <p className="font-body text-sm text-muted">
+                          <p className="text-sm text-muted">
                             {address.phone}
                           </p>
                         )}
@@ -774,14 +774,14 @@ export function AddressManager({ customer, countries }: Props) {
                         <button
                           onClick={() => handleModeChange({ edit: address })}
                           disabled={isThisPending}
-                          className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
+                          className="text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => setConfirmingDeleteId(address.id)}
                           disabled={isThisPending}
-                          className="font-body text-base tracking-[-0.04em] text-error hover:text-error/70 transition-colors disabled:opacity-50"
+                          className="text-base tracking-[-0.04em] text-error hover:text-error/70 transition-colors disabled:opacity-50"
                         >
                           Delete
                         </button>
@@ -789,7 +789,7 @@ export function AddressManager({ customer, countries }: Props) {
                           <button
                             onClick={() => handleSetDefault(address.id)}
                             disabled={isThisPending}
-                            className="font-body text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
+                            className="text-base tracking-[-0.04em] text-light hover:text-ink transition-colors disabled:opacity-50"
                           >
                             Set as default
                           </button>

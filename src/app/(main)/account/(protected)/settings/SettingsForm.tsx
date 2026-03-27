@@ -17,7 +17,7 @@ interface SettingsFormProps {
 const inputClass =
   "w-full border border-stroke bg-canvas rounded-md px-4 py-3 text-md text-ink placeholder:text-muted/50 focus:outline-none focus:border-ink transition-colors disabled:opacity-50";
 
-const labelClass = "font-body text-light text-base tracking-tight";
+const labelClass = "text-light text-base tracking-tight";
 
 export function SettingsForm({ customer }: SettingsFormProps) {
   const router = useRouter();
@@ -79,7 +79,7 @@ export function SettingsForm({ customer }: SettingsFormProps) {
     <div>
       {/* Profile section */}
       <section>
-        <h2 className="font-body tracking-tighter font-medium text-2xl text-ink mb-6">
+        <h2 className="tracking-tighter font-medium text-2xl text-ink mb-6">
           Profile
         </h2>
         <form
@@ -148,7 +148,7 @@ export function SettingsForm({ customer }: SettingsFormProps) {
 
       {/* Password section */}
       <section>
-        <h2 className="font-body tracking-tighter font-medium text-2xl text-ink mb-6">
+        <h2 className="tracking-tighter font-medium text-2xl text-ink mb-6">
           Change password
         </h2>
         <form
