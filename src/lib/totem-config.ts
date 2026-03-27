@@ -17,12 +17,14 @@ export interface TotemFixation {
   id: string;
   name: string;
   price: number;
+  height: number;
 }
 
 export interface TotemCable {
   id: string;
   name: string;
   price: number;
+  hex: string;
 }
 
 export interface TotemPreset {
@@ -48,94 +50,76 @@ export interface TotemBuildConfig {
 }
 
 export const TOTEM_SHAPES: TotemShape[] = [
-  { id: 'arch', name: 'Arch', price: 28, height: 52 },
-  { id: 'dome', name: 'Dome', price: 34, height: 44 },
-  { id: 'cylinder', name: 'Cylinder', price: 24, height: 64 },
-  { id: 'cone', name: 'Cone', price: 30, height: 56 },
-  { id: 'wave', name: 'Wave', price: 32, height: 44 },
-  { id: 'sphere', name: 'Sphere', price: 36, height: 44 },
-  { id: 'torus', name: 'Torus', price: 38, height: 28 },
-  { id: 'prism', name: 'Prism', price: 26, height: 52 },
+  { id: "arch", name: "Arch", price: 28, height: 52 },
+  { id: "dome", name: "Dome", price: 34, height: 44 },
 ];
 
 export const TOTEM_COLORS: TotemColor[] = [
-  { id: 'chalk', name: 'Chalk White', hex: '#F2F0EB' },
-  { id: 'stone', name: 'Stone Grey', hex: '#B4B2A9' },
-  { id: 'black', name: 'Matte Black', hex: '#2C2C2A' },
-  { id: 'clay', name: 'Clay', hex: '#C4896A' },
-  { id: 'sage', name: 'Sage', hex: '#7A9E7E' },
-  { id: 'navy', name: 'Navy', hex: '#1E3A5F' },
-  { id: 'cream', name: 'Warm Cream', hex: '#E8E0CF' },
-  { id: 'terracotta', name: 'Terracotta', hex: '#B85C38' },
+  { id: "beige", name: "Beige", hex: "#E8E0CF" },
+  { id: "blue", name: "Blue", hex: "#125bf8" },
+  { id: "pink", name: "Pink", hex: "#dd7db5" },
+  { id: "yellow", name: "Yellow", hex: "#eebd1b" },
 ];
 
 export const TOTEM_FIXATIONS: TotemFixation[] = [
-  { id: 'rosette', name: 'Rosette', price: 12 },
-  { id: 'rail', name: 'Rail', price: 15 },
-  { id: 'canopy', name: 'Canopy', price: 18 },
+  { id: "rosette", name: "Rosette", price: 12, height: 24 },
+  { id: "canopy", name: "Canopy", price: 18, height: 20 },
 ];
 
 export const TOTEM_CABLES: TotemCable[] = [
-  { id: 'black-textile', name: 'Black textile', price: 8 },
-  { id: 'white-textile', name: 'White textile', price: 8 },
-  { id: 'brass', name: 'Brass', price: 14 },
-  { id: 'copper', name: 'Copper', price: 14 },
-  { id: 'transparent', name: 'Transparent', price: 8 },
+  { id: "brass", name: "Brass", price: 14, hex: "#B8860B" },
+  { id: "black-textile", name: "Black Textile", price: 8, hex: "#2C2C2A" },
+  { id: "transparent", name: "Transparent", price: 8, hex: "#D0D0D0" },
 ];
 
 export const TOTEM_PRESETS: TotemPreset[] = [
   {
-    id: 'studio',
-    name: 'The Studio',
-    description: 'A minimal three-piece composition',
+    id: "studio",
+    name: "The Studio",
+    description: "A minimal three-piece composition",
     pieces: [
-      { shapeId: 'arch', colorId: 'chalk', flipped: false },
-      { shapeId: 'dome', colorId: 'stone', flipped: false },
-      { shapeId: 'cylinder', colorId: 'chalk', flipped: false },
+      { shapeId: "arch", colorId: "chalk", flipped: false },
+      { shapeId: "dome", colorId: "stone", flipped: false },
     ],
-    fixationId: 'rosette',
-    cableId: 'black-textile',
+    fixationId: "rosette",
+    cableId: "black-textile",
   },
   {
-    id: 'salon',
-    name: 'The Salon',
-    description: 'A five-piece statement piece',
+    id: "salon",
+    name: "The Salon",
+    description: "A five-piece statement piece",
     pieces: [
-      { shapeId: 'dome', colorId: 'chalk', flipped: false },
-      { shapeId: 'arch', colorId: 'stone', flipped: false },
-      { shapeId: 'dome', colorId: 'black', flipped: false },
-      { shapeId: 'wave', colorId: 'chalk', flipped: false },
-      { shapeId: 'arch', colorId: 'cream', flipped: false },
+      { shapeId: "dome", colorId: "chalk", flipped: false },
+      { shapeId: "arch", colorId: "stone", flipped: false },
+      { shapeId: "dome", colorId: "black", flipped: false },
     ],
-    fixationId: 'rosette',
-    cableId: 'black-textile',
+    fixationId: "rosette",
+    cableId: "brass",
   },
   {
-    id: 'atelier',
-    name: 'The Atelier',
-    description: 'Seven pieces, maximum drama',
+    id: "atelier",
+    name: "The Atelier",
+    description: "Seven pieces, maximum drama",
     pieces: [
-      { shapeId: 'dome', colorId: 'black', flipped: false },
-      { shapeId: 'arch', colorId: 'clay', flipped: false },
-      { shapeId: 'wave', colorId: 'stone', flipped: false },
-      { shapeId: 'dome', colorId: 'chalk', flipped: false },
-      { shapeId: 'arch', colorId: 'black', flipped: false },
-      { shapeId: 'wave', colorId: 'clay', flipped: false },
-      { shapeId: 'cylinder', colorId: 'chalk', flipped: false },
+      { shapeId: "dome", colorId: "black", flipped: false },
+      { shapeId: "arch", colorId: "clay", flipped: false },
+      { shapeId: "dome", colorId: "chalk", flipped: false },
+      { shapeId: "arch", colorId: "black", flipped: false },
+      { shapeId: "arch", colorId: "black", flipped: false },
     ],
-    fixationId: 'rail',
-    cableId: 'black-textile',
+    fixationId: "canopy",
+    cableId: "black-textile",
   },
   {
-    id: 'duo',
-    name: 'The Duo',
-    description: 'Two pieces, compact and refined',
+    id: "duo",
+    name: "The Duo",
+    description: "Two pieces, compact and refined",
     pieces: [
-      { shapeId: 'arch', colorId: 'chalk', flipped: false },
-      { shapeId: 'dome', colorId: 'black', flipped: false },
+      { shapeId: "arch", colorId: "chalk", flipped: false },
+      { shapeId: "dome", colorId: "black", flipped: false },
     ],
-    fixationId: 'rosette',
-    cableId: 'transparent',
+    fixationId: "rosette",
+    cableId: "transparent",
   },
 ];
 
