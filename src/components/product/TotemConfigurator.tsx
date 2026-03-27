@@ -16,39 +16,64 @@ import {
 } from "lucide-react";
 
 import { useToast } from "@/components/common/Toast";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { generateUid } from "@/lib/utils/uid";
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
   TOTEM_FIXATIONS,
   TOTEM_CABLES,
   TOTEM_PRESETS,
+  SHAPE_MAP,
+  COLOR_MAP,
   calcTotemPrice,
   type TotemPiece,
 } from "@/lib/totem-config";
 import { cn } from "@/lib/utils/cn";
 
-const SHAPE_HEIGHTS: Record<string, number> = {
-  arch: 52,
-  dome: 44,
-  cylinder: 64,
-  cone: 56,
-  wave: 44,
-  sphere: 44,
-  torus: 28,
-  prism: 52,
-};
+/* ── Constants ── */
 
+const MAX_PIECES = 12;
 const ZOOM_STEPS = [0.5, 0.65, 0.8, 1.0, 1.2, 1.4];
 const DEFAULT_ZOOM_IDX = 3;
+
+// F3: Pre-compute preset prices at module scope — these are static constants
+const PRESET_PRICES = new Map(
+  TOTEM_PRESETS.map((preset) => [
+    preset.id,
+    calcTotemPrice({
+      pieces: preset.pieces.map((p) => ({
+        uid: "",
+        shapeId: p.shapeId,
+        colorId: p.colorId,
+        flipped: p.flipped,
+      })),
+      fixationId: preset.fixationId,
+      cableId: preset.cableId,
+    }),
+  ]),
+);
 
 type Mode = "build" | "presets";
 
 export function TotemConfigurator() {
   const toast = useToast();
-  const [pieces, setPieces] = useState<TotemPiece[]>([]);
+
+  // U1: Persist config across refresh via useLocalStorage
+  const [pieces, setPieces] = useLocalStorage<TotemPiece[]>(
+    "sf-totem-pieces",
+    [],
+  );
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
-  const [fixationId, setFixationId] = useState(TOTEM_FIXATIONS[0].id);
-  const [cableId, setCableId] = useState(TOTEM_CABLES[0].id);
+  const [fixationId, setFixationId] = useLocalStorage(
+    "sf-totem-fixation",
+    TOTEM_FIXATIONS[0].id,
+  );
+  const [cableId, setCableId] = useLocalStorage(
+    "sf-totem-cable",
+    TOTEM_CABLES[0].id,
+  );
   const [isAdding, setIsAdding] = useState(false);
   const [mode, setMode] = useState<Mode>("build");
   const [draggedUid, setDraggedUid] = useState<string | null>(null);
@@ -59,51 +84,49 @@ export function TotemConfigurator() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Ref on the outer viewer box
   const viewerRef = useRef<HTMLDivElement>(null);
-  // Ref on the visual panel so we can measure its height for fit-to-viewer
   const visualPanelRef = useRef<HTMLDivElement>(null);
-  // Drag ghost refs
   const ghostRef = useRef<HTMLDivElement>(null);
   const dragImageRef = useRef<HTMLDivElement>(null);
+  const piecesRef = useRef(pieces);
+  useEffect(() => {
+    piecesRef.current = pieces;
+  }, [pieces]);
 
-  // Apply data-lenis-prevent only on desktop (sm+) so mobile can scroll past the viewer
+  // B1: Sync selection — if selected piece no longer exists, clear it.
+  // Covers removeShape, applyPreset, and any future mutation paths.
+  useEffect(() => {
+    if (selectedUid && !pieces.find((p) => p.uid === selectedUid)) {
+      setSelectedUid(null);
+    }
+  }, [pieces, selectedUid]);
+
+  // F1: useMediaQuery instead of manual matchMedia
+  const isDesktop = useMediaQuery("(min-width: 640px)");
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer) return;
-    const mq = window.matchMedia("(min-width: 640px)");
-    const sync = () => {
-      if (mq.matches) viewer.setAttribute("data-lenis-prevent", "");
-      else viewer.removeAttribute("data-lenis-prevent");
-    };
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
+    if (isDesktop) viewer.setAttribute("data-lenis-prevent", "");
+    else viewer.removeAttribute("data-lenis-prevent");
+  }, [isDesktop]);
 
-  // Touch drag-to-reorder (mobile) — shared between visual shapes and list items
+  /* ── Touch drag-to-reorder ── */
+
   const touchDragRef = useRef<string | null>(null);
 
-  const updateGhost = useCallback(
-    (uid: string, x: number, y: number) => {
-      const el = ghostRef.current;
-      if (!el) return;
-      const piece = pieces.find((p) => p.uid === uid);
-      const shape = TOTEM_SHAPES.find((s) => s.id === piece?.shapeId);
-      const color = TOTEM_COLORS.find((c) => c.id === piece?.colorId);
-      const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
-      const label = el.querySelector("[data-label]") as HTMLElement | null;
-      if (swatch) swatch.style.backgroundColor = color?.hex ?? "#F2F0EB";
-      if (label) label.textContent = shape?.name ?? piece?.shapeId ?? "";
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      el.style.display = "flex";
-    },
-    [pieces],
-  );
-
-  const hideGhost = useCallback(() => {
-    if (ghostRef.current) ghostRef.current.style.display = "none";
+  const updateGhost = useCallback((uid: string, x: number, y: number) => {
+    const el = ghostRef.current;
+    if (!el) return;
+    const piece = piecesRef.current.find((p) => p.uid === uid);
+    const shape = piece ? SHAPE_MAP.get(piece.shapeId) : undefined;
+    const color = piece ? COLOR_MAP.get(piece.colorId) : undefined;
+    const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
+    const label = el.querySelector("[data-label]") as HTMLElement | null;
+    if (swatch) swatch.style.backgroundColor = color?.hex ?? "#F2F0EB";
+    if (label) label.textContent = shape?.name ?? piece?.shapeId ?? "";
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.display = "flex";
   }, []);
 
   const startTouchDrag = useCallback(
@@ -115,14 +138,15 @@ export function TotemConfigurator() {
     [updateGhost],
   );
 
+  // B2: Register touch listeners once on mount — guard inside handlers with touchDragRef
   useEffect(() => {
     const viewer = viewerRef.current;
-    if (!viewer || !draggedUid || !touchDragRef.current) return;
+    if (!viewer) return;
 
     const onMove = (e: TouchEvent) => {
+      if (!touchDragRef.current) return;
       e.preventDefault();
       const touch = e.touches[0];
-      // Move ghost to follow finger
       const ghost = ghostRef.current;
       if (ghost) {
         ghost.style.left = `${touch.clientX}px`;
@@ -146,7 +170,7 @@ export function TotemConfigurator() {
     const onEnd = () => {
       touchDragRef.current = null;
       setDraggedUid(null);
-      hideGhost();
+      if (ghostRef.current) ghostRef.current.style.display = "none";
     };
 
     viewer.addEventListener("touchmove", onMove, { passive: false });
@@ -157,21 +181,56 @@ export function TotemConfigurator() {
       viewer.removeEventListener("touchend", onEnd);
       viewer.removeEventListener("touchcancel", onEnd);
     };
-  }, [draggedUid, hideGhost]);
+    // Intentionally mount-only — handlers guard with touchDragRef.current,
+    // adding deps would re-register listeners during active drags (B2)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const zoom = ZOOM_STEPS[zoomIdx];
 
+  // B3: totalStackHeight computed before fitToViewer so it reads cleanly
+  const totalStackHeight =
+    pieces.length === 0
+      ? 0
+      : pieces.reduce(
+          (sum, p) => sum + (SHAPE_MAP.get(p.shapeId)?.height ?? 44),
+          0,
+        ) +
+        (pieces.length - 1) * 4;
+
+  function fitToViewer() {
+    if (pieces.length === 0) return;
+    const el = visualPanelRef.current;
+    const containerHeight = el?.clientHeight ?? 400;
+    const available = containerHeight - 80;
+    const ideal = available / totalStackHeight;
+    const closestIdx = ZOOM_STEPS.reduce(
+      (best, step, idx) =>
+        Math.abs(step - ideal) < Math.abs(ZOOM_STEPS[best] - ideal)
+          ? idx
+          : best,
+      0,
+    );
+    setZoomIdx(closestIdx);
+    el?.scrollTo({ top: 0 });
+  }
+
+  // B4: Guard addShape with MAX_PIECES
   function addShape(shapeId: string) {
-    const uid = Math.random().toString(36).slice(2, 10);
+    if (pieces.length >= MAX_PIECES) {
+      toast.info(`Maximum ${MAX_PIECES} pieces allowed.`);
+      return;
+    }
+    const uid = generateUid();
     setPieces((prev) => [
       ...prev,
       { uid, shapeId, colorId: "chalk", flipped: false },
     ]);
   }
 
+  // B1: No manual selection clearing — synced by useEffect above
   function removeShape(uid: string) {
     setPieces((prev) => prev.filter((p) => p.uid !== uid));
-    if (selectedUid === uid) setSelectedUid(null);
   }
 
   function setColorForPiece(uid: string, colorId: string) {
@@ -227,7 +286,7 @@ export function TotemConfigurator() {
     if (!preset) return;
     setPieces(
       preset.pieces.map((p) => ({
-        uid: Math.random().toString(36).slice(2, 10),
+        uid: generateUid(),
         shapeId: p.shapeId,
         colorId: p.colorId,
         flipped: p.flipped,
@@ -238,23 +297,22 @@ export function TotemConfigurator() {
     setSelectedUid(null);
   }
 
-  // Snaps to the closest ZOOM_STEPS entry that makes the full stack fit the panel
-  function fitToViewer() {
-    if (pieces.length === 0) return;
-    const el = visualPanelRef.current;
-    const containerHeight = el?.clientHeight ?? 400;
-    const available = containerHeight - 80; // py-6 padding + button row clearance
-    const ideal = available / totalStackHeight;
-    const closestIdx = ZOOM_STEPS.reduce(
-      (best, step, idx) =>
-        Math.abs(step - ideal) < Math.abs(ZOOM_STEPS[best] - ideal)
-          ? idx
-          : best,
-      0,
-    );
-    setZoomIdx(closestIdx);
-    el?.scrollTo({ top: 0 });
-  }
+  // R2: Shared handleDragStart — used by visual stack and list panel
+  const handleDragStart = useCallback(
+    (piece: TotemPiece, e: React.DragEvent) => {
+      setDraggedUid(piece.uid);
+      const el = dragImageRef.current;
+      if (!el) return;
+      const shape = SHAPE_MAP.get(piece.shapeId);
+      const color = COLOR_MAP.get(piece.colorId);
+      const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
+      const label = el.querySelector("[data-label]") as HTMLElement | null;
+      if (swatch) swatch.style.backgroundColor = color?.hex ?? "#F2F0EB";
+      if (label) label.textContent = shape?.name ?? piece.shapeId;
+      e.dataTransfer.setDragImage(el, 40, 20);
+    },
+    [],
+  );
 
   const handleAddToCart = async () => {
     if (pieces.length === 0) return;
@@ -281,34 +339,27 @@ export function TotemConfigurator() {
     }
   };
 
-  const totalStackHeight =
-    pieces.length === 0
-      ? 0
-      : pieces.reduce((sum, p) => sum + (SHAPE_HEIGHTS[p.shapeId] ?? 44), 0) +
-        (pieces.length - 1) * 4;
-
   const totalPrice = calcTotemPrice({ pieces, fixationId, cableId });
   const selectedPiece = pieces.find((p) => p.uid === selectedUid);
 
   return (
     <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
       {/* ── Product title — mobile only, above viewer ── */}
-      <h1 className="sm:hidden text-left text-6xl font-display tracking-[-0.04em] leading-[4rem] whitespace-nowrap mb-4">
+      <h1 className="sm:hidden text-left text-5xl font-display tracking-tight mb-2">
         TOTEM
       </h1>
 
       {/* ── Section A: Viewer + Panels ── */}
       <div
         ref={viewerRef}
-        className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[500px] sm:h-[680px] mb-6"
+        className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[480px] sm:h-[680px] mb-6"
         onClick={() => setSelectedUid(null)}
       >
-        {/* Inner row: visual panel + list panel */}
+        {/* Inner row: visual panel + list/action panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
           {/* ── Left: visual stack ── */}
-          {/* Outer wrapper: not scrollable, anchors the zoom buttons */}
           <div className="relative flex-1 min-h-0 sm:border-r border-stroke">
-            {/* Zoom controls — always visible, outside scroll container */}
+            {/* Zoom controls */}
             <div
               className="absolute top-2 left-2 flex flex-col gap-1 z-10"
               onClick={(e) => e.stopPropagation()}
@@ -347,47 +398,51 @@ export function TotemConfigurator() {
             {/* Scrollable inner panel */}
             <div
               ref={visualPanelRef}
-              className="w-full h-full flex items-center justify-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
+              className="relative w-full h-full flex items-center justify-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
             >
               {pieces.length === 0 ? (
-                <div className="w-0.5 border-l-2 border-dashed border-stroke h-40" />
+                <>
+                  {/* Mobile empty-state helper */}
+                  <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none">
+                    <p className="font-body font-medium text-lg tracking-tighter text-muted">
+                      Add shapes to start building
+                    </p>
+                    <p className="absolute top-4 right-2 font-body text-xs text-muted text-right">
+                      Reorder &amp; flip →
+                    </p>
+                    <p className="absolute bottom-2 inset-x-0 text-center font-body text-xs text-muted">
+                      Pick a color ↓
+                    </p>
+                  </div>
+                  {/* Desktop empty-state helper */}
+                  <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none">
+                    <p className="font-body font-medium text-lg tracking-tighter text-muted">
+                      Add shapes to start building
+                    </p>
+                    <p className="absolute top-4 right-2 font-body text-xs text-muted text-right">
+                      Piece list &amp; controls →
+                    </p>
+                    <p className="absolute bottom-2 inset-x-0 text-center font-body text-xs text-muted">
+                      Pick a color ↓
+                    </p>
+                  </div>
+                </>
               ) : (
                 <div
                   className="flex flex-col items-center"
                   style={{ gap: 4 * zoom }}
                 >
                   {pieces.map((piece) => {
-                    const shape = TOTEM_SHAPES.find(
-                      (s) => s.id === piece.shapeId,
-                    );
-                    const color = TOTEM_COLORS.find(
-                      (c) => c.id === piece.colorId,
-                    );
-                    const height = SHAPE_HEIGHTS[piece.shapeId] ?? 44;
+                    const shape = SHAPE_MAP.get(piece.shapeId);
+                    const color = COLOR_MAP.get(piece.colorId);
+                    const height = shape?.height ?? 44;
                     const isSelected = selectedUid === piece.uid;
                     return (
                       <div
                         key={piece.uid}
                         data-uid={piece.uid}
                         draggable
-                        onDragStart={(e) => {
-                          setDraggedUid(piece.uid);
-                          if (dragImageRef.current) {
-                            const el = dragImageRef.current;
-                            const swatch = el.querySelector(
-                              "[data-swatch]",
-                            ) as HTMLElement | null;
-                            const label = el.querySelector(
-                              "[data-label]",
-                            ) as HTMLElement | null;
-                            if (swatch)
-                              swatch.style.backgroundColor =
-                                color?.hex ?? "#F2F0EB";
-                            if (label)
-                              label.textContent = shape?.name ?? piece.shapeId;
-                            e.dataTransfer.setDragImage(el, 40, 20);
-                          }
-                        }}
+                        onDragStart={(e) => handleDragStart(piece, e)}
                         onDragEnd={() => setDraggedUid(null)}
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={() => handleDrop(piece.uid)}
@@ -418,155 +473,182 @@ export function TotemConfigurator() {
             </div>
           </div>
 
-          {/* ── Right: named list ── */}
-          <div
-            className={cn(
-              "flex-shrink-0 flex flex-col min-h-0 border-l border-stroke transition-all duration-200",
-              showList ? "w-fit" : "w-fit",
-            )}
-          >
-            {/* Toggle button — always visible */}
+          {/* ── Right panel ── */}
+          <div className="flex-shrink-0 flex flex-col min-h-0 border-l border-stroke transition-all duration-200 w-fit">
+            {/* U2: Mobile — compact action column with large touch targets */}
             <div
-              className="flex justify-end p-1 border-b border-stroke"
+              className="flex sm:hidden flex-col items-center gap-1 p-1.5"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 type="button"
-                aria-label={showList ? "Hide list" : "Show list"}
-                onClick={() => setShowList((v) => !v)}
-                className="p-1 text-muted hover:text-ink transition-colors"
+                aria-label="Move piece up"
+                disabled={
+                  !selectedUid ||
+                  pieces.findIndex((p) => p.uid === selectedUid) <= 0
+                }
+                onClick={() => selectedUid && moveUp(selectedUid)}
+                className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
-                <ChevronRight
-                  size={18}
-                  className={cn(
-                    "transition-transform duration-200",
-                    !showList && "rotate-180",
-                  )}
-                />
+                <ChevronUp size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Move piece down"
+                disabled={
+                  !selectedUid ||
+                  pieces.findIndex((p) => p.uid === selectedUid) >=
+                    pieces.length - 1
+                }
+                onClick={() => selectedUid && moveDown(selectedUid)}
+                className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronDown size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Flip shape"
+                disabled={!selectedUid}
+                onClick={() => selectedUid && flipPiece(selectedUid)}
+                className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <RotateCcw size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Remove piece"
+                disabled={!selectedUid}
+                onClick={() => selectedUid && removeShape(selectedUid)}
+                className="p-3 text-muted hover:text-error disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <Trash2 size={18} />
               </button>
             </div>
 
-            {/* Collapsible list */}
-            {showList && (
+            {/* Desktop — full list panel */}
+            <div className="hidden sm:flex flex-col flex-1 min-h-0">
+              {/* Toggle button */}
               <div
-                className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
-                data-lenis-prevent-touch
+                className="flex justify-end p-1 border-b border-stroke"
+                onClick={(e) => e.stopPropagation()}
               >
-                {pieces.length === 0 ? (
-                  <p className="font-body text-sm text-muted px-4 py-4">
-                    Add shapes →
-                  </p>
-                ) : (
-                  pieces.map((piece, idx) => {
-                    const shape = TOTEM_SHAPES.find(
-                      (s) => s.id === piece.shapeId,
-                    );
-                    const color = TOTEM_COLORS.find(
-                      (c) => c.id === piece.colorId,
-                    );
-                    const isSelected = selectedUid === piece.uid;
-                    return (
-                      <div
-                        key={piece.uid}
-                        data-uid={piece.uid}
-                        draggable
-                        onDragStart={(e) => {
-                          setDraggedUid(piece.uid);
-                          if (dragImageRef.current) {
-                            const el = dragImageRef.current;
-                            const swatch = el.querySelector(
-                              "[data-swatch]",
-                            ) as HTMLElement | null;
-                            const labelEl = el.querySelector(
-                              "[data-label]",
-                            ) as HTMLElement | null;
-                            if (swatch)
-                              swatch.style.backgroundColor =
-                                color?.hex ?? "#F2F0EB";
-                            if (labelEl)
-                              labelEl.textContent =
-                                shape?.name ?? piece.shapeId;
-                            e.dataTransfer.setDragImage(el, 40, 20);
-                          }
-                        }}
-                        onDragEnd={() => setDraggedUid(null)}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={() => handleDrop(piece.uid)}
-                        className={cn(
-                          "flex items-center gap-3 sm:gap-2 px-2 sm:px-3 py-4 cursor-pointer transition-colors border-b-4",
-                          isSelected
-                            ? "bg-lighter"
-                            : "[@media(hover:hover)]:hover:bg-lighter",
-                          draggedUid === piece.uid && "opacity-50",
-                        )}
-                        style={{ borderBottomColor: color?.hex ?? "#E5E0D8" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedUid(isSelected ? null : piece.uid);
-                        }}
-                      >
-                        {/* Drag handle */}
+                <button
+                  type="button"
+                  aria-label={showList ? "Hide list" : "Show list"}
+                  onClick={() => setShowList((v) => !v)}
+                  className="p-1 text-muted hover:text-ink transition-colors"
+                >
+                  <ChevronRight
+                    size={18}
+                    className={cn(
+                      "transition-transform duration-200",
+                      !showList && "rotate-180",
+                    )}
+                  />
+                </button>
+              </div>
+
+              {/* Collapsible list */}
+              {showList && (
+                <div
+                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
+                  data-lenis-prevent-touch
+                >
+                  {pieces.length === 0 ? (
+                    <p className="font-body text-sm text-muted px-4 py-4">
+                      Add shapes →
+                    </p>
+                  ) : (
+                    pieces.map((piece, idx) => {
+                      const shape = SHAPE_MAP.get(piece.shapeId);
+                      const color = COLOR_MAP.get(piece.colorId);
+                      const isSelected = selectedUid === piece.uid;
+                      return (
                         <div
-                          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none text-light"
-                          onTouchStart={(e) => {
-                            e.stopPropagation();
-                            startTouchDrag(piece.uid, e.touches[0]);
+                          key={piece.uid}
+                          data-uid={piece.uid}
+                          draggable
+                          onDragStart={(e) => handleDragStart(piece, e)}
+                          onDragEnd={() => setDraggedUid(null)}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={() => handleDrop(piece.uid)}
+                          className={cn(
+                            "flex items-center gap-3 sm:gap-2 px-2 sm:px-3 py-4 cursor-pointer transition-colors border-b-4",
+                            isSelected
+                              ? "bg-lighter"
+                              : "[@media(hover:hover)]:hover:bg-lighter",
+                            draggedUid === piece.uid && "opacity-50",
+                          )}
+                          style={{
+                            borderBottomColor: color?.hex ?? "#E5E0D8",
                           }}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedUid(isSelected ? null : piece.uid);
+                          }}
                         >
-                          <GripVertical size={14} />
-                        </div>
-                        <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
-                          {shape?.name ?? piece.shapeId}
-                        </p>
-                        <div
-                          className="flex flex-col items-end gap-0.5 flex-shrink-0"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="flex items-center gap-2">
-                            {/* Chevrons hidden on mobile — use drag handle instead */}
-                            <button
-                              type="button"
-                              aria-label="Move piece up"
-                              disabled={idx === 0}
-                              onClick={() => moveUp(piece.uid)}
-                              className="hidden sm:block p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                            >
-                              <ChevronUp size={12} />
-                            </button>
-                            <button
-                              type="button"
-                              aria-label="Move piece down"
-                              disabled={idx === pieces.length - 1}
-                              onClick={() => moveDown(piece.uid)}
-                              className="hidden sm:block p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
-                            >
-                              <ChevronDown size={12} />
-                            </button>
-                            <button
-                              type="button"
-                              aria-label="Flip shape"
-                              onClick={() => flipPiece(piece.uid)}
-                              className="p-0.5 text-muted hover:text-ink transition-colors"
-                            >
-                              <RotateCcw size={12} />
-                            </button>
-                            <button
-                              type="button"
-                              aria-label="Remove piece"
-                              onClick={() => removeShape(piece.uid)}
-                              className="p-0.5 text-muted hover:text-error transition-colors"
-                            >
-                              <Trash2 size={12} />
-                            </button>
+                          {/* Drag handle */}
+                          <div
+                            className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none text-light"
+                            onTouchStart={(e) => {
+                              e.stopPropagation();
+                              startTouchDrag(piece.uid, e.touches[0]);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <GripVertical size={14} />
+                          </div>
+                          <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
+                            {shape?.name ?? piece.shapeId}
+                          </p>
+                          <div
+                            className="flex flex-col items-end gap-0.5 flex-shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                aria-label="Move piece up"
+                                disabled={idx === 0}
+                                onClick={() => moveUp(piece.uid)}
+                                className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              >
+                                <ChevronUp size={12} />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label="Move piece down"
+                                disabled={idx === pieces.length - 1}
+                                onClick={() => moveDown(piece.uid)}
+                                className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+                              >
+                                <ChevronDown size={12} />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label="Flip shape"
+                                onClick={() => flipPiece(piece.uid)}
+                                className="p-0.5 text-muted hover:text-ink transition-colors"
+                              >
+                                <RotateCcw size={12} />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label="Remove piece"
+                                onClick={() => removeShape(piece.uid)}
+                                className="p-0.5 text-muted hover:text-error transition-colors"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            )}
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -605,9 +687,6 @@ export function TotemConfigurator() {
 
         {/* ── Color picker — always pinned at bottom ── */}
         <div className="flex-shrink-0 border-t border-stroke px-4 py-3">
-          {/* <p className="font-body text-sm tracking-tight text-muted mb-2">
-            Colors
-          </p> */}
           <div
             className={cn(
               "flex flex-wrap gap-1.5 transition-opacity",
@@ -636,7 +715,7 @@ export function TotemConfigurator() {
         </div>
       </div>
 
-      {/* ── Section C: Shape catalog with mode tabs ── */}
+      {/* ── Section B: Shape catalog with mode tabs ── */}
       <div className="flex flex-col gap-6">
         <h1 className="hidden sm:block text-left sm:text-8xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
           TOTEM
@@ -663,7 +742,7 @@ export function TotemConfigurator() {
 
           {/* Build your own tab */}
           {mode === "build" && (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-1">
+            <div className="grid grid-cols-3 gap-1">
               {TOTEM_SHAPES.map((shape) => (
                 <button
                   key={shape.id}
@@ -694,16 +773,7 @@ export function TotemConfigurator() {
           {mode === "presets" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {TOTEM_PRESETS.map((preset) => {
-                const presetPrice = calcTotemPrice({
-                  pieces: preset.pieces.map((p) => ({
-                    uid: "",
-                    shapeId: p.shapeId,
-                    colorId: p.colorId,
-                    flipped: p.flipped,
-                  })),
-                  fixationId: preset.fixationId,
-                  cableId: preset.cableId,
-                });
+                const presetPrice = PRESET_PRICES.get(preset.id) ?? 0;
                 return (
                   <div
                     key={preset.id}
@@ -719,14 +789,14 @@ export function TotemConfigurator() {
                     </div>
                     <div className="flex gap-1 flex-wrap">
                       {preset.pieces.map((p, i) => {
-                        const color = TOTEM_COLORS.find(
-                          (c) => c.id === p.colorId,
-                        );
+                        const color = COLOR_MAP.get(p.colorId);
                         return (
                           <span
                             key={i}
                             className="w-3 h-3 inline-block"
-                            style={{ backgroundColor: color?.hex ?? "#F2F0EB" }}
+                            style={{
+                              backgroundColor: color?.hex ?? "#F2F0EB",
+                            }}
                           />
                         );
                       })}
@@ -754,7 +824,7 @@ export function TotemConfigurator() {
           )}
         </div>
 
-        {/* ── Section B: System selectors + Price + Add to Cart ── */}
+        {/* ── Section C: System selectors + Price + Add to Cart ── */}
         <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
@@ -800,14 +870,22 @@ export function TotemConfigurator() {
                 </p>
               )}
             </div>
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              disabled={pieces.length === 0 || isAdding}
-              className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
-            >
-              {isAdding ? "Adding to Cart…" : "Add to Cart"}
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={pieces.length === 0 || isAdding}
+                className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
+              >
+                {isAdding ? "Adding to Cart…" : "Add to Cart"}
+              </button>
+              {/* U3: Helper text when cart button is disabled */}
+              {pieces.length === 0 && (
+                <p className="font-body text-xs text-muted">
+                  Add shapes to get started
+                </p>
+              )}
+            </div>
           </div>
 
           {/* ── Description ── */}

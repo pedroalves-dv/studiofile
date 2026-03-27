@@ -4,6 +4,7 @@ export interface TotemShape {
   id: string;
   name: string;
   price: number;
+  height: number; // visual height in px (used by configurator stack)
 }
 
 export interface TotemColor {
@@ -47,14 +48,14 @@ export interface TotemBuildConfig {
 }
 
 export const TOTEM_SHAPES: TotemShape[] = [
-  { id: 'arch', name: 'Arch', price: 28 },
-  { id: 'dome', name: 'Dome', price: 34 },
-  { id: 'cylinder', name: 'Cylinder', price: 24 },
-  { id: 'cone', name: 'Cone', price: 30 },
-  { id: 'wave', name: 'Wave', price: 32 },
-  { id: 'sphere', name: 'Sphere', price: 36 },
-  { id: 'torus', name: 'Torus', price: 38 },
-  { id: 'prism', name: 'Prism', price: 26 },
+  { id: 'arch', name: 'Arch', price: 28, height: 52 },
+  { id: 'dome', name: 'Dome', price: 34, height: 44 },
+  { id: 'cylinder', name: 'Cylinder', price: 24, height: 64 },
+  { id: 'cone', name: 'Cone', price: 30, height: 56 },
+  { id: 'wave', name: 'Wave', price: 32, height: 44 },
+  { id: 'sphere', name: 'Sphere', price: 36, height: 44 },
+  { id: 'torus', name: 'Torus', price: 38, height: 28 },
+  { id: 'prism', name: 'Prism', price: 26, height: 52 },
 ];
 
 export const TOTEM_COLORS: TotemColor[] = [
@@ -137,6 +138,9 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     cableId: 'transparent',
   },
 ];
+
+export const SHAPE_MAP = new Map(TOTEM_SHAPES.map((s) => [s.id, s]));
+export const COLOR_MAP = new Map(TOTEM_COLORS.map((c) => [c.id, c]));
 
 export function calcTotemPrice(config: TotemBuildConfig): number {
   let total = 0;
