@@ -33,6 +33,7 @@ import {
   type TotemCable,
   type TotemPiece,
 } from "@/lib/totem-config";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/utils/cn";
 
 /* ── Constants ── */
@@ -76,33 +77,59 @@ export function TotemConfigurator() {
   useEffect(() => setMounted(true), []);
 
   // Dynamic catalog — loaded from Shopify on mount, falls back to static arrays
-  const [catalogShapes, setCatalogShapes] = useState<TotemShape[]>(TOTEM_SHAPES);
-  const [catalogFixations, setCatalogFixations] = useState<TotemFixation[]>(TOTEM_FIXATIONS);
-  const [catalogCables, setCatalogCables] = useState<TotemCable[]>(TOTEM_CABLES);
+  const [catalogShapes, setCatalogShapes] =
+    useState<TotemShape[]>(TOTEM_SHAPES);
+  const [catalogFixations, setCatalogFixations] =
+    useState<TotemFixation[]>(TOTEM_FIXATIONS);
+  const [catalogCables, setCatalogCables] =
+    useState<TotemCable[]>(TOTEM_CABLES);
   const [catalogLoading, setCatalogLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/totem-catalog')
-      .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+    fetch("/api/totem-catalog")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         if (cancelled) return;
-        if (Array.isArray(data.shapes) && data.shapes.length > 0) setCatalogShapes(data.shapes);
-        if (Array.isArray(data.fixations) && data.fixations.length > 0) setCatalogFixations(data.fixations);
-        if (Array.isArray(data.cables) && data.cables.length > 0) setCatalogCables(data.cables);
+        if (Array.isArray(data.shapes) && data.shapes.length > 0)
+          setCatalogShapes(data.shapes);
+        if (Array.isArray(data.fixations) && data.fixations.length > 0)
+          setCatalogFixations(data.fixations);
+        if (Array.isArray(data.cables) && data.cables.length > 0)
+          setCatalogCables(data.cables);
       })
-      .catch((err) => console.error('[TotemConfigurator] catalog fetch failed:', err))
-      .finally(() => { if (!cancelled) setCatalogLoading(false); });
-    return () => { cancelled = true; };
+      .catch((err) =>
+        console.error("[TotemConfigurator] catalog fetch failed:", err),
+      )
+      .finally(() => {
+        if (!cancelled) setCatalogLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const shapeMap    = useMemo(() => new Map(catalogShapes.map((s) => [s.id, s])),    [catalogShapes]);
-  const fixationMap = useMemo(() => new Map(catalogFixations.map((f) => [f.id, f])), [catalogFixations]);
-  const cableMap    = useMemo(() => new Map(catalogCables.map((c) => [c.id, c])),    [catalogCables]);
+  const shapeMap = useMemo(
+    () => new Map(catalogShapes.map((s) => [s.id, s])),
+    [catalogShapes],
+  );
+  const fixationMap = useMemo(
+    () => new Map(catalogFixations.map((f) => [f.id, f])),
+    [catalogFixations],
+  );
+  const cableMap = useMemo(
+    () => new Map(catalogCables.map((c) => [c.id, c])),
+    [catalogCables],
+  );
 
   // Ref for stale-closure-safe access inside [] dep callbacks (updateGhost, handleDragStart)
   const shapeMapRef = useRef(shapeMap);
-  useEffect(() => { shapeMapRef.current = shapeMap; }, [shapeMap]);
+  useEffect(() => {
+    shapeMapRef.current = shapeMap;
+  }, [shapeMap]);
 
   // Preset prices recomputed after catalog loads
   const presetPrices = useMemo(
@@ -112,12 +139,19 @@ export function TotemConfigurator() {
           preset.id,
           calcTotemPrice(
             {
-              pieces: preset.pieces.map((p) => ({ uid: '', shapeId: p.shapeId, colorId: p.colorId, flipped: p.flipped })),
+              pieces: preset.pieces.map((p) => ({
+                uid: "",
+                shapeId: p.shapeId,
+                colorId: p.colorId,
+                flipped: p.flipped,
+              })),
               fixationId: preset.fixationId,
               fixationColorId: TOTEM_COLORS[0].id,
               cableId: preset.cableId,
             },
-            shapeMap, fixationMap, cableMap,
+            shapeMap,
+            fixationMap,
+            cableMap,
           ),
         ]),
       ),
@@ -393,7 +427,9 @@ export function TotemConfigurator() {
 
   const totalPrice = calcTotemPrice(
     { pieces, fixationId, fixationColorId, cableId },
-    shapeMap, fixationMap, cableMap,
+    shapeMap,
+    fixationMap,
+    cableMap,
   );
 
   return (
@@ -478,10 +514,7 @@ export function TotemConfigurator() {
                 {/* Cable + shapes + bulb container */}
                 <div
                   className="relative flex flex-col items-center"
-                  style={{
-                    gap: 4 * zoom,
-                    minHeight: 60 * zoom,
-                  }}
+                  style={{ gap: 4 * zoom }}
                 >
                   {/* Cable line — absolute, spans full height of container */}
                   {cableId === "transparent" ? (
@@ -505,8 +538,11 @@ export function TotemConfigurator() {
                     />
                   )}
 
-                  {/* Shape pieces */}
-                  {pieces.map((piece) => {
+                  {/* Gap spacer — always-visible cable segment below the fixation */}
+                  <div style={{ height: 36 * zoom, flexShrink: 0 }} />
+
+                  {/* Shape pieces — reversed so newest piece is nearest the fixation */}
+                  {[...pieces].reverse().map((piece) => {
                     const shape = shapeMap.get(piece.shapeId);
                     const color = COLOR_MAP.get(piece.colorId);
                     const height = shape?.height ?? 44;
@@ -525,9 +561,7 @@ export function TotemConfigurator() {
                         }
                         onClick={(e) => {
                           e.stopPropagation();
-                          setSelectedElement(
-                            isSelected ? null : piece.uid,
-                          );
+                          setSelectedElement(isSelected ? null : piece.uid);
                         }}
                         className={cn(
                           "cursor-grab active:cursor-grabbing transition-all",
@@ -547,7 +581,7 @@ export function TotemConfigurator() {
                     );
                   })}
 
-                  {/* Bulb */}
+                  {/* Bulb — always at the bottom of the cable */}
                   <div
                     className="flex-shrink-0 pointer-events-none"
                     style={{
@@ -566,27 +600,29 @@ export function TotemConfigurator() {
               {pieces.length === 0 && (
                 <>
                   {/* Mobile empty-state helper */}
-                  <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none">
-                    <p className="font-body font-medium text-lg tracking-tighter text-muted">
-                      Add shapes to start building
+                  <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
+                    <p className="font-body font-medium text-xl tracking-tighter text-ink">
+                      Add shapes &amp; start building!
                     </p>
-                    <p className="absolute top-4 right-2 font-body text-xs text-muted text-right">
+                    <p className="absolute top-20 right-2 font-body text-sm tracking-tight text-muted text-right">
                       Reorder &amp; flip →
                     </p>
-                    <p className="absolute bottom-2 inset-x-0 text-center font-body text-xs text-muted">
-                      Pick a color ↓
+                    <p className="absolute bottom-2 left-8 inset-x-0 text-left font-body text-sm tracking-tight leading-tight text-muted">
+                      Select a shape <br />
+                      &amp; Pick a color ↓
                     </p>
                   </div>
                   {/* Desktop empty-state helper */}
-                  <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none">
-                    <p className="font-body font-medium text-lg tracking-tighter text-muted">
-                      Add shapes to start building
+                  <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
+                    <p className="font-body font-medium text-2xl tracking-tighter text-ink">
+                      Add shapes &amp; start building!
                     </p>
-                    <p className="absolute top-4 right-2 font-body text-xs text-muted text-right">
+                    <p className="absolute top-24 right-2 font-body text-sm tracking-tight leading-tight text-muted text-right">
                       Piece list &amp; controls →
                     </p>
-                    <p className="absolute bottom-2 inset-x-0 text-center font-body text-xs text-muted">
-                      Pick a color ↓
+                    <p className="absolute bottom-2 left-8 inset-x-0 text-left font-body text-sm tracking-tight leading-tight text-muted">
+                      Select a shape <br />
+                      &amp; Pick a color ↓
                     </p>
                   </div>
                 </>
@@ -595,7 +631,12 @@ export function TotemConfigurator() {
           </div>
 
           {/* ── Right panel ── */}
-          <div className="flex-shrink-0 flex flex-col min-h-0 border-l border-stroke transition-all duration-200 w-fit">
+          <div
+            className={cn(
+              "flex-shrink-0 flex flex-col min-h-0 border-l border-stroke transition-all duration-200",
+              showList ? "sm:w-52" : "sm:w-fit",
+            )}
+          >
             {/* U2: Mobile — compact action column with large touch targets */}
             <div
               className="flex sm:hidden flex-col items-center gap-1 p-1.5"
@@ -687,9 +728,7 @@ export function TotemConfigurator() {
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedElement(
-                        fixationSelected ? null : "fixation",
-                      );
+                      setSelectedElement(fixationSelected ? null : "fixation");
                     }}
                   >
                     <div
@@ -706,7 +745,7 @@ export function TotemConfigurator() {
 
                   {/* Shape pieces */}
                   {pieces.length === 0 ? (
-                    <p className="font-body text-sm text-muted px-4 py-4">
+                    <p className="absolute right-2 top-52 font-body text-sm text-muted px-4 py-4">
                       Add shapes →
                     </p>
                   ) : (
@@ -724,7 +763,7 @@ export function TotemConfigurator() {
                           onDragOver={(e) => e.preventDefault()}
                           onDrop={() => handleDrop(piece.uid)}
                           className={cn(
-                            "flex items-center gap-3 sm:gap-2 px-2 sm:px-3 py-4 cursor-pointer transition-colors border-b-4",
+                            "flex items-center sm:gap-2 px-2 py-4 cursor-pointer transition-colors border-b-4",
                             isSelected
                               ? "bg-lighter"
                               : "[@media(hover:hover)]:hover:bg-lighter",
@@ -735,9 +774,7 @@ export function TotemConfigurator() {
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedElement(
-                              isSelected ? null : piece.uid,
-                            );
+                            setSelectedElement(isSelected ? null : piece.uid);
                           }}
                         >
                           {/* Drag handle */}
@@ -749,7 +786,7 @@ export function TotemConfigurator() {
                             }}
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <GripVertical size={14} />
+                            <GripVertical size={18} />
                           </div>
                           <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
                             {shape?.name ?? piece.shapeId}
@@ -766,7 +803,7 @@ export function TotemConfigurator() {
                                 onClick={() => moveUp(piece.uid)}
                                 className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                               >
-                                <ChevronUp size={12} />
+                                <ChevronUp size={18} />
                               </button>
                               <button
                                 type="button"
@@ -775,7 +812,7 @@ export function TotemConfigurator() {
                                 onClick={() => moveDown(piece.uid)}
                                 className="p-0.5 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
                               >
-                                <ChevronDown size={12} />
+                                <ChevronDown size={18} />
                               </button>
                               <button
                                 type="button"
@@ -783,7 +820,7 @@ export function TotemConfigurator() {
                                 onClick={() => flipPiece(piece.uid)}
                                 className="p-0.5 text-muted hover:text-ink transition-colors"
                               >
-                                <RotateCcw size={12} />
+                                <RotateCcw size={15} />
                               </button>
                               <button
                                 type="button"
@@ -791,7 +828,7 @@ export function TotemConfigurator() {
                                 onClick={() => removeShape(piece.uid)}
                                 className="p-0.5 text-muted hover:text-error transition-colors"
                               >
-                                <Trash2 size={12} />
+                                <Trash2 size={15} />
                               </button>
                             </div>
                           </div>
@@ -843,7 +880,9 @@ export function TotemConfigurator() {
           <div
             className={cn(
               "flex flex-wrap gap-1.5 transition-opacity",
-              !selectedPiece && !fixationSelected && "opacity-30 pointer-events-none",
+              !selectedPiece &&
+                !fixationSelected &&
+                "opacity-30 pointer-events-none",
             )}
           >
             {TOTEM_COLORS.map((c) => (
@@ -873,7 +912,7 @@ export function TotemConfigurator() {
         <h1 className="hidden sm:block text-left sm:text-8xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
           TOTEM
         </h1>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {/* Tab bar */}
           <div className="flex gap-2 pb-px">
             {(["build", "presets"] as Mode[]).map((tab) => (
@@ -894,35 +933,45 @@ export function TotemConfigurator() {
           </div>
 
           {/* Build your own tab */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-px bg-stroke" />
+            <span className="font-body text-md tracking-tight text-muted px-2">
+              Shapes
+            </span>
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
+          </div>
           {mode === "build" && (
             <div className="grid grid-cols-3 gap-1">
               {catalogLoading
                 ? Array.from({ length: TOTEM_SHAPES.length }).map((_, i) => (
-                    <div key={i} className="animate-pulse bg-stroke aspect-square" />
+                    <div
+                      key={i}
+                      className="animate-pulse bg-stroke aspect-square"
+                    />
                   ))
                 : catalogShapes.map((shape) => (
-                <button
-                  key={shape.id}
-                  type="button"
-                  aria-label={`Add ${shape.name}`}
-                  onClick={() => addShape(shape.id)}
-                  className="group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col"
-                >
-                  <div className="aspect-square w-full bg-light border-t border-light rounded-md group-hover:bg-muted transition-colors" />
-                  <div className="px-3 py-2.5 flex items-end justify-between gap-2">
-                    <div>
-                      <p className="font-body text-sm">{shape.name}</p>
-                      <p className="font-mono text-xs text-muted">
-                        €{shape.price}
-                      </p>
-                    </div>
-                    <Plus
-                      size={14}
-                      className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
-                    />
-                  </div>
-                </button>
-              ))}
+                    <button
+                      key={shape.id}
+                      type="button"
+                      aria-label={`Add ${shape.name}`}
+                      onClick={() => addShape(shape.id)}
+                      className="group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col"
+                    >
+                      <div className="aspect-square w-full bg-light border-t border-light rounded-md group-hover:bg-muted transition-colors" />
+                      <div className="px-3 py-2.5 flex items-end justify-between gap-2">
+                        <div>
+                          <p className="font-body text-sm">{shape.name}</p>
+                          <p className="font-mono text-xs text-muted">
+                            €{shape.price}
+                          </p>
+                        </div>
+                        <Plus
+                          size={14}
+                          className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
+                        />
+                      </div>
+                    </button>
+                  ))}
             </div>
           )}
 
@@ -983,10 +1032,10 @@ export function TotemConfigurator() {
           {/* ── Fixation catalog ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted px-2">
+            <span className="font-body text-md tracking-tight text-muted px-2">
               Fixation
             </span>
-            <div className="flex-1 h-px bg-stroke" />
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <div className="grid grid-cols-3 gap-1">
             {catalogFixations.map((f) => (
@@ -1010,10 +1059,10 @@ export function TotemConfigurator() {
           {/* ── Cable ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted px-2">
+            <span className="font-body text-md tracking-tight text-muted px-2">
               Cable
             </span>
-            <div className="flex-1 h-px bg-stroke" />
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <select
             value={cableId}
@@ -1039,22 +1088,26 @@ export function TotemConfigurator() {
                 </p>
               )}
             </div>
-            <div className="flex flex-col items-end gap-1">
+            {pieces.length === 0 ? (
+              <Tooltip content="Add shapes to get started">
+                <button
+                  type="button"
+                  disabled
+                  className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
+                >
+                  Add to Cart
+                </button>
+              </Tooltip>
+            ) : (
               <button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={pieces.length === 0 || isAdding}
+                disabled={isAdding}
                 className="bg-ink text-canvas font-body text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
               >
                 {isAdding ? "Adding to Cart…" : "Add to Cart"}
               </button>
-              {/* U3: Helper text when cart button is disabled */}
-              {pieces.length === 0 && (
-                <p className="font-body text-xs text-muted">
-                  Add shapes to get started
-                </p>
-              )}
-            </div>
+            )}
           </div>
 
           {/* ── Description ── */}
