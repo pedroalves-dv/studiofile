@@ -12,6 +12,19 @@ import {
   updateCartNote,
 } from '@/lib/shopify/cart';
 import { useToast } from '@/components/common/Toast';
+import { generateUid } from '@/lib/utils/uid';
+import {
+  SHAPE_COLOR_VARIANT_MAP,
+  FIXATION_VARIANT_MAP,
+  CABLE_VARIANT_MAP,
+} from '@/lib/totem-variant-map';
+import {
+  TOTEM_SHAPES,
+  TOTEM_COLORS,
+  TOTEM_FIXATIONS,
+  TOTEM_CABLES,
+  type TotemBuildConfig,
+} from '@/lib/totem-config';
 import type { MoneyV2, ShopifyCart } from '@/lib/shopify/types';
 
 export function useCart() {
@@ -131,6 +144,83 @@ export function useCart() {
     return line?.quantity ?? 0;
   };
 
+  const addTotemToCart = async (config: TotemBuildConfig) => {
+    const buildId = generateUid();
+
+    const lines: Array<{ merchandiseId: string; quantity: number; attributes: Array<{ key: string; value: string }> }> = [];
+
+    for (const piece of config.pieces) {
+      const key = `${piece.shapeId}-${piece.colorId}`;
+      const variantId = SHAPE_COLOR_VARIANT_MAP[key];
+      if (!variantId || variantId === 'VARIANT_PLACEHOLDER') {
+        toast.error('Some product variants are not yet available.');
+        return;
+      }
+      const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
+      const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
+      lines.push({
+        merchandiseId: variantId,
+        quantity: 1,
+        attributes: [
+          { key: '_build_id', value: buildId },
+          { key: '_build_label', value: `Custom Totem · ${shape?.name ?? piece.shapeId} — ${color?.name ?? piece.colorId}` },
+          { key: 'Shape', value: shape?.name ?? piece.shapeId },
+          { key: 'Color', value: color?.name ?? piece.colorId },
+        ],
+      });
+    }
+
+    const fixVariant = FIXATION_VARIANT_MAP[config.fixationId];
+    if (!fixVariant || fixVariant === 'VARIANT_PLACEHOLDER') {
+      toast.error('Some product variants are not yet available.');
+      return;
+    }
+    const fixation = TOTEM_FIXATIONS.find((f) => f.id === config.fixationId);
+    lines.push({
+      merchandiseId: fixVariant,
+      quantity: 1,
+      attributes: [
+        { key: '_build_id', value: buildId },
+        { key: '_build_label', value: `Custom Totem · ${fixation?.name ?? config.fixationId} Fixation` },
+        { key: 'Fixation', value: fixation?.name ?? config.fixationId },
+      ],
+    });
+
+    const cableVariant = CABLE_VARIANT_MAP[config.cableId];
+    if (!cableVariant || cableVariant === 'VARIANT_PLACEHOLDER') {
+      toast.error('Some product variants are not yet available.');
+      return;
+    }
+    const cable = TOTEM_CABLES.find((c) => c.id === config.cableId);
+    lines.push({
+      merchandiseId: cableVariant,
+      quantity: 1,
+      attributes: [
+        { key: '_build_id', value: buildId },
+        { key: '_build_label', value: `Custom Totem · ${cable?.name ?? config.cableId} Cable` },
+        { key: 'Cable', value: cable?.name ?? config.cableId },
+      ],
+    });
+
+    dispatch({ type: 'SET_LOADING', loading: true });
+    try {
+      let updatedCart: ShopifyCart;
+      if (state.cartId) {
+        updatedCart = await addToCart(state.cartId, lines);
+      } else {
+        updatedCart = await createCart(lines);
+      }
+      dispatch({ type: 'SET_CART', cart: updatedCart });
+      openCart();
+      toast.success('Totem added to cart');
+      track('AddTotemToCart', { pieces: config.pieces.length });
+    } catch {
+      toast.error('Failed to add to cart. Please try again.');
+    } finally {
+      dispatch({ type: 'SET_LOADING', loading: false });
+    }
+  };
+
   return {
     cart,
     isOpen,
@@ -148,5 +238,6 @@ export function useCart() {
     updateNote,
     isItemInCart,
     getItemQuantity,
+    addTotemToCart,
   };
 }

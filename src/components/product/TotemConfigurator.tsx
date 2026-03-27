@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { useToast } from "@/components/common/Toast";
+import { useCart } from "@/hooks/useCart";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { generateUid } from "@/lib/utils/uid";
@@ -59,6 +60,7 @@ type Mode = "build" | "presets";
 
 export function TotemConfigurator() {
   const toast = useToast();
+  const { addTotemToCart } = useCart();
 
   // U1: Persist config across refresh via useLocalStorage
   const [pieces, setPieces] = useLocalStorage<TotemPiece[]>(
@@ -318,22 +320,11 @@ export function TotemConfigurator() {
     if (pieces.length === 0) return;
     setIsAdding(true);
     try {
-      const res = await fetch("/api/totem-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pieces, fixationId, cableId }),
-      });
-      const data = (await res.json()) as {
-        invoice_url?: string;
-        error?: string;
-      };
-      if (!res.ok || !data.invoice_url) {
-        toast.error("Unable to process order. Please try again.");
-        return;
-      }
-      window.location.href = data.invoice_url;
-    } catch {
-      toast.error("Unable to process order. Please try again.");
+      await addTotemToCart({ pieces, fixationId, cableId });
+      setPieces([]);
+      setFixationId(TOTEM_FIXATIONS[0].id);
+      setCableId(TOTEM_CABLES[0].id);
+      setSelectedUid(null);
     } finally {
       setIsAdding(false);
     }
