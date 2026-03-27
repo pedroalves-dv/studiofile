@@ -14,7 +14,7 @@ export function Badge({ variant = 'default', children, className }: BadgeProps) 
   };
 
   return (
-    <span className={`inline-block px-2 py-0.5 text-xs font-mono uppercase tracking-display ${variants[variant]} ${className || ''}`}>
+    <span className={`inline-block px-2 py-0.5 text-xs uppercase tracking-display ${variants[variant]} ${className || ''}`}>
       {children}
     </span>
   );

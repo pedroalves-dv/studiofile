@@ -28,7 +28,7 @@ export function ArrowButton({
   const inner = (
     <span className="relative inline-flex items-center">
       {showArrow !== false && (
-        <span className="font-body absolute -left-6 opacity-0 -translate-x-1 transition duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3">
+        <span className="absolute -left-6 opacity-0 -translate-x-1 transition duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100 group-hover:translate-x-3">
           →
         </span>
       )}

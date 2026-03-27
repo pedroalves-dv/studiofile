@@ -29,13 +29,13 @@ export function CustomSelect({
       {label && (
         <label
           htmlFor={id}
-          className="px-1 block text-sm font-mono mb-1 text-light"
+          className="px-1 block text-sm mb-1 text-light"
         >
           {label}
         </label>
       )}
 
-      <div ref={ref} className="relative rounded-md bg-white text-sm font-mono">
+      <div ref={ref} className="relative rounded-md bg-white text-sm">
         {/* Trigger */}
         <button
           id={id}
@@ -61,7 +61,7 @@ export function CustomSelect({
         {isOpen && (
           <ul
             role="listbox"
-            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-sm font-mono"
+            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-sm"
           >
             {options.map((option) => (
               <li
