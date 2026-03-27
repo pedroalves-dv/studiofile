@@ -1087,7 +1087,7 @@ export function TotemConfigurator() {
         <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="flex items-center justify-between gap-6">
             <div>
-              <p className="tracking-tight text-4xl text-ink">
+              <p className="text-2xl text-ink">
                 €{totalPrice}
               </p>
               {pieces.length > 0 && (
