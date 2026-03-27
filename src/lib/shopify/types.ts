@@ -93,7 +93,7 @@ export interface ShopifyCartLine {
     subtotalAmount: MoneyV2;
   };
   discountAllocations: Array<{
-    allocatedAmount: MoneyV2;
+    discountedAmount: MoneyV2;
   }>;
   attributes: Array<{ key: string; value: string }>;
 }
@@ -234,4 +234,8 @@ export class ShopifyError extends Error {
     super(message);
     this.name = "ShopifyError";
   }
+}
+
+export interface ShopifyMetafield {
+  value: string;
 }

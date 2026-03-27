@@ -1,33 +1,34 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { X, ChevronDown } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
-import { formatPrice } from '@/lib/utils/format';
+import { useState } from "react";
+import { X, ChevronDown } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils/format";
 
 export function DiscountInput() {
   const { cart, applyDiscount, removeDiscount } = useCart();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const activeCode = cart?.discountCodes.find((d) => d.applicable);
 
-  const savings = cart?.lines.reduce((total, line) => {
-    const lineDiscount = line.discountAllocations.reduce((sum, da) => {
-      return sum + parseFloat(da.allocatedAmount.amount);
-    }, 0);
-    return total + lineDiscount;
-  }, 0) ?? 0;
+  const savings =
+    cart?.lines.reduce((total, line) => {
+      const lineDiscount = line.discountAllocations.reduce((sum, da) => {
+        return sum + parseFloat(da.discountedAmount.amount);
+      }, 0);
+      return total + lineDiscount;
+    }, 0) ?? 0;
 
-  const currencyCode = cart?.cost.subtotalAmount.currencyCode ?? 'EUR';
+  const currencyCode = cart?.cost.subtotalAmount.currencyCode ?? "EUR";
 
   const handleApply = async () => {
     if (!code.trim()) return;
     setIsLoading(true);
     await applyDiscount(code.trim());
     setIsLoading(false);
-    setCode('');
+    setCode("");
     setIsExpanded(false);
   };
 
@@ -62,7 +63,7 @@ export function DiscountInput() {
         Have a discount code?
         <ChevronDown
           size={14}
-          className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`transition-transform ${isExpanded ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -72,7 +73,7 @@ export function DiscountInput() {
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleApply()}
+            onKeyDown={(e) => e.key === "Enter" && handleApply()}
             placeholder="Enter code"
             aria-label="Discount code"
             className="flex-1 border border-border px-3 py-1.5 text-sm bg-canvas focus:outline-none focus:border-ink transition-colors"
@@ -82,7 +83,7 @@ export function DiscountInput() {
             disabled={isLoading || !code.trim()}
             className="px-3 py-1.5 text-label bg-ink text-canvas disabled:opacity-50 hover:opacity-90 transition-opacity"
           >
-            {isLoading ? '...' : 'Apply'}
+            {isLoading ? "..." : "Apply"}
           </button>
         </div>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 import {
   ChevronUp,
@@ -26,9 +26,11 @@ import {
   TOTEM_FIXATIONS,
   TOTEM_CABLES,
   TOTEM_PRESETS,
-  SHAPE_MAP,
   COLOR_MAP,
   calcTotemPrice,
+  type TotemShape,
+  type TotemFixation,
+  type TotemCable,
   type TotemPiece,
 } from "@/lib/totem-config";
 import { cn } from "@/lib/utils/cn";
@@ -38,23 +40,6 @@ import { cn } from "@/lib/utils/cn";
 const MAX_PIECES = 12;
 const ZOOM_STEPS = [0.5, 0.65, 0.8, 1.0, 1.2, 1.4];
 const DEFAULT_ZOOM_IDX = 3;
-
-// F3: Pre-compute preset prices at module scope — these are static constants
-const PRESET_PRICES = new Map(
-  TOTEM_PRESETS.map((preset) => [
-    preset.id,
-    calcTotemPrice({
-      pieces: preset.pieces.map((p) => ({
-        uid: "",
-        shapeId: p.shapeId,
-        colorId: p.colorId,
-        flipped: p.flipped,
-      })),
-      fixationId: preset.fixationId,
-      cableId: preset.cableId,
-    }),
-  ]),
-);
 
 type Mode = "build" | "presets";
 
@@ -67,10 +52,14 @@ export function TotemConfigurator() {
     "sf-totem-pieces",
     [],
   );
-  const [selectedUid, setSelectedUid] = useState<string | null>(null);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [fixationId, setFixationId] = useLocalStorage(
     "sf-totem-fixation",
     TOTEM_FIXATIONS[0].id,
+  );
+  const [fixationColorId, setFixationColorId] = useLocalStorage(
+    "sf-totem-fixation-color",
+    TOTEM_COLORS[0].id,
   );
   const [cableId, setCableId] = useLocalStorage(
     "sf-totem-cable",
@@ -86,6 +75,55 @@ export function TotemConfigurator() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Dynamic catalog — loaded from Shopify on mount, falls back to static arrays
+  const [catalogShapes, setCatalogShapes] = useState<TotemShape[]>(TOTEM_SHAPES);
+  const [catalogFixations, setCatalogFixations] = useState<TotemFixation[]>(TOTEM_FIXATIONS);
+  const [catalogCables, setCatalogCables] = useState<TotemCable[]>(TOTEM_CABLES);
+  const [catalogLoading, setCatalogLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/totem-catalog')
+      .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+      .then((data) => {
+        if (cancelled) return;
+        if (Array.isArray(data.shapes) && data.shapes.length > 0) setCatalogShapes(data.shapes);
+        if (Array.isArray(data.fixations) && data.fixations.length > 0) setCatalogFixations(data.fixations);
+        if (Array.isArray(data.cables) && data.cables.length > 0) setCatalogCables(data.cables);
+      })
+      .catch((err) => console.error('[TotemConfigurator] catalog fetch failed:', err))
+      .finally(() => { if (!cancelled) setCatalogLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const shapeMap    = useMemo(() => new Map(catalogShapes.map((s) => [s.id, s])),    [catalogShapes]);
+  const fixationMap = useMemo(() => new Map(catalogFixations.map((f) => [f.id, f])), [catalogFixations]);
+  const cableMap    = useMemo(() => new Map(catalogCables.map((c) => [c.id, c])),    [catalogCables]);
+
+  // Ref for stale-closure-safe access inside [] dep callbacks (updateGhost, handleDragStart)
+  const shapeMapRef = useRef(shapeMap);
+  useEffect(() => { shapeMapRef.current = shapeMap; }, [shapeMap]);
+
+  // Preset prices recomputed after catalog loads
+  const presetPrices = useMemo(
+    () =>
+      new Map(
+        TOTEM_PRESETS.map((preset) => [
+          preset.id,
+          calcTotemPrice(
+            {
+              pieces: preset.pieces.map((p) => ({ uid: '', shapeId: p.shapeId, colorId: p.colorId, flipped: p.flipped })),
+              fixationId: preset.fixationId,
+              fixationColorId: TOTEM_COLORS[0].id,
+              cableId: preset.cableId,
+            },
+            shapeMap, fixationMap, cableMap,
+          ),
+        ]),
+      ),
+    [shapeMap, fixationMap, cableMap],
+  );
+
   const viewerRef = useRef<HTMLDivElement>(null);
   const visualPanelRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement>(null);
@@ -95,13 +133,27 @@ export function TotemConfigurator() {
     piecesRef.current = pieces;
   }, [pieces]);
 
-  // B1: Sync selection — if selected piece no longer exists, clear it.
-  // Covers removeShape, applyPreset, and any future mutation paths.
+  // Derived selection values
+  const selectedPiece =
+    selectedElement && selectedElement !== "fixation"
+      ? pieces.find((p) => p.uid === selectedElement)
+      : null;
+  const fixationSelected = selectedElement === "fixation";
+  const activeColorId = fixationSelected
+    ? fixationColorId
+    : selectedPiece?.colorId;
+
+  // B1: Sync selection — clear if selected piece no longer exists.
+  // Never clear if selectedElement === 'fixation' (fixation is always present).
   useEffect(() => {
-    if (selectedUid && !pieces.find((p) => p.uid === selectedUid)) {
-      setSelectedUid(null);
+    if (
+      selectedElement &&
+      selectedElement !== "fixation" &&
+      !pieces.find((p) => p.uid === selectedElement)
+    ) {
+      setSelectedElement(null);
     }
-  }, [pieces, selectedUid]);
+  }, [pieces, selectedElement]);
 
   // F1: useMediaQuery instead of manual matchMedia
   const isDesktop = useMediaQuery("(min-width: 640px)");
@@ -120,7 +172,7 @@ export function TotemConfigurator() {
     const el = ghostRef.current;
     if (!el) return;
     const piece = piecesRef.current.find((p) => p.uid === uid);
-    const shape = piece ? SHAPE_MAP.get(piece.shapeId) : undefined;
+    const shape = piece ? shapeMapRef.current.get(piece.shapeId) : undefined;
     const color = piece ? COLOR_MAP.get(piece.colorId) : undefined;
     const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
     const label = el.querySelector("[data-label]") as HTMLElement | null;
@@ -190,15 +242,17 @@ export function TotemConfigurator() {
 
   const zoom = ZOOM_STEPS[zoomIdx];
 
-  // B3: totalStackHeight computed before fitToViewer so it reads cleanly
+  // B3: totalStackHeight includes fixation height so fitToViewer accounts for it
+  const fixationHeight = fixationMap.get(fixationId)?.height ?? 24;
   const totalStackHeight =
-    pieces.length === 0
+    fixationHeight +
+    (pieces.length === 0
       ? 0
       : pieces.reduce(
-          (sum, p) => sum + (SHAPE_MAP.get(p.shapeId)?.height ?? 44),
+          (sum, p) => sum + (shapeMap.get(p.shapeId)?.height ?? 44),
           0,
         ) +
-        (pieces.length - 1) * 4;
+        (pieces.length - 1) * 4);
 
   function fitToViewer() {
     if (pieces.length === 0) return;
@@ -226,7 +280,7 @@ export function TotemConfigurator() {
     const uid = generateUid();
     setPieces((prev) => [
       ...prev,
-      { uid, shapeId, colorId: "chalk", flipped: false },
+      { uid, shapeId, colorId: TOTEM_COLORS[0].id, flipped: false },
     ]);
   }
 
@@ -239,6 +293,11 @@ export function TotemConfigurator() {
     setPieces((prev) =>
       prev.map((p) => (p.uid === uid ? { ...p, colorId } : p)),
     );
+  }
+
+  function applyColor(colorId: string) {
+    if (fixationSelected) setFixationColorId(colorId);
+    else if (selectedPiece) setColorForPiece(selectedPiece.uid, colorId);
   }
 
   function flipPiece(uid: string) {
@@ -296,7 +355,8 @@ export function TotemConfigurator() {
     );
     setFixationId(preset.fixationId);
     setCableId(preset.cableId);
-    setSelectedUid(null);
+    setSelectedElement(null);
+    setFixationColorId(TOTEM_COLORS[0].id);
   }
 
   // R2: Shared handleDragStart — used by visual stack and list panel
@@ -305,7 +365,7 @@ export function TotemConfigurator() {
       setDraggedUid(piece.uid);
       const el = dragImageRef.current;
       if (!el) return;
-      const shape = SHAPE_MAP.get(piece.shapeId);
+      const shape = shapeMapRef.current.get(piece.shapeId);
       const color = COLOR_MAP.get(piece.colorId);
       const swatch = el.querySelector("[data-swatch]") as HTMLElement | null;
       const label = el.querySelector("[data-label]") as HTMLElement | null;
@@ -320,18 +380,21 @@ export function TotemConfigurator() {
     if (pieces.length === 0) return;
     setIsAdding(true);
     try {
-      await addTotemToCart({ pieces, fixationId, cableId });
+      await addTotemToCart({ pieces, fixationId, fixationColorId, cableId });
       setPieces([]);
-      setFixationId(TOTEM_FIXATIONS[0].id);
-      setCableId(TOTEM_CABLES[0].id);
-      setSelectedUid(null);
+      setFixationId(catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id);
+      setFixationColorId(TOTEM_COLORS[0].id);
+      setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
+      setSelectedElement(null);
     } finally {
       setIsAdding(false);
     }
   };
 
-  const totalPrice = calcTotemPrice({ pieces, fixationId, cableId });
-  const selectedPiece = pieces.find((p) => p.uid === selectedUid);
+  const totalPrice = calcTotemPrice(
+    { pieces, fixationId, fixationColorId, cableId },
+    shapeMap, fixationMap, cableMap,
+  );
 
   return (
     <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
@@ -344,7 +407,7 @@ export function TotemConfigurator() {
       <div
         ref={viewerRef}
         className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[480px] sm:h-[680px] mb-6"
-        onClick={() => setSelectedUid(null)}
+        onClick={() => setSelectedElement(null)}
       >
         {/* Inner row: visual panel + list/action panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
@@ -389,9 +452,118 @@ export function TotemConfigurator() {
             {/* Scrollable inner panel */}
             <div
               ref={visualPanelRef}
-              className="relative w-full h-full flex items-center justify-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
+              className="relative w-full h-full flex flex-col items-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
             >
-              {pieces.length === 0 ? (
+              {/* Always-visible assembly: fixation → cable+shapes+bulb */}
+              <div className="flex flex-col items-center">
+                {/* Fixation block */}
+                <div
+                  className={cn(
+                    "cursor-pointer transition-all flex-shrink-0",
+                    fixationSelected && "ring-2 ring-ink",
+                  )}
+                  style={{
+                    width: 80 * zoom,
+                    height: fixationHeight * zoom,
+                    backgroundColor:
+                      COLOR_MAP.get(fixationColorId)?.hex ?? "#E8E0CF",
+                    borderRadius: 4,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedElement(fixationSelected ? null : "fixation");
+                  }}
+                />
+
+                {/* Cable + shapes + bulb container */}
+                <div
+                  className="relative flex flex-col items-center"
+                  style={{
+                    gap: 4 * zoom,
+                    minHeight: 60 * zoom,
+                  }}
+                >
+                  {/* Cable line — absolute, spans full height of container */}
+                  {cableId === "transparent" ? (
+                    <div
+                      className="absolute top-0 bottom-0 left-1/2 pointer-events-none"
+                      style={{
+                        width: 0,
+                        borderLeft: "2px dashed #D0D0D0",
+                        transform: "translateX(-1px)",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="absolute top-0 bottom-0 left-1/2 pointer-events-none"
+                      style={{
+                        width: 2,
+                        backgroundColor:
+                          cableMap.get(cableId)?.hex ?? "#B8860B",
+                        transform: "translateX(-1px)",
+                      }}
+                    />
+                  )}
+
+                  {/* Shape pieces */}
+                  {pieces.map((piece) => {
+                    const shape = shapeMap.get(piece.shapeId);
+                    const color = COLOR_MAP.get(piece.colorId);
+                    const height = shape?.height ?? 44;
+                    const isSelected = selectedElement === piece.uid;
+                    return (
+                      <div
+                        key={piece.uid}
+                        data-uid={piece.uid}
+                        draggable
+                        onDragStart={(e) => handleDragStart(piece, e)}
+                        onDragEnd={() => setDraggedUid(null)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleDrop(piece.uid)}
+                        onTouchStart={(e) =>
+                          startTouchDrag(piece.uid, e.touches[0])
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedElement(
+                            isSelected ? null : piece.uid,
+                          );
+                        }}
+                        className={cn(
+                          "cursor-grab active:cursor-grabbing transition-all",
+                          isSelected && "ring-2 ring-ink",
+                        )}
+                        style={{
+                          position: "relative",
+                          zIndex: 1,
+                          width: 80 * zoom,
+                          height: height * zoom,
+                          backgroundColor: color?.hex ?? "#F2F0EB",
+                          borderRadius: 4,
+                          transform: piece.flipped ? "scaleY(-1)" : undefined,
+                          flexShrink: 0,
+                        }}
+                      />
+                    );
+                  })}
+
+                  {/* Bulb */}
+                  <div
+                    className="flex-shrink-0 pointer-events-none"
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      width: 12 * zoom,
+                      height: 12 * zoom,
+                      borderRadius: "50%",
+                      backgroundColor: "#F5F0C8",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Empty state overlay */}
+              {pieces.length === 0 && (
                 <>
                   {/* Mobile empty-state helper */}
                   <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none">
@@ -418,48 +590,6 @@ export function TotemConfigurator() {
                     </p>
                   </div>
                 </>
-              ) : (
-                <div
-                  className="flex flex-col items-center"
-                  style={{ gap: 4 * zoom }}
-                >
-                  {pieces.map((piece) => {
-                    const shape = SHAPE_MAP.get(piece.shapeId);
-                    const color = COLOR_MAP.get(piece.colorId);
-                    const height = shape?.height ?? 44;
-                    const isSelected = selectedUid === piece.uid;
-                    return (
-                      <div
-                        key={piece.uid}
-                        data-uid={piece.uid}
-                        draggable
-                        onDragStart={(e) => handleDragStart(piece, e)}
-                        onDragEnd={() => setDraggedUid(null)}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={() => handleDrop(piece.uid)}
-                        onTouchStart={(e) =>
-                          startTouchDrag(piece.uid, e.touches[0])
-                        }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedUid(isSelected ? null : piece.uid);
-                        }}
-                        className={cn(
-                          "cursor-grab active:cursor-grabbing transition-all",
-                          isSelected && "ring-2 ring-ink",
-                        )}
-                        style={{
-                          width: 80 * zoom,
-                          height: height * zoom,
-                          backgroundColor: color?.hex ?? "#F2F0EB",
-                          borderRadius: 4,
-                          transform: piece.flipped ? "scaleY(-1)" : undefined,
-                          flexShrink: 0,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
               )}
             </div>
           </div>
@@ -475,10 +605,11 @@ export function TotemConfigurator() {
                 type="button"
                 aria-label="Move piece up"
                 disabled={
-                  !selectedUid ||
-                  pieces.findIndex((p) => p.uid === selectedUid) <= 0
+                  fixationSelected ||
+                  !selectedElement ||
+                  pieces.findIndex((p) => p.uid === selectedElement) <= 0
                 }
-                onClick={() => selectedUid && moveUp(selectedUid)}
+                onClick={() => selectedElement && moveUp(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronUp size={18} />
@@ -487,11 +618,12 @@ export function TotemConfigurator() {
                 type="button"
                 aria-label="Move piece down"
                 disabled={
-                  !selectedUid ||
-                  pieces.findIndex((p) => p.uid === selectedUid) >=
+                  fixationSelected ||
+                  !selectedElement ||
+                  pieces.findIndex((p) => p.uid === selectedElement) >=
                     pieces.length - 1
                 }
-                onClick={() => selectedUid && moveDown(selectedUid)}
+                onClick={() => selectedElement && moveDown(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronDown size={18} />
@@ -499,8 +631,8 @@ export function TotemConfigurator() {
               <button
                 type="button"
                 aria-label="Flip shape"
-                disabled={!selectedUid}
-                onClick={() => selectedUid && flipPiece(selectedUid)}
+                disabled={fixationSelected || !selectedElement}
+                onClick={() => selectedElement && flipPiece(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <RotateCcw size={18} />
@@ -508,8 +640,8 @@ export function TotemConfigurator() {
               <button
                 type="button"
                 aria-label="Remove piece"
-                disabled={!selectedUid}
-                onClick={() => selectedUid && removeShape(selectedUid)}
+                disabled={fixationSelected || !selectedElement}
+                onClick={() => selectedElement && removeShape(selectedElement)}
                 className="p-3 text-muted hover:text-error disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <Trash2 size={18} />
@@ -545,15 +677,43 @@ export function TotemConfigurator() {
                   className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
                   data-lenis-prevent-touch
                 >
+                  {/* Fixation row — always visible, non-removable */}
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-3 cursor-pointer transition-colors border-b border-stroke",
+                      fixationSelected
+                        ? "bg-lighter"
+                        : "[@media(hover:hover)]:hover:bg-lighter",
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedElement(
+                        fixationSelected ? null : "fixation",
+                      );
+                    }}
+                  >
+                    <div
+                      className="w-3 h-3 flex-shrink-0"
+                      style={{
+                        backgroundColor:
+                          COLOR_MAP.get(fixationColorId)?.hex ?? "#E8E0CF",
+                      }}
+                    />
+                    <p className="font-body text-xs sm:text-sm flex-1 min-w-0 truncate">
+                      {fixationMap.get(fixationId)?.name ?? fixationId}
+                    </p>
+                  </div>
+
+                  {/* Shape pieces */}
                   {pieces.length === 0 ? (
                     <p className="font-body text-sm text-muted px-4 py-4">
                       Add shapes →
                     </p>
                   ) : (
                     pieces.map((piece, idx) => {
-                      const shape = SHAPE_MAP.get(piece.shapeId);
+                      const shape = shapeMap.get(piece.shapeId);
                       const color = COLOR_MAP.get(piece.colorId);
-                      const isSelected = selectedUid === piece.uid;
+                      const isSelected = selectedElement === piece.uid;
                       return (
                         <div
                           key={piece.uid}
@@ -575,7 +735,9 @@ export function TotemConfigurator() {
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedUid(isSelected ? null : piece.uid);
+                            setSelectedElement(
+                              isSelected ? null : piece.uid,
+                            );
                           }}
                         >
                           {/* Drag handle */}
@@ -681,7 +843,7 @@ export function TotemConfigurator() {
           <div
             className={cn(
               "flex flex-wrap gap-1.5 transition-opacity",
-              !selectedPiece && "opacity-30 pointer-events-none",
+              !selectedPiece && !fixationSelected && "opacity-30 pointer-events-none",
             )}
           >
             {TOTEM_COLORS.map((c) => (
@@ -691,11 +853,11 @@ export function TotemConfigurator() {
                 aria-label={c.name}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (selectedPiece) setColorForPiece(selectedPiece.uid, c.id);
+                  applyColor(c.id);
                 }}
                 className={cn(
                   "w-7 h-7 transition-all",
-                  selectedPiece?.colorId === c.id
+                  activeColorId === c.id
                     ? "ring-1 ring-ink ring-offset-1"
                     : "ring-1 ring-transparent hover:ring-stroke",
                 )}
@@ -734,7 +896,11 @@ export function TotemConfigurator() {
           {/* Build your own tab */}
           {mode === "build" && (
             <div className="grid grid-cols-3 gap-1">
-              {TOTEM_SHAPES.map((shape) => (
+              {catalogLoading
+                ? Array.from({ length: TOTEM_SHAPES.length }).map((_, i) => (
+                    <div key={i} className="animate-pulse bg-stroke aspect-square" />
+                  ))
+                : catalogShapes.map((shape) => (
                 <button
                   key={shape.id}
                   type="button"
@@ -764,7 +930,7 @@ export function TotemConfigurator() {
           {mode === "presets" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {TOTEM_PRESETS.map((preset) => {
-                const presetPrice = PRESET_PRICES.get(preset.id) ?? 0;
+                const presetPrice = presetPrices.get(preset.id) ?? 0;
                 return (
                   <div
                     key={preset.id}
@@ -813,45 +979,57 @@ export function TotemConfigurator() {
               })}
             </div>
           )}
-        </div>
 
-        {/* ── Section C: System selectors + Price + Add to Cart ── */}
-        <div className="flex flex-col gap-6 border-t border-stroke pt-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="font-body text-sm tracking-tight text-muted">
-                Fixation
-              </label>
-              <select
-                value={fixationId}
-                onChange={(e) => setFixationId(e.target.value)}
-                className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
+          {/* ── Fixation catalog ── */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-px bg-stroke" />
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted px-2">
+              Fixation
+            </span>
+            <div className="flex-1 h-px bg-stroke" />
+          </div>
+          <div className="grid grid-cols-3 gap-1">
+            {catalogFixations.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setFixationId(f.id)}
+                className={cn(
+                  "relative bg-canvas border transition-colors text-left p-3",
+                  fixationId === f.id
+                    ? "border-ink bg-lighter"
+                    : "border-stroke hover:border-ink",
+                )}
               >
-                {TOTEM_FIXATIONS.map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.name} — €{f.price}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="font-body text-sm tracking-tight text-muted">
-                Cable
-              </label>
-              <select
-                value={cableId}
-                onChange={(e) => setCableId(e.target.value)}
-                className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
-              >
-                {TOTEM_CABLES.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} — €{c.price}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <p className="font-body text-sm">{f.name}</p>
+                <p className="font-mono text-xs text-muted">€{f.price}</p>
+              </button>
+            ))}
           </div>
 
+          {/* ── Cable ── */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-px bg-stroke" />
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted px-2">
+              Cable
+            </span>
+            <div className="flex-1 h-px bg-stroke" />
+          </div>
+          <select
+            value={cableId}
+            onChange={(e) => setCableId(e.target.value)}
+            className="font-body text-sm border border-stroke bg-white text-ink px-3 py-2 focus:outline-none focus:border-ink"
+          >
+            {catalogCables.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} — €{c.price}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* ── Section C: Price + Add to Cart ── */}
+        <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="flex items-center justify-between gap-6">
             <div>
               <p className="font-mono text-2xl text-ink">€{totalPrice}</p>

@@ -33,9 +33,9 @@ export const CART_FIELDS = `
           subtotalAmount { amount currencyCode }
           totalAmount { amount currencyCode }
         }
-        discountAllocations {
-          allocatedAmount { amount currencyCode }
-        }
+       discountAllocations {
+  discountedAmount { amount currencyCode }
+}
         attributes { key value }
       }
     }

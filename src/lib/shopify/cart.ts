@@ -11,52 +11,64 @@ import {
   CART_NOTE_UPDATE,
 } from './mutations';
 import { GET_CART } from './queries';
-import type { ShopifyCart } from './types';
+import type { ShopifyCart, ShopifyCartLine } from './types';
+
+// Shopify returns lines as a GraphQL connection; normalize to a flat array
+interface RawCart extends Omit<ShopifyCart, 'lines'> {
+  lines: { edges: Array<{ node: ShopifyCartLine }> };
+}
+
+function normalizeCart(raw: RawCart): ShopifyCart {
+  return {
+    ...raw,
+    lines: raw.lines.edges.map((e) => e.node),
+  };
+}
 
 interface CreateCartResponse {
   cartCreate: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface CartResponse {
   cartLinesAdd: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface CartLineUpdateResponse {
   cartLinesUpdate: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface CartRemoveResponse {
   cartLinesRemove: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface DiscountCodesResponse {
   cartDiscountCodesUpdate: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface NoteUpdateResponse {
   cartNoteUpdate: {
-    cart: ShopifyCart;
+    cart: RawCart;
     userErrors: Array<{ field: string[]; message: string }>;
   };
 }
 
 interface CartFetchResponse {
-  cart: ShopifyCart | null;
+  cart: RawCart | null;
 }
 
 interface CartLine {
@@ -79,7 +91,7 @@ export async function createCart(lines?: CartLine[]): Promise<ShopifyCart> {
     throw new Error(response.cartCreate.userErrors[0].message);
   }
 
-  return response.cartCreate.cart;
+  return normalizeCart(response.cartCreate.cart);
 }
 
 /**
@@ -98,7 +110,7 @@ export async function addToCart(
     throw new Error(response.cartLinesAdd.userErrors[0].message);
   }
 
-  return response.cartLinesAdd.cart;
+  return normalizeCart(response.cartLinesAdd.cart);
 }
 
 /**
@@ -118,7 +130,7 @@ export async function updateCartLine(
     throw new Error(response.cartLinesUpdate.userErrors[0].message);
   }
 
-  return response.cartLinesUpdate.cart;
+  return normalizeCart(response.cartLinesUpdate.cart);
 }
 
 /**
@@ -137,7 +149,7 @@ export async function removeFromCart(
     throw new Error(response.cartLinesRemove.userErrors[0].message);
   }
 
-  return response.cartLinesRemove.cart;
+  return normalizeCart(response.cartLinesRemove.cart);
 }
 
 /**
@@ -159,7 +171,7 @@ export async function applyDiscountCode(
     throw new Error(response.cartDiscountCodesUpdate.userErrors[0].message);
   }
 
-  return response.cartDiscountCodesUpdate.cart;
+  return normalizeCart(response.cartDiscountCodesUpdate.cart);
 }
 
 /**
@@ -178,7 +190,7 @@ export async function removeDiscountCode(cartId: string): Promise<ShopifyCart> {
     throw new Error(response.cartDiscountCodesUpdate.userErrors[0].message);
   }
 
-  return response.cartDiscountCodesUpdate.cart;
+  return normalizeCart(response.cartDiscountCodesUpdate.cart);
 }
 
 /**
@@ -194,7 +206,7 @@ export async function updateCartNote(cartId: string, note: string): Promise<Shop
     throw new Error(response.cartNoteUpdate.userErrors[0].message);
   }
 
-  return response.cartNoteUpdate.cart;
+  return normalizeCart(response.cartNoteUpdate.cart);
 }
 
 /**
@@ -205,5 +217,5 @@ export async function getCart(cartId: string): Promise<ShopifyCart | null> {
     cartId,
   });
 
-  return response.cart;
+  return response.cart ? normalizeCart(response.cart) : null;
 }

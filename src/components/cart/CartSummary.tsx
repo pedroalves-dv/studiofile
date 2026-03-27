@@ -21,7 +21,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
         return (
           sum +
           line.discountAllocations.reduce(
-            (s, da) => s + parseFloat(da.allocatedAmount.amount),
+            (s, da) => s + parseFloat(da.discountedAmount.amount),
             0,
           )
         );

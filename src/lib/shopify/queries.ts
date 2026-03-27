@@ -231,8 +231,9 @@ export const GET_CART = `
               totalAmount { amount currencyCode }
             }
             discountAllocations {
-              allocatedAmount { amount currencyCode }
+              discountedAmount { amount currencyCode }
             }
+            attributes { key value }
           }
         }
       }
