@@ -54,7 +54,7 @@ export default function ComingSoonPage() {
               <br />
               Get 30% off.
             </h2>
-            <p className="font-body tracking-tight text-muted text-2xl tracking-tighter leading-6 max-w-sm mb-10">
+            <p className="tracking-tight text-muted text-2xl tracking-tighter leading-6 max-w-sm mb-10">
               Join the list before launch and unlock a 30% founding discount on
               your first order.
             </p>
@@ -63,8 +63,8 @@ export default function ComingSoonPage() {
               {PERKS.map((perk) => (
                 <li
                   key={perk}
-                  className="flex items-center gap-3 py-2.5 
-                    font-body text-md tracking-tight  text-ink"
+                  className="flex items-center gap-3 py-2.5
+                    text-md tracking-tight  text-ink"
                 >
                   <ArrowRight />
                   {perk}
@@ -80,7 +80,7 @@ export default function ComingSoonPage() {
                 href="https://www.instagram.com/studiofile.paris"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-md tracking-tight  text-muted
+                className="text-md tracking-tight  text-muted
               hover:text-ink transition-colors duration-200"
               >
                 Instagram
@@ -89,7 +89,7 @@ export default function ComingSoonPage() {
                 href="https://www.tiktok.com/@studiofile.paris"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-body text-md tracking-tight text-muted
+                className="text-md tracking-tight text-muted
               hover:text-ink transition-colors duration-200"
               >
                 TikTok
@@ -108,13 +108,13 @@ export default function ComingSoonPage() {
               className={`px-6 md:px-10 py-4 pb-12 flex flex-col gap-3
                 ${i < FEATURES.length - 1 ? "border-b border-stroke md:border-b-0 md:border-r md:border-stroke" : ""}`}
             >
-              <span className="font-body text-md tracking-tight text-muted">
+              <span className="text-md tracking-tight text-muted">
                 {f.num}
               </span>
               <h3 className="font-inter text-ink text-5xl tracking tight">
                 {f.title}
               </h3>
-              <p className="font-body text-muted text-md tracking tight ">
+              <p className="text-muted text-md tracking tight ">
                 {f.body}
               </p>
             </div>

@@ -17,7 +17,7 @@ export default async function AccountPage() {
     <main className="">
       <section className="">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-body tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
+          <h2 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
             Recent orders
           </h2>
           {customer!.orders.edges.length > 3 && (

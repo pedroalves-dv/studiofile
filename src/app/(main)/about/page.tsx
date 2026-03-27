@@ -66,10 +66,10 @@ export default function AboutPage() {
           <div className="pt-12 sm:pt-[var(--header-height)] space-y-6 md:sticky md:top-0">
             {/* Left — info */}
 
-            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+            <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The studio
             </h1>
-            <div className="text-ink font-body tracking-[-0.03em] text-lg leading-tight space-y-6 pr-12">
+            <div className="text-ink tracking-[-0.03em] text-lg leading-tight space-y-6 pr-12">
               <p className="">
                 <span className="italic mr-1">STUDIO filé</span> began with a
                 simple frustration: the objects we wanted for our homes
@@ -112,16 +112,16 @@ export default function AboutPage() {
 
       {/* ─── Studio Values / Process ─── */}
       <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
-        <h1 className="px-5 text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+        <h1 className="px-5 text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
           What we stand for
         </h1>
         <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
-              <h3 className="text-4xl font-body mt-8 tracking-tighter">
+              <h3 className="text-4xl mt-8 tracking-tighter">
                 {value.title}
               </h3>
-              <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
+              <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
                 {value.description}
               </p>
             </div>
@@ -129,10 +129,10 @@ export default function AboutPage() {
           {PROCESS_STEPS.map((step) => (
             <div key={step.number} className="space-y-4">
               {/* <span className="text-4xl tracking-tight">{step.number}</span> */}
-              <h3 className="text-4xl font-body mt-8 tracking-tighter">
+              <h3 className="text-4xl mt-8 tracking-tighter">
                 {step.title}
               </h3>
-              <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
+              <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
                 {step.description}
               </p>
             </div>
@@ -145,23 +145,23 @@ export default function AboutPage() {
         <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
           <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28 pr-12">
-            <h1 className="text-7xl sm:text-9xl font-body font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+            <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The team
             </h1>
-            <h2 className="text-4xl md:text-5xl font-body leading-tight tracking-tighter">
+            <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">
               Alex Dumont
             </h2>
-            <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
               Designer & Creative Director
             </p>
-            <p className="text-lg text-ink font-body tracking-[-0.03em] leading-tight">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
               Alex trained as an industrial designer before spending a decade
               working across product, furniture, and spatial design studios in
               Paris and Amsterdam. Studiofile is the convergence of everything
               he&apos;s learned: rigorous process, honest materials, and design
               that earns its place in a home.
             </p>
-            <p className="text-lg text-light font-body tracking-[-0.03em] leading-tight">
+            <p className="text-lg text-light tracking-[-0.03em] leading-tight">
               &ldquo;I wanted to make things that get better as they age —
               objects that develop a patina, that you remember acquiring. Not
               things you replace.&rdquo;

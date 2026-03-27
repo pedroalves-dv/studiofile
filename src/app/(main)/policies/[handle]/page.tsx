@@ -63,7 +63,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
 
         {policy.body ? (
           <div
-            className="text-sm text-ink/80 leading-relaxed [&_p]:mb-5 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-mono [&_h3]:text-xs [&_h3]:uppercase [&_h3]:tracking-widest [&_h3]:mt-8 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:underline [&_a]:hover:text-accent [&_a]:transition-colors"
+            className="text-sm text-ink/80 leading-relaxed [&_p]:mb-5 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-xs [&_h3]:uppercase [&_h3]:tracking-widest [&_h3]:mt-8 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:underline [&_a]:hover:text-accent [&_a]:transition-colors"
             dangerouslySetInnerHTML={{ __html: policy.body }}
           />
         ) : (

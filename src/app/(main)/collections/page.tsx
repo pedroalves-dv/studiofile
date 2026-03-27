@@ -77,7 +77,7 @@ export default async function CollectionsPage() {
                         <h2 className="font-display text-2xl md:text-3xl leading-tight text-canvas mb-2">
                           {title}
                         </h2>
-                        <p className="font-mono text-xs uppercase tracking-widest text-stone-300">
+                        <p className="text-xs uppercase tracking-widest text-stone-300">
                           {productCount} {productCount === 1 ? 'Item' : 'Items'}
                         </p>
                       </div>

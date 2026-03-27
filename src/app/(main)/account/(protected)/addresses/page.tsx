@@ -18,7 +18,7 @@ export default async function AddressesPage() {
     <main className="bg-canvas">
       <div className="">
         <div className="mb-6">
-          <h1 className="font-body font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
+          <h1 className="font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
             Addresses
           </h1>
         </div>

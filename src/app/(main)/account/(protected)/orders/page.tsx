@@ -18,7 +18,7 @@ export default async function OrdersPage() {
       <div className="">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-body tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
+          <h1 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
             Orders
           </h1>
         </div>

@@ -15,7 +15,7 @@ export default async function SettingsPage() {
       <div className="">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-body font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
+          <h1 className="font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
             Settings
           </h1>
         </div>

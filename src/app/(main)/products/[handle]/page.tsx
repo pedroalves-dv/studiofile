@@ -114,7 +114,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                         <dt className="text-label text-muted capitalize">
                           {key}
                         </dt>
-                        <dd className="font-mono text-xs text-ink">{value}</dd>
+                        <dd className="text-xs text-ink">{value}</dd>
                       </div>
                     ))}
                   </dl>
