@@ -68,13 +68,13 @@ export function ProductGrid({ products, totalCount, showCount = true }: ProductG
             </h3>
 
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-sm text-ink">
+              <span className="text-sm text-ink">
                 {parseFloat(product.priceRange.minVariantPrice.amount).toFixed(0)}{' '}
                 {product.priceRange.minVariantPrice.currencyCode}
               </span>
               {product.priceRange.maxVariantPrice.amount !==
                 product.priceRange.minVariantPrice.amount && (
-                <span className="font-mono text-sm text-ink/50">
+                <span className="text-sm text-ink/50">
                   –{parseFloat(product.priceRange.maxVariantPrice.amount).toFixed(0)}
                 </span>
               )}

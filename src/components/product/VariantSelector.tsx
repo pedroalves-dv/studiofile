@@ -90,7 +90,7 @@ export function VariantSelector({
                     aria-label={`${optionName}: ${value}${!available ? ' (unavailable)' : ''}`}
                     aria-pressed={selected}
                     className={cn(
-                      'px-4 py-2 text-xs font-mono uppercase tracking-wider border transition-all duration-200',
+                      'px-4 py-2 text-xs uppercase tracking-wider border transition-all duration-200',
                       selected
                         ? 'bg-ink text-canvas border-ink'
                         : 'bg-transparent text-ink border-border hover:border-ink',

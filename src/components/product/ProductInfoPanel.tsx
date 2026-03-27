@@ -94,12 +94,12 @@ export function ProductInfoPanel({
 
       {/* Price */}
       <div className="flex items-baseline gap-4">
-        <span className="font-mono text-2xl text-ink">
+        <span className="text-2xl text-ink">
           {formatPrice(price.amount, price.currencyCode)}
         </span>
         {onSale && compareAtPrice && (
           <>
-            <span className="font-mono text-base text-muted line-through">
+            <span className="text-base text-muted line-through">
               {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
             </span>
             <Badge variant="sale">−{discountPercent}%</Badge>
@@ -152,7 +152,7 @@ export function ProductInfoPanel({
             >
               <Minus size={14} />
             </button>
-            <span className="px-5 py-3 font-mono text-sm min-w-[3rem] text-center border-x border-border">
+            <span className="px-5 py-3 text-sm min-w-[3rem] text-center border-x border-border">
               {quantity}
             </span>
             <button

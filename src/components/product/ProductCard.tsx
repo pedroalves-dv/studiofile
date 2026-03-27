@@ -64,11 +64,11 @@ export function ProductCard({ product }: ProductCardProps) {
           {title}
         </h3>
         <div className="flex items-baseline gap-3">
-          <span className="font-mono text-sm text-ink">
+          <span className="text-sm text-ink">
             {formatPrice(price.amount, price.currencyCode)}
           </span>
           {onSale && compareAtPrice && (
-            <span className="font-mono text-xs text-muted line-through">
+            <span className="text-xs text-muted line-through">
               {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
             </span>
           )}
