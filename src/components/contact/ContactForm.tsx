@@ -198,7 +198,7 @@ export function ContactForm() {
       <div className="w-full border border-stroke rounded-lg p-1 bg-canvas ">
         <label
           htmlFor="contact-message"
-          className="px-1 block text-sm font-mono mb-1 text-light"
+          className="px-1 block text-sm mb-1 text-light"
         >
           Message
         </label>
@@ -209,12 +209,12 @@ export function ContactForm() {
             onChange={set("message")}
             rows={6}
             placeholder="Tell us about your project or enquiry…"
-            className="w-full px-4 py-2 bg-transparent text-ink tracking-tighter placeholder-light focus:outline-none text-sm font-mono"
+            className="w-full px-4 py-2 bg-transparent text-ink tracking-tighter placeholder-light focus:outline-none text-sm"
             required
           />
         </div>
         {errors.message && (
-          <p className="text-error text-xs font-mono mt-1">{errors.message}</p>
+          <p className="text-error text-xs mt-1">{errors.message}</p>
         )}
       </div>
 

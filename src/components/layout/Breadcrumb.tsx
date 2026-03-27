@@ -37,7 +37,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
 
       {/* Breadcrumb Navigation */}
       <nav
-        className="font-mono text-xs text-muted uppercase tracking-wider"
+        className="text-xs text-muted uppercase tracking-wider"
         aria-label="Breadcrumb"
       >
         <ol className="flex items-center gap-3 flex-wrap">

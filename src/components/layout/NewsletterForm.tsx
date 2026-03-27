@@ -21,7 +21,7 @@ export function NewsletterForm() {
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2.5 bg-transparent text-ink text-sm font-mono tracking-tight placeholder-light focus:outline-none"
+          className="w-full px-4 py-2.5 bg-transparent text-ink text-sm tracking-tight placeholder-light focus:outline-none"
           required
         />
       </div>

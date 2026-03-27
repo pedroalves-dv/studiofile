@@ -131,7 +131,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-body font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200",
+                      "font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
@@ -178,7 +178,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                               key={item.href}
                               href={item.href}
                               onClick={() => setIsAccountOpen(false)}
-                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
+                              className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
                             >
                               {item.label}
                             </Link>
@@ -188,7 +188,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                           <form action={customerLogout}>
                             <button
                               type="submit"
-                              className="block w-full text-left px-4 py-3 rounded-md font-body tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
+                              className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
                             >
                               Sign out
                             </button>
@@ -281,7 +281,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "flex w-full font-body text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures",
+                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures",
                   pathname === link.href ? "text-light" : "text-ink",
                   link.linkClassName,
                 )}
@@ -293,7 +293,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex pt-4 border-t border-ink mt-4 w-full font-body text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink  ligatures"
+              className="flex pt-4 border-t border-ink mt-4 w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink  ligatures"
             >
               {isLoggedIn ? "Account" : "Sign in"}
             </Link>

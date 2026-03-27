@@ -120,7 +120,7 @@ export function PredictiveSearch({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-ink truncate">{product.title}</p>
-                      <p className="font-mono text-xs text-muted mt-0.5">
+                      <p className="text-xs text-muted mt-0.5">
                         {formatPrice(price.amount, price.currencyCode)}
                       </p>
                     </div>

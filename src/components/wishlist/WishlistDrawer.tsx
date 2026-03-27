@@ -66,7 +66,7 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
             {product.title}
           </p>
         </Link>
-        <p className="font-mono text-xs text-muted mt-1">
+        <p className="text-xs text-muted mt-1">
           {formatPrice(price.amount, price.currencyCode)}
         </p>
         <button
