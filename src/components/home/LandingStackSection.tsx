@@ -79,7 +79,7 @@ function FlyingCard({
       className={`${card.bg} flex flex-col justify-between p-5`}
     >
       <span
-        className={`font-mono text-[9px] tracking-[0.2em] uppercase self-end ${textColor}`}
+        className={`text-[9px] tracking-[0.2em] uppercase self-end ${textColor}`}
       >
         {card.id}
       </span>
@@ -221,12 +221,12 @@ export function LandingStackSection() {
 
         {/* Subtitle — bottom left */}
         <div className="absolute bottom-10 left-12 md:left-16">
-          <p className="font-body text-canvas/55 text-sm leading-relaxed">
+          <p className="text-canvas/55 text-sm leading-relaxed">
             A modular lighting system built from stackable shapes.
             <br />
             Made to order. Ships worldwide.
           </p>
-          <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-muted/60 mt-2">
+          <p className="text-[9px] tracking-[0.2em] uppercase text-muted/60 mt-2">
             3D printed on demand · Designed in Paris
           </p>
         </div>

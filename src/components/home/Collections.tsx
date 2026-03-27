@@ -39,7 +39,7 @@ export async function CollectionsSection() {
             </h2>
             <Link
               href="/collections"
-              className="text-sm font-mono uppercase tracking-wider hover:underline"
+              className="text-sm uppercase tracking-wider hover:underline"
             >
               All Collections →
             </Link>

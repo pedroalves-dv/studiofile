@@ -41,11 +41,11 @@ export function LandingSignup() {
   if (state === "success") {
     return (
       <div className="py-10 text-center">
-        <span className="block font-body text-accent text-3xl mb-5">✦</span>
+        <span className="block text-accent text-3xl mb-5">✦</span>
         <p className="font-display text-ink text-2xl mb-3">
           You&apos;re on the list.
         </p>
-        <p className="font-body text-muted text-md tacking-tight">
+        <p className="text-muted text-md tacking-tight">
           We&apos;ll send your 30% code when TOTEM launches.
           <br />
           Thank you for being here early.
@@ -60,7 +60,7 @@ export function LandingSignup() {
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="landing-name"
-          className="font-body text-md tracking-tight  text-muted"
+          className="text-md tracking-tight  text-muted"
         >
           Your name <span className="text-ink/30">(optional)</span>
         </label>
@@ -71,7 +71,7 @@ export function LandingSignup() {
           placeholder="e.g. Marie Dupont"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full bg-transparent border border-stroke text-ink font-body text-md tracking-tight
+          className="w-full bg-transparent border border-stroke text-ink text-md tracking-tight
             px-4 py-3 placeholder:text-muted/60
             focus:outline-none focus:border-accent
             transition-colors duration-200 rounded-lg"
@@ -82,7 +82,7 @@ export function LandingSignup() {
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor="landing-email"
-          className="font-body text-md tracking-tight  text-muted"
+          className="text-md tracking-tight  text-muted"
         >
           Email address
         </label>
@@ -93,7 +93,7 @@ export function LandingSignup() {
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`w-full bg-transparent border text-ink font-body text-md tracking-tight
+          className={`w-full bg-transparent border text-ink text-md tracking-tight
             px-4 py-3 placeholder:text-muted/60
             focus:outline-none transition-colors duration-200 rounded-lg
             ${emailError ? "border-error" : "border-stroke focus:border-accent"}`}
@@ -105,7 +105,7 @@ export function LandingSignup() {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full bg-accent text-black font-body text-md tracking-tight
+        className="w-full bg-accent text-black text-md tracking-tight
            py-4 mt-1
           hover:bg-accent/90 active:scale-[0.99]
           transition-all duration-200
@@ -115,12 +115,12 @@ export function LandingSignup() {
       </button>
 
       {state === "error" && (
-        <p className="font-body text-md text-error tracking-tight">
+        <p className="text-md text-error tracking-tight">
           Something went wrong. Please try again.
         </p>
       )}
 
-      <p className="font-body text-md text-muted/70 tracking-tight mt-1">
+      <p className="text-md text-muted/70 tracking-tight mt-1">
         No spam. One email when we launch — your 30% code included.
       </p>
     </form>

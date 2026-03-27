@@ -31,13 +31,13 @@ export function LandingMinimalHeader() {
           />
         </span>
         <div className="flex gap-12">
-          <p className="font-body text-md tracking-tighter font-medium pt-2 pr-44">
+          <p className="text-md tracking-tighter font-medium pt-2 pr-44">
             © 2026 Studio filé — Paris
           </p>
-          <p className="font-body text-md tracking-tighter font-medium pt-2">
+          <p className="text-md tracking-tighter font-medium pt-2">
             Coming Soon / [Countdown]
           </p>
-          <p className="font-body text-md tracking-tighter font-medium pt-2">
+          <p className="text-md tracking-tighter font-medium pt-2">
             TOTEM Collection
           </p>
         </div>

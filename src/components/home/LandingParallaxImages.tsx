@@ -70,12 +70,12 @@ function Card({
       className={`${card.bg} flex flex-col justify-between p-5`}
     >
       <span
-        className={`font-body text-md font-medium tracking-tight  self-end ${textColor}`}
+        className={`text-md font-medium tracking-tight  self-end ${textColor}`}
       >
         {card.id}
       </span>
       <p
-        className={`font-body text-md font-medium tracking-tight  ${textColor}`}
+        className={`text-md font-medium tracking-tight  ${textColor}`}
       >
         {card.label}
       </p>
@@ -114,13 +114,13 @@ function TextBlock({
       }}
       className="flex flex-col gap-4 pt-6"
     >
-      <p className="font-body  text-md tracking  text-muted">01 / Concept</p>
+      <p className="text-md tracking  text-muted">01 / Concept</p>
       <h2 className="font-inter text-ink text-9xl font-semibold leading-[100px] tracking-[-5px] ligatures">
         Light,
         <br />
         stacked.
       </h2>
-      <p className="font-body text-muted text-md tracking-tight leading-5">
+      <p className="text-muted text-md tracking-tight leading-5">
         A modular ceiling system built from 3D-printed shapes. Stack as many as
         you want, in any order.
       </p>
@@ -298,24 +298,24 @@ export function LandingParallaxImages() {
         {/* <div className="w-full flex flex-col gap-3">
           <div className="flex gap-3 items-start">
             <div className="bg-ink flex-1 aspect-[3/4] flex items-end p-4">
-              <span className="font-body text-md tracking-[0.2em]  text-canvas/30">
+              <span className="text-md tracking-[0.2em]  text-canvas/30">
                 01 / Modular
               </span>
             </div>
             <div className="bg-accent mt-10 w-2/5 aspect-[2/3] flex items-end p-3">
-              <span className="font-body text-[9px] tracking-[0.2em]  text-canvas/30">
+              <span className="text-[9px] tracking-[0.2em]  text-canvas/30">
                 02
               </span>
             </div>
           </div>
           <div className="flex gap-3 items-end">
             <div className="bg-stone-200 w-2/5 aspect-[3/4] flex items-end p-3">
-              <span className="font-body text-[9px] tracking-[0.2em]  text-ink/30">
+              <span className="text-[9px] tracking-[0.2em]  text-ink/30">
                 03
               </span>
             </div>
             <div className="bg-ink/75 flex-1 aspect-[2/3] flex items-end p-4">
-              <span className="font-body text-[9px] tracking-[0.2em]  text-canvas/20">
+              <span className="text-[9px] tracking-[0.2em]  text-canvas/20">
                 04
               </span>
             </div>

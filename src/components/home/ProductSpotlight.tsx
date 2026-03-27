@@ -26,7 +26,7 @@ export function ProductSpotlight() {
 
         {/* Text — below image */}
         <div className="px-5 py-12">
-          <p className="text-4xl font-body font-medium tracking-[-0.07em] leading-[1] pb-8">
+          <p className="text-4xl font-medium tracking-[-0.07em] leading-[1] pb-8">
             Introducing
             <span className="block font-display tracking-tighter text-7xl text-black">
               TOTEM
@@ -49,7 +49,7 @@ export function ProductSpotlight() {
       <div className="hidden sm:grid pl-5 grid-cols-2 gap-12 lg:gap-20 items-start">
         {/* Left — sticky text */}
         <div className="sticky top-[var(--header-height)] py-20">
-          <p className="text-7xl font-body font-medium tracking-[-0.07em] pb-12 leading-[0.9]">
+          <p className="text-7xl font-medium tracking-[-0.07em] pb-12 leading-[0.9]">
             Introducing
             <span className="inline-block font-display tracking-tighter text-8xl text-black pl-4 pr-2">
               {" "}

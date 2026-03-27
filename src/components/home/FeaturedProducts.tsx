@@ -39,10 +39,10 @@ export async function FeaturedProducts() {
       <section className="relative flex items-center min-h-dvh border border-green-500 mt-60">
         {/* Section heading */}
         <div className="flex justify-between items-baseline border-b border-stroke pb-4">
-          <span className="font-mono font-bold text-[clamp(2rem,5vw,4rem)] tracking-tight">
+          <span className="font-bold text-[clamp(2rem,5vw,4rem)] tracking-tight">
             SELECTED
           </span>
-          <span className="font-mono font-bold text-[clamp(2rem,5vw,4rem)] tracking-tight">
+          <span className="font-bold text-[clamp(2rem,5vw,4rem)] tracking-tight">
             WORKS
           </span>
         </div>
@@ -69,10 +69,10 @@ export async function FeaturedProducts() {
                 )}
               </div>
               <div className="p-4 border-t border-stroke">
-                <h3 className="font-mono font-bold text-xl">
+                <h3 className="font-bold text-xl">
                   {products[0].title}
                 </h3>
-                <p className="font-mono text-sm text-muted mt-1">
+                <p className="text-sm text-muted mt-1">
                   {formatPrice(
                     products[0].priceRange.minVariantPrice.amount,
                     products[0].priceRange.minVariantPrice.currencyCode,
@@ -107,10 +107,10 @@ export async function FeaturedProducts() {
                   )}
                 </div>
                 <div className="px-3 py-2">
-                  <h3 className="font-mono text-xs uppercase tracking-wider truncate">
+                  <h3 className="text-xs uppercase tracking-wider truncate">
                     {p.title}
                   </h3>
-                  <p className="font-mono text-xs text-muted mt-0.5">
+                  <p className="text-xs text-muted mt-0.5">
                     {formatPrice(
                       p.priceRange.minVariantPrice.amount,
                       p.priceRange.minVariantPrice.currencyCode,
@@ -126,7 +126,7 @@ export async function FeaturedProducts() {
         <div className="flex justify-end pt-4">
           <Link
             href="/shop"
-            className="font-mono text-xs text-muted hover:text-ink transition-colors uppercase tracking-wider"
+            className="text-xs text-muted hover:text-ink transition-colors uppercase tracking-wider"
           >
             → All Works
           </Link>

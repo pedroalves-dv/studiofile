@@ -106,7 +106,7 @@ export function HeroContent() {
         label="Shop"
         glowColor="var(--color-black)"
         className="sm:hidden mt-12 h-12 w-24 px-8 py-3 bg-ink text-white text-xs
-        tracking-display font-mono rounded-xl flex items-center justify-center"
+        tracking-display rounded-xl flex items-center justify-center"
       /> */}
     </div>
   );

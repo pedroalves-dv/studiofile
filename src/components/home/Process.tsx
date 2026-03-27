@@ -56,16 +56,16 @@ export function ProcessSection() {
                 {step.number}
               </div> */}
               <div className="flex flex-col text-left sm:px-44">
-                <p className="font-serif italic text-3xl text-ink">
+                <p className="italic text-3xl text-ink">
                   {step.title}
                 </p>
-                <p className="font-serif text-3xl text-light leading-none">
+                <p className="text-3xl text-light leading-none">
                   {step.description}
                 </p>
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-2">
-              <p className="font-serif text-xl text-light p-2">{step.detail}</p>
+              <p className="text-xl text-light p-2">{step.detail}</p>
             </AccordionContent>
           </AccordionItem>
         ))}
