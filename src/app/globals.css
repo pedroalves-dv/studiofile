@@ -107,8 +107,8 @@
     /* Typography */
     --font-display: "Noka", monospace;
     --font-body: var(--font-geist-sans), sans-serif;
-    --font-mono: var(--font-jetbrains), monospace;
-    --font-mono2: "Fliege Mono", monospace;
+    --font-mono: var(--font-geist-sans), monospace;
+    --font-mono2: var(--font-jetbrains), monospace;
     --font-serif: var(--font-instrument-serif), serif;
     --font-inter: var(--font-inter-tight), sans-serif;
     --font-stack: "Stack Regular", sans-serif;
@@ -177,6 +177,7 @@
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-body);
+    letter-spacing: -0.025em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     border-right: 1px solid var(--color-ink);
