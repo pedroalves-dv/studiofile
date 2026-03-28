@@ -1,7 +1,6 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { storefront } from './client'
 import {
   CUSTOMER_ACCESS_TOKEN_CREATE,
@@ -90,9 +89,6 @@ export async function customerLogout(): Promise<void> {
   }
 
   ;(await cookies()).delete(TOKEN_COOKIE)
-
-  // redirect() throws a special NEXT_REDIRECT error — must NOT be inside a try/catch.
-  redirect('/')
 }
 
 export async function customerRegister(
