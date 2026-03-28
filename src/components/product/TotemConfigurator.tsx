@@ -1022,28 +1022,38 @@ export function TotemConfigurator() {
                 : selectedPiece
                   ? isColorAvailableForShape(selectedPiece.shapeId, c.id)
                   : true;
+              if (colorAvailable) {
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    aria-label={c.name}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      applyColor(c.id);
+                    }}
+                    className={cn(
+                      "w-7 h-7 transition-all",
+                      activeColorId === c.id
+                        ? "ring-1 ring-ink ring-offset-1"
+                        : "ring-1 ring-transparent hover:ring-stroke",
+                    )}
+                    style={{ backgroundColor: c.hex }}
+                  />
+                );
+              }
               return (
-                <button
-                  key={c.id}
-                  type="button"
-                  aria-label={c.name}
-                  aria-disabled={!colorAvailable}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (colorAvailable) applyColor(c.id);
-                  }}
-                  className={cn(
-                    "w-7 h-7 transition-all",
-                    activeColorId === c.id
-                      ? "ring-1 ring-ink ring-offset-1"
-                      : colorAvailable
-                        ? "ring-1 ring-transparent hover:ring-stroke"
-                        : "ring-1 ring-transparent",
-                    !colorAvailable &&
-                      "opacity-30 cursor-not-allowed pointer-events-none",
-                  )}
-                  style={{ backgroundColor: c.hex }}
-                />
+                <div key={c.id} className="cursor-not-allowed">
+                  <Tooltip content="Out of stock" position="top">
+                    <button
+                      type="button"
+                      aria-label={c.name}
+                      aria-disabled
+                      className="w-7 h-7 ring-1 ring-transparent opacity-40 pointer-events-none"
+                      style={{ backgroundColor: c.hex }}
+                    />
+                  </Tooltip>
+                </div>
               );
             })}
           </div>
