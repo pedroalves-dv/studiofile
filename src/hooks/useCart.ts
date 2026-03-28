@@ -151,8 +151,8 @@ export function useCart() {
     // Fetch variant maps dynamically from Shopify (server-side cached, 1h revalidation)
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
-    let shapes: Record<string, string>;
-    let cables: Record<string, string>;
+    let shapes: Record<string, { id: string; available: boolean }>;
+    let cables: Record<string, { id: string; available: boolean }>;
     try {
       const res = await fetch("/api/totem-variants", {
         signal: controller.signal,
@@ -160,8 +160,8 @@ export function useCart() {
       clearTimeout(timeoutId);
       if (!res.ok) throw new Error("fetch failed");
       ({ shapes, cables } = (await res.json()) as {
-        shapes: Record<string, string>;
-        cables: Record<string, string>;
+        shapes: Record<string, { id: string; available: boolean }>;
+        cables: Record<string, { id: string; available: boolean }>;
       });
     } catch {
       clearTimeout(timeoutId);
@@ -179,15 +179,15 @@ export function useCart() {
 
     for (const piece of config.pieces) {
       const key = `${piece.shapeId}-${piece.colorId}`;
-      const variantId = shapes[key];
-      if (!variantId) {
+      const variant = shapes[key];
+      if (!variant?.id) {
         toast.error("Some product variants are not yet available.");
         return;
       }
       const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
       const color = TOTEM_COLORS.find((c) => c.id === piece.colorId);
       lines.push({
-        merchandiseId: variantId,
+        merchandiseId: variant.id,
         quantity: 1,
         attributes: [
           { key: "_build_id", value: buildId },
@@ -203,7 +203,7 @@ export function useCart() {
 
     const fixationKey = `${config.fixationId}-${config.fixationColorId}`;
     const fixationVariant = shapes[fixationKey];
-    if (!fixationVariant) {
+    if (!fixationVariant?.id) {
       toast.error("Some product variants are not yet available.");
       return;
     }
@@ -211,7 +211,7 @@ export function useCart() {
     const fixationColorName =
       COLOR_MAP.get(config.fixationColorId)?.name ?? config.fixationColorId;
     lines.push({
-      merchandiseId: fixationVariant,
+      merchandiseId: fixationVariant.id,
       quantity: 1,
       attributes: [
         { key: "_build_id", value: buildId },
@@ -226,13 +226,13 @@ export function useCart() {
     });
 
     const cableVariant = cables[config.cableId];
-    if (!cableVariant) {
+    if (!cableVariant?.id) {
       toast.error("Some product variants are not yet available.");
       return;
     }
     const cable = TOTEM_CABLES.find((c) => c.id === config.cableId);
     lines.push({
-      merchandiseId: cableVariant,
+      merchandiseId: cableVariant.id,
       quantity: 1,
       attributes: [
         { key: "_build_id", value: buildId },
