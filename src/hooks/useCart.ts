@@ -195,8 +195,7 @@ export function useCart() {
             key: "_build_label",
             value: `Custom Totem · ${shape?.name ?? piece.shapeId} — ${color?.name ?? piece.colorId}`,
           },
-          // { key: 'Shape', value: shape?.name ?? piece.shapeId },
-          // { key: 'Color', value: color?.name ?? piece.colorId },
+          { key: "Part", value: "Shape" },
         ],
       });
     }
@@ -240,7 +239,7 @@ export function useCart() {
           key: "_build_label",
           value: `Custom Totem · ${cable?.name ?? config.cableId} Cable`,
         },
-        // { key: 'Cable', value: cable?.name ?? config.cableId },
+        { key: "Part", value: "Cable" },
       ],
     });
 

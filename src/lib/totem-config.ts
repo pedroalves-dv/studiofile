@@ -80,7 +80,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
   {
     id: "studio",
     name: "The Studio",
-    description: "A minimal three-piece composition",
+    description: "A minimal two-piece composition",
     pieces: [
       { shapeId: "arch", colorId: "beige", flipped: false },
       { shapeId: "dome", colorId: "beige", flipped: false },
@@ -91,7 +91,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
   {
     id: "salon",
     name: "The Salon",
-    description: "A five-piece statement piece",
+    description: "A three-piece statement piece",
     pieces: [
       { shapeId: "dome", colorId: "beige", flipped: false },
       { shapeId: "arch", colorId: "beige", flipped: false },
@@ -103,7 +103,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
   {
     id: "atelier",
     name: "The Atelier",
-    description: "Seven pieces, maximum drama",
+    description: "Five pieces, maximum drama",
     pieces: [
       { shapeId: "dome", colorId: "blue", flipped: false },
       { shapeId: "arch", colorId: "pink", flipped: false },

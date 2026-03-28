@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { formatPrice } from "@/lib/utils/format";
 import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/components/common/Toast";
 import { cn } from "@/lib/utils/cn";
 import type { ShopifyCartLine } from "@/lib/shopify/types";
 import { ArrowButton } from "@/components/ui/ArrowButton";
@@ -16,19 +17,20 @@ function getLineLabel(line: ShopifyCartLine): {
   primary: string;
   secondary?: string;
 } {
-  const shapeName = line.attributes.find((a) => a.key === "Shape")?.value;
-  const colorName = line.attributes.find((a) => a.key === "Color")?.value;
-  const fixationName = line.attributes.find((a) => a.key === "Fixation")?.value;
-  const cableName = line.attributes.find((a) => a.key === "Cable")?.value;
-  if (shapeName) return { primary: shapeName, secondary: colorName };
-  if (fixationName) return { primary: fixationName };
-  if (cableName) return { primary: cableName };
-  return { primary: line.merchandise.product.title };
+  const part = line.attributes.find((a) => a.key === "Part")?.value;
+  const productTitle = line.merchandise.product.title;
+  const variantTitle = line.merchandise.title; // color name for shapes/fixations
+  if (part === "Shape" || part === "Fixation") {
+    return { primary: productTitle, secondary: variantTitle };
+  }
+  return { primary: productTitle };
 }
 
 export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   const [expanded, setExpanded] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const { removeItem } = useCart();
+  const toast = useToast();
 
   const totalAmount = lines.reduce(
     (sum, line) => sum + parseFloat(line.cost.totalAmount.amount),
@@ -38,28 +40,41 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
 
   // Shape names for summary (max 3 + overflow count)
   const shapeNames = lines
-    .map((l) => l.attributes.find((a) => a.key === "Shape")?.value)
-    .filter((v): v is string => Boolean(v));
+    .filter(
+      (l) => l.attributes.find((a) => a.key === "Part")?.value === "Shape",
+    )
+    .map((l) => `${l.merchandise.product.title} · ${l.merchandise.title}`);
 
   const LIMIT = 3;
   const overflow = shapeNames.length - LIMIT;
   const shapeSummary =
     overflow > 0
-      ? `${shapeNames.slice(0, LIMIT).join(" · ")} +${overflow} more`
-      : shapeNames.join(" · ");
+      ? `${shapeNames.slice(0, LIMIT).join(", ")} +${overflow} more`
+      : shapeNames.join(", ");
 
   // Fixation + cable names for second summary line
-  const fixationName = lines
-    .flatMap((l) => l.attributes)
-    .find((a) => a.key === "Fixation")?.value;
-  const cableName = lines
-    .flatMap((l) => l.attributes)
-    .find((a) => a.key === "Cable")?.value;
+  const fixationLine = lines.find(
+    (l) => l.attributes.find((a) => a.key === "Part")?.value === "Fixation",
+  );
+  const cableLine = lines.find(
+    (l) => l.attributes.find((a) => a.key === "Part")?.value === "Cable",
+  );
+  const fixationName = fixationLine
+    ? `${fixationLine.merchandise.product.title} · ${fixationLine.merchandise.title}`
+    : undefined;
+  const cableName = cableLine?.merchandise.product.title;
   const systemSummary = [fixationName, cableName].filter(Boolean).join(" · ");
 
   async function removeBundle() {
-    for (const line of lines) {
-      await removeItem(line.id);
+    setIsRemoving(true);
+    try {
+      for (const line of lines) {
+        await removeItem(line.id);
+      }
+    } catch {
+      toast.error("Could not remove bundle. Please try again.");
+    } finally {
+      setIsRemoving(false);
     }
   }
 
@@ -126,9 +141,10 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           <div className="mt-2">
             <ArrowButton
               type="button"
-              label="Remove bundle"
+              label={isRemoving ? "Removing…" : "Remove bundle"}
+              disabled={isRemoving}
               onClick={removeBundle}
-              className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity"
+              className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
             />
           </div>
         </div>

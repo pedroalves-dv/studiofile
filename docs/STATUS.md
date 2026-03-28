@@ -8,13 +8,13 @@ Update this file at the end of every session.
 
 ## Site Architecture
 
-| Layer | Choice |
-| ----- | ------ |
-| Frontend | Next.js 15 App Router, TypeScript (`strict: false`) |
-| Styling | Tailwind CSS v3 |
-| Backend | Shopify Storefront API (GraphQL) |
-| Animations | CSS transitions · `motion` v12 |
-| Hosting | Vercel |
+| Layer      | Choice                                              |
+| ---------- | --------------------------------------------------- |
+| Frontend   | Next.js 16 App Router, TypeScript (`strict: false`) |
+| Styling    | Tailwind CSS v3                                     |
+| Backend    | Shopify Storefront API (GraphQL)                    |
+| Animations | CSS transitions · `motion` v12                      |
+| Hosting    | Vercel                                              |
 
 **Soft launch mode:** `middleware.ts` redirects `/` → `/coming-soon`. The main site is live but gated. Remove the redirect when ready to launch.
 
@@ -24,35 +24,35 @@ Update this file at the end of every session.
 
 ### Foundation & Infrastructure (Done)
 
-| Phase | Description | Status |
-| ----- | ----------- | ------ |
-| 1–3 | Scaffolding, Shopify client, design tokens, layout shell, loading/error states | ✅ Done |
+| Phase   | Description                                                                         | Status  |
+| ------- | ----------------------------------------------------------------------------------- | ------- |
+| 1–3     | Scaffolding, Shopify client, design tokens, layout shell, loading/error states      | ✅ Done |
 | 4.1–4.3 | Home page, Collections index, Shop/Collection pages with filter + sort + pagination | ✅ Done |
-| 4.4 | Product Detail Page (standard) | ✅ Done |
-| 4.5 | About, Contact, Policies, Sitemap | ✅ Done |
-| 5 | Search + predictive search | ✅ Done |
-| 6 | Cart context, cart drawer, discount codes, free shipping bar | ✅ Done |
-| 7 | Customer auth: login, register, forgot password, account dashboard, orders | ✅ Done |
-| 7.x | Account settings page — profile update + password change, 4-tab nav synced | ✅ Done |
-| 7.y | Account addresses page — list, add, edit, delete, set-as-default | ✅ Done |
-| 8 | Wishlist, Recently Viewed, Related Products | ✅ Done |
-| 9 | Analytics (Vercel), SEO, structured data, sitemap, robots | ✅ Done |
-| 10 | GSAP removed — replaced by CSS/motion in Phase 11. View transitions added. | ✅ Done |
+| 4.4     | Product Detail Page (standard)                                                      | ✅ Done |
+| 4.5     | About, Contact, Policies, Sitemap                                                   | ✅ Done |
+| 5       | Search + predictive search                                                          | ✅ Done |
+| 6       | Cart context, cart drawer, discount codes, free shipping bar                        | ✅ Done |
+| 7       | Customer auth: login, register, forgot password, account dashboard, orders          | ✅ Done |
+| 7.x     | Account settings page — profile update + password change, 4-tab nav synced          | ✅ Done |
+| 7.y     | Account addresses page — list, add, edit, delete, set-as-default                    | ✅ Done |
+| 8       | Wishlist, Recently Viewed, Related Products                                         | ✅ Done |
+| 9       | Analytics (Vercel), SEO, structured data, sitemap, robots                           | ✅ Done |
+| 10      | GSAP removed — replaced by CSS/motion in Phase 11. View transitions added.          | ✅ Done |
 
 ### Phase 11 — UX Design Pass
 
-| Phase | Description | Status |
-| ----- | ----------- | ------ |
-| 11.1 | Marquee component (CSS, no JS) | ✅ Done |
-| 11.2 | Home page editorial overhaul (hero, brand story, collections, featured) | ✅ Done |
-| 11.x | Cart + Wishlist drawer styling overhaul (ad hoc) | ✅ Done |
-| 11.3 | Header accent hover effects (logo slash + nav color shift) | ✅ Done |
-| 11.x | Mobile menu UX polish — interactions, drawer animations, dialog refinements | ✅ Done |
-| 11.x | Font stack consolidation + UI overhaul — removed experimental fonts, tightened type system | ✅ Done |
-| 11.x | Hero sticky columns — staggered image placeholders (bg-light/bg-lighter), sticky TOTEM title on scroll | ✅ Done |
-| 11.x | Account pages audit + layout refactor — prep for full site styling pass | 🔄 In Progress |
-| 11.4 | Shop + collection editorial layout, ProductCard redesign (outline on hover) | ⬜ Pending |
-| 11.x | Coming-soon page editorial rework — canvas aesthetic, parallax image section, logo-only header, LandingSignup re-skin | ✅ Done |
+| Phase | Description                                                                                                           | Status         |
+| ----- | --------------------------------------------------------------------------------------------------------------------- | -------------- |
+| 11.1  | Marquee component (CSS, no JS)                                                                                        | ✅ Done        |
+| 11.2  | Home page editorial overhaul (hero, brand story, collections, featured)                                               | ✅ Done        |
+| 11.x  | Cart + Wishlist drawer styling overhaul (ad hoc)                                                                      | ✅ Done        |
+| 11.3  | Header accent hover effects (logo slash + nav color shift)                                                            | ✅ Done        |
+| 11.x  | Mobile menu UX polish — interactions, drawer animations, dialog refinements                                           | ✅ Done        |
+| 11.x  | Font stack consolidation + UI overhaul — removed experimental fonts, tightened type system                            | ✅ Done        |
+| 11.x  | Hero sticky columns — staggered image placeholders (bg-light/bg-lighter), sticky TOTEM title on scroll                | ✅ Done        |
+| 11.x  | Account pages audit + layout refactor — prep for full site styling pass                                               | 🔄 In Progress |
+| 11.4  | Shop + collection editorial layout, ProductCard redesign (outline on hover)                                           | ⬜ Pending     |
+| 11.x  | Coming-soon page editorial rework — canvas aesthetic, parallax image section, logo-only header, LandingSignup re-skin | ✅ Done        |
 
 **Phase 11 notes:**
 
@@ -65,11 +65,11 @@ Update this file at the end of every session.
 
 The TOTEM lamp is a modular ceiling light: stackable 3D-printed shapes, each sold as a separate Shopify product. The configurator at `/products/totem` lets customers build their lamp, then adds the whole configuration as a grouped cart bundle.
 
-| Phase | Description | Status |
-| ----- | ----------- | ------ |
+| Phase   | Description                                                                                          | Status  |
+| ------- | ---------------------------------------------------------------------------------------------------- | ------- |
 | TOTEM 1 | `totem-config.ts`, cart line attributes, `addBundle()` in `useCart`, `TotemCartGroup` in cart drawer | ✅ Done |
-| TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total | ✅ Done |
-| TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish | ✅ Done |
+| TOTEM 2 | `TotemConfigurator` UI at `/products/totem` — stack, color picker, shape catalog, live total         | ✅ Done |
+| TOTEM 3 | Preset gallery tab, visual preview pane, `TotemCartGroup` polish                                     | ✅ Done |
 
 ### TOTEM Architecture Decisions
 

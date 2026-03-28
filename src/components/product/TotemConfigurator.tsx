@@ -119,10 +119,23 @@ export function TotemConfigurator() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/totem-variants")
-      .then((res) => res.json())
-      .then(setVariantMap)
+    const controller = new AbortController();
+    fetch("/api/totem-variants", { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch failed");
+        return res.json();
+      })
+      .then((data) => {
+        if (
+          data &&
+          typeof data.shapes === "object" &&
+          typeof data.cables === "object"
+        ) {
+          setVariantMap(data);
+        }
+      })
       .catch(() => {}); // fail silently — UI degrades to showing all options as available
+    return () => controller.abort();
   }, []);
 
   const shapeMap = useMemo(
@@ -245,6 +258,7 @@ export function TotemConfigurator() {
   /* ── Touch drag-to-reorder ── */
 
   const touchDragRef = useRef<string | null>(null);
+  const lastSwapRef = useRef<string | null>(null);
 
   const updateGhost = useCallback((uid: string, x: number, y: number) => {
     const el = ghostRef.current;
@@ -288,6 +302,9 @@ export function TotemConfigurator() {
       const target = el?.closest("[data-uid]") as HTMLElement | null;
       const targetUid = target?.dataset.uid;
       if (targetUid && targetUid !== touchDragRef.current) {
+        const swapKey = [touchDragRef.current, targetUid].sort().join("|");
+        if (lastSwapRef.current === swapKey) return;
+        lastSwapRef.current = swapKey;
         setPieces((prev) => {
           const next = [...prev];
           const dIdx = next.findIndex((p) => p.uid === touchDragRef.current);
@@ -301,6 +318,7 @@ export function TotemConfigurator() {
 
     const onEnd = () => {
       touchDragRef.current = null;
+      lastSwapRef.current = null;
       setDraggedUid(null);
       if (ghostRef.current) ghostRef.current.style.display = "none";
     };
@@ -349,10 +367,14 @@ export function TotemConfigurator() {
     el?.scrollTo({ top: 0 });
   }
 
-  // B4: Guard addShape with MAX_PIECES
+  // B4: Guard addShape with MAX_PIECES and full OOS check
   function addShape(shapeId: string) {
     if (pieces.length >= MAX_PIECES) {
       toast.info(`Maximum ${MAX_PIECES} pieces allowed.`);
+      return;
+    }
+    if (isShapeFullyUnavailable(shapeId)) {
+      toast.info("This shape is currently out of stock.");
       return;
     }
     const defaultColorId = variantMap
