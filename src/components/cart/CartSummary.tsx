@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils/format";
-import { Button } from "@/components/ui/Button";
+
 import type { ShopifyCart } from "@/lib/shopify/types";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 interface CartSummaryProps {
   cart: ShopifyCart;
@@ -62,17 +63,22 @@ export function CartSummary({ cart }: CartSummaryProps) {
       </div>
 
       {/* Checkout button */}
-      <Button asChild fullWidth>
-        <a href={cart.checkoutUrl}>Checkout</a>
-      </Button>
+      <div className="flex justify-center">
+        <ArrowButton
+          href={cart.checkoutUrl}
+          label="Checkout"
+          className="w-full px-6 py-2 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center disabled:opacity-50"
+        />
+      </div>
 
       {/* Continue shopping */}
-      <button
-        onClick={closeCart}
-        className="text-base text-muted hover:text-ink transition-colors text-center"
-      >
-        Continue Shopping
-      </button>
+      <div className="flex justify-center">
+        <ArrowButton
+          onClick={closeCart}
+          label="Continue Shopping"
+          className="w-full px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md border border-ink disabled:opacity-50"
+        />
+      </div>
     </div>
   );
 }
