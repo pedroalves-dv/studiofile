@@ -134,15 +134,15 @@ export async function updateCartLine(
 }
 
 /**
- * Remove cart line
+ * Remove cart lines
  */
 export async function removeFromCart(
   cartId: string,
-  lineId: string
+  lineIds: string[]
 ): Promise<ShopifyCart> {
   const response = await storefront<CartRemoveResponse>(CART_LINES_REMOVE, {
     cartId,
-    lineIds: [lineId],
+    lineIds,
   });
 
   if (response.cartLinesRemove.userErrors.length > 0) {
