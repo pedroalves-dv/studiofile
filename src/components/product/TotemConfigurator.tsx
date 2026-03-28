@@ -264,7 +264,7 @@ export function TotemConfigurator() {
       preset.pieces.every((p) =>
         isColorAvailableForShape(p.shapeId, p.colorId),
       ) &&
-      isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
+      isFixationColorAvailable(preset.fixationId, "beige") &&
       isCableAvailable(preset.cableId)
     );
   }
