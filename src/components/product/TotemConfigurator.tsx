@@ -472,6 +472,11 @@ export function TotemConfigurator() {
     cableMap,
   );
 
+  const configAvailable =
+    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
+    isFixationColorAvailable(fixationId, fixationColorId) &&
+    isCableAvailable(cableId);
+
   return (
     <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
       {/* ── Product title — mobile only, above viewer ── */}
@@ -1175,6 +1180,14 @@ export function TotemConfigurator() {
             </div>
             {pieces.length === 0 ? (
               <Tooltip content="Add shapes to get started">
+                <ArrowButton
+                  label="Add to Cart"
+                  disabled
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                />
+              </Tooltip>
+            ) : !configAvailable ? (
+              <Tooltip content="One or more selected options is out of stock">
                 <ArrowButton
                   label="Add to Cart"
                   disabled
