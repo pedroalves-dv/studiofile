@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { useCart } from "@/hooks/useCart";
+import { useLenis } from "@/components/common/SmoothScroll";
 import { CartItem } from "./CartItem";
 import { TotemCartGroup } from "./TotemCartGroup";
 import { CartSummary } from "./CartSummary";
@@ -15,14 +16,17 @@ import type { ShopifyCartLine } from "@/lib/shopify/types";
 
 export function CartDrawer() {
   const { cart, isOpen, closeCart } = useCart();
+  const lenis = useLenis();
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
+      lenis?.stop();
       setIsVisible(true);
       setIsClosing(false);
     } else if (isVisible) {
+      lenis?.start();
       setIsClosing(true);
       const timer = setTimeout(() => {
         setIsVisible(false);
@@ -31,7 +35,7 @@ export function CartDrawer() {
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, lenis]);
 
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
@@ -55,7 +59,7 @@ export function CartDrawer() {
         <FreeShippingBar cart={cart} />
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto py-4 px-5">
+        <div className="flex-1 overflow-y-auto py-4 px-5" data-lenis-prevent>
           {!cart || cart.lines.length === 0 ? (
             <EmptyCart />
           ) : (

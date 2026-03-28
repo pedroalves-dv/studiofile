@@ -239,6 +239,18 @@ export function useCart() {
         { key: "Part", value: "Fixation" },
         { key: "_fixation_id", value: config.fixationId },
         { key: "_fixation_color_id", value: config.fixationColorId },
+        // Full pieces snapshot — lets handleEdit reconstruct order + counts exactly,
+        // regardless of how Shopify consolidates duplicate shape lines.
+        {
+          key: "_pieces_config",
+          value: JSON.stringify(
+            config.pieces.map((p) => ({
+              shapeId: p.shapeId,
+              colorId: p.colorId,
+              flipped: p.flipped,
+            })),
+          ),
+        },
       ],
     });
 

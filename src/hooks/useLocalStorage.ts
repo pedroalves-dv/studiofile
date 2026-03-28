@@ -16,6 +16,22 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
   }, [key]);
 
+  // Re-sync when same-tab code writes directly to localStorage and dispatches a
+  // StorageEvent manually (native storage events only fire in *other* tabs).
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key !== key) return;
+      try {
+        const item = window.localStorage.getItem(key);
+        if (item !== null) setStoredValue(JSON.parse(item));
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [key]);
+
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
       setStoredValue((prev) => {

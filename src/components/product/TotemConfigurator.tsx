@@ -73,6 +73,7 @@ export function TotemConfigurator() {
   const [zoomIdx, setZoomIdx] = useState(DEFAULT_ZOOM_IDX);
   const [showList, setShowList] = useState(true);
   const [pendingPresetId, setPendingPresetId] = useState<string | null>(null);
+  const [pendingClear, setPendingClear] = useState(false);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -492,11 +493,6 @@ export function TotemConfigurator() {
     setIsAdding(true);
     try {
       await addTotemToCart({ pieces, fixationId, fixationColorId, cableId });
-      setPieces([]);
-      setFixationId(catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id);
-      setFixationColorId(TOTEM_COLORS[0].id);
-      setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
-      setSelectedElement(null);
     } finally {
       setIsAdding(false);
     }
@@ -559,6 +555,15 @@ export function TotemConfigurator() {
                 className="p-1 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <Maximize2 size={18} />
+              </button>
+              <button
+                type="button"
+                aria-label="Clear configuration"
+                disabled={pieces.length === 0}
+                onClick={() => setPendingClear(true)}
+                className="p-1 text-muted hover:text-error disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+              >
+                <Trash2 size={18} />
               </button>
             </div>
 
@@ -930,6 +935,43 @@ export function TotemConfigurator() {
             </div>
           </div>
         </div>
+
+        {/* ── Clear confirmation overlay ── */}
+        {pendingClear && (
+          <div
+            className="absolute inset-0 z-20 flex items-center justify-center bg-white/90 backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center gap-4 px-6 text-center">
+              <p className="text-sm text-ink">
+                This will clear your current build.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPendingClear(false)}
+                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPieces([]);
+                    setFixationId(catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id);
+                    setFixationColorId(TOTEM_COLORS[0].id);
+                    setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
+                    setSelectedElement(null);
+                    setPendingClear(false);
+                  }}
+                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Preset confirmation overlay ── */}
         {pendingPresetId && (

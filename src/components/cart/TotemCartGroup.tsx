@@ -84,26 +84,43 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
         return;
       }
 
-      const pieces: TotemPiece[] = shapeLines.map((l) => ({
-        uid: generateUid(),
-        shapeId: lineAttr(l, "_shape_id")!,
-        colorId: lineAttr(l, "_color_id")!,
-        flipped: lineAttr(l, "_flipped") === "true",
-      }));
+      // Prefer the full snapshot stored at add-to-cart time (preserves order + exact
+      // count regardless of how Shopify consolidates duplicate shape lines).
+      // Fall back to per-line reconstruction for bundles added before this change.
+      const piecesConfigStr = lineAttr(fixLine, "_pieces_config");
+      let pieces: TotemPiece[];
+      if (piecesConfigStr) {
+        const raw = JSON.parse(piecesConfigStr) as Array<{
+          shapeId: string;
+          colorId: string;
+          flipped: boolean;
+        }>;
+        pieces = raw.map((p) => ({
+          uid: generateUid(),
+          shapeId: p.shapeId,
+          colorId: p.colorId,
+          flipped: p.flipped,
+        }));
+      } else {
+        pieces = shapeLines.flatMap((l) =>
+          Array.from({ length: l.quantity }, () => ({
+            uid: generateUid(),
+            shapeId: lineAttr(l, "_shape_id")!,
+            colorId: lineAttr(l, "_color_id")!,
+            flipped: lineAttr(l, "_flipped") === "true",
+          })),
+        );
+      }
 
-      localStorage.setItem("sf-totem-pieces", JSON.stringify(pieces));
-      localStorage.setItem(
-        "sf-totem-fixation",
-        JSON.stringify(lineAttr(fixLine, "_fixation_id")),
-      );
-      localStorage.setItem(
-        "sf-totem-fixation-color",
-        JSON.stringify(lineAttr(fixLine, "_fixation_color_id")),
-      );
-      localStorage.setItem(
-        "sf-totem-cable",
-        JSON.stringify(lineAttr(cabLine, "_cable_id")),
-      );
+      const notify = (k: string, v: string) => {
+        localStorage.setItem(k, v);
+        window.dispatchEvent(new StorageEvent("storage", { key: k, newValue: v }));
+      };
+
+      notify("sf-totem-pieces", JSON.stringify(pieces));
+      notify("sf-totem-fixation", JSON.stringify(lineAttr(fixLine, "_fixation_id")));
+      notify("sf-totem-fixation-color", JSON.stringify(lineAttr(fixLine, "_fixation_color_id")));
+      notify("sf-totem-cable", JSON.stringify(lineAttr(cabLine, "_cable_id")));
 
       await removeBundleItems(lines.map((l) => l.id));
       closeCart();
@@ -159,6 +176,9 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
                 <p className="text-xs text-muted">
                   {primary}
                   {secondary && ` · ${secondary}`}
+                  {line.quantity > 1 && (
+                    <span className="ml-1 text-light">×{line.quantity}</span>
+                  )}
                 </p>
                 <span className="text-xs text-muted ml-4 flex-shrink-0">
                   {formatPrice(
