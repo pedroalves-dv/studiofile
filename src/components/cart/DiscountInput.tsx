@@ -36,7 +36,7 @@ export function DiscountInput() {
     return (
       <div className="flex items-center justify-between px-3 py-2 bg-success/10 border border-success/30">
         <div>
-          <p className="text-label text-success">{activeCode.code}</p>
+          <p className="text-base text-success">{activeCode.code}</p>
           {savings > 0 && (
             <p className="text-xs text-success mt-0.5">
               -{formatPrice(savings.toString(), currencyCode)} saved
@@ -58,7 +58,7 @@ export function DiscountInput() {
     <div>
       <button
         onClick={() => setIsExpanded((v) => !v)}
-        className="flex items-center gap-1 text-label text-muted hover:text-ink transition-colors"
+        className="flex items-center gap-1 text-base text-muted hover:text-ink transition-colors"
       >
         Have a discount code?
         <ChevronDown
@@ -76,12 +76,12 @@ export function DiscountInput() {
             onKeyDown={(e) => e.key === "Enter" && handleApply()}
             placeholder="Enter code"
             aria-label="Discount code"
-            className="flex-1 border border-border px-3 py-1.5 text-sm bg-canvas focus:outline-none focus:border-ink transition-colors"
+            className="flex-1 border border-border px-3 py-1.5 text-base bg-canvas focus:outline-none focus:border-ink transition-colors rounded-md"
           />
           <button
             onClick={handleApply}
             disabled={isLoading || !code.trim()}
-            className="px-3 py-1.5 text-label bg-ink text-canvas disabled:opacity-50 hover:opacity-90 transition-opacity"
+            className="px-3 py-1.5 text-base bg-ink text-canvas disabled:opacity-50 hover:opacity-90 transition-opacity rounded-md"
           >
             {isLoading ? "..." : "Apply"}
           </button>

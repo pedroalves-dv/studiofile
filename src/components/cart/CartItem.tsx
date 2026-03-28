@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-import { useCart } from '@/hooks/useCart';
-import { formatPrice } from '@/lib/utils/format';
-import type { ShopifyCartLine } from '@/lib/shopify/types';
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils/format";
+import type { ShopifyCartLine } from "@/lib/shopify/types";
 
 interface CartItemProps {
   line: ShopifyCartLine;
@@ -44,17 +44,25 @@ export function CartItem({ line }: CartItemProps) {
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-ink truncate">{merchandise.product.title}</p>
-        {merchandise.title !== 'Default Title' && (
+        <p className="text-3xl font-semibold tracking-tighter leading-none text-ink truncate">
+          {merchandise.product.title}
+        </p>
+        {merchandise.title !== "Default Title" && (
           <p className="text-xs text-muted mt-0.5">{merchandise.title}</p>
         )}
-        {line.attributes.filter((a) => !a.key.startsWith('_')).length > 0 && (
+        {line.attributes.filter((a) => !a.key.startsWith("_")).length > 0 && (
           <p className="text-xs text-muted mt-0.5">
-            {line.attributes.filter((a) => !a.key.startsWith('_')).map((a) => a.value).join(' · ')}
+            {line.attributes
+              .filter((a) => !a.key.startsWith("_"))
+              .map((a) => a.value)
+              .join(" · ")}
           </p>
         )}
         <p className="text-xs text-muted mt-1">
-          {formatPrice(merchandise.price.amount, merchandise.price.currencyCode)}
+          {formatPrice(
+            merchandise.price.amount,
+            merchandise.price.currencyCode,
+          )}
         </p>
 
         {/* Out of stock warning */}
@@ -84,7 +92,10 @@ export function CartItem({ line }: CartItemProps) {
 
           <div className="flex items-center gap-3">
             <span className="text-xs">
-              {formatPrice(line.cost.totalAmount.amount, line.cost.totalAmount.currencyCode)}
+              {formatPrice(
+                line.cost.totalAmount.amount,
+                line.cost.totalAmount.currencyCode,
+              )}
             </span>
             <button
               onClick={() => removeItem(line.id)}

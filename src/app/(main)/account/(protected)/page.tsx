@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { OrderCard } from "@/components/account/OrderCard";
@@ -9,9 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AccountPage() {
   const token = await getCustomerToken();
-  const customer = await getCustomer(token!);
+  if (!token) redirect('/account/login');
+  const customer = await getCustomer(token);
+  if (!customer) redirect('/account/login');
 
-  const recentOrders = customer!.orders.edges.slice(0, 3).map((e) => e.node);
+  const recentOrders = customer.orders.edges.slice(0, 3).map((e) => e.node);
 
   return (
     <main className="">
@@ -20,7 +23,7 @@ export default async function AccountPage() {
           <h2 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
             Recent orders
           </h2>
-          {customer!.orders.edges.length > 3 && (
+          {customer.orders.edges.length > 3 && (
             <Link
               href="/account/orders"
               className="text-label text-muted hover:text-ink transition-colors"
@@ -42,7 +45,7 @@ export default async function AccountPage() {
           </div>
         )}
 
-        {customer!.orders.edges.length > 3 && (
+        {customer.orders.edges.length > 3 && (
           <div className="mt-6">
             <Link
               href="/account/orders"

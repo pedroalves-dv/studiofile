@@ -32,7 +32,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
     <div className="flex flex-col gap-3">
       {/* Subtotal */}
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted">Subtotal</span>
+        <span className="text-base text-muted">Subtotal</span>
         <span className="text-sm">
           {formatPrice(subtotal.amount, subtotal.currencyCode)}
         </span>
@@ -49,14 +49,14 @@ export function CartSummary({ cart }: CartSummaryProps) {
       )}
 
       {/* Taxes & shipping note */}
-      <p className="text-label text-muted">
+      <p className="text-sm text-light">
         Taxes and shipping calculated at checkout
       </p>
 
       {/* Total */}
       <div className="flex items-center justify-between pt-2 border-t border-border">
-        <span className="text-sm font-medium">Total</span>
-        <span className="text-sm font-medium">
+        <span className="text-3xl tracking-tighter font-semibold">Total</span>
+        <span className="text-3xl tracking-tighter font-semibold">
           {formatPrice(total.amount, total.currencyCode)}
         </span>
       </div>
@@ -69,7 +69,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       {/* Continue shopping */}
       <button
         onClick={closeCart}
-        className="text-label text-muted hover:text-ink transition-colors text-center"
+        className="text-base text-muted hover:text-ink transition-colors text-center"
       >
         Continue Shopping
       </button>

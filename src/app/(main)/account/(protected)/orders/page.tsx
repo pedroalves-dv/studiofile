@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { OrderCard } from "@/components/account/OrderCard";
@@ -9,9 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function OrdersPage() {
   const token = await getCustomerToken();
-  const customer = await getCustomer(token!);
+  if (!token) redirect('/account/login');
+  const customer = await getCustomer(token);
+  if (!customer) redirect('/account/login');
 
-  const orders = customer!.orders.edges.map((e) => e.node);
+  const orders = customer.orders.edges.map((e) => e.node);
 
   return (
     <main className="bg-canvas">

@@ -207,7 +207,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                                   toastSuccess("You've been signed out");
                                   router.push("/");
                                 } catch {
-                                  toastError("Sign out failed. Please try again.");
+                                  toastError(
+                                    "Sign out failed. Please try again.",
+                                  );
                                 }
                               });
                             }}
@@ -257,8 +259,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 >
                   <ShoppingBagIcon ref={cartIconRef} />
                   {cartCount > 0 && (
-                    <span className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center rounded-full">
-                      {cartCount}
+                    <span className="absolute top-2 right-2 sm:top-1.5 sm:right-1.5 w-4 h-4 flex font-semibold items-center justify-center rounded-full">
+                      ({cartCount})
                     </span>
                   )}
                 </button>
