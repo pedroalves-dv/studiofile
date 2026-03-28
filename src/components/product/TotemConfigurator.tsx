@@ -925,24 +925,35 @@ export function TotemConfigurator() {
                 "opacity-30 pointer-events-none",
             )}
           >
-            {TOTEM_COLORS.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                aria-label={c.name}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  applyColor(c.id);
-                }}
-                className={cn(
-                  "w-7 h-7 transition-all",
-                  activeColorId === c.id
-                    ? "ring-1 ring-ink ring-offset-1"
-                    : "ring-1 ring-transparent hover:ring-stroke",
-                )}
-                style={{ backgroundColor: c.hex }}
-              />
-            ))}
+            {TOTEM_COLORS.map((c) => {
+              const colorAvailable = fixationSelected
+                ? isFixationColorAvailable(fixationId, c.id)
+                : selectedPiece
+                  ? isColorAvailableForShape(selectedPiece.shapeId, c.id)
+                  : true;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-label={c.name}
+                  aria-disabled={!colorAvailable}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (colorAvailable) applyColor(c.id);
+                  }}
+                  className={cn(
+                    "w-7 h-7 transition-all",
+                    activeColorId === c.id
+                      ? "ring-1 ring-ink ring-offset-1"
+                      : colorAvailable
+                        ? "ring-1 ring-transparent hover:ring-stroke"
+                        : "ring-1 ring-transparent",
+                    !colorAvailable && "opacity-30 cursor-not-allowed pointer-events-none",
+                  )}
+                  style={{ backgroundColor: c.hex }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
