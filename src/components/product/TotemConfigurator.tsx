@@ -218,14 +218,14 @@ export function TotemConfigurator() {
     return variantMap.shapes[`${shapeId}-${colorId}`]?.available ?? false;
   }
 
-  function isFixationColorAvailable(fixationId: string, colorId: string): boolean {
+  function isFixationColorAvailable(fxId: string, colorId: string): boolean {
     if (!variantMap) return true;
-    return variantMap.shapes[`${fixationId}-${colorId}`]?.available ?? false;
+    return variantMap.shapes[`${fxId}-${colorId}`]?.available ?? false;
   }
 
-  function isCableAvailable(cableId: string): boolean {
+  function isCableAvailable(id: string): boolean {
     if (!variantMap) return true;
-    return variantMap.cables[cableId]?.available ?? false;
+    return variantMap.cables[id]?.available ?? false;
   }
 
   function isShapeFullyUnavailable(shapeId: string): boolean {
@@ -233,9 +233,9 @@ export function TotemConfigurator() {
     return TOTEM_COLORS.every((c) => !variantMap.shapes[`${shapeId}-${c.id}`]?.available);
   }
 
-  function isFixationFullyUnavailable(fixationId: string): boolean {
+  function isFixationFullyUnavailable(fxId: string): boolean {
     if (!variantMap) return false;
-    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${fixationId}-${c.id}`]?.available);
+    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available);
   }
 
   /* ── Touch drag-to-reorder ── */
