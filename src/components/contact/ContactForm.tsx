@@ -209,7 +209,7 @@ export function ContactForm() {
             onChange={set("message")}
             rows={6}
             placeholder="Tell us about your project or enquiry…"
-            className="w-full px-4 py-2 bg-transparent text-ink tracking-tighter placeholder-light focus:outline-none text-sm"
+            className="w-full px-4 py-2 bg-transparent text-ink tracking-tight placeholder-light focus:outline-none text-base"
             required
           />
         </div>

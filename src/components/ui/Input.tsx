@@ -26,10 +26,7 @@ export function Input({
   return (
     <div className="w-full border border-stroke rounded-lg p-1 bg-canvas">
       {label && (
-        <label
-          htmlFor={inputId}
-          className="px-1 block text-sm mb-1 text-light"
-        >
+        <label htmlFor={inputId} className="px-1 block text-sm mb-1 text-light">
           {label}
         </label>
       )}
@@ -37,15 +34,13 @@ export function Input({
         {prefix && <span className="text-muted text-sm mr-2">{prefix}</span>}
         <input
           id={inputId}
-          className={`w-full px-4 py-2 bg-transparent text-ink placeholder-light text-sm focus:outline-none ${error ? "text-error" : ""} ${className || ""}`}
+          className={`w-full px-4 py-2 bg-transparent text-ink placeholder-light text-base focus:outline-none ${error ? "text-error" : ""} ${className || ""}`}
           {...props}
         />
         {suffix && <span className="text-muted text-sm ml-2">{suffix}</span>}
       </div>
       {error && <p className="text-error text-xs mt-1">{error}</p>}
-      {hint && !error && (
-        <p className="text-muted text-xs mt-1">{hint}</p>
-      )}
+      {hint && !error && <p className="text-muted text-xs mt-1">{hint}</p>}
     </div>
   );
 }

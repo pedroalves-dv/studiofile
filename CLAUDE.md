@@ -99,48 +99,6 @@ Modular, functional home decor and furniture. Premium brand aesthetic.
 - Commit: `feat: phase X.Y — [description]`
 - Update `docs/STATUS.md` — tick completed items, note anything blocked or deferred.
 
-## Important
-
-Do not use `npx` or bare `npm` directly — nvm is not available in the shell. Always prepend `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH"` to any Node/npm commands.
-
-### After `/compact` or context reset
-
-Re-read this file first, then `docs/STATUS.md`.
-
----
-
-## Repository Layout
-
-```text
-src/
-  app/               ← Next.js App Router pages (server components by default)
-  components/
-    ui/
-    layout/
-    product/
-    cart/
-    search/
-    account/
-    wishlist/
-    contact/
-    common/
-    home/
-  lib/
-    shopify/
-    utils/
-    constants.ts
-  hooks/
-  context/
-docs/
-  STATUS.md          ← current progress — update after every session
-tasks/
-  todo.md
-  lessons.md
-middleware.ts
-```
-
----
-
 ## Server vs Client Rules
 
 - Pages are **server components** by default — never add `'use client'` to a page.
@@ -165,13 +123,6 @@ middleware.ts
 
 ---
 
-### Layout utilities
-
-- `container-wide` — `max-w-screen-xl mx-auto px-6 md:px-12`
-- `container-narrow` — `max-w-2xl mx-auto px-6`
-- `section-padding` — generous responsive vertical padding
-- `grain` — applied to `<body>`, SVG noise pseudo-element, `pointer-events: none`
-
 ### Aesthetic constraints
 
 #### Typography
@@ -179,8 +130,6 @@ middleware.ts
 - Display: `Noka` (`font-display`) — product font; used for product titles, section headings, and type animations. The only font class used in components.
 - Body: `Geist Sans` — default font, set on `body` in `globals.css`; inherited by all elements. Do not add `font-body` to components — it is redundant.
 - `font-mono`, `font-serif` — removed from all components. Tokens remain in config for potential future use but must not be added to components.
-
-**Experimental tokens:** `tailwind.config.ts` also exposes `font-tasa`, `font-hubot`, `font-mona`, `font-zal`, `font-funnel`, `font-khregular`, `font-khbold`, `font-stack`, `font-stacktext`, and `font-mono2` (Fliege Mono). These exist for type testing only — do not use in production components until a decision is made.
 
 #### Colors
 
@@ -196,14 +145,6 @@ middleware.ts
 | `error`   | `#B84040` | Error states                             |
 
 All colors are defined as CSS custom properties in `globals.css` and consumed via Tailwind tokens.
-
-#### Spacing & layout
-
-- Be explicit and precise — do not fall back to Tailwind defaults without intention
-- Layouts should feel considered and dense, not airy or generic
-- Grids can be clean and structured, but compositions should feel designed, not templated
-- Layering is encouraged — elements can sit behind or over others to create depth
-- Avoid the standard stacked-sections pattern; think in terms of composition, not blocks
 
 #### Design direction
 
@@ -299,25 +240,12 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 - `label: ReactNode` — accepts string or arbitrary JSX (e.g. the nav node with reveal spans).
 - Extra props (`aria-label`, etc.) fall through via `...rest`.
 
-### Custom animated icons (`src/components/ui/`)
-
-The following icons expose an imperative handle for animation control:
-
-| Component             | Handle type                 | Methods                               |
-| --------------------- | --------------------------- | ------------------------------------- |
-| `HeartIcon`           | `HeartIconHandle`           | `startAnimation()`, `stopAnimation()` |
-| `ShoppingBagIcon`     | `ShoppingBagIconHandle`     | `startAnimation()`, `stopAnimation()` |
-| `SparklesIcon`        | `SparklesIconHandle`        | `startAnimation()`, `stopAnimation()` |
-| `MagnifyingGlassIcon` | `MagnifyingGlassIconHandle` | `startAnimation()`, `stopAnimation()` |
-
-Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />` → call `ref.current?.startAnimation()` on `onMouseEnter` and `ref.current?.stopAnimation()` on `onMouseLeave`.
-
-### Contact (Phase 4.5)
+### Contact
 
 - Honeypot field name is `website` — hidden, `tabIndex={-1}`, `aria-hidden="true"`.
 - Email service not wired — add Resend or Postmark before launch.
 
-### Policies (Phase 4.5)
+### Policies
 
 - Valid handles: `'privacy-policy' | 'refund-policy' | 'terms-of-service' | 'shipping-policy'`.
 - `getShopPolicies()` fetches all four at once — page matches on handle.
@@ -330,34 +258,6 @@ Pattern: `const ref = useRef<XHandle>(null)` → attach to `<XIcon ref={ref} />`
 - `addBundle()` on `useCart` handles the grouped add. Requires real Shopify variant IDs before going live.
 - The TOTEM configurator **replaces** the standard PDP for the totem product. Do not apply standard PDP patterns here.
 - Placeholder env var: `NEXT_PUBLIC_TOTEM_VARIANT_ID` — replace with real IDs before launch.
-
-### Animation (Phase 10–11)
-
-**Library split:**
-
-- `motion` (Framer Motion v12 rebranded) — component animations and spring physics only.
-- GSAP + ScrollTrigger — scroll-driven sequences only (landing page image effect). Do not use for component animations.
-- CSS `@keyframes` / transitions — always preferred when JS is not required.
-- `LazyMotion` has been **fully removed** — do not re-add it.
-
-**`motion` is used in exactly 6 files:**
-
-| File                                        | Usage                                                                                    |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `src/components/ui/HeartIcon.tsx`           | `motion.svg` — scale pulse `[1,1.08,1]`, imperative handle                               |
-| `src/components/ui/ShoppingBagIcon.tsx`     | `motion.svg` — wiggle+lift keyframes, imperative handle                                  |
-| `src/components/ui/SparklesIcon.tsx`        | `motion.path` × 3 — staggered opacity+scale flicker, imperative handle                   |
-| `src/components/ui/MagnifyingGlassIcon.tsx` | `motion.svg` — shimmy keyframes, imperative handle                                       |
-| `src/components/home/HeroContent.tsx`       | `motion.span` × 5 — two-phase TOTEM letter animation (staggered fall-in + spring settle) |
-| `src/components/home/LandingHero.tsx`       | `motion.span` × 5 — same two-phase letter animation, used on `/coming-soon`              |
-
-`MagneticButton`, `ClipReveal`, `RevealText`, `HeroParallax`, `TextEffectWrapper` — no longer use `motion`.
-
-- `RevealOnScroll` is currently a passthrough `<div>` with no animation logic.
-- `ProductGrid` is `'use client'` (legacy from GSAP era) — can be converted to a server component if no client features are added.
-- Marquee uses a CSS `@keyframes` animation — no JS. Keyframe defined in `globals.css`.
-
----
 
 ## Environment Variables
 

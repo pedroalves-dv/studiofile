@@ -11,6 +11,7 @@ interface CustomSelectProps {
   onChange: (value: string) => void;
   options: string[];
   label?: string;
+  disabledOptions?: string[];
 }
 
 export function CustomSelect({
@@ -19,6 +20,7 @@ export function CustomSelect({
   onChange,
   options,
   label,
+  disabledOptions,
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -27,15 +29,12 @@ export function CustomSelect({
   return (
     <div className="">
       {label && (
-        <label
-          htmlFor={id}
-          className="px-1 block text-sm mb-1 text-light"
-        >
+        <label htmlFor={id} className="px-1 block text-sm mb-1 text-light">
           {label}
         </label>
       )}
 
-      <div ref={ref} className="relative rounded-md bg-white text-sm">
+      <div ref={ref} className="relative rounded-md bg-white text-base">
         {/* Trigger */}
         <button
           id={id}
@@ -63,24 +62,34 @@ export function CustomSelect({
             role="listbox"
             className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-sm"
           >
-            {options.map((option) => (
-              <li
-                key={option}
-                role="option"
-                aria-selected={option === value}
-                onClick={() => {
-                  onChange(option);
-                  setIsOpen(false);
-                }}
-                className={cn(
-                  "m-1 px-4 py-2 cursor-pointer text-ink rounded-md",
-                  "hover:bg-white transition-colors",
-                  option === value && "bg-white",
-                )}
-              >
-                {option}
-              </li>
-            ))}
+            {options.map((option) => {
+              const isDisabled = disabledOptions?.includes(option) ?? false;
+              return (
+                <li
+                  key={option}
+                  role="option"
+                  aria-selected={option === value}
+                  aria-disabled={isDisabled}
+                  onClick={
+                    isDisabled
+                      ? undefined
+                      : () => {
+                          onChange(option);
+                          setIsOpen(false);
+                        }
+                  }
+                  className={cn(
+                    "m-1 px-4 py-2 text-ink rounded-md transition-colors",
+                    isDisabled
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : "cursor-pointer hover:bg-white",
+                    !isDisabled && option === value && "bg-white",
+                  )}
+                >
+                  {option}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

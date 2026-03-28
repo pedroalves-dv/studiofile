@@ -119,7 +119,7 @@ export function TotemConfigurator() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/totem-variants')
+    fetch("/api/totem-variants")
       .then((res) => res.json())
       .then(setVariantMap)
       .catch(() => {}); // fail silently — UI degrades to showing all options as available
@@ -230,12 +230,16 @@ export function TotemConfigurator() {
 
   function isShapeFullyUnavailable(shapeId: string): boolean {
     if (!variantMap) return false;
-    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${shapeId}-${c.id}`]?.available);
+    return TOTEM_COLORS.every(
+      (c) => !variantMap.shapes[`${shapeId}-${c.id}`]?.available,
+    );
   }
 
   function isFixationFullyUnavailable(fxId: string): boolean {
     if (!variantMap) return false;
-    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available);
+    return TOTEM_COLORS.every(
+      (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
+    );
   }
 
   /* ── Touch drag-to-reorder ── */
@@ -799,7 +803,10 @@ export function TotemConfigurator() {
                       const shape = shapeMap.get(piece.shapeId);
                       const color = COLOR_MAP.get(piece.colorId);
                       const isSelected = selectedElement === piece.uid;
-                      const pieceAvailable = isColorAvailableForShape(piece.shapeId, piece.colorId);
+                      const pieceAvailable = isColorAvailableForShape(
+                        piece.shapeId,
+                        piece.colorId,
+                      );
                       return (
                         <div
                           key={piece.uid}
@@ -963,7 +970,8 @@ export function TotemConfigurator() {
                       : colorAvailable
                         ? "ring-1 ring-transparent hover:ring-stroke"
                         : "ring-1 ring-transparent",
-                    !colorAvailable && "opacity-30 cursor-not-allowed pointer-events-none",
+                    !colorAvailable &&
+                      "opacity-30 cursor-not-allowed pointer-events-none",
                   )}
                   style={{ backgroundColor: c.hex }}
                 />
@@ -1035,7 +1043,9 @@ export function TotemConfigurator() {
                             <p className="text-xs text-muted">€{shape.price}</p>
                           </div>
                           {unavailable ? (
-                            <span className="text-xs text-muted">Out of stock</span>
+                            <span className="text-xs text-muted">
+                              Out of stock
+                            </span>
                           ) : (
                             <Plus
                               size={14}
@@ -1132,7 +1142,9 @@ export function TotemConfigurator() {
                   <p className="text-sm">{f.name}</p>
                   <p className="text-xs text-muted">€{f.price}</p>
                   {unavailable && (
-                    <span className="block text-xs text-muted mt-0.5">Out of stock</span>
+                    <span className="block text-xs text-muted mt-0.5">
+                      Out of stock
+                    </span>
                   )}
                 </button>
               );
@@ -1154,9 +1166,8 @@ export function TotemConfigurator() {
               return c ? `${c.name} — €${c.price}` : "";
             })()}
             onChange={(label) => {
-              const cleanLabel = label.replace(" — Out of stock", "");
               const cable = catalogCables.find(
-                (c) => `${c.name} — €${c.price}` === cleanLabel,
+                (c) => `${c.name} — €${c.price}` === label,
               );
               if (cable) setCableId(cable.id);
             }}
@@ -1165,6 +1176,9 @@ export function TotemConfigurator() {
                 ? `${c.name} — €${c.price}`
                 : `${c.name} — €${c.price} — Out of stock`,
             )}
+            disabledOptions={catalogCables
+              .filter((c) => !isCableAvailable(c.id))
+              .map((c) => `${c.name} — €${c.price} — Out of stock`)}
           />
         </div>
 
@@ -1175,7 +1189,9 @@ export function TotemConfigurator() {
               <p className="text-3xl font-semibold tracking-tighter text-ink">
                 €{totalPrice}
               </p>
-              <p className={`text-xs text-muted mt-0.5 transition-opacity ${pieces.length > 0 ? "opacity-100" : "opacity-0"}`}>
+              <p
+                className={`text-xs text-muted mt-0.5 transition-opacity ${pieces.length > 0 ? "opacity-100" : "opacity-0"}`}
+              >
                 {pieces.length} piece{pieces.length === 1 ? "" : "s"}
               </p>
             </div>
@@ -1184,7 +1200,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : !configAvailable ? (
@@ -1192,7 +1208,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : (
@@ -1200,7 +1216,7 @@ export function TotemConfigurator() {
                 label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
               />
             )}
           </div>
