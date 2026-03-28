@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { LogoHover } from "@/components/ui/LogoHover";
 import { customerLogout } from "@/lib/shopify/auth";
 import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/context/ToastContext";
 import Image from "next/image";
 import Logo from "public/images/logo/newlogov2.svg";
 
@@ -49,6 +50,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
   const pathname = usePathname();
   const { isScrolled } = useScroll(60);
+  const router = useRouter();
+  const { success: toastSuccess, error: toastError } = useToast();
+  const [isPendingLogout, startLogoutTransition] = useTransition();
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClosingMenu, setIsClosingMenu] = useState(false);
@@ -192,14 +196,25 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                           ))}
                         </div>
                         <div className="border-t border-ink p-1 bg-lighter">
-                          <form action={customerLogout}>
-                            <button
-                              type="submit"
-                              className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold"
-                            >
-                              Sign out
-                            </button>
-                          </form>
+                          <button
+                            type="button"
+                            disabled={isPendingLogout}
+                            onClick={() => {
+                              setIsAccountOpen(false);
+                              startLogoutTransition(async () => {
+                                try {
+                                  await customerLogout();
+                                  toastSuccess("You've been signed out");
+                                  router.push("/");
+                                } catch {
+                                  toastError("Sign out failed. Please try again.");
+                                }
+                              });
+                            }}
+                            className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-50"
+                          >
+                            {isPendingLogout ? "Signing out..." : "Sign out"}
+                          </button>
                         </div>
                       </div>
                     )}
