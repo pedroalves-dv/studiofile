@@ -146,7 +146,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">
                     <button
-                      onClick={() => setIsAccountOpen((v) => !v)}
+                      onClick={() => {
+                        const opening = !isAccountOpen;
+                        setIsAccountOpen((v) => !v);
+                        if (opening) {
+                          closeCart();
+                          if (isMobileMenuOpen) closeMenu();
+                        }
+                      }}
                       className={cn(
                         "relative h-full flex w-18 justify-center items-center py-3 px-5",
                         isAccountOpen && "bg-white",
@@ -200,7 +207,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ) : (
                   <Link
                     href="/account/login"
-                    className="p-2 relative flex items-center"
+                    className="relative h-full flex w-18 justify-center items-center py-3 px-5"
                     aria-label="Sign in"
                     onMouseEnter={() => userIconRef.current?.startAnimation()}
                     onMouseLeave={() => userIconRef.current?.stopAnimation()}
@@ -218,6 +225,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     } else {
                       openCart();
                       if (isMobileMenuOpen) closeMenu();
+                      setIsAccountOpen(false);
                     }
                   }}
                   className={cn(
@@ -248,6 +256,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     } else if (!isMobileMenuOpen) {
                       setIsMobileMenuOpen(true);
                       closeCart();
+                      setIsAccountOpen(false);
                     }
                   }}
                   className={cn(
