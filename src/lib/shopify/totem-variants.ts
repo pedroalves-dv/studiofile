@@ -13,6 +13,8 @@ const GET_PRODUCTS_BY_TAG = `
               node {
                 id
                 title
+                availableForSale
+                quantityAvailable
               }
             }
           }
@@ -22,6 +24,8 @@ const GET_PRODUCTS_BY_TAG = `
   }
 `;
 
+export type TotemVariantInfo = { id: string; available: boolean };
+
 interface TotemProductsResponse {
   products: {
     edges: Array<{
@@ -29,7 +33,12 @@ interface TotemProductsResponse {
         handle: string;
         variants: {
           edges: Array<{
-            node: { id: string; title: string };
+            node: {
+              id: string;
+              title: string;
+              availableForSale: boolean;
+              quantityAvailable: number;
+            };
           }>;
         };
       };
@@ -43,10 +52,10 @@ function normalizeVariantTitle(title: string): string {
 
 /**
  * Fetches all products matching a Shopify tag and returns a map of
- * "{handle}-{normalizedVariantTitle}" -> variant GID.
+ * "{handle}-{normalizedVariantTitle}" -> { id, available }.
  * Returns {} on any error so a Shopify hiccup never crashes the cart.
  */
-async function fetchVariantMapByTag(tag: string): Promise<Record<string, string>> {
+async function fetchVariantMapByTag(tag: string): Promise<Record<string, TotemVariantInfo>> {
   try {
     const response = await storefront<TotemProductsResponse>(
       GET_PRODUCTS_BY_TAG,
@@ -54,11 +63,14 @@ async function fetchVariantMapByTag(tag: string): Promise<Record<string, string>
       { next: { revalidate: 3600 } }
     );
 
-    const map: Record<string, string> = {};
+    const map: Record<string, TotemVariantInfo> = {};
     for (const { node: product } of response.products.edges) {
       for (const { node: variant } of product.variants.edges) {
         const key = `${product.handle}-${normalizeVariantTitle(variant.title)}`;
-        map[key] = variant.id;
+        map[key] = {
+          id: variant.id,
+          available: variant.availableForSale && variant.quantityAvailable > 0,
+        };
       }
     }
     return map;
@@ -71,9 +83,9 @@ async function fetchVariantMapByTag(tag: string): Promise<Record<string, string>
 /**
  * Returns a combined variant map for all totem-shape and totem-fixation products.
  * Key: "{handle}-{normalizedVariantTitle}" (e.g. "arch-blue", "rosette-chalk")
- * Value: Shopify variant GID
+ * Value: { id: Shopify variant GID, available: boolean }
  */
-export async function getShapeAndFixationVariantMap(): Promise<Record<string, string>> {
+export async function getShapeAndFixationVariantMap(): Promise<Record<string, TotemVariantInfo>> {
   const [shapes, fixations] = await Promise.all([
     fetchVariantMapByTag('totem-shape'),
     fetchVariantMapByTag('totem-fixation'),
@@ -84,9 +96,9 @@ export async function getShapeAndFixationVariantMap(): Promise<Record<string, st
 /**
  * Returns a variant map for all totem-cable products.
  * Key: "{normalizedVariantTitle}" (e.g. "black-textile", "brass")
- * Value: Shopify variant GID
+ * Value: { id: Shopify variant GID, available: boolean }
  */
-export async function getCableVariantMap(): Promise<Record<string, string>> {
+export async function getCableVariantMap(): Promise<Record<string, TotemVariantInfo>> {
   try {
     const response = await storefront<TotemProductsResponse>(
       GET_PRODUCTS_BY_TAG,
@@ -94,10 +106,13 @@ export async function getCableVariantMap(): Promise<Record<string, string>> {
       { next: { revalidate: 3600 } }
     );
 
-    const map: Record<string, string> = {};
+    const map: Record<string, TotemVariantInfo> = {};
     for (const { node: product } of response.products.edges) {
       for (const { node: variant } of product.variants.edges) {
-        map[normalizeVariantTitle(variant.title)] = variant.id;
+        map[normalizeVariantTitle(variant.title)] = {
+          id: variant.id,
+          available: variant.availableForSale && variant.quantityAvailable > 0,
+        };
       }
     }
     return map;
