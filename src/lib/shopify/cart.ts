@@ -213,9 +213,7 @@ export async function updateCartNote(cartId: string, note: string): Promise<Shop
  * Fetch cart by ID
  */
 export async function getCart(cartId: string): Promise<ShopifyCart | null> {
-  const response = await storefront<CartFetchResponse>(GET_CART, {
-    cartId,
-  });
+  const response = await storefront<CartFetchResponse>(GET_CART, { cartId }, { cache: 'no-store' });
 
   return response.cart ? normalizeCart(response.cart) : null;
 }

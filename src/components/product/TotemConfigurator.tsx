@@ -14,7 +14,7 @@ import {
   ChevronRight,
   GripVertical,
 } from "lucide-react";
-
+import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useToast } from "@/components/common/Toast";
 import { useCart } from "@/hooks/useCart";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -964,9 +964,7 @@ export function TotemConfigurator() {
                       <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
                         <div>
                           <p className="text-sm">{shape.name}</p>
-                          <p className="text-xs text-muted">
-                            €{shape.price}
-                          </p>
+                          <p className="text-xs text-muted">€{shape.price}</p>
                         </div>
                         <Plus
                           size={14}
@@ -1087,34 +1085,28 @@ export function TotemConfigurator() {
         <div className="flex flex-col gap-6 border-t border-stroke pt-6">
           <div className="flex items-center justify-between gap-6">
             <div>
-              <p className="text-2xl text-ink">
+              <p className="text-3xl font-semibold tracking-tighter text-ink">
                 €{totalPrice}
               </p>
-              {pieces.length > 0 && (
-                <p className="text-xs text-muted mt-0.5">
-                  {pieces.length} piece{pieces.length === 1 ? "" : "s"}
-                </p>
-              )}
+              <p className={`text-xs text-muted mt-0.5 transition-opacity ${pieces.length > 0 ? "opacity-100" : "opacity-0"}`}>
+                {pieces.length} piece{pieces.length === 1 ? "" : "s"}
+              </p>
             </div>
             {pieces.length === 0 ? (
               <Tooltip content="Add shapes to get started">
-                <button
-                  type="button"
+                <ArrowButton
+                  label="Add to Cart"
                   disabled
-                  className="bg-ink text-canvas text-md tracking-tight py-3 px-8 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
-                >
-                  Add to Cart
-                </button>
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                />
               </Tooltip>
             ) : (
-              <button
-                type="button"
+              <ArrowButton
+                label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className="bg-ink text-canvas text-sm py-3 px-8 transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed rounded-md"
-              >
-                {isAdding ? "Adding to Cart…" : "Add to Cart"}
-              </button>
+                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+              />
             )}
           </div>
 

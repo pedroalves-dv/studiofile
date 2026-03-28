@@ -65,7 +65,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
         <ArrowButton
           href={cart.checkoutUrl}
           label="Checkout"
-          className="w-full px-6 py-2 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center disabled:opacity-50"
+          className="w-full py-2.5 bg-ink text-white text-base font-medium rounded-md border border-ink flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -74,7 +74,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
         <ArrowButton
           onClick={closeCart}
           label="Continue Shopping"
-          className="w-full px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md border border-ink disabled:opacity-50"
+          className="w-full py-2.5 bg-white text-ink text-base font-medium tracking-tighter rounded-md border border-ink disabled:opacity-50"
         />
       </div>
     </div>
