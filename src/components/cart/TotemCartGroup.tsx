@@ -50,7 +50,6 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   );
   const currencyCode = lines[0]?.cost.totalAmount.currencyCode ?? "EUR";
 
-
   async function confirmRemove() {
     setIsRemoving(true);
     try {
@@ -71,6 +70,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       const cabLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
 
       if (
+        shapeLines.length === 0 ||
         shapeLines.some(
           (l) => !lineAttr(l, "_shape_id") || !lineAttr(l, "_color_id"),
         ) ||
