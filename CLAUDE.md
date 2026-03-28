@@ -152,6 +152,7 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 - Image and motion (gifs, video) are first-class compositional elements, not decoration
 - UX quirks are welcome — unexpected interactions, scroll behaviors, cursor effects
 - Brutalist in sensibility: raw, confident, not polished-SaaS or generic e-commerce
+- ALWAYS USE ROUNDED-MD FOR BUTTONS AND INPUTS
 
 #### Performance (Critical)
 
