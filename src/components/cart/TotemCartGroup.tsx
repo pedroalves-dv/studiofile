@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { formatPrice } from "@/lib/utils/format";
 import { useCart } from "@/hooks/useCart";
@@ -8,6 +9,8 @@ import { useToast } from "@/components/common/Toast";
 import { cn } from "@/lib/utils/cn";
 import type { ShopifyCartLine } from "@/lib/shopify/types";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+import { generateUid } from "@/lib/utils/uid";
+import type { TotemPiece } from "@/lib/totem-config";
 
 interface TotemCartGroupProps {
   lines: ShopifyCartLine[];
@@ -19,18 +22,27 @@ function getLineLabel(line: ShopifyCartLine): {
 } {
   const part = line.attributes.find((a) => a.key === "Part")?.value;
   const productTitle = line.merchandise.product.title;
-  const variantTitle = line.merchandise.title; // color name for shapes/fixations
+  const variantTitle = line.merchandise.title;
   if (part === "Shape" || part === "Fixation") {
     return { primary: productTitle, secondary: variantTitle };
   }
   return { primary: productTitle };
 }
 
+function lineAttr(line: ShopifyCartLine, key: string): string | undefined {
+  return line.attributes.find((a) => a.key === key)?.value;
+}
+
 export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   const [expanded, setExpanded] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const { removeItem } = useCart();
+  const [isEditing, setIsEditing] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const { removeBundleItems, closeCart } = useCart();
+  const router = useRouter();
   const toast = useToast();
+
+  const busy = isRemoving || isEditing;
 
   const totalAmount = lines.reduce(
     (sum, line) => sum + parseFloat(line.cost.totalAmount.amount),
@@ -38,11 +50,8 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   );
   const currencyCode = lines[0]?.cost.totalAmount.currencyCode ?? "EUR";
 
-  // Shape names for summary (max 3 + overflow count)
   const shapeNames = lines
-    .filter(
-      (l) => l.attributes.find((a) => a.key === "Part")?.value === "Shape",
-    )
+    .filter((l) => lineAttr(l, "Part") === "Shape")
     .map((l) => `${l.merchandise.product.title} · ${l.merchandise.title}`);
 
   const LIMIT = 3;
@@ -52,29 +61,75 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       ? `${shapeNames.slice(0, LIMIT).join(", ")} +${overflow} more`
       : shapeNames.join(", ");
 
-  // Fixation + cable names for second summary line
-  const fixationLine = lines.find(
-    (l) => l.attributes.find((a) => a.key === "Part")?.value === "Fixation",
-  );
-  const cableLine = lines.find(
-    (l) => l.attributes.find((a) => a.key === "Part")?.value === "Cable",
-  );
+  const fixationLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
+  const cableLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
   const fixationName = fixationLine
     ? `${fixationLine.merchandise.product.title} · ${fixationLine.merchandise.title}`
     : undefined;
   const cableName = cableLine?.merchandise.product.title;
   const systemSummary = [fixationName, cableName].filter(Boolean).join(" · ");
 
-  async function removeBundle() {
+  async function confirmRemove() {
     setIsRemoving(true);
     try {
-      for (const line of lines) {
-        await removeItem(line.id);
-      }
+      await removeBundleItems(lines.map((l) => l.id));
     } catch {
-      toast.error("Could not remove bundle. Please try again.");
+      // error already toasted inside removeBundleItems
     } finally {
       setIsRemoving(false);
+      setConfirming(false);
+    }
+  }
+
+  async function handleEdit() {
+    setIsEditing(true);
+    try {
+      const shapeLines = lines.filter((l) => lineAttr(l, "Part") === "Shape");
+      const fixLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
+      const cabLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
+
+      if (
+        shapeLines.some(
+          (l) => !lineAttr(l, "_shape_id") || !lineAttr(l, "_color_id"),
+        ) ||
+        !fixLine ||
+        !lineAttr(fixLine, "_fixation_id") ||
+        !lineAttr(fixLine, "_fixation_color_id") ||
+        !cabLine ||
+        !lineAttr(cabLine, "_cable_id")
+      ) {
+        toast.error("Could not reconstruct config. Please build a new TOTEM.");
+        return;
+      }
+
+      const pieces: TotemPiece[] = shapeLines.map((l) => ({
+        uid: generateUid(),
+        shapeId: lineAttr(l, "_shape_id")!,
+        colorId: lineAttr(l, "_color_id")!,
+        flipped: lineAttr(l, "_flipped") === "true",
+      }));
+
+      localStorage.setItem("sf-totem-pieces", JSON.stringify(pieces));
+      localStorage.setItem(
+        "sf-totem-fixation",
+        JSON.stringify(lineAttr(fixLine!, "_fixation_id")),
+      );
+      localStorage.setItem(
+        "sf-totem-fixation-color",
+        JSON.stringify(lineAttr(fixLine!, "_fixation_color_id")),
+      );
+      localStorage.setItem(
+        "sf-totem-cable",
+        JSON.stringify(lineAttr(cabLine!, "_cable_id")),
+      );
+
+      await removeBundleItems(lines.map((l) => l.id));
+      closeCart();
+      router.push("/products/totem");
+    } catch {
+      toast.error("Could not edit bundle. Please try again.");
+    } finally {
+      setIsEditing(false);
     }
   }
 
@@ -94,12 +149,6 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           <p className="mt-2 tracking-tight text-ink text-base leading-none text-ink">
             Custom Modular Lamp
           </p>
-          {shapeSummary && (
-            <p className="text-xs text-muted mt-1 truncate">{shapeSummary}</p>
-          )}
-          {systemSummary && (
-            <p className="text-xs text-muted truncate">{systemSummary}</p>
-          )}
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="text-3xl tracking-tighter text-ink">
@@ -138,14 +187,47 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
               </div>
             );
           })}
+
+          {/* Actions */}
           <div className="mt-2">
-            <ArrowButton
-              type="button"
-              label={isRemoving ? "Removing…" : "Remove bundle"}
-              disabled={isRemoving}
-              onClick={removeBundle}
-              className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
-            />
+            {confirming ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted">Remove this bundle?</span>
+                <button
+                  type="button"
+                  onClick={confirmRemove}
+                  disabled={busy}
+                  className="text-sm text-error underline-offset-2 hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isRemoving ? "Removing…" : "Yes, remove"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirming(false)}
+                  disabled={busy}
+                  className="text-sm text-muted underline-offset-2 hover:underline disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <ArrowButton
+                  type="button"
+                  label="Remove bundle"
+                  disabled={busy}
+                  onClick={() => setConfirming(true)}
+                  className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                />
+                <ArrowButton
+                  type="button"
+                  label={isEditing ? "Loading…" : "Edit"}
+                  disabled={busy}
+                  onClick={handleEdit}
+                  className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                />
+              </div>
+            )}
           </div>
         </div>
       )}
