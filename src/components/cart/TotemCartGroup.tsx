@@ -50,24 +50,6 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   );
   const currencyCode = lines[0]?.cost.totalAmount.currencyCode ?? "EUR";
 
-  const shapeNames = lines
-    .filter((l) => lineAttr(l, "Part") === "Shape")
-    .map((l) => `${l.merchandise.product.title} · ${l.merchandise.title}`);
-
-  const LIMIT = 3;
-  const overflow = shapeNames.length - LIMIT;
-  const shapeSummary =
-    overflow > 0
-      ? `${shapeNames.slice(0, LIMIT).join(", ")} +${overflow} more`
-      : shapeNames.join(", ");
-
-  const fixationLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
-  const cableLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
-  const fixationName = fixationLine
-    ? `${fixationLine.merchandise.product.title} · ${fixationLine.merchandise.title}`
-    : undefined;
-  const cableName = cableLine?.merchandise.product.title;
-  const systemSummary = [fixationName, cableName].filter(Boolean).join(" · ");
 
   async function confirmRemove() {
     setIsRemoving(true);
@@ -112,11 +94,11 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       localStorage.setItem("sf-totem-pieces", JSON.stringify(pieces));
       localStorage.setItem(
         "sf-totem-fixation",
-        JSON.stringify(lineAttr(fixLine!, "_fixation_id")),
+        JSON.stringify(lineAttr(fixLine, "_fixation_id")),
       );
       localStorage.setItem(
         "sf-totem-fixation-color",
-        JSON.stringify(lineAttr(fixLine!, "_fixation_color_id")),
+        JSON.stringify(lineAttr(fixLine, "_fixation_color_id")),
       );
       localStorage.setItem(
         "sf-totem-cable",
@@ -146,7 +128,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           <p className="font-semibold tracking-tighter text-3xl leading-none text-ink">
             TOTEM
           </p>
-          <p className="mt-2 tracking-tight text-ink text-base leading-none text-ink">
+          <p className="mt-2 tracking-tight text-ink text-base leading-none">
             Custom Modular Lamp
           </p>
         </div>
@@ -217,14 +199,14 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
                   label="Remove bundle"
                   disabled={busy}
                   onClick={() => setConfirming(true)}
-                  className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                 />
                 <ArrowButton
                   type="button"
                   label={isEditing ? "Loading…" : "Edit"}
                   disabled={busy}
                   onClick={handleEdit}
-                  className="w-fit px-8 py-2.5 rounded-md bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                 />
               </div>
             )}
