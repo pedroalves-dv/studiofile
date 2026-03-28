@@ -452,6 +452,7 @@ export function TotemConfigurator() {
 
   const handleAddToCart = async () => {
     if (pieces.length === 0) return;
+    if (!configAvailable) return;
     setIsAdding(true);
     try {
       await addTotemToCart({ pieces, fixationId, fixationColorId, cableId });
@@ -1183,7 +1184,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : !configAvailable ? (
@@ -1191,7 +1192,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : (
@@ -1199,7 +1200,7 @@ export function TotemConfigurator() {
                 label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] rounded-md border border-ink flex justify-center transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
               />
             )}
           </div>
