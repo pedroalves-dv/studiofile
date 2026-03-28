@@ -996,7 +996,8 @@ export function TotemConfigurator() {
                         key={shape.id}
                         type="button"
                         aria-label={`Add ${shape.name}`}
-                        onClick={() => addShape(shape.id)}
+                        aria-disabled={unavailable}
+                        onClick={() => !unavailable && addShape(shape.id)}
                         className={`group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed pointer-events-none" : ""}`}
                       >
                         {/* image placeholder  */}
