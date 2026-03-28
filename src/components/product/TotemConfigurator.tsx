@@ -33,6 +33,7 @@ import {
   type TotemFixation,
   type TotemCable,
   type TotemPiece,
+  type TotemPreset,
 } from "@/lib/totem-config";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -254,6 +255,17 @@ export function TotemConfigurator() {
     if (!variantMap) return false;
     return TOTEM_COLORS.every(
       (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
+    );
+  }
+
+  function isPresetAvailable(preset: TotemPreset): boolean {
+    if (!variantMap) return true; // optimistic while loading
+    return (
+      preset.pieces.every((p) =>
+        isColorAvailableForShape(p.shapeId, p.colorId),
+      ) &&
+      isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
+      isCableAvailable(preset.cableId)
     );
   }
 
@@ -1148,10 +1160,14 @@ export function TotemConfigurator() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {TOTEM_PRESETS.map((preset) => {
                 const presetPrice = presetPrices.get(preset.id) ?? 0;
+                const presetAvailable = isPresetAvailable(preset);
                 return (
                   <div
                     key={preset.id}
-                    className="bg-white border border-stroke rounded-md flex flex-col gap-3 p-4"
+                    className={cn(
+                      "bg-white border border-stroke rounded-md flex flex-col gap-3 p-4",
+                      !presetAvailable && "opacity-60",
+                    )}
                   >
                     <div>
                       <h3 className="font-bold tracking-tight text-lg">
@@ -1176,20 +1192,40 @@ export function TotemConfigurator() {
                       })}
                     </div>
                     <div className="flex items-center justify-between mt-auto pt-1">
-                      <p className="text-sm">€{presetPrice}</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (pieces.length > 0) {
-                            setPendingPresetId(preset.id);
-                          } else {
-                            applyPreset(preset.id);
-                          }
-                        }}
-                        className="text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
-                      >
-                        Use
-                      </button>
+                      <div>
+                        <p className="text-sm">€{presetPrice}</p>
+                        {!presetAvailable && (
+                          <span className="text-xs text-muted">Out of stock</span>
+                        )}
+                      </div>
+                      {presetAvailable ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (pieces.length > 0) {
+                              setPendingPresetId(preset.id);
+                            } else {
+                              applyPreset(preset.id);
+                            }
+                          }}
+                          className="text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
+                        >
+                          Use
+                        </button>
+                      ) : (
+                        <div className="cursor-not-allowed">
+                          <Tooltip content="Out of stock" position="top">
+                            <button
+                              type="button"
+                              disabled
+                              tabIndex={-1}
+                              className="text-sm border border-ink px-3 py-1.5 rounded-md opacity-50 pointer-events-none"
+                            >
+                              Use
+                            </button>
+                          </Tooltip>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
