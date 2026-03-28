@@ -989,29 +989,36 @@ export function TotemConfigurator() {
                       className="animate-pulse bg-stroke aspect-square"
                     />
                   ))
-                : catalogShapes.map((shape) => (
-                    <button
-                      key={shape.id}
-                      type="button"
-                      aria-label={`Add ${shape.name}`}
-                      onClick={() => addShape(shape.id)}
-                      className="group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col"
-                    >
-                      {/* image placeholder  */}
-                      <div className="aspect-square w-full rounded-md transition-colors bg-lighter" />
-                      {/* bottom label  */}
-                      <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
-                        <div>
-                          <p className="text-sm">{shape.name}</p>
-                          <p className="text-xs text-muted">€{shape.price}</p>
+                : catalogShapes.map((shape) => {
+                    const unavailable = isShapeFullyUnavailable(shape.id);
+                    return (
+                      <button
+                        key={shape.id}
+                        type="button"
+                        aria-label={`Add ${shape.name}`}
+                        onClick={() => addShape(shape.id)}
+                        className={`group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed pointer-events-none" : ""}`}
+                      >
+                        {/* image placeholder  */}
+                        <div className="aspect-square w-full rounded-md transition-colors bg-lighter" />
+                        {/* bottom label  */}
+                        <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
+                          <div>
+                            <p className="text-sm">{shape.name}</p>
+                            <p className="text-xs text-muted">€{shape.price}</p>
+                          </div>
+                          {unavailable ? (
+                            <span className="text-xs text-muted">Out of stock</span>
+                          ) : (
+                            <Plus
+                              size={14}
+                              className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
+                            />
+                          )}
                         </div>
-                        <Plus
-                          size={14}
-                          className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
-                        />
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    );
+                  })}
             </div>
           )}
 
