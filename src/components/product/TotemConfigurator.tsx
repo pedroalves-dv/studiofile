@@ -1139,12 +1139,17 @@ export function TotemConfigurator() {
               return c ? `${c.name} — €${c.price}` : "";
             })()}
             onChange={(label) => {
+              const cleanLabel = label.replace(" — Out of stock", "");
               const cable = catalogCables.find(
-                (c) => `${c.name} — €${c.price}` === label,
+                (c) => `${c.name} — €${c.price}` === cleanLabel,
               );
               if (cable) setCableId(cable.id);
             }}
-            options={catalogCables.map((c) => `${c.name} — €${c.price}`)}
+            options={catalogCables.map((c) =>
+              isCableAvailable(c.id)
+                ? `${c.name} — €${c.price}`
+                : `${c.name} — €${c.price} — Out of stock`,
+            )}
           />
         </div>
 
