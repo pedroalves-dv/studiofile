@@ -19,6 +19,7 @@ import { useToast } from "@/components/common/Toast";
 import { useCart } from "@/hooks/useCart";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import { generateUid } from "@/lib/utils/uid";
 import {
   TOTEM_SHAPES,
@@ -255,6 +256,9 @@ export function TotemConfigurator() {
       (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
     );
   }
+
+  const clearSelection = useCallback(() => setSelectedElement(null), []);
+  useClickOutside(viewerRef, clearSelection);
 
   /* ── Touch drag-to-reorder ── */
 
@@ -516,7 +520,6 @@ export function TotemConfigurator() {
       <div
         ref={viewerRef}
         className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[480px] sm:h-[680px] mb-6"
-        onClick={() => setSelectedElement(null)}
       >
         {/* Inner row: visual panel + list/action panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
