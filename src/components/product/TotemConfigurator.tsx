@@ -1042,11 +1042,13 @@ export function TotemConfigurator() {
                   />
                 );
               }
+              // OOS: outer div owns hover/cursor; inner button blocks clicks via pointer-events-none
               return (
                 <div key={c.id} className="cursor-not-allowed">
                   <Tooltip content="Out of stock" position="top">
                     <button
                       type="button"
+                      tabIndex={-1}
                       aria-label={c.name}
                       aria-disabled
                       className="w-7 h-7 ring-1 ring-transparent opacity-40 pointer-events-none"
