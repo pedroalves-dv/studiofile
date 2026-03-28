@@ -793,6 +793,7 @@ export function TotemConfigurator() {
                       const shape = shapeMap.get(piece.shapeId);
                       const color = COLOR_MAP.get(piece.colorId);
                       const isSelected = selectedElement === piece.uid;
+                      const pieceAvailable = isColorAvailableForShape(piece.shapeId, piece.colorId);
                       return (
                         <div
                           key={piece.uid}
@@ -830,6 +831,14 @@ export function TotemConfigurator() {
                           </div>
                           <p className="text-xs sm:text-sm flex-1 min-w-0 truncate">
                             {shape?.name ?? piece.shapeId}
+                            {!pieceAvailable && (
+                              <span
+                                className="ml-1.5 inline-flex items-center justify-center w-4 h-4 bg-error/10 text-error text-[10px] font-medium leading-none"
+                                title="Selected color is out of stock"
+                              >
+                                !
+                              </span>
+                            )}
                           </p>
                           <div
                             className="flex flex-col items-end gap-0.5 flex-shrink-0"
