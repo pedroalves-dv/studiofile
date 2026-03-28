@@ -1097,22 +1097,31 @@ export function TotemConfigurator() {
             {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <div className="grid grid-cols-3 gap-1">
-            {catalogFixations.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => setFixationId(f.id)}
-                className={cn(
-                  "relative bg-canvas border transition-colors text-left p-3 rounded-md",
-                  fixationId === f.id
-                    ? "border-ink bg-lighter"
-                    : "border-stroke hover:border-ink",
-                )}
-              >
-                <p className="text-sm">{f.name}</p>
-                <p className="text-xs text-muted">€{f.price}</p>
-              </button>
-            ))}
+            {catalogFixations.map((f) => {
+              const unavailable = isFixationFullyUnavailable(f.id);
+              const isActive = fixationId === f.id;
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => { if (!unavailable) setFixationId(f.id); }}
+                  aria-disabled={unavailable}
+                  className={cn(
+                    "relative bg-canvas border transition-colors text-left p-3 rounded-md",
+                    isActive
+                      ? "border-ink bg-lighter"
+                      : "border-stroke hover:border-ink",
+                    unavailable ? "opacity-40 cursor-not-allowed pointer-events-none" : "",
+                  )}
+                >
+                  <p className="text-sm">{f.name}</p>
+                  <p className="text-xs text-muted">€{f.price}</p>
+                  {unavailable && (
+                    <span className="block text-xs text-muted mt-0.5">Out of stock</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* ── Cable ── */}
