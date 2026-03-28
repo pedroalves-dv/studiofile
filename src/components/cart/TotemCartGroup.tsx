@@ -102,7 +102,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       );
       localStorage.setItem(
         "sf-totem-cable",
-        JSON.stringify(lineAttr(cabLine!, "_cable_id")),
+        JSON.stringify(lineAttr(cabLine, "_cable_id")),
       );
 
       await removeBundleItems(lines.map((l) => l.id));
