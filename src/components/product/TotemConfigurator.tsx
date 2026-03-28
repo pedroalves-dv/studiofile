@@ -1007,9 +1007,9 @@ export function TotemConfigurator() {
                         key={shape.id}
                         type="button"
                         aria-label={`Add ${shape.name}`}
-                        aria-disabled={unavailable}
-                        onClick={() => !unavailable && addShape(shape.id)}
-                        className={`group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed pointer-events-none" : ""}`}
+                        disabled={unavailable}
+                        onClick={() => addShape(shape.id)}
+                        className={`group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed" : ""}`}
                       >
                         {/* image placeholder  */}
                         <div className="aspect-square w-full rounded-md transition-colors bg-lighter" />
@@ -1104,14 +1104,14 @@ export function TotemConfigurator() {
                 <button
                   key={f.id}
                   type="button"
-                  onClick={() => { if (!unavailable) setFixationId(f.id); }}
-                  aria-disabled={unavailable}
+                  onClick={() => setFixationId(f.id)}
+                  disabled={unavailable}
                   className={cn(
                     "relative bg-canvas border transition-colors text-left p-3 rounded-md",
                     isActive
                       ? "border-ink bg-lighter"
                       : "border-stroke hover:border-ink",
-                    unavailable ? "opacity-40 cursor-not-allowed pointer-events-none" : "",
+                    unavailable ? "opacity-40 cursor-not-allowed" : "",
                   )}
                 >
                   <p className="text-sm">{f.name}</p>
