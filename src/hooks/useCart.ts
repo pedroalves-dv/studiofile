@@ -67,7 +67,7 @@ export function useCart() {
     try {
       let updatedCart: ShopifyCart;
       if (quantity === 0) {
-        updatedCart = await removeFromCart(state.cartId, lineId);
+        updatedCart = await removeFromCart(state.cartId, [lineId]);
       } else {
         updatedCart = await updateCartLine(state.cartId, lineId, quantity);
       }
@@ -83,11 +83,26 @@ export function useCart() {
     if (!state.cartId) return;
     dispatch({ type: "SET_LOADING", loading: true });
     try {
-      const updatedCart = await removeFromCart(state.cartId, lineId);
+      const updatedCart = await removeFromCart(state.cartId, [lineId]);
       dispatch({ type: "SET_CART", cart: updatedCart });
       toast.success("Item removed");
     } catch {
       toast.error("Failed to remove item.");
+    } finally {
+      dispatch({ type: "SET_LOADING", loading: false });
+    }
+  };
+
+  const removeBundleItems = async (lineIds: string[]) => {
+    if (!state.cartId) return;
+    dispatch({ type: "SET_LOADING", loading: true });
+    try {
+      const updatedCart = await removeFromCart(state.cartId, lineIds);
+      dispatch({ type: "SET_CART", cart: updatedCart });
+      toast.success("Bundle removed");
+    } catch (err) {
+      toast.error("Could not remove bundle. Please try again.");
+      throw err;
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }
@@ -196,6 +211,9 @@ export function useCart() {
             value: `Custom Totem · ${shape?.name ?? piece.shapeId} — ${color?.name ?? piece.colorId}`,
           },
           { key: "Part", value: "Shape" },
+          { key: "_shape_id", value: piece.shapeId },
+          { key: "_color_id", value: piece.colorId },
+          { key: "_flipped", value: String(piece.flipped) },
         ],
       });
     }
@@ -219,8 +237,8 @@ export function useCart() {
           value: `Custom Totem · ${fixation?.name ?? config.fixationId} — ${fixationColorName}`,
         },
         { key: "Part", value: "Fixation" },
-        // { key: 'Fixation', value: fixation?.name ?? config.fixationId },
-        // { key: 'Color', value: fixationColorName },
+        { key: "_fixation_id", value: config.fixationId },
+        { key: "_fixation_color_id", value: config.fixationColorId },
       ],
     });
 
@@ -240,6 +258,7 @@ export function useCart() {
           value: `Custom Totem · ${cable?.name ?? config.cableId} Cable`,
         },
         { key: "Part", value: "Cable" },
+        { key: "_cable_id", value: config.cableId },
       ],
     });
 
@@ -274,6 +293,7 @@ export function useCart() {
     addItem,
     updateItem,
     removeItem,
+    removeBundleItems,
     applyDiscount,
     removeDiscount,
     updateNote,
