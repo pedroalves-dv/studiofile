@@ -18,11 +18,11 @@ interface CollectionsResponse {
  * Fetch a single collection by handle with products
  */
 export async function getCollection(handle: string): Promise<ShopifyCollection | null> {
-  const response = await storefront<CollectionResponse>(GET_COLLECTION_BY_HANDLE, {
-    handle,
-    first: 20,
-    after: null,
-  });
+  const response = await storefront<CollectionResponse>(
+    GET_COLLECTION_BY_HANDLE,
+    { handle, first: 20, after: null },
+    { next: { revalidate: 3600 } }
+  );
 
   return response.collectionByHandle;
 }
@@ -35,11 +35,11 @@ export async function getCollectionWithPagination(
   first: number = 20,
   after?: string
 ): Promise<ShopifyCollection | null> {
-  const response = await storefront<CollectionResponse>(GET_COLLECTION_BY_HANDLE, {
-    handle,
-    first,
-    after: after || null,
-  });
+  const response = await storefront<CollectionResponse>(
+    GET_COLLECTION_BY_HANDLE,
+    { handle, first, after: after || null },
+    { next: { revalidate: 3600 } }
+  );
 
   return response.collectionByHandle;
 }
@@ -48,10 +48,11 @@ export async function getCollectionWithPagination(
  * Fetch all collections
  */
 export async function getCollections(): Promise<ShopifyCollection[]> {
-  const response = await storefront<CollectionsResponse>(GET_COLLECTIONS, {
-    first: 250,
-    after: null,
-  });
+  const response = await storefront<CollectionsResponse>(
+    GET_COLLECTIONS,
+    { first: 250, after: null },
+    { next: { revalidate: 3600 } }
+  );
 
   return response.collections.edges.map((edge) => edge.node);
 }

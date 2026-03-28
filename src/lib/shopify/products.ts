@@ -61,9 +61,11 @@ interface ProductHandlesResponse {
  * Fetch a single product by handle with full details and variants
  */
 export async function getProduct(handle: string): Promise<ShopifyProduct | null> {
-  const response = await storefront<ProductResponse>(GET_PRODUCT_BY_HANDLE, {
-    handle,
-  });
+  const response = await storefront<ProductResponse>(
+    GET_PRODUCT_BY_HANDLE,
+    { handle },
+    { next: { revalidate: 3600 } }
+  );
 
   const raw = response.productByHandle;
   return raw ? normalizeProduct(raw) : null;
@@ -83,13 +85,11 @@ export async function getProducts(
     query = '',
   } = options;
 
-  const response = await storefront<ProductsResponse>(GET_PRODUCTS, {
-    first,
-    after,
-    sortKey,
-    reverse,
-    query: query || undefined,
-  });
+  const response = await storefront<ProductsResponse>(
+    GET_PRODUCTS,
+    { first, after, sortKey, reverse, query: query || undefined },
+    { next: { revalidate: 3600 } }
+  );
 
   const raw = response.products;
   return {

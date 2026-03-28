@@ -21,17 +21,40 @@ import {
   COLOR_MAP,
   type TotemBuildConfig,
 } from "@/lib/totem-config";
+import { CURRENCY_CODE } from "@/lib/constants";
 import type { MoneyV2, ShopifyCart } from "@/lib/shopify/types";
 
 export function useCart() {
-  const { state, dispatch, cartIconRef } = useCartContext();
+  const { state, dispatch, cartIconRef, pendingCartRef } = useCartContext();
   const toast = useToast();
+
+  /**
+   * Creates a new cart or adds lines to an existing one.
+   * Shares an in-flight createCart promise so simultaneous first-adds
+   * don't create two separate carts.
+   */
+  async function createOrAdd(
+    lines: Array<{ merchandiseId: string; quantity: number; attributes?: Array<{ key: string; value: string }> }>
+  ): Promise<ShopifyCart> {
+    if (state.cartId) return addToCart(state.cartId, lines);
+    if (pendingCartRef.current) {
+      const existingCart = await pendingCartRef.current;
+      return addToCart(existingCart.id, lines);
+    }
+    const promise = createCart(lines);
+    pendingCartRef.current = promise;
+    try {
+      return await promise;
+    } finally {
+      pendingCartRef.current = null;
+    }
+  }
 
   const { cart, isOpen, isLoading } = state;
   const totalQuantity = cart?.totalQuantity ?? 0;
   const totalAmount: MoneyV2 = cart?.cost.totalAmount ?? {
     amount: "0",
-    currencyCode: "USD",
+    currencyCode: CURRENCY_CODE,
   };
 
   const openCart = () => dispatch({ type: "OPEN_CART" });
@@ -40,16 +63,7 @@ export function useCart() {
   const addItem = async (variantId: string, quantity: number) => {
     dispatch({ type: "SET_LOADING", loading: true });
     try {
-      let updatedCart: ShopifyCart;
-      if (state.cartId) {
-        updatedCart = await addToCart(state.cartId, [
-          { merchandiseId: variantId, quantity },
-        ]);
-      } else {
-        updatedCart = await createCart([
-          { merchandiseId: variantId, quantity },
-        ]);
-      }
+      const updatedCart = await createOrAdd([{ merchandiseId: variantId, quantity }]);
       dispatch({ type: "SET_CART", cart: updatedCart });
       openCart();
       toast.success("Added to cart");
@@ -276,12 +290,7 @@ export function useCart() {
 
     dispatch({ type: "SET_LOADING", loading: true });
     try {
-      let updatedCart: ShopifyCart;
-      if (state.cartId) {
-        updatedCart = await addToCart(state.cartId, lines);
-      } else {
-        updatedCart = await createCart(lines);
-      }
+      const updatedCart = await createOrAdd(lines);
       dispatch({ type: "SET_CART", cart: updatedCart });
       openCart();
       toast.success("Totem added to cart");

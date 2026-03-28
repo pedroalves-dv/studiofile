@@ -1,7 +1,7 @@
 // Policies-specific Shopify API functions
 import { storefront } from './client';
-import { GET_SHOP_POLICIES, GET_SHOP_INFO, GET_LOCALIZATION } from './queries';
-import type { ShopifyPolicy, ShopifyShop, LocalizationCountry } from './types';
+import { GET_SHOP_POLICIES, GET_LOCALIZATION } from './queries';
+import type { ShopifyPolicy, LocalizationCountry } from './types';
 
 interface PoliciesResponse {
   shop: {
@@ -10,10 +10,6 @@ interface PoliciesResponse {
     termsOfService: ShopifyPolicy | null;
     shippingPolicy: ShopifyPolicy | null;
   };
-}
-
-interface ShopInfoResponse {
-  shop: ShopifyShop;
 }
 
 /**
@@ -59,19 +55,6 @@ export async function getPolicyByHandle(
     default:
       return null;
   }
-}
-
-/**
- * Fetch shop general information
- */
-export async function getShopInfo(): Promise<ShopifyShop> {
-  const response = await storefront<ShopInfoResponse>(
-    GET_SHOP_INFO,
-    {},
-    { next: { revalidate: 86400 } } // Cache for 24 hours
-  );
-
-  return response.shop;
 }
 
 interface LocalizationResponse {

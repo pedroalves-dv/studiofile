@@ -25,6 +25,8 @@ interface CartContextType {
   state: CartState;
   dispatch: Dispatch<CartAction>;
   cartIconRef: React.RefObject<HTMLButtonElement | null>;
+  /** Holds an in-flight createCart promise so concurrent first-adds share one cart. */
+  pendingCartRef: React.MutableRefObject<Promise<ShopifyCart> | null>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -57,6 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   });
 
   const cartIconRef = useRef<HTMLButtonElement>(null);
+  const pendingCartRef = useRef<Promise<ShopifyCart> | null>(null);
 
   // Load and validate stored cart on mount
   useEffect(() => {
@@ -90,7 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [state.cartId]);
 
   return (
-    <CartContext.Provider value={{ state, dispatch, cartIconRef }}>
+    <CartContext.Provider value={{ state, dispatch, cartIconRef, pendingCartRef }}>
       {children}
     </CartContext.Provider>
   );

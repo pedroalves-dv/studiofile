@@ -1,12 +1,13 @@
 // Formatting utility functions
 import type { MoneyV2 } from '../shopify/types';
+import { CURRENCY_CODE } from '../constants';
 
 /**
  * Format price as currency
  * @example formatPrice("120.00", "USD") → "$120.00"
  * @example formatPrice("120.00", "EUR") → "€120.00"
  */
-export function formatPrice(amount: string, currencyCode: string = 'USD'): string {
+export function formatPrice(amount: string, currencyCode: string = CURRENCY_CODE): string {
   const numAmount = parseFloat(amount);
 
   return new Intl.NumberFormat('en-US', {
@@ -27,19 +28,6 @@ export function formatDate(dateString: string): string {
     month: 'long',
     day: 'numeric',
   }).format(date);
-}
-
-/**
- * Format handle string (URL-safe kebab-case)
- * @example formatHandle("My Product Name") → "my-product-name"
- */
-export function formatHandle(str: string): string {
-  return str
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_]/g, '-')
-    .replace(/-+/g, '-');
 }
 
 /**

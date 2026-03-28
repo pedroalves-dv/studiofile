@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 interface CustomSelectProps {
   id: string;
