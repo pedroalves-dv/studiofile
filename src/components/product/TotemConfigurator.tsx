@@ -77,6 +77,11 @@ export function TotemConfigurator() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const [variantMap, setVariantMap] = useState<{
+    shapes: Record<string, { id: string; available: boolean }>;
+    cables: Record<string, { id: string; available: boolean }>;
+  } | null>(null);
+
   // Dynamic catalog — loaded from Shopify on mount, falls back to static arrays
   const [catalogShapes, setCatalogShapes] =
     useState<TotemShape[]>(TOTEM_SHAPES);
@@ -111,6 +116,13 @@ export function TotemConfigurator() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/totem-variants')
+      .then((res) => res.json())
+      .then(setVariantMap)
+      .catch(() => {}); // fail silently — UI degrades to showing all options as available
   }, []);
 
   const shapeMap = useMemo(
@@ -198,6 +210,33 @@ export function TotemConfigurator() {
     if (isDesktop) viewer.setAttribute("data-lenis-prevent", "");
     else viewer.removeAttribute("data-lenis-prevent");
   }, [isDesktop]);
+
+  /* ── Variant availability helpers ── */
+
+  function isColorAvailableForShape(shapeId: string, colorId: string): boolean {
+    if (!variantMap) return true; // optimistic while loading
+    return variantMap.shapes[`${shapeId}-${colorId}`]?.available ?? false;
+  }
+
+  function isFixationColorAvailable(fixationId: string, colorId: string): boolean {
+    if (!variantMap) return true;
+    return variantMap.shapes[`${fixationId}-${colorId}`]?.available ?? false;
+  }
+
+  function isCableAvailable(cableId: string): boolean {
+    if (!variantMap) return true;
+    return variantMap.cables[cableId]?.available ?? false;
+  }
+
+  function isShapeFullyUnavailable(shapeId: string): boolean {
+    if (!variantMap) return false;
+    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${shapeId}-${c.id}`]?.available);
+  }
+
+  function isFixationFullyUnavailable(fixationId: string): boolean {
+    if (!variantMap) return false;
+    return TOTEM_COLORS.every((c) => !variantMap.shapes[`${fixationId}-${c.id}`]?.available);
+  }
 
   /* ── Touch drag-to-reorder ── */
 
