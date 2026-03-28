@@ -180,8 +180,8 @@ export function useCart() {
     for (const piece of config.pieces) {
       const key = `${piece.shapeId}-${piece.colorId}`;
       const variant = shapes[key];
-      if (!variant?.id) {
-        toast.error("Some product variants are not yet available.");
+      if (!variant?.id || !variant.available) {
+        toast.error("One or more selected colors is out of stock.");
         return;
       }
       const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
@@ -203,8 +203,8 @@ export function useCart() {
 
     const fixationKey = `${config.fixationId}-${config.fixationColorId}`;
     const fixationVariant = shapes[fixationKey];
-    if (!fixationVariant?.id) {
-      toast.error("Some product variants are not yet available.");
+    if (!fixationVariant?.id || !fixationVariant.available) {
+      toast.error("The selected fixation color is out of stock.");
       return;
     }
     const fixation = TOTEM_FIXATIONS.find((f) => f.id === config.fixationId);
@@ -226,8 +226,8 @@ export function useCart() {
     });
 
     const cableVariant = cables[config.cableId];
-    if (!cableVariant?.id) {
-      toast.error("Some product variants are not yet available.");
+    if (!cableVariant?.id || !cableVariant.available) {
+      toast.error("The selected cable is out of stock.");
       return;
     }
     const cable = TOTEM_CABLES.find((c) => c.id === config.cableId);

@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/utils/format";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils/cn";
 import type { ShopifyCartLine } from "@/lib/shopify/types";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 interface TotemCartGroupProps {
   lines: ShopifyCartLine[];
@@ -75,6 +76,9 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           <p className="font-semibold tracking-tighter text-3xl leading-none text-ink">
             TOTEM
           </p>
+          <p className="mt-2 tracking-tight text-ink text-base leading-none text-ink">
+            Custom Modular Lamp
+          </p>
           {shapeSummary && (
             <p className="text-xs text-muted mt-1 truncate">{shapeSummary}</p>
           )}
@@ -82,12 +86,12 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
             <p className="text-xs text-muted truncate">{systemSummary}</p>
           )}
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-          <span className="text-sm text-ink">
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-3xl tracking-tighter text-ink">
             {formatPrice(totalAmount.toFixed(2), currencyCode)}
           </span>
           <ChevronDown
-            size={14}
+            size={24}
             className={cn(
               "text-muted transition-transform duration-150",
               expanded && "rotate-180",
@@ -98,7 +102,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
 
       {/* Expanded sub-rows */}
       {expanded && (
-        <div className="mt-3 pl-4">
+        <div className="mt-3">
           {lines.map((line) => {
             const { primary, secondary } = getLineLabel(line);
             return (
@@ -120,13 +124,12 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
             );
           })}
           <div className="mt-2">
-            <button
+            <ArrowButton
               type="button"
+              label="Remove bundle"
               onClick={removeBundle}
-              className="text-xs text-muted hover:text-error transition-colors"
-            >
-              Remove bundle
-            </button>
+              className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity"
+            />
           </div>
         </div>
       )}

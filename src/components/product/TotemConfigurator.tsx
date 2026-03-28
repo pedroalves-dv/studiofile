@@ -355,10 +355,15 @@ export function TotemConfigurator() {
       toast.info(`Maximum ${MAX_PIECES} pieces allowed.`);
       return;
     }
+    const defaultColorId = variantMap
+      ? (TOTEM_COLORS.find(
+          (c) => variantMap.shapes[`${shapeId}-${c.id}`]?.available,
+        )?.id ?? TOTEM_COLORS[0].id)
+      : TOTEM_COLORS[0].id;
     const uid = generateUid();
     setPieces((prev) => [
       ...prev,
-      { uid, shapeId, colorId: TOTEM_COLORS[0].id, flipped: false },
+      { uid, shapeId, colorId: defaultColorId, flipped: false },
     ]);
   }
 
