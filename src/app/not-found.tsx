@@ -1,25 +1,30 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-canvas flex flex-col items-center justify-center px-6">
-      <h1 className="text-[20vw] leading-none text-stone-200 mb-8">404</h1>
-      <div className="text-center max-w-md mb-12">
-        <h2 className="text-4xl tracking-tighter leading-tight text-ink mb-4">
+    <div className="section-centered bg-canvas flex flex-col items-center justify-center px-6 -mt-12">
+      <h1 className="text-[20vw] font-semibold tracking-tighter leading-none text-stone-200 mb-8">
+        404
+      </h1>
+      <div className="text-center max-w-md mb-8">
+        <h2 className="text-6xl font-medium tracking-tighter leading-tight text-ink mb-4">
           Page not found.
         </h2>
-        <p className="text-muted mb-8">
+        <p className="text-muted mb-4">
           The page you're looking for doesn't exist or may have been moved.
         </p>
       </div>
       <div className="flex gap-4">
-        <Link href="/">
-          <Button variant="primary">Back to Home</Button>
-        </Link>
-        <Link href="/shop">
-          <Button variant="secondary">Shop All</Button>
-        </Link>
+        <ArrowButton
+          href="/"
+          label="Back to Home"
+          className="w-fit mt-4 px-6 py-2 bg-ink text-white text-base font-medium tracking-tight rounded-md  border border-ink  disabled:opacity-50"
+        />
+        {/* <ArrowButton
+          href="/shop"
+          label="Shop All"
+          className="w-fit mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md  border border-ink  disabled:opacity-50"
+        /> */}
       </div>
     </div>
   );

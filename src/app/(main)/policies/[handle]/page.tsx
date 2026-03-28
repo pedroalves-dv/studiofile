@@ -51,23 +51,21 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
   if (!policy) notFound();
 
   return (
-    <main id="main-content" className="section-padding">
-      <div className="container-narrow">
+    <main id="main-content" className="section-centered py-12">
+      <div className="px-5">
         <div className="mb-10">
-          <Breadcrumb
-            items={[{ label: "Home", href: "/" }, { label: policy.title }]}
-          />
+          <Breadcrumb items={[{ label: policy.title }]} />
         </div>
 
-        <header className="mb-12 pb-8 border-b border-border">
-          <h1 className="text-4xl md:text-5xl leading-tight tracking-tight">
+        <header className="mb-10 border-b border-stroke">
+          <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap">
             {policy.title}
           </h1>
         </header>
 
         {policy.body ? (
           <div
-            className="text-sm text-ink/80 leading-relaxed [&_p]:mb-5 [&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-xs [&_h3]:uppercase [&_h3]:tracking-widest [&_h3]:mt-8 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:underline [&_a]:hover:text-accent [&_a]:transition-colors"
+            className="text-base text-ink/80 leading-tight [&_p]:mb-5 [&_h2]:text-2xl [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-xs  [&_h3]:tracking-widest [&_h3]:mt-8 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:underline [&_a]:hover:text-accent [&_a]:transition-colors"
             dangerouslySetInnerHTML={{ __html: policy.body }}
           />
         ) : (

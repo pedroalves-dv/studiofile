@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/Button";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 export default function Error({
   error,
@@ -18,7 +17,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="section-padding container-narrow text-center">
+    <div className="section-centered bg-canvas flex flex-col items-center justify-center px-6 -mt-12">
       <h1 className="text-4xl tracking-tighter leading-tight text-ink mb-4">
         Something went wrong
       </h1>
@@ -26,12 +25,16 @@ export default function Error({
         {error.message || "An unexpected error occurred. Please try again."}
       </p>
       <div className="flex gap-4 justify-center">
-        <Button variant="primary" onClick={() => reset()}>
-          Try again
-        </Button>
-        <Link href="/">
-          <Button variant="secondary">Back to Home</Button>
-        </Link>
+        <ArrowButton
+          label="Try again"
+          onClick={() => reset()}
+          className="w-fit mt-4 px-6 py-2 bg-ink text-white text-base font-medium tracking-tight rounded-md  border border-ink  disabled:opacity-50"
+        />
+        <ArrowButton
+          href="/"
+          label="Back to Home"
+          className="w-fit mt-4 px-6 py-2 bg-canvas text-ink text-base font-medium tracking-tight rounded-md  border border-ink  disabled:opacity-50"
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 interface BreadcrumbItem {
   label: string;
@@ -11,18 +11,18 @@ interface BreadcrumbProps {
 
 export function Breadcrumb({ items }: BreadcrumbProps) {
   // Always add Home at the beginning
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, ...items];
+  const breadcrumbItems = [{ label: "Home", href: "/" }, ...items];
 
   // Generate JSON-LD structured data
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: breadcrumbItems.map((item, index) => ({
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: index + 1,
       name: item.label,
       item: item.href
-        ? `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}${item.href}`
+        ? `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}${item.href}`
         : undefined,
     })),
   };
@@ -37,13 +37,17 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
 
       {/* Breadcrumb Navigation */}
       <nav
-        className="text-xs text-muted uppercase tracking-wider"
+        className="text-base font-medium tracking-tighter text-muted tracking-tight"
         aria-label="Breadcrumb"
       >
         <ol className="flex items-center gap-3 flex-wrap">
           {breadcrumbItems.map((item, index) => (
             <li key={index} className="flex items-center gap-3">
-              {index > 0 && <span aria-hidden="true" className="text-muted">›</span>}
+              {index > 0 && (
+                <span aria-hidden="true" className="text-muted">
+                  ›
+                </span>
+              )}
               {item.href && index !== breadcrumbItems.length - 1 ? (
                 <Link
                   href={item.href}
@@ -53,8 +57,14 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
                 </Link>
               ) : (
                 <span
-                  aria-current={index === breadcrumbItems.length - 1 ? 'page' : undefined}
-                  className={index === breadcrumbItems.length - 1 ? 'text-ink' : 'text-muted'}
+                  aria-current={
+                    index === breadcrumbItems.length - 1 ? "page" : undefined
+                  }
+                  className={
+                    index === breadcrumbItems.length - 1
+                      ? "text-ink"
+                      : "text-muted"
+                  }
                 >
                   {item.label}
                 </span>
