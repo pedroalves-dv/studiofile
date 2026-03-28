@@ -189,7 +189,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                               key={item.href}
                               href={item.href}
                               onClick={() => setIsAccountOpen(false)}
-                              className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
+                              className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
                             >
                               {item.label}
                             </Link>
@@ -211,7 +211,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                                 }
                               });
                             }}
-                            className="block w-full text-left px-4 py-3 rounded-md tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-50"
+                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-50 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
                           </button>

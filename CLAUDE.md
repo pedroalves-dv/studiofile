@@ -255,8 +255,8 @@ All colors are defined as CSS custom properties in `globals.css` and consumed vi
 
 ### Auth (Phase 7)
 
-- `redirect()` from `next/navigation` must never be inside a try/catch — it throws a special internal error. In `customerLogout`, the revoke call is wrapped in try/catch but `redirect('/')` is called outside it.
-- Logout uses `<form action={customerLogout}>` — not `onClick` calling a Server Action.
+- `customerLogout` does NOT call `redirect()` — navigation is handled client-side in `Header.tsx` via `useTransition` + `router.push('/')` after the SA resolves, allowing a toast to fire first.
+- Logout uses a `<button type="button">` with `useTransition` in `Header.tsx` — not a `<form action={customerLogout}>`.
 - `/account/forgot-password` is a **public** route — excluded from middleware protection.
 - `?next=` param is read server-side in the login page and passed to `LoginForm` for post-login redirect.
 - `ShopifyOrder` type includes `statusUrl: string` — added in Phase 7.
