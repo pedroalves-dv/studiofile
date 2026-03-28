@@ -450,6 +450,11 @@ export function TotemConfigurator() {
     [],
   );
 
+  const configAvailable =
+    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
+    isFixationColorAvailable(fixationId, fixationColorId) &&
+    isCableAvailable(cableId);
+
   const handleAddToCart = async () => {
     if (pieces.length === 0) return;
     if (!configAvailable) return;
@@ -472,11 +477,6 @@ export function TotemConfigurator() {
     fixationMap,
     cableMap,
   );
-
-  const configAvailable =
-    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
-    isFixationColorAvailable(fixationId, fixationColorId) &&
-    isCableAvailable(cableId);
 
   return (
     <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
