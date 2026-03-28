@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/Badge';
-import type { ShopifyProduct } from '@/lib/shopify/types';
+import Link from "next/link";
+import Image from "next/image";
+import { Badge } from "@/components/ui/Badge";
+import type { ShopifyProduct } from "@/lib/shopify/types";
 
 interface ProductGridProps {
   products: ShopifyProduct[];
@@ -11,8 +11,11 @@ interface ProductGridProps {
   showCount?: boolean;
 }
 
-export function ProductGrid({ products, totalCount, showCount = true }: ProductGridProps) {
-
+export function ProductGrid({
+  products,
+  totalCount,
+  showCount = true,
+}: ProductGridProps) {
   if (!products || products.length === 0) {
     return (
       <div className="py-20 text-center">
@@ -57,25 +60,36 @@ export function ProductGrid({ products, totalCount, showCount = true }: ProductG
               )}
 
               <div className="absolute top-3 left-3 flex flex-col gap-1">
-                {!product.availableForSale && <Badge variant="soldOut">Sold out</Badge>}
-                {product.tags?.includes('New') && <Badge variant="new">New</Badge>}
-                {product.tags?.includes('Sale') && <Badge variant="sale">Sale</Badge>}
+                {!product.availableForSale && (
+                  <Badge variant="soldOut">Sold out</Badge>
+                )}
+                {product.tags?.includes("New") && (
+                  <Badge variant="new">New</Badge>
+                )}
+                {product.tags?.includes("Sale") && (
+                  <Badge variant="sale">Sale</Badge>
+                )}
               </div>
             </div>
 
-            <h3 className="font-display text-base md:text-lg text-ink mb-2 group-hover:text-muted transition-colors">
+            <h3 className="text-base md:text-lg text-ink mb-2 group-hover:text-muted transition-colors">
               {product.title}
             </h3>
 
             <div className="flex items-baseline gap-2">
               <span className="text-sm text-ink">
-                {parseFloat(product.priceRange.minVariantPrice.amount).toFixed(0)}{' '}
+                {parseFloat(product.priceRange.minVariantPrice.amount).toFixed(
+                  0,
+                )}{" "}
                 {product.priceRange.minVariantPrice.currencyCode}
               </span>
               {product.priceRange.maxVariantPrice.amount !==
                 product.priceRange.minVariantPrice.amount && (
                 <span className="text-sm text-ink/50">
-                  –{parseFloat(product.priceRange.maxVariantPrice.amount).toFixed(0)}
+                  –
+                  {parseFloat(
+                    product.priceRange.maxVariantPrice.amount,
+                  ).toFixed(0)}
                 </span>
               )}
             </div>

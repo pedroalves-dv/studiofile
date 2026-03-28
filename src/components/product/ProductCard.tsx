@@ -1,18 +1,24 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import type { ShopifyProduct } from '@/lib/shopify/types';
-import { formatPrice, isOnSale, getDiscountPercent } from '@/lib/utils/format';
-import { Badge } from '@/components/ui/Badge';
-import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import type { ShopifyProduct } from "@/lib/shopify/types";
+import { formatPrice, isOnSale, getDiscountPercent } from "@/lib/utils/format";
+import { Badge } from "@/components/ui/Badge";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 
 interface ProductCardProps {
   product: ShopifyProduct;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { handle, title, featuredImage, priceRange, compareAtPriceRange, availableForSale } =
-    product;
+  const {
+    handle,
+    title,
+    featuredImage,
+    priceRange,
+    compareAtPriceRange,
+    availableForSale,
+  } = product;
 
   const price = priceRange.minVariantPrice;
   const compareAtPrice = compareAtPriceRange.minVariantPrice;
@@ -21,14 +27,15 @@ export function ProductCard({ product }: ProductCardProps) {
     onSale && compareAtPrice ? getDiscountPercent(price, compareAtPrice) : 0;
 
   return (
-    <Link
-      href={`/products/${handle}`}
-      className="group block"
-    >
+    <Link href={`/products/${handle}`} className="group block">
       {/* Image */}
       <div
         className="relative overflow-hidden bg-stone-50 aspect-[3/4] mb-4"
-        style={{ viewTransitionName: `product-image-${handle}` } as React.CSSProperties}
+        style={
+          {
+            viewTransitionName: `product-image-${handle}`,
+          } as React.CSSProperties
+        }
       >
         {featuredImage ? (
           <Image
@@ -60,7 +67,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Info */}
       <div className="space-y-1">
-        <h3 className="font-display text-lg leading-tight group-hover:text-muted transition-colors">
+        <h3 className="text-lg leading-tight group-hover:text-muted transition-colors">
           {title}
         </h3>
         <div className="flex items-baseline gap-3">

@@ -90,7 +90,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <h2 className="text-label text-muted mb-6">Product Details</h2>
                 {product.descriptionHtml ? (
                   <div
-                    className="text-sm text-ink/80 leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_h2]:font-display [&_h2]:text-xl [&_h2]:mb-3"
+                    className="text-sm text-ink/80 leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1  [&_h2]:text-xl [&_h2]:mb-3"
                     dangerouslySetInnerHTML={{
                       __html: product.descriptionHtml,
                     }}

@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { X, Heart } from 'lucide-react'
-import { Dialog } from '@/components/ui/Dialog'
-import { Button } from '@/components/ui/Button'
-import { useWishlist } from '@/hooks/useWishlist'
-import { useCart } from '@/hooks/useCart'
-import { formatPrice } from '@/lib/utils/format'
-import type { ShopifyProduct } from '@/lib/shopify/types'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { X, Heart } from "lucide-react";
+import { Dialog } from "@/components/ui/Dialog";
+import { Button } from "@/components/ui/Button";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/lib/utils/format";
+import type { ShopifyProduct } from "@/lib/shopify/types";
 
 function WishlistSkeleton() {
   return (
     <div className="space-y-4">
-      {[1, 2, 3].map(i => (
+      {[1, 2, 3].map((i) => (
         <div key={i} className="flex gap-4 animate-pulse">
           <div className="w-16 h-16 bg-stone-100 flex-shrink-0" />
           <div className="flex-1 space-y-2 py-1">
@@ -24,26 +24,30 @@ function WishlistSkeleton() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 interface WishlistItemProps {
-  product: ShopifyProduct
-  onClose: () => void
+  product: ShopifyProduct;
+  onClose: () => void;
 }
 
 function WishlistItem({ product, onClose }: WishlistItemProps) {
-  const { removeItem } = useWishlist()
-  const { addItem } = useCart()
-  const price = product.priceRange.minVariantPrice
+  const { removeItem } = useWishlist();
+  const { addItem } = useCart();
+  const price = product.priceRange.minVariantPrice;
 
   const firstAvailableVariant =
-    product.variants.find(v => v.availableForSale) ?? product.variants[0]
+    product.variants.find((v) => v.availableForSale) ?? product.variants[0];
 
   return (
     <div className="flex gap-4 py-4 border-b border-border last:border-0">
       {/* Thumbnail */}
-      <Link href={`/products/${product.handle}`} onClick={onClose} className="flex-shrink-0">
+      <Link
+        href={`/products/${product.handle}`}
+        onClick={onClose}
+        className="flex-shrink-0"
+      >
         <div className="w-16 h-16 bg-stone-50 relative overflow-hidden">
           {product.featuredImage ? (
             <Image
@@ -62,7 +66,7 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <Link href={`/products/${product.handle}`} onClick={onClose}>
-          <p className="font-display uppercase text-sm leading-tight hover:text-muted transition-colors truncate">
+          <p className="text-sm leading-tight hover:text-muted transition-colors truncate">
             {product.title}
           </p>
         </Link>
@@ -70,7 +74,9 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
           {formatPrice(price.amount, price.currencyCode)}
         </p>
         <button
-          onClick={() => firstAvailableVariant && addItem(firstAvailableVariant.id, 1)}
+          onClick={() =>
+            firstAvailableVariant && addItem(firstAvailableVariant.id, 1)
+          }
           disabled={!firstAvailableVariant}
           className="mt-2 text-label text-ink hover:text-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -87,32 +93,45 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
         <X size={16} />
       </button>
     </div>
-  )
+  );
 }
 
 export function WishlistDrawer() {
-  const { isOpen, closeDrawer, items } = useWishlist()
-  const [products, setProducts] = useState<ShopifyProduct[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const { isOpen, closeDrawer, items } = useWishlist();
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!isOpen || items.length === 0) { setProducts([]); return }
-    setIsLoading(true)
-    fetch(`/api/products/batch?handles=${items.join(',')}`)
-      .then(r => r.json())
-      .then(data => { setProducts(data); setIsLoading(false) })
-      .catch(() => setIsLoading(false))
-  }, [isOpen, items])
+    if (!isOpen || items.length === 0) {
+      setProducts([]);
+      return;
+    }
+    setIsLoading(true);
+    fetch(`/api/products/batch?handles=${items.join(",")}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setProducts(data);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+  }, [isOpen, items]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={open => { if (!open) closeDrawer() }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) closeDrawer();
+      }}
+    >
       <div
         className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col bg-canvas shadow-2xl"
-        style={{ animation: 'slideInRight 350ms ease-out' }}
+        style={{ animation: "slideInRight 350ms ease-out" }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="font-display uppercase tracking-tight text-2xl">Wishlist {items.length > 0 ? `(${items.length})` : ''}</h2>
+          <h2 className="tracking-tight text-2xl">
+            Wishlist {items.length > 0 ? `(${items.length})` : ""}
+          </h2>
           <button onClick={closeDrawer} aria-label="Close wishlist">
             <X size={20} />
           </button>
@@ -125,18 +144,25 @@ export function WishlistDrawer() {
           {!isLoading && items.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full gap-12 text-center pb-24">
               <Heart size={48} className="text-light" />
-              <p className="font-display uppercase  tracking-[-1px] text-6xl">Your wishlist is empty.</p>
+              <p className="tracking-[-1px] text-6xl">
+                Your wishlist is empty.
+              </p>
               <Button onClick={closeDrawer} asChild>
                 <Link href="/shop">Browse Products</Link>
               </Button>
             </div>
           )}
 
-          {!isLoading && products.map(product => (
-            <WishlistItem key={product.handle} product={product} onClose={closeDrawer} />
-          ))}
+          {!isLoading &&
+            products.map((product) => (
+              <WishlistItem
+                key={product.handle}
+                product={product}
+                onClose={closeDrawer}
+              />
+            ))}
         </div>
       </div>
     </Dialog>
-  )
+  );
 }

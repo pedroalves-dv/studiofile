@@ -1,12 +1,12 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { searchProducts } from '@/lib/shopify/search';
-import { getCollections } from '@/lib/shopify/collections';
-import { SORT_MAP } from '@/lib/utils/params';
-import { SearchBar } from '@/components/search/SearchBar';
-import { SearchResults } from '@/components/search/SearchResults';
-import { SortSelect } from '@/components/search/SortSelect';
-import { FilterPanel } from '@/components/search/FilterPanel';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { searchProducts } from "@/lib/shopify/search";
+import { getCollections } from "@/lib/shopify/collections";
+import { SORT_MAP } from "@/lib/utils/params";
+import { SearchBar } from "@/components/search/SearchBar";
+import { SearchResults } from "@/components/search/SearchResults";
+import { SortSelect } from "@/components/search/SortSelect";
+import { FilterPanel } from "@/components/search/FilterPanel";
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -17,11 +17,15 @@ interface SearchPageProps {
   }>;
 }
 
-export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: SearchPageProps): Promise<Metadata> {
   const { q } = await searchParams;
   return {
-    title: q ? `Search: ${q}` : 'Search',
-    description: q ? `Search results for "${q}" on Studiofile.` : 'Search the Studiofile collection.',
+    title: q ? `Search: ${q}` : "Search",
+    description: q
+      ? `Search results for "${q}" on Studiofile.`
+      : "Search the Studiofile collection.",
     robots: { index: false, follow: true },
   };
 }
@@ -29,28 +33,44 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q, sort, filter, cursor } = await searchParams;
 
-  const sortEntry = SORT_MAP[sort as string] ?? { sortKey: 'RELEVANCE', reverse: false };
-  const sortKey = sortEntry.sortKey as 'RELEVANCE' | 'PRICE' | 'BEST_SELLING' | 'CREATED';
+  const sortEntry = SORT_MAP[sort as string] ?? {
+    sortKey: "RELEVANCE",
+    reverse: false,
+  };
+  const sortKey = sortEntry.sortKey as
+    | "RELEVANCE"
+    | "PRICE"
+    | "BEST_SELLING"
+    | "CREATED";
   const reverse = sortEntry.reverse;
 
-  const filterParams = filter ? (Array.isArray(filter) ? filter : [filter]) : [];
+  const filterParams = filter
+    ? Array.isArray(filter)
+      ? filter
+      : [filter]
+    : [];
 
   // Build Shopify query string (append filter clauses)
   const filterClauses = filterParams
     .map((f) => {
-      if (f === 'availability:in-stock') return 'available_for_sale:true';
-      if (f.startsWith('type:')) return `product_type:${f.slice(5)}`;
-      if (f.startsWith('tag:')) return `tag:${f.slice(4)}`;
+      if (f === "availability:in-stock") return "available_for_sale:true";
+      if (f.startsWith("type:")) return `product_type:${f.slice(5)}`;
+      if (f.startsWith("tag:")) return `tag:${f.slice(4)}`;
       return null;
     })
     .filter(Boolean) as string[];
 
-  const fullQuery = q ? [q, ...filterClauses].join(' AND ') : '';
+  const fullQuery = q ? [q, ...filterClauses].join(" AND ") : "";
 
   // Fetch data in parallel only when a query exists
   const [searchResult, collections] = await Promise.all([
     fullQuery
-      ? searchProducts(fullQuery, { first: 24, after: cursor, sortKey, reverse })
+      ? searchProducts(fullQuery, {
+          first: 24,
+          after: cursor,
+          sortKey,
+          reverse,
+        })
       : Promise.resolve(null),
     !q ? getCollections() : Promise.resolve([]),
   ]);
@@ -62,14 +82,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <div className="container-wide">
         {/* Page heading */}
         <div className="mb-8">
-          <h1 className="font-display text-4xl md:text-5xl tracking-tight mb-6">
+          <h1 className="text-4xl md:text-5xl tracking-tight mb-6">
             {hasQuery ? (
               <>
-                Search results for{' '}
+                Search results for{" "}
                 <span className="italic text-muted">&ldquo;{q}&rdquo;</span>
               </>
             ) : (
-              'Search'
+              "Search"
             )}
           </h1>
 
@@ -90,7 +110,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   href={`/collections/${collection.handle}`}
                   className="group border border-stroke p-6 hover:border-ink transition-colors"
                 >
-                  <p className="font-display text-xl group-hover:text-accent transition-colors">
+                  <p className="text-xl group-hover:text-accent transition-colors">
                     {collection.title}
                   </p>
                   {collection.description && (
@@ -126,19 +146,21 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               />
 
               {/* Load more — URL-based cursor pagination */}
-              {searchResult.pageInfo.hasNextPage && searchResult.pageInfo.endCursor && (
-                <div className="mt-16 flex flex-col items-center gap-3">
-                  <Link
-                    href={`/search?q=${encodeURIComponent(q!)}${sort ? `&sort=${sort}` : ''}${filterParams.map(f => `&filter=${encodeURIComponent(f)}`).join('')}&cursor=${searchResult.pageInfo.endCursor}`}
-                    className="inline-flex items-center justify-center px-8 py-3 border border-ink text-label text-ink hover:bg-ink hover:text-canvas transition-colors"
-                  >
-                    Load more
-                  </Link>
-                  <p className="text-label text-muted">
-                    Showing {searchResult.products.length} of {searchResult.totalCount}
-                  </p>
-                </div>
-              )}
+              {searchResult.pageInfo.hasNextPage &&
+                searchResult.pageInfo.endCursor && (
+                  <div className="mt-16 flex flex-col items-center gap-3">
+                    <Link
+                      href={`/search?q=${encodeURIComponent(q!)}${sort ? `&sort=${sort}` : ""}${filterParams.map((f) => `&filter=${encodeURIComponent(f)}`).join("")}&cursor=${searchResult.pageInfo.endCursor}`}
+                      className="inline-flex items-center justify-center px-8 py-3 border border-ink text-label text-ink hover:bg-ink hover:text-canvas transition-colors"
+                    >
+                      Load more
+                    </Link>
+                    <p className="text-label text-muted">
+                      Showing {searchResult.products.length} of{" "}
+                      {searchResult.totalCount}
+                    </p>
+                  </div>
+                )}
             </div>
           </div>
         )}

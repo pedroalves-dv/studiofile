@@ -19,7 +19,7 @@ export default function Error({
 
   return (
     <div className="section-padding container-narrow text-center">
-      <h1 className="font-display text-3xl text-ink mb-4">
+      <h1 className="text-4xl tracking-tighter leading-tight text-ink mb-4">
         Something went wrong
       </h1>
       <p className="text-muted mb-8">

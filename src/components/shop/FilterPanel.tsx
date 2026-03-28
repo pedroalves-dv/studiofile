@@ -1,35 +1,35 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { X } from 'lucide-react';
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { X } from "lucide-react";
 
 const FILTER_GROUPS = [
   {
-    id: 'availability',
-    label: 'Availability',
+    id: "availability",
+    label: "Availability",
     filters: [
-      { value: 'in-stock', label: 'In Stock' },
-      { value: 'pre-order', label: 'Pre-Order' },
+      { value: "in-stock", label: "In Stock" },
+      { value: "pre-order", label: "Pre-Order" },
     ],
   },
   {
-    id: 'type',
-    label: 'Product Type',
+    id: "type",
+    label: "Product Type",
     filters: [
-      { value: 'furniture', label: 'Furniture' },
-      { value: 'decor', label: 'Décor' },
-      { value: 'lighting', label: 'Lighting' },
-      { value: 'accessories', label: 'Accessories' },
+      { value: "furniture", label: "Furniture" },
+      { value: "decor", label: "Décor" },
+      { value: "lighting", label: "Lighting" },
+      { value: "accessories", label: "Accessories" },
     ],
   },
   {
-    id: 'tag',
-    label: 'Collections',
+    id: "tag",
+    label: "Collections",
     filters: [
-      { value: 'outdoor', label: 'Outdoor' },
-      { value: 'minimalist', label: 'Minimalist' },
-      { value: 'geometric', label: 'Geometric' },
+      { value: "outdoor", label: "Outdoor" },
+      { value: "minimalist", label: "Minimalist" },
+      { value: "geometric", label: "Geometric" },
     ],
   },
 ];
@@ -40,7 +40,7 @@ export function FilterPanel() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Parse active filters from URL
-  const filterParams = searchParams.getAll('filter');
+  const filterParams = searchParams.getAll("filter");
   const activeFilters = new Set(filterParams);
   const activeCount = activeFilters.size;
 
@@ -49,22 +49,22 @@ export function FilterPanel() {
     const params = new URLSearchParams(searchParams);
 
     if (activeFilters.has(filterKey)) {
-      params.delete('filter', filterKey);
+      params.delete("filter", filterKey);
       activeFilters.delete(filterKey);
     } else {
-      params.append('filter', filterKey);
+      params.append("filter", filterKey);
       activeFilters.add(filterKey);
     }
 
     // Reset pagination when filters change
-    params.delete('cursor');
+    params.delete("cursor");
     router.replace(`?${params.toString()}`);
   };
 
   const handleClearAll = () => {
     const params = new URLSearchParams(searchParams);
-    params.delete('filter');
-    params.delete('cursor');
+    params.delete("filter");
+    params.delete("cursor");
     router.replace(`?${params.toString()}`);
     setIsOpen(false);
   };
@@ -100,13 +100,13 @@ export function FilterPanel() {
           w-full md:w-64 max-h-[80vh] md:max-h-none overflow-y-auto
           transform transition-transform duration-300 z-50
           md:translate-y-0
-          ${isOpen ? 'translate-y-0' : 'translate-y-full md:translate-y-0'}
+          ${isOpen ? "translate-y-0" : "translate-y-full md:translate-y-0"}
         `}
       >
         <div className="p-6">
           {/* Header with close button */}
           <div className="flex items-center justify-between mb-6 md:mb-0">
-            <h2 className="font-display text-lg text-ink md:hidden">Filters</h2>
+            <h2 className="text-lg text-ink md:hidden">Filters</h2>
             <button
               onClick={() => setIsOpen(false)}
               className="md:hidden text-ink/60 hover:text-ink transition-colors"
@@ -120,7 +120,9 @@ export function FilterPanel() {
           <div className="space-y-8 md:space-y-6">
             {FILTER_GROUPS.map((group) => (
               <div key={group.id}>
-                <h3 className="font-medium text-sm text-ink mb-3">{group.label}</h3>
+                <h3 className="font-medium text-sm text-ink mb-3">
+                  {group.label}
+                </h3>
                 <div className="space-y-2">
                   {group.filters.map((filter) => {
                     const filterKey = `${group.id}:${filter.value}`;

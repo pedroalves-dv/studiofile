@@ -34,7 +34,7 @@ export async function CollectionsSection() {
       <section className="section-padding border-b border-ink/50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
-            <h2 className="font-display uppercase text-4xl md:text-7xl text-ink">
+            <h2 className="text-4xl md:text-7xl text-ink">
               Shop by Collection
             </h2>
             <Link
@@ -65,9 +65,7 @@ export async function CollectionsSection() {
                   className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 
                 to-transparent flex flex-col justify-end p-6"
                 >
-                  <h3 className="font-display text-2xl text-canvas">
-                    {collection.title}
-                  </h3>
+                  <h3 className="text-2xl text-canvas">{collection.title}</h3>
                 </div>
               </Link>
             ))}

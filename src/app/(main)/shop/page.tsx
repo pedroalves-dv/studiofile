@@ -1,18 +1,18 @@
-import { Metadata } from 'next';
-import { Suspense } from 'react';
-import { getProducts } from '@/lib/shopify/products';
-import { SITE_URL } from '@/lib/utils/seo';
-import { Breadcrumb } from '@/components/layout/Breadcrumb';
-import { PageWrapper } from '@/components/layout/PageWrapper';
-import { SortSelect } from '@/components/search/SortSelect';
-import { FilterPanel } from '@/components/search/FilterPanel';
-import { ProductGrid } from '@/components/product/ProductGrid';
-import { SkeletonCard } from '@/components/common/SkeletonCard';
+import { Metadata } from "next";
+import { Suspense } from "react";
+import { getProducts } from "@/lib/shopify/products";
+import { SITE_URL } from "@/lib/utils/seo";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { PageWrapper } from "@/components/layout/PageWrapper";
+import { SortSelect } from "@/components/search/SortSelect";
+import { FilterPanel } from "@/components/search/FilterPanel";
+import { ProductGrid } from "@/components/product/ProductGrid";
+import { SkeletonCard } from "@/components/common/SkeletonCard";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Shop',
-    description: 'Browse all products.',
+    title: "Shop",
+    description: "Browse all products.",
     alternates: { canonical: `${SITE_URL}/shop` },
   };
 }
@@ -35,25 +35,25 @@ function ProductGridSkeleton() {
 
 async function ShopContent({ searchParams }: ShopPageProps) {
   const params = await searchParams;
-  type SortKey = 'TITLE' | 'PRICE' | 'BEST_SELLING' | 'CREATED' | 'RELEVANCE';
-  let products: import('@/lib/shopify/types').ShopifyProduct[] = [];
+  type SortKey = "TITLE" | "PRICE" | "BEST_SELLING" | "CREATED" | "RELEVANCE";
+  let products: import("@/lib/shopify/types").ShopifyProduct[] = [];
   let error = null;
 
   try {
     // Parse sort parameter — SortSelect sends PRICE with a separate reverse param
-    let sortKey: SortKey = 'BEST_SELLING';
+    let sortKey: SortKey = "BEST_SELLING";
     let reverse = false;
 
     const sortParam = params.sort as string | undefined;
-    if (sortParam === 'PRICE') {
-      sortKey = 'PRICE';
-      reverse = params.reverse === 'true';
-    } else if (sortParam === 'CREATED') {
-      sortKey = 'CREATED';
-    } else if (sortParam === 'TITLE') {
-      sortKey = 'TITLE';
-    } else if (sortParam === 'RELEVANCE') {
-      sortKey = 'RELEVANCE';
+    if (sortParam === "PRICE") {
+      sortKey = "PRICE";
+      reverse = params.reverse === "true";
+    } else if (sortParam === "CREATED") {
+      sortKey = "CREATED";
+    } else if (sortParam === "TITLE") {
+      sortKey = "TITLE";
+    } else if (sortParam === "RELEVANCE") {
+      sortKey = "RELEVANCE";
     }
 
     const result = await getProducts({
@@ -66,14 +66,16 @@ async function ShopContent({ searchParams }: ShopPageProps) {
 
     products = result.edges.map((edge) => edge.node);
   } catch (err) {
-    console.error('Failed to fetch products:', err);
+    console.error("Failed to fetch products:", err);
     error = true;
   }
 
   if (error) {
     return (
       <div className="py-20 text-center">
-        <p className="text-ink/60 mb-4">Unable to load products at this time.</p>
+        <p className="text-ink/60 mb-4">
+          Unable to load products at this time.
+        </p>
         <p className="text-sm text-ink/40">Please try again later.</p>
       </div>
     );
@@ -84,8 +86,8 @@ async function ShopContent({ searchParams }: ShopPageProps) {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Shop', href: '/shop' },
+    { label: "Home", href: "/" },
+    { label: "Shop", href: "/shop" },
   ];
 
   return (
@@ -95,7 +97,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <section className="section-padding">
         <div className="max-w-7xl mx-auto">
           {/* Heading */}
-          <h1 className="font-display text-[clamp(2.5rem, 8vw, 5rem)] leading-tight mb-12 text-ink">
+          <h1 className="text-[clamp(2.5rem, 8vw, 5rem)] leading-tight mb-12 text-ink">
             Shop
           </h1>
 

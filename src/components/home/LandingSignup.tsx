@@ -42,9 +42,7 @@ export function LandingSignup() {
     return (
       <div className="py-10 text-center">
         <span className="block text-accent text-3xl mb-5">✦</span>
-        <p className="font-display text-ink text-2xl mb-3">
-          You&apos;re on the list.
-        </p>
+        <p className="text-ink text-2xl mb-3">You&apos;re on the list.</p>
         <p className="text-muted text-md tacking-tight">
           We&apos;ll send your 30% code when TOTEM launches.
           <br />

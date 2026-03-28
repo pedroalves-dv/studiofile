@@ -1,15 +1,16 @@
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { SITE_URL } from '@/lib/utils/seo';
-import Image from 'next/image';
-import { getCollections } from '@/lib/shopify/collections';
-import { Breadcrumb } from '@/components/layout/Breadcrumb';
-import { PageWrapper } from '@/components/layout/PageWrapper';
+import { Metadata } from "next";
+import Link from "next/link";
+import { SITE_URL } from "@/lib/utils/seo";
+import Image from "next/image";
+import { getCollections } from "@/lib/shopify/collections";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { PageWrapper } from "@/components/layout/PageWrapper";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Collections — Studiofile',
-    description: 'Explore our curated collections of 3D printed furniture and home decor.',
+    title: "Collections — Studiofile",
+    description:
+      "Explore our curated collections of 3D printed furniture and home decor.",
     alternates: { canonical: `${SITE_URL}/collections` },
   };
 }
@@ -21,13 +22,13 @@ export default async function CollectionsPage() {
   try {
     collections = await getCollections();
   } catch (err) {
-    console.error('Failed to fetch collections:', err);
+    console.error("Failed to fetch collections:", err);
     error = true;
   }
 
   const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Collections', href: '/collections' },
+    { label: "Home", href: "/" },
+    { label: "Collections", href: "/collections" },
   ];
 
   return (
@@ -37,7 +38,7 @@ export default async function CollectionsPage() {
       <section className="section-padding">
         <div className="max-w-7xl mx-auto">
           {/* Heading */}
-          <h1 className="font-display text-[clamp(2.5rem, 8vw, 5rem)] leading-tight mb-16 text-ink">
+          <h1 className="tracking-tighter leading-tight  text-[clamp(2.5rem, 8vw, 5rem)] mb-16 text-ink">
             Collections
           </h1>
 
@@ -66,7 +67,7 @@ export default async function CollectionsPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-200 to-stone-100">
-                          <span className="text-stone-400 font-display text-lg">
+                          <span className="text-stone-400 text-lg">
                             {title}
                           </span>
                         </div>
@@ -74,11 +75,11 @@ export default async function CollectionsPage() {
 
                       {/* Gradient scrim and text overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 from-0% via-transparent via-50% to-transparent flex flex-col justify-end p-6">
-                        <h2 className="font-display text-2xl md:text-3xl leading-tight text-canvas mb-2">
+                        <h2 className="text-2xl md:text-3xl leading-tight text-canvas mb-2">
                           {title}
                         </h2>
                         <p className="text-xs uppercase tracking-widest text-stone-300">
-                          {productCount} {productCount === 1 ? 'Item' : 'Items'}
+                          {productCount} {productCount === 1 ? "Item" : "Items"}
                         </p>
                       </div>
                     </div>
@@ -89,7 +90,9 @@ export default async function CollectionsPage() {
           ) : error ? (
             // Error state
             <div className="py-20 text-center">
-              <p className="text-ink/60 mb-4">Unable to load collections at this time.</p>
+              <p className="text-ink/60 mb-4">
+                Unable to load collections at this time.
+              </p>
               <Link
                 href="/"
                 className="inline-block px-6 py-3 border border-ink text-ink hover:bg-ink hover:text-canvas transition-colors"
@@ -100,9 +103,10 @@ export default async function CollectionsPage() {
           ) : (
             // Empty state
             <div className="py-20 text-center">
-              <p className="font-display text-2xl text-ink mb-4">Coming Soon</p>
+              <p className="text-2xl text-ink mb-4">Coming Soon</p>
               <p className="text-ink/60 max-w-md mx-auto mb-8">
-                We're curating a thoughtful selection of collections. Check back soon.
+                We're curating a thoughtful selection of collections. Check back
+                soon.
               </p>
               <Link
                 href="/shop"

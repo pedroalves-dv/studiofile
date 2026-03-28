@@ -1,16 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { Minus, Plus, ShieldCheck, RotateCcw, PackageCheck } from 'lucide-react';
-import type { ShopifyProduct, ShopifyProductVariant } from '@/lib/shopify/types';
-import { formatPrice, isOnSale, getDiscountPercent } from '@/lib/utils/format';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Breadcrumb } from '@/components/layout/Breadcrumb';
-import { StockIndicator } from './StockIndicator';
-import { VariantSelector } from './VariantSelector';
-import { useCart } from '@/hooks/useCart';
-import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import { useState, useCallback } from "react";
+import {
+  Minus,
+  Plus,
+  ShieldCheck,
+  RotateCcw,
+  PackageCheck,
+} from "lucide-react";
+import type {
+  ShopifyProduct,
+  ShopifyProductVariant,
+} from "@/lib/shopify/types";
+import { formatPrice, isOnSale, getDiscountPercent } from "@/lib/utils/format";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { StockIndicator } from "./StockIndicator";
+import { VariantSelector } from "./VariantSelector";
+import { useCart } from "@/hooks/useCart";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 
 interface ProductInfoPanelProps {
   product: ShopifyProduct;
@@ -20,7 +29,7 @@ interface ProductInfoPanelProps {
 
 function getFirstTwoSentences(text: string): string {
   const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-  return sentences.slice(0, 2).join(' ').trim();
+  return sentences.slice(0, 2).join(" ").trim();
 }
 
 export function ProductInfoPanel({
@@ -32,7 +41,7 @@ export function ProductInfoPanel({
     product.variants.find((v) => v.availableForSale) ?? product.variants[0];
 
   const [selectedVariant, setSelectedVariant] = useState<ShopifyProductVariant>(
-    firstAvailableVariant
+    firstAvailableVariant,
   );
   const [quantity, setQuantity] = useState(1);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -43,7 +52,8 @@ export function ProductInfoPanel({
   const price = selectedVariant.price;
   const compareAtPrice = selectedVariant.compareAtPrice;
   const onSale = compareAtPrice ? isOnSale(price, compareAtPrice) : false;
-  const discountPercent = onSale && compareAtPrice ? getDiscountPercent(price, compareAtPrice) : 0;
+  const discountPercent =
+    onSale && compareAtPrice ? getDiscountPercent(price, compareAtPrice) : 0;
 
   // null = inventory tracking disabled = treat as no upper limit
   const maxQty = selectedVariant.quantityAvailable ?? 999;
@@ -72,8 +82,11 @@ export function ProductInfoPanel({
 
   const breadcrumbItems = [
     ...(collectionHandle && collectionTitle
-      ? [{ label: 'Collections', href: '/collections' }, { label: collectionTitle, href: `/collections/${collectionHandle}` }]
-      : [{ label: 'Shop', href: '/shop' }]),
+      ? [
+          { label: "Collections", href: "/collections" },
+          { label: collectionTitle, href: `/collections/${collectionHandle}` },
+        ]
+      : [{ label: "Shop", href: "/shop" }]),
     { label: product.title },
   ];
 
@@ -88,7 +101,7 @@ export function ProductInfoPanel({
       )}
 
       {/* Title */}
-      <h1 className="font-display text-4xl md:text-5xl leading-tight tracking-tight">
+      <h1 className="text-4xl md:text-5xl leading-tight tracking-tight">
         {product.title}
       </h1>
 
@@ -126,7 +139,7 @@ export function ProductInfoPanel({
               onClick={() => setDescriptionExpanded((v) => !v)}
               className="mt-2 text-label text-muted hover:text-ink transition-colors underline"
             >
-              {descriptionExpanded ? 'Read less' : 'Read more'}
+              {descriptionExpanded ? "Read less" : "Read more"}
             </button>
           )}
         </div>
@@ -177,7 +190,7 @@ export function ProductInfoPanel({
           onClick={handleAddToCart}
           className="flex-1"
         >
-          {selectedVariant.availableForSale ? 'Add to cart' : 'Out of stock'}
+          {selectedVariant.availableForSale ? "Add to cart" : "Out of stock"}
         </Button>
         <WishlistButton productHandle={product.handle} />
       </div>
