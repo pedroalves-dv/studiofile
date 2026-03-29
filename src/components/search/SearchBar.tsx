@@ -122,7 +122,7 @@ export function SearchBar({ onClose, autoFocus = false, placeholder = 'Search pr
     <div ref={containerRef} className={cn('relative w-full', className)}>
       <div className={cn(
         "px-2 h-10 flex items-center gap-2 transition-colors",
-        !hideBorder && "border rounded-md focus-within:border-accent"
+        !hideBorder && "border border-stroke rounded-md focus-within:border-accent"
       )}>
         <Search size={18} className="flex-shrink-0 text-muted" aria-hidden="true" />
         <input

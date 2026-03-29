@@ -84,6 +84,7 @@ export function TotemConfigurator() {
     shapes: Record<string, { id: string; available: boolean }>;
     cables: Record<string, { id: string; available: boolean }>;
   } | null>(null);
+  const [variantMapLoading, setVariantMapLoading] = useState(true);
 
   // Dynamic catalog — loaded from Shopify on mount, falls back to static arrays
   const [catalogShapes, setCatalogShapes] =
@@ -137,7 +138,8 @@ export function TotemConfigurator() {
           setVariantMap(data);
         }
       })
-      .catch(() => {}); // fail silently — UI degrades to showing all options as available
+      .catch(() => {}) // fail silently — UI degrades to showing all options as available
+      .finally(() => setVariantMapLoading(false));
     return () => controller.abort();
   }, []);
 
@@ -264,7 +266,7 @@ export function TotemConfigurator() {
       preset.pieces.every((p) =>
         isColorAvailableForShape(p.shapeId, p.colorId),
       ) &&
-      isFixationColorAvailable(preset.fixationId, "beige") &&
+      isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
       isCableAvailable(preset.cableId)
     );
   }
@@ -973,7 +975,9 @@ export function TotemConfigurator() {
                   type="button"
                   onClick={() => {
                     setPieces([]);
-                    setFixationId(catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id);
+                    setFixationId(
+                      catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id,
+                    );
                     setFixationColorId(TOTEM_COLORS[0].id);
                     setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
                     setSelectedElement(null);
@@ -1195,7 +1199,9 @@ export function TotemConfigurator() {
                       <div>
                         <p className="text-sm">€{presetPrice}</p>
                         {!presetAvailable && (
-                          <span className="text-xs text-muted">Out of stock</span>
+                          <span className="text-xs text-muted">
+                            Out of stock
+                          </span>
                         )}
                       </div>
                       {presetAvailable ? (
@@ -1335,7 +1341,7 @@ export function TotemConfigurator() {
               <ArrowButton
                 label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
-                disabled={isAdding}
+                disabled={isAdding || variantMapLoading}
                 className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
               />
             )}

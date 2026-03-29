@@ -3,12 +3,7 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 
 // 2. Fonts (next/font + font packages)
-import {
-  JetBrains_Mono,
-  Instrument_Sans,
-  Instrument_Serif,
-  Inter_Tight,
-} from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
@@ -23,25 +18,6 @@ import { DEFAULT_METADATA, SITE_URL } from "@/lib/utils/seo";
 import "./globals.css";
 
 /* Google Fonts */
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-instrument-sans",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400", // only weight available
-  style: ["normal", "italic"], // gets you both variants in one import
-  variable: "--font-instrument-serif",
-});
-
 const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-inter-tight",
@@ -58,7 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${jetbrainsMono.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${GeistSans.variable} ${GeistMono.variable} ${interTight.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${interTight.variable}`}
     >
       <body className="grain relative bg-canvas">
         {children}

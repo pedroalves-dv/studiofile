@@ -49,17 +49,17 @@ export default function ComingSoonPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 border-b border-stroke">
           {/* Left — headline + perks */}
           <div className="px-6 md:px-12 py-8 md:py-12 border-b border-stroke md:border-b-0 md:border-r md:border-stroke">
-            <h2 className="font-inter font-semibold tracking-tighter text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
+            <h2 className="font-semibold tracking-tighter text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
               Be first.
               <br />
               Get 30% off.
             </h2>
-            <p className="tracking-tight text-muted text-2xl tracking-tighter leading-6 max-w-sm mb-10">
+            <p className="text-muted text-2xl tracking-tighter leading-6 max-w-sm mb-10">
               Join the list before launch and unlock a 30% founding discount on
               your first order.
             </p>
 
-            <ul className="flex flex-col border-t border-ink pt-4">
+            <ul className="flex flex-col border-t border-stroke pt-4">
               {PERKS.map((perk) => (
                 <li
                   key={perk}
@@ -111,7 +111,7 @@ export default function ComingSoonPage() {
               <span className="text-md tracking-tight text-muted">
                 {f.num}
               </span>
-              <h3 className="font-inter text-ink text-5xl tracking-tight">
+              <h3 className="text-ink text-5xl tracking-tight">
                 {f.title}
               </h3>
               <p className="text-muted text-md tracking-tight">

@@ -20,7 +20,7 @@ function getLineLabel(line: ShopifyCartLine): {
   primary: string;
   secondary?: string;
 } {
-  const part = line.attributes.find((a) => a.key === "Part")?.value;
+  const part = line.attributes.find((a) => a.key === "_part")?.value;
   const productTitle = line.merchandise.product.title;
   const variantTitle = line.merchandise.title;
   if (part === "Shape" || part === "Fixation") {
@@ -65,9 +65,9 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   async function handleEdit() {
     setIsEditing(true);
     try {
-      const shapeLines = lines.filter((l) => lineAttr(l, "Part") === "Shape");
-      const fixLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
-      const cabLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
+      const shapeLines = lines.filter((l) => lineAttr(l, "_part") === "Shape");
+      const fixLine = lines.find((l) => lineAttr(l, "_part") === "Fixation");
+      const cabLine = lines.find((l) => lineAttr(l, "_part") === "Cable");
 
       if (
         shapeLines.length === 0 ||
@@ -225,14 +225,14 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
                   label="Remove bundle"
                   disabled={busy}
                   onClick={() => setConfirming(true)}
-                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed rounded-md"
                 />
                 <ArrowButton
                   type="button"
                   label={isEditing ? "Loading…" : "Edit"}
                   disabled={busy}
                   onClick={handleEdit}
-                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-white text-ink text-sm font-medium tracking-[-0.04em] border border-ink flex justify-center transition-opacity disabled:opacity-40 disabled:cursor-not-allowed rounded-md"
                 />
               </div>
             )}

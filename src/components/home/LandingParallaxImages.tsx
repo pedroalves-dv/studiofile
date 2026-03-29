@@ -295,32 +295,6 @@ export function LandingParallaxImages() {
           ))}
         </h1>
 
-        {/* <div className="w-full flex flex-col gap-3">
-          <div className="flex gap-3 items-start">
-            <div className="bg-ink flex-1 aspect-[3/4] flex items-end p-4">
-              <span className="text-md tracking-[0.2em]  text-canvas/30">
-                01 / Modular
-              </span>
-            </div>
-            <div className="bg-accent mt-10 w-2/5 aspect-[2/3] flex items-end p-3">
-              <span className="text-[9px] tracking-[0.2em]  text-canvas/30">
-                02
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-3 items-end">
-            <div className="bg-stone-200 w-2/5 aspect-[3/4] flex items-end p-3">
-              <span className="text-[9px] tracking-[0.2em]  text-ink/30">
-                03
-              </span>
-            </div>
-            <div className="bg-ink/75 flex-1 aspect-[2/3] flex items-end p-4">
-              <span className="text-[9px] tracking-[0.2em]  text-canvas/20">
-                04
-              </span>
-            </div>
-          </div>
-        </div> */}
       </div>
     </section>
   );

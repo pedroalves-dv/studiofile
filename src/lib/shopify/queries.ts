@@ -1,4 +1,5 @@
 // GraphQL queries for Shopify Storefront API
+import { CART_FIELDS } from './mutations';
 
 // Fragment for product fields used across multiple queries
 const PRODUCT_FRAGMENT = `
@@ -199,46 +200,7 @@ export const GET_COLLECTIONS = `
 export const GET_CART = `
   query getCart($cartId: ID!) {
     cart(id: $cartId) {
-      id
-      checkoutUrl
-      totalQuantity
-      cost {
-        subtotalAmount { amount currencyCode }
-        totalAmount { amount currencyCode }
-        totalTaxAmount { amount currencyCode }
-     
-      }
-      lines(first: 100) {
-        edges {
-          node {
-            id
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                title
-                availableForSale
-                quantityAvailable
-                selectedOptions { name value }
-                price { amount currencyCode }
-                compareAtPrice { amount currencyCode }
-                image { url altText }
-                product { title handle }
-              }
-            }
-            cost {
-              subtotalAmount { amount currencyCode }
-              totalAmount { amount currencyCode }
-            }
-            discountAllocations {
-              discountedAmount { amount currencyCode }
-            }
-            attributes { key value }
-          }
-        }
-      }
-      discountCodes { code applicable }
-      note
+      ${CART_FIELDS}
     }
   }
 `;

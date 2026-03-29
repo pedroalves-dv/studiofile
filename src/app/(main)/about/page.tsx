@@ -99,10 +99,10 @@ export default function AboutPage() {
 
           {/* Right — image placeholder */}
           <div
-            className="aspect-[4/5] bg-stone-100 relative overflow-hidden"
+            className="aspect-[4/5] bg-lighter relative overflow-hidden"
             aria-label="Studio image"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-stone-200 to-stone-300" />
+            <div className="absolute inset-0 bg-gradient-to-br from-stroke to-light" />
             <div className="absolute bottom-6 left-6">
               <span className="text-label text-muted">Paris studio, 2024</span>
             </div>
@@ -168,8 +168,8 @@ export default function AboutPage() {
             </p>
           </div>
           {/* Photo placeholder */}
-          <div className="aspect-[4/5] bg-stone-100 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-stone-200 to-stone-300" />
+          <div className="aspect-[4/5] bg-lighter relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-stroke to-light" />
           </div>
         </div>
       </section>

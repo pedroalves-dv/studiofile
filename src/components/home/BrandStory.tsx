@@ -4,11 +4,6 @@ import { useState, useRef, useCallback } from "react";
 import { motion, useInView } from "motion/react";
 import { HoverWord } from "@/components/ui/HoverWord";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
-};
-
 function AnimatedParagraph({
   children,
   className,

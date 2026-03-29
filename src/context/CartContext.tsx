@@ -89,6 +89,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (state.cartId) {
       localStorage.setItem(CART_ID_KEY, state.cartId);
+    } else {
+      localStorage.removeItem(CART_ID_KEY);
     }
   }, [state.cartId]);
 

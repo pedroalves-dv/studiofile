@@ -122,8 +122,8 @@ export function useCart() {
     }
   };
 
-  const applyDiscount = async (code: string) => {
-    if (!state.cartId) return;
+  const applyDiscount = async (code: string): Promise<boolean> => {
+    if (!state.cartId) return false;
     dispatch({ type: "SET_LOADING", loading: true });
     try {
       const updatedCart = await applyDiscountCode(state.cartId, code);
@@ -131,11 +131,14 @@ export function useCart() {
       const applied = updatedCart.discountCodes.find((d) => d.code === code);
       if (applied?.applicable) {
         toast.success(`Discount "${code}" applied!`);
+        return true;
       } else {
         toast.error(`Discount code "${code}" is not valid.`);
+        return false;
       }
     } catch {
       toast.error("Failed to apply discount code.");
+      return false;
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }
@@ -161,7 +164,7 @@ export function useCart() {
       const updatedCart = await updateCartNote(state.cartId, note);
       dispatch({ type: "SET_CART", cart: updatedCart });
     } catch {
-      // Fail silently for note updates
+      toast.error("Failed to save note.");
     }
   };
 
@@ -226,7 +229,7 @@ export function useCart() {
               key: "_build_label",
               value: `Custom Totem · ${shape?.name ?? piece.shapeId} — ${color?.name ?? piece.colorId}`,
             },
-            { key: "Part", value: "Shape" },
+            { key: "_part", value: "Shape" },
             { key: "_shape_id", value: piece.shapeId },
             { key: "_color_id", value: piece.colorId },
             { key: "_flipped", value: String(piece.flipped) },
@@ -252,7 +255,7 @@ export function useCart() {
             key: "_build_label",
             value: `Custom Totem · ${fixation?.name ?? config.fixationId} — ${fixationColorName}`,
           },
-          { key: "Part", value: "Fixation" },
+          { key: "_part", value: "Fixation" },
           { key: "_fixation_id", value: config.fixationId },
           { key: "_fixation_color_id", value: config.fixationColorId },
           // Full pieces snapshot — lets handleEdit reconstruct order + counts exactly,
@@ -285,7 +288,7 @@ export function useCart() {
             key: "_build_label",
             value: `Custom Totem · ${cable?.name ?? config.cableId} Cable`,
           },
-          { key: "Part", value: "Cable" },
+          { key: "_part", value: "Cable" },
           { key: "_cable_id", value: config.cableId },
         ],
       });

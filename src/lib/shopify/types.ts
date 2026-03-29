@@ -197,6 +197,8 @@ export interface ShopifyPredictiveSearchResult {
     text: string;
     storeId: string;
   }>;
+  pages: never[];
+  articles: never[];
 }
 
 export interface ShopifyPageInfo {

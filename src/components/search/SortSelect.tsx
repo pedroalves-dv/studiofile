@@ -44,8 +44,8 @@ export function SortSelect() {
         id="search-sort"
         value={currentSort}
         onChange={(e) => handleChange(e.target.value)}
-        className="px-3 py-2 border border-border bg-canvas text-ink text-sm focus:outline-none focus:border-accent appearance-none cursor-pointer pr-8"
-        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%238A8580\' d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
+        className="px-3 py-2 border border-stroke bg-canvas text-ink text-sm focus:outline-none focus:border-accent appearance-none cursor-pointer pr-8"
+        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%236B6560\' d=\'M6 8L1 3h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
       >
         {SORT_OPTIONS.map((opt) => (
           <option key={opt.value} value={opt.value}>

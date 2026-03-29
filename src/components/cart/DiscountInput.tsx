@@ -26,10 +26,12 @@ export function DiscountInput() {
   const handleApply = async () => {
     if (!code.trim()) return;
     setIsLoading(true);
-    await applyDiscount(code.trim());
+    const applied = await applyDiscount(code.trim());
     setIsLoading(false);
-    setCode("");
-    setIsExpanded(false);
+    if (applied) {
+      setCode("");
+      setIsExpanded(false);
+    }
   };
 
   if (activeCode) {
@@ -76,7 +78,7 @@ export function DiscountInput() {
             onKeyDown={(e) => e.key === "Enter" && handleApply()}
             placeholder="Enter code"
             aria-label="Discount code"
-            className="flex-1 border border-border px-3 py-1.5 text-base bg-canvas focus:outline-none focus:border-ink transition-colors rounded-md"
+            className="flex-1 border border-stroke px-3 py-1.5 text-base bg-canvas focus:outline-none focus:border-ink transition-colors rounded-md"
           />
           <button
             onClick={handleApply}

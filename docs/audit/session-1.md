@@ -1,6 +1,7 @@
 # Session 1 — Architecture & Data Layer
 
 ## Fixed this session
+
 - [C-2] src/app/api/products/batch/route.ts — no try/catch, added MAX_HANDLES=20 guard + 500 handler
 - [C-3] src/app/api/products/batch/route.ts — no handle limit (fixed alongside C-2)
 - [C-4] src/context/CartContext.tsx + src/hooks/useCart.ts — race condition on first add-to-cart, fixed with pendingCartRef pattern
@@ -12,11 +13,9 @@
 - [I-6] src/lib/utils/cx.ts + is-react-component.ts — dead files, deleted
 - [I-7] src/lib/shopify/policies.ts + format.ts — getShopInfo() and formatHandle() exported but never used, removed
 
-## Deferred — fix in final pass
-### CRITICAL
-- [C-1] src/lib/shopify/collections.ts + src/app/(main)/collections/[handle]/page.tsx — getCollectionWithPagination() returns raw Shopify connection object but products typed as ShopifyProduct[]. Any products.map() throws at runtime. Needs normalization layer like products.ts has.
+## Fixed in final pass
 
-### IMPORTANT
-- [I-1] src/lib/shopify/types.ts + src/app/api/search/predictive/route.ts — ShopifyPredictiveSearchResult missing pages/articles but EMPTY constant includes them
-- [I-8] src/lib/shopify/queries.ts + mutations.ts — CART_FIELDS and GET_CART define same GraphQL fields twice, divergence risk
-- [I-9] src/lib/shopify/mutations.ts — getCart() is a Server Action used for read-only fetching, works but architecturally wrong
+- [C-1] src/lib/shopify/collections.ts — getCollectionWithPagination() raw Shopify connection not normalized. Fixed in Session 4: added ShopifyCollectionRaw interface and normalizeCollection() helper.
+- [I-1] src/lib/shopify/types.ts — ShopifyPredictiveSearchResult missing pages/articles fields; added `pages: never[]; articles: never[]` to match EMPTY constant in predictive route.
+- [I-8] src/lib/shopify/queries.ts — GET_CART duplicated CART_FIELDS inline; replaced inline block with `${CART_FIELDS}` import from mutations.ts.
+- [I-9] src/lib/shopify/mutations.ts — getCart() already lived in cart.ts (not mutations.ts); false positive — no change needed.

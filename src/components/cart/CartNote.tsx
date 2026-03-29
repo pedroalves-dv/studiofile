@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 
@@ -8,6 +8,10 @@ export function CartNote() {
   const { cart, updateNote } = useCart();
   const [isExpanded, setIsExpanded] = useState(false);
   const [note, setNote] = useState(cart?.note ?? "");
+
+  useEffect(() => {
+    setNote(cart?.note ?? "");
+  }, [cart?.note]);
 
   return (
     <div>
@@ -32,7 +36,7 @@ export function CartNote() {
             aria-label="Order note"
             maxLength={500}
             rows={3}
-            className="w-full border border-border px-3 py-2 text-base bg-canvas resize-none focus:outline-none focus:border-ink transition-colors rounded-md"
+            className="w-full border border-stroke px-3 py-2 text-base bg-canvas resize-none focus:outline-none focus:border-ink transition-colors rounded-md"
           />
           <p className="text-base text-muted mt-1 text-right">
             {note.length}/500

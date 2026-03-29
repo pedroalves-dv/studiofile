@@ -10,8 +10,8 @@ export default function GlobalError({
     <html lang="en">
       <body style={{
         fontFamily: 'var(--font-body), system-ui, sans-serif',
-        backgroundColor: '#FAF7F2',
-        color: '#1A1917',
+        backgroundColor: '#FAF5F0',
+        color: '#31302e',
         margin: 0,
         padding: 0,
       }}>
@@ -35,7 +35,7 @@ export default function GlobalError({
           <p style={{
             fontSize: '16px',
             marginBottom: '32px',
-            color: '#6B6561',
+            color: '#6B6560',
             maxWidth: '400px',
           }}>
             An unexpected error occurred. Please try to reload the page.
@@ -44,8 +44,8 @@ export default function GlobalError({
             onClick={reset}
             style={{
               padding: '12px 32px',
-              backgroundColor: '#1A1917',
-              color: '#FAF7F2',
+              backgroundColor: '#31302e',
+              color: '#FAF5F0',
               border: 'none',
               cursor: 'pointer',
               fontSize: '12px',

@@ -104,7 +104,7 @@ export function PredictiveSearch({
                     onClick={() => onSelect(`/products/${product.handle}`)}
                     className={cn(
                       'flex items-center gap-4 w-full px-6 py-3 text-left transition-colors',
-                      activeIndex === idx ? 'bg-stone-50' : 'hover:bg-stone-50'
+                      activeIndex === idx ? 'bg-canvas' : 'hover:bg-canvas'
                     )}
                   >
                     <div className="flex-shrink-0 w-12 h-12 relative bg-stone-100 overflow-hidden">
@@ -147,7 +147,7 @@ export function PredictiveSearch({
                     onClick={() => onSelect(`/collections/${collection.handle}`)}
                     className={cn(
                       'flex items-center gap-4 w-full px-6 py-3 text-left transition-colors',
-                      activeIndex === idx ? 'bg-stone-50' : 'hover:bg-stone-50'
+                      activeIndex === idx ? 'bg-canvas' : 'hover:bg-canvas'
                     )}
                   >
                     <div className="flex-shrink-0 w-12 h-12 relative bg-stone-100 overflow-hidden">
@@ -183,7 +183,7 @@ export function PredictiveSearch({
                     onClick={() => onSelect(`/search?q=${encodeURIComponent(q.text)}`)}
                     className={cn(
                       'flex items-center gap-3 w-full px-6 py-3 text-left transition-colors',
-                      activeIndex === idx ? 'bg-stone-50' : 'hover:bg-stone-50'
+                      activeIndex === idx ? 'bg-canvas' : 'hover:bg-canvas'
                     )}
                   >
                     <Search size={14} className="flex-shrink-0 text-muted" />

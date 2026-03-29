@@ -18,7 +18,7 @@ export default async function OrdersPage() {
 
   return (
     <main className="bg-canvas">
-      <div className="">
+      <div>
         {/* Header */}
         <div className="mb-6">
           <h1 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">

@@ -187,7 +187,7 @@ export function LandingStackSection() {
           // below vh and emerge upward as they animate in
           overflow: "hidden",
         }}
-        className="w-full bg-black"
+        className="w-full bg-ink"
       >
         {/* Subtle grid */}
         <div

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useLayoutEffect, useState } from "react";
+import { cn } from "@/lib/utils/cn";
 
 const NAV_LINKS = [
   { label: "Overview", href: "/account" },
@@ -55,9 +56,10 @@ export function AccountNav() {
             ref={(el) => {
               itemRefs.current[i] = el;
             }}
-            className={`relative text-base font-medium tracking-[-0.04em] px-4 py-2 rounded-lg transition-colors ${
+            className={cn(
+              "relative text-base font-medium tracking-[-0.04em] px-4 py-2 rounded-lg transition-colors",
               isActive ? "text-ink" : "text-light hover:text-ink"
-            }`}
+            )}
           >
             {link.label}
           </Link>

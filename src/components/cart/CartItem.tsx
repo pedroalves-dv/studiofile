@@ -26,7 +26,7 @@ export function CartItem({ line }: CartItemProps) {
   const { merchandise } = line;
 
   return (
-    <div className="flex gap-4 py-4 border-b border-border last:border-b-0">
+    <div className="flex gap-4 py-4 border-b border-stroke last:border-b-0">
       {/* Thumbnail */}
       <div className="flex-shrink-0 w-16 h-16 bg-stone-100 relative overflow-hidden">
         {merchandise.image ? (
@@ -74,9 +74,9 @@ export function CartItem({ line }: CartItemProps) {
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setLocalQuantity((q) => Math.max(0, q - 1))}
+              onClick={() => setLocalQuantity((q) => Math.max(1, q - 1))}
               aria-label="Decrease quantity"
-              className="w-6 h-6 flex items-center justify-center border border-border hover:border-ink transition-colors"
+              className="w-6 h-6 flex items-center justify-center border border-stroke hover:border-ink transition-colors"
             >
               <Minus size={12} />
             </button>
@@ -84,7 +84,7 @@ export function CartItem({ line }: CartItemProps) {
             <button
               onClick={() => setLocalQuantity((q) => q + 1)}
               aria-label="Increase quantity"
-              className="w-6 h-6 flex items-center justify-center border border-border hover:border-ink transition-colors"
+              className="w-6 h-6 flex items-center justify-center border border-stroke hover:border-ink transition-colors"
             >
               <Plus size={12} />
             </button>

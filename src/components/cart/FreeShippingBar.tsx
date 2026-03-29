@@ -17,13 +17,13 @@ export function FreeShippingBar({ cart }: FreeShippingBarProps) {
   const currencyCode = cart.cost.subtotalAmount.currencyCode ?? CURRENCY_CODE;
 
   return (
-    <div className="px-6 py-3 border-b border-border">
+    <div className="px-6 py-3 border-b border-stroke">
       <p className="text-base text-muted mb-2">
         {remaining > 0
           ? `You're ${formatPrice(remaining.toString(), currencyCode)} away from free shipping`
           : "Free shipping unlocked! 🎉"}
       </p>
-      <div className="h-0.5 bg-stone-200 w-full">
+      <div className="h-0.5 bg-stroke w-full">
         <div
           className="h-full bg-success transition-all duration-500"
           style={{ width: `${progress}%` }}

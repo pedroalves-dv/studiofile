@@ -133,7 +133,7 @@ export default async function CollectionPage(props: CollectionPageProps) {
 
       {/* Collection banner */}
       {collection.image && (
-        <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-stone-100">
+        <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-lighter">
           <Image
             src={collection.image.url}
             alt={collection.title}
@@ -171,7 +171,7 @@ export default async function CollectionPage(props: CollectionPageProps) {
           )}
 
           {/* Controls row */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12 pb-6 border-b border-border">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12 pb-6 border-b border-stroke">
             <SortSelect />
             <FilterPanel />
           </div>

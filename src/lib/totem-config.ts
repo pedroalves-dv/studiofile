@@ -64,7 +64,7 @@ export const TOTEM_COLORS: TotemColor[] = [
 
 export const TOTEM_FIXATIONS: TotemFixation[] = [
   { id: "rosette", name: "Rosette", price: 12, height: 24 },
-  { id: "rail", name: "Rail", price: 14, height: 22 }, // placeholder — verify price/height with client
+  { id: "rail", name: "Rail", price: 14, height: 22 }, // TODO before launch: confirm rail price/height with client
   { id: "canopy", name: "Canopy", price: 18, height: 20 },
 ];
 
@@ -74,8 +74,6 @@ export const TOTEM_CABLES: TotemCable[] = [
   { id: "transparent", name: "Transparent", price: 8, hex: "#D0D0D0" },
 ];
 
-// Preset colorIds are temporary mappings until TOTEM_COLORS is expanded:
-//   chalk → beige, stone → beige, black → blue, clay → pink
 export const TOTEM_PRESETS: TotemPreset[] = [
   {
     id: "studio",

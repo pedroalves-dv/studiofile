@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { SimpleIcon } from "@/components/ui/SimpleIcon";
 import { siInstagram, siPinterest, siX, siTiktok } from "simple-icons";
-import { useState } from "react";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
 
 const FOOTER_LINKS = [
@@ -21,14 +20,6 @@ const CONDITIONS_POLICIES_LINKS = [
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement newsletter subscription
-    setEmail("");
-  };
-
   return (
     <footer className="w-full flex flex-col z-10 backdrop-blur-md">
       <div className="px-5 border-t border-stroke pt-8">

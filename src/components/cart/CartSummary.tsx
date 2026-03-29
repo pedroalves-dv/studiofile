@@ -53,7 +53,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       </p>
 
       {/* Total */}
-      <div className="flex items-center justify-between pt-2 border-t border-border -mx-5 px-5">
+      <div className="flex items-center justify-between pt-2 border-t border-stroke -mx-5 px-5">
         <span className="text-3xl tracking-tighter font-semibold">Total</span>
         <span className="text-3xl tracking-tighter font-semibold">
           {formatPrice(total.amount, total.currencyCode)}

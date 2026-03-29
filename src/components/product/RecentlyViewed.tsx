@@ -24,7 +24,7 @@ export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
     fetch(`/api/products/batch?handles=${handles.join(",")}`)
       .then((r) => r.json())
       .then(setProducts)
-      .catch(() => {});
+      .catch((err) => console.error('[RecentlyViewed]', err));
   }, [currentHandle]);
 
   if (products.length < 2) return null;

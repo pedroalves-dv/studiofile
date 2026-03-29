@@ -89,7 +89,7 @@ export default function FaqPage() {
           </div>
 
           {/* Right — Accordion */}
-          <div className="relative flex flex-col w-full items-center rounded-lg bg-white border border-stroke tracking-tight">
+          <div className="relative flex flex-col w-full items-center rounded-lg bg-canvas border border-stroke tracking-tight">
             <AccordionRoot type="single" collapsible className="w-full">
               {steps.map((step, i) => (
                 <AccordionItem
@@ -119,26 +119,6 @@ export default function FaqPage() {
         </div>
       </section>
 
-      {/* <section className="pt-12 section-height">
-        <div className="space-y-8">
-          <div>
-            <h1 className="text-[5.2rem] sm:text-9xl font-inter font-medium tracking-tighter pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[0.9]">
-              No dice, huh?
-            </h1>
-          </div>
-
-          <p className="text-lg text-ink tracking-[-0.04em] leading-tight">
-            We&apos;re here to help. Please reach out to us directly, and
-            we&apos;ll do our best to assist you.
-          </p>
-          <ArrowButton
-            href="/contact"
-            label="Contact Us"
-            className="block w-full text-center py-2.5 bg-white text-ink tracking-wide
-         text-sm rounded-lg border border-stroke"
-          />
-        </div>
-      </section> */}
     </main>
   );
 }
