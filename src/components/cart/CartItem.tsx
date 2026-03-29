@@ -21,7 +21,7 @@ export function CartItem({ line }: CartItemProps) {
       updateItem(line.id, localQuantity);
     }, 500);
     return () => clearTimeout(timer);
-  }, [localQuantity]);
+  }, [localQuantity, line.quantity]);
 
   const { merchandise } = line;
 

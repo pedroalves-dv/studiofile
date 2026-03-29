@@ -43,10 +43,6 @@ const config: Config = {
         khregular: ["var(--font-khregular)", "sans-serif"],
         khbold: ["var(--font-khbold)", "sans-serif"],
       },
-      borderRadius: {
-        DEFAULT: "0px",
-        sm: "2px",
-      },
       letterSpacing: {
         display: "0.08em",
         tight: "-0.02em",
