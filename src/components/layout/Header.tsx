@@ -145,7 +145,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ))}
               </nav>
               {/* _________ Icons _________ */}
-              <div className="flex items-center jsutify-center border-x border-ink">
+              <div className="flex items-center justify-center border-x border-stroke">
                 {/* Account Icon */}
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">

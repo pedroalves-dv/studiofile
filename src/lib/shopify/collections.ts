@@ -3,14 +3,29 @@ import { storefront } from './client';
 import { GET_COLLECTION_BY_HANDLE, GET_COLLECTIONS } from './queries';
 import type { ShopifyCollection, ShopifyProduct } from './types';
 
+// Raw shape of the Shopify API response — products come back as a connection object
+interface ShopifyCollectionRaw extends Omit<ShopifyCollection, 'products'> {
+  products: {
+    edges: Array<{ node: ShopifyProduct }>;
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+  };
+}
+
 interface CollectionResponse {
-  collectionByHandle: ShopifyCollection | null;
+  collectionByHandle: ShopifyCollectionRaw | null;
 }
 
 interface CollectionsResponse {
   collections: {
     edges: Array<{ node: ShopifyCollection; cursor: string }>;
     pageInfo: { hasNextPage: boolean };
+  };
+}
+
+function normalizeCollection(raw: ShopifyCollectionRaw): ShopifyCollection {
+  return {
+    ...raw,
+    products: raw.products.edges.map((e) => e.node),
   };
 }
 
@@ -24,7 +39,8 @@ export async function getCollection(handle: string): Promise<ShopifyCollection |
     { next: { revalidate: 3600 } }
   );
 
-  return response.collectionByHandle;
+  const raw = response.collectionByHandle;
+  return raw ? normalizeCollection(raw) : null;
 }
 
 /**
@@ -41,7 +57,8 @@ export async function getCollectionWithPagination(
     { next: { revalidate: 3600 } }
   );
 
-  return response.collectionByHandle;
+  const raw = response.collectionByHandle;
+  return raw ? normalizeCollection(raw) : null;
 }
 
 /**

@@ -111,10 +111,10 @@ export default function ComingSoonPage() {
               <span className="text-md tracking-tight text-muted">
                 {f.num}
               </span>
-              <h3 className="font-inter text-ink text-5xl tracking tight">
+              <h3 className="font-inter text-ink text-5xl tracking-tight">
                 {f.title}
               </h3>
-              <p className="text-muted text-md tracking tight ">
+              <p className="text-muted text-md tracking-tight">
                 {f.body}
               </p>
             </div>

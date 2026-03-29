@@ -8,12 +8,18 @@ export function ForgotPasswordForm() {
   const [isPending, startTransition] = useTransition()
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError(null)
     startTransition(async () => {
-      await sendPasswordReset(email)
-      setSubmitted(true)
+      try {
+        await sendPasswordReset(email)
+        setSubmitted(true)
+      } catch {
+        setError('Something went wrong. Please try again.')
+      }
     })
   }
 
@@ -57,6 +63,10 @@ export function ForgotPasswordForm() {
       >
         {isPending ? 'Sending…' : 'Send reset link'}
       </button>
+
+      {error && (
+        <p className="text-sm text-error">{error}</p>
+      )}
 
       <Link
         href="/account/login"

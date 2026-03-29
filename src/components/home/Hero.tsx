@@ -1,6 +1,6 @@
 "use client";
 
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion } from "motion/react";
 import { HeroContent } from "@/components/home/HeroContent";
 
 function ParallaxBox({
