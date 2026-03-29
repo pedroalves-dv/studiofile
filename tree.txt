@@ -10,14 +10,19 @@
 │   │   ├── SESSION_TEMPLATE_BUILD.md
 │   │   ├── SESSION_TEMPLATE_RECONCILE.md
 │   │   └── new.md
-│   ├── superpowers
-│   │   ├── plans
-│   │   │   └── 2026-03-26-hero-sticky-columns.md
-│   │   └── specs
-│   │       └── 2026-03-26-hero-redesign-design.md
-│   ├── totem-phase1.md
-│   ├── totem-phase2.md
-│   └── totem-phase3.md
+│   └── superpowers
+│       ├── plans
+│       │   ├── 2026-03-26-hero-sticky-columns.md
+│       │   ├── 2026-03-27-font-normalization.md
+│       │   ├── 2026-03-27-sign-out-toast-menu-exclusivity.md
+│       │   ├── 2026-03-28-totem-cart-bundle-ux.md
+│       │   └── 2026-03-28-totem-oos-polish.md
+│       └── specs
+│           ├── 2026-03-26-hero-redesign-design.md
+│           ├── 2026-03-27-font-normalization-design.md
+│           ├── 2026-03-27-sign-out-toast-menu-exclusivity-design.md
+│           ├── 2026-03-28-totem-cart-bundle-ux.md
+│           └── 2026-03-28-totem-oos-polish-design.md
 ├── middleware.ts
 ├── next-env.d.ts
 ├── next.config.ts
@@ -128,7 +133,9 @@
 │   │   │   │   │   └── route.ts
 │   │   │   │   └── products
 │   │   │   │       └── route.ts
-│   │   │   └── totem-checkout
+│   │   │   ├── totem-catalog
+│   │   │   │   └── route.ts
+│   │   │   └── totem-variants
 │   │   │       └── route.ts
 │   │   ├── apple-icon.tsx
 │   │   ├── error.tsx
@@ -253,7 +260,6 @@
 │   └── lib
 │       ├── constants.ts
 │       ├── shopify
-│       │   ├── admin.ts
 │       │   ├── auth.ts
 │       │   ├── cart.ts
 │       │   ├── client.ts
@@ -263,18 +269,16 @@
 │       │   ├── products.ts
 │       │   ├── queries.ts
 │       │   ├── search.ts
+│       │   ├── totem-catalog.ts
+│       │   ├── totem-variants.ts
 │       │   └── types.ts
 │       ├── totem-config.ts
-│       ├── totem-variant-map.ts
 │       ├── utils
 │       │   ├── cn.ts
-│       │   ├── cx.ts
 │       │   ├── format.ts
-│       │   ├── is-react-component.ts
 │       │   ├── params.ts
 │       │   ├── seo.ts
 │       │   └── uid.ts
-│       ├── utils.ts
 │       └── virtual-products.ts
 ├── tailwind.config.ts
 ├── tasks
@@ -284,4 +288,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-65 directories, 220 files
+66 directories, 223 files
