@@ -89,19 +89,26 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       // Fall back to per-line reconstruction for bundles added before this change.
       const piecesConfigStr = lineAttr(fixLine, "_pieces_config");
       let pieces: TotemPiece[];
+      let reconstructedFromSnapshot = false;
       if (piecesConfigStr) {
-        const raw = JSON.parse(piecesConfigStr) as Array<{
-          shapeId: string;
-          colorId: string;
-          flipped: boolean;
-        }>;
-        pieces = raw.map((p) => ({
-          uid: generateUid(),
-          shapeId: p.shapeId,
-          colorId: p.colorId,
-          flipped: p.flipped,
-        }));
-      } else {
+        try {
+          const raw = JSON.parse(piecesConfigStr) as Array<{
+            shapeId: string;
+            colorId: string;
+            flipped: boolean;
+          }>;
+          pieces = raw.map((p) => ({
+            uid: generateUid(),
+            shapeId: p.shapeId,
+            colorId: p.colorId,
+            flipped: p.flipped,
+          }));
+          reconstructedFromSnapshot = true;
+        } catch {
+          // fall through to per-line reconstruction
+        }
+      }
+      if (!reconstructedFromSnapshot) {
         pieces = shapeLines.flatMap((l) =>
           Array.from({ length: l.quantity }, () => ({
             uid: generateUid(),
@@ -117,12 +124,11 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
         window.dispatchEvent(new StorageEvent("storage", { key: k, newValue: v }));
       };
 
+      await removeBundleItems(lines.map((l) => l.id));
       notify("sf-totem-pieces", JSON.stringify(pieces));
       notify("sf-totem-fixation", JSON.stringify(lineAttr(fixLine, "_fixation_id")));
       notify("sf-totem-fixation-color", JSON.stringify(lineAttr(fixLine, "_fixation_color_id")));
       notify("sf-totem-cable", JSON.stringify(lineAttr(cabLine, "_cable_id")));
-
-      await removeBundleItems(lines.map((l) => l.id));
       closeCart();
       router.push("/products/totem");
     } catch {
