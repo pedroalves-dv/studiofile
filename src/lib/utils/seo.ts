@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import type { ShopifyProduct, ShopifyCollection } from '@/lib/shopify/types'
 import { truncate } from '@/lib/utils/format'
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.com'
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.fr'
 const TWITTER_HANDLE = '@studiofile'
 
 export const DEFAULT_METADATA: Metadata = {

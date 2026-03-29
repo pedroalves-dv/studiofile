@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.com'
+// Must be set in Vercel env vars — fallback is canonical domain
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.fr'
 
 export default function robots(): MetadataRoute.Robots {
   return {

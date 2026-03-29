@@ -35,6 +35,23 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' va.vercel-scripts.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: cdn.shopify.com",
+              "font-src 'self'",
+              "connect-src 'self' *.myshopify.com va.vercel-scripts.com",
+              "frame-ancestors 'none'",
+            ].join("; "),
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -55,9 +72,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  async rewrites() {
-    return { beforeFiles: [], afterFiles: [], fallback: [] };
-  },
 };
 
 export default nextConfig;
