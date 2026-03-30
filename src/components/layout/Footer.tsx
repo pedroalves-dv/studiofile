@@ -21,10 +21,10 @@ const CONDITIONS_POLICIES_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="w-full flex flex-col bg-canvas/20 backdrop-blur-md z-10">
-      <div className="px-5 border-t border-light pt-1">
+    <footer className="w-full flex flex-col bg-canvas/20 backdrop-blur-[0.4rem] sm:backdrop-blur-md z-10">
+      <div className="px-5 border-t border-light pt-3">
         {/* Main footer content */}
-        <div className="w-full flex flex-col items-center pt-2 justify-between ">
+        <div className="w-full flex flex-col items-center justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_minmax(0,380px)] md:grid-cols-[auto_auto_minmax(0,380px)] xl:grid-cols-[1fr_1fr_1fr_minmax(0,380px)]">
             {/* Column 1: Wordmark + Tagline */}
             <div className="hidden sm:block sm:order-3 md:hidden xl:block xl:order-1 text-base sm:text-lg font-medium text-ink tracking-[-0.04em] pb-8">
@@ -126,7 +126,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="w-full sm:h-[15rem] md:h-[22rem] pt-20 pb-4 sm:pb-3"></div>
+        <div className="w-full h-[7rem] sm:h-[15rem] md:h-[22rem] pt-20 pb-4 sm:pb-3"></div>
       </div>
     </footer>
   );

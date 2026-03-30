@@ -11,6 +11,8 @@ const config: Config = {
         "1xs": "0.65rem",
         "10xl": "10rem",
         "11xl": "12rem",
+        "12xl": "14rem",
+        "13xl": "16rem",
       },
       colors: {
         black: "var(--color-black)",
