@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 
 // 2. Fonts (next/font + font packages)
-import { Inter_Tight } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
@@ -17,13 +16,6 @@ import { DEFAULT_METADATA, SITE_URL } from "@/lib/utils/seo";
 // 5. Styles — always last
 import "./globals.css";
 
-/* Google Fonts */
-const interTight = Inter_Tight({
-  subsets: ["latin"],
-  variable: "--font-inter-tight",
-  // no weight needed — it's variable
-});
-
 export const metadata: Metadata = {
   ...DEFAULT_METADATA,
   manifest: "/manifest.json",
@@ -34,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${GeistSans.variable} ${GeistMono.variable} ${interTight.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <body className="grain relative bg-canvas">
         {children}

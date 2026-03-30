@@ -526,7 +526,7 @@ export function TotemConfigurator() {
   return (
     <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
       {/* ── Product title — mobile only, above viewer ── */}
-      <h1 className="sm:hidden text-left text-5xl font-display tracking-tight mb-2">
+      <h1 className="sm:hidden text-left text-4xl font-display tracking-tight mb-2">
         TOTEM
       </h1>
 
@@ -1083,7 +1083,7 @@ export function TotemConfigurator() {
 
       {/* ── Section B: Shape catalog with mode tabs ── */}
       <div className="flex flex-col gap-6">
-        <h1 className="hidden sm:block text-left sm:text-8xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
+        <h1 className="hidden sm:block text-left sm:text-7xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
           TOTEM
         </h1>
         <div className="flex flex-col gap-4">

@@ -70,22 +70,27 @@ export default function FaqPage() {
   ];
   return (
     <main id="main-content" className="px-5 section-height">
-      <section className="pt-12 sm:pt-[var(--header-height)]">
+      <section className="pt-12 sm:pt-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
-          <div className="space-y-8 md:sticky md:top-28">
-            <div className="">
+          <div className="space-y-8 xl:sticky xl:top-28">
+            <div className="h-full flex flex-col items-start justify-center space-y-8">
               <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
                 FAQ
               </h1>
-            </div>
 
-            <p className="text-lg text-ink tracking-[-0.02em] leading-tight">
-              We&apos;ve compiled answers to our most frequently asked questions
-              here. <br />
-              If you can&apos;t find what you&apos;re looking for, feel free to
-              reach out to us directly.
-            </p>
+              <p className="text-lg text-ink tracking-[-0.02em] leading-tight">
+                We&apos;ve compiled answers to our most frequently asked
+                questions here. <br />
+                If you can&apos;t find what you&apos;re looking for, feel free
+                to reach out to us directly.
+              </p>
+              <ArrowButton
+                href="/contact"
+                label="Contact us"
+                className="w-fit pt-12 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.03em] rounded-md  border border-ink  disabled:opacity-50"
+              />
+            </div>
           </div>
 
           {/* Right — Accordion */}
@@ -118,7 +123,6 @@ export default function FaqPage() {
           </div>
         </div>
       </section>
-
     </main>
   );
 }

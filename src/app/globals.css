@@ -125,9 +125,10 @@
     --color-black: #141414;
     --color-ink: #31302e;
     /* --color-canvas: #f0f5fa; */
-    --color-canvas: 250 245 240;
-    --color-accent: #ffaaff;
-    --color-tamed: #ebc7c5;
+    /* --color-canvas: 250 245 240; */
+    --color-canvas: 248 248 240;
+    --color-accent: #ffaaaa;
+    --color-tamed: #ff8c21;
     --color-muted: #6b6560;
     /* --color-light: #b4b0ac; */
     --color-light: #c2bfbc;
@@ -177,10 +178,10 @@
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-body);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    border-right: 1px solid var(--color-ink);
+    border-right: 1px solid var(--color-light);
   }
 
   /* Headings */
@@ -286,7 +287,7 @@
     height: 1px;
     padding: 0;
     margin: -1px;
-    overflow: hidden;
+    /* overflow: hidden; */
     clip: rect(0, 0, 0, 0);
     border: 0;
   }
@@ -297,7 +298,7 @@
     height: 1px;
     padding: 0;
     margin: -1px;
-    overflow: hidden;
+    /* overflow: hidden; */
     clip: rect(0, 0, 0, 0);
     border: 0;
   }
@@ -308,7 +309,7 @@
     height: auto;
     padding: 1rem;
     margin: 0;
-    overflow: visible;
+    /* overflow: visible; */
     clip: auto;
     top: 1rem;
     left: 1rem;

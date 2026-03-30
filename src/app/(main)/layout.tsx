@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
+import { FooterBackground } from "@/components/layout/FooterBackground";
 
 export default async function MainLayout({
   children,
@@ -22,8 +23,8 @@ export default async function MainLayout({
         <ToastProvider>
           <SmoothScroll>
             <Header isLoggedIn={!!token} />
-            <div className="min-h-dvh"> {children}</div>
-
+            <div className=""> {children}</div>
+            <FooterBackground />
             <Footer />
 
             <CartDrawer />

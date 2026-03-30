@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
-  // SVG as React components (Turbopack config)
   turbopack: {
     rules: {
       "*.svg": {
@@ -13,7 +14,6 @@ const nextConfig: NextConfig = {
     },
   },
 
-  // Image optimization for Shopify CDN
   images: {
     remotePatterns: [
       {
@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' va.vercel-scripts.com",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} va.vercel-scripts.com`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: cdn.shopify.com",
               "font-src 'self'",
@@ -71,7 +71,6 @@ const nextConfig: NextConfig = {
       { source: "/shop/all", destination: "/shop", permanent: true },
     ];
   },
-
 };
 
 export default nextConfig;

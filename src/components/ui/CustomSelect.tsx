@@ -29,7 +29,7 @@ export function CustomSelect({
   return (
     <div className="">
       {label && (
-        <label htmlFor={id} className="px-1 block text-sm mb-1 text-light">
+        <label htmlFor={id} className="px-1 block text-base mb-1 text-light">
           {label}
         </label>
       )}
@@ -60,7 +60,7 @@ export function CustomSelect({
         {isOpen && (
           <ul
             role="listbox"
-            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-sm"
+            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-base"
           >
             {options.map((option) => {
               const isDisabled = disabledOptions?.includes(option) ?? false;

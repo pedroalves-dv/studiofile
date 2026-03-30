@@ -74,9 +74,7 @@ function Card({
       >
         {card.id}
       </span>
-      <p
-        className={`text-md font-medium tracking-tight  ${textColor}`}
-      >
+      <p className={`text-md font-medium tracking-tight  ${textColor}`}>
         {card.label}
       </p>
     </motion.div>
@@ -115,7 +113,7 @@ function TextBlock({
       className="flex flex-col gap-4 pt-6"
     >
       <p className="text-md tracking  text-muted">01 / Concept</p>
-      <h2 className="font-inter text-ink text-9xl font-semibold leading-[100px] tracking-[-5px] ligatures">
+      <h2 className="text-ink text-9xl font-semibold leading-[100px] tracking-[-5px] ligatures">
         Light,
         <br />
         stacked.
@@ -294,7 +292,6 @@ export function LandingParallaxImages() {
             <span key={i}>{letter}</span>
           ))}
         </h1>
-
       </div>
     </section>
   );

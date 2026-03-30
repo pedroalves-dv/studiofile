@@ -24,9 +24,12 @@ export function Input({
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="w-full border border-stroke rounded-lg p-1 bg-canvas">
+    <div className="w-full">
       {label && (
-        <label htmlFor={inputId} className="px-1 block text-sm mb-1 text-light">
+        <label
+          htmlFor={inputId}
+          className="px-1 block text-base mb-1 text-light"
+        >
           {label}
         </label>
       )}

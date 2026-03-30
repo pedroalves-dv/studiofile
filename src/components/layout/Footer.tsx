@@ -21,8 +21,8 @@ const CONDITIONS_POLICIES_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="w-full flex flex-col z-10 backdrop-blur-md">
-      <div className="px-5 border-t border-stroke pt-8">
+    <footer className="w-full flex flex-col bg-canvas/20 backdrop-blur-md z-10">
+      <div className="px-5 border-t border-light pt-1">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center pt-2 justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_minmax(0,380px)] md:grid-cols-[auto_auto_minmax(0,380px)] xl:grid-cols-[1fr_1fr_1fr_minmax(0,380px)]">
@@ -70,7 +70,7 @@ export function Footer() {
               <div className="pt-1">
                 {/* Social Links */}
 
-                <div className="flex flex-row justify-between pb-12 px-1">
+                <div className="flex flex-row justify-between pb-14 px-0.5">
                   <a
                     href="#"
                     className="transition-colors"
@@ -78,7 +78,7 @@ export function Footer() {
                   >
                     <SimpleIcon
                       icon={siInstagram}
-                      size={28}
+                      size={22}
                       className="fill-ink hover:fill-light transition-colors"
                       ariaLabel="Instagram"
                     />
@@ -86,7 +86,7 @@ export function Footer() {
                   <a href="#" className="transition-colors" aria-label="Xt">
                     <SimpleIcon
                       icon={siX}
-                      size={28}
+                      size={22}
                       className="fill-ink hover:fill-light  transition-colors"
                       ariaLabel="Xt"
                     />
@@ -94,7 +94,7 @@ export function Footer() {
                   <a href="#" className="transition-colors" aria-label="TikTok">
                     <SimpleIcon
                       icon={siTiktok}
-                      size={28}
+                      size={22}
                       className="fill-ink hover:fill-light transition-colors"
                       ariaLabel="TikTok"
                     />
@@ -106,7 +106,7 @@ export function Footer() {
                   >
                     <SimpleIcon
                       icon={siPinterest}
-                      size={28}
+                      size={22}
                       className="fill-ink hover:fill-light transition-colors"
                       ariaLabel="Pinterest"
                     />
@@ -115,7 +115,7 @@ export function Footer() {
 
                 {/* Newsletter */}
                 <div className="">
-                  <h3 className="text-base sm:text-lg/5 tracking-[-0.03em] font-medium text-ink leading-tight pb-3">
+                  <h3 className="text-base sm:text-lg/6 tracking-[-0.04em] font-medium text-light leading-tight pb-4">
                     Get updates and special offers on new products. <br /> No
                     weekly spam.
                   </h3>
@@ -126,18 +126,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="w-full pt-28 pb-4 sm:pb-3">
-          <div
-            className="w-full bg-white"
-            style={{
-              aspectRatio: "22.203955 / 4.0943561",
-              maskImage: "url(/images/logo/newlogov1.svg)",
-              maskSize: "100% 100%",
-              maskRepeat: "no-repeat",
-              maskPosition: "center",
-            }}
-          />
-        </div>
+        <div className="w-full sm:h-[15rem] md:h-[22rem] pt-20 pb-4 sm:pb-3"></div>
       </div>
     </footer>
   );

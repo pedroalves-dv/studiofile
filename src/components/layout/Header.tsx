@@ -109,25 +109,21 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       )}
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] sm:h-[var(--header-height)] bg-canvas">
-        <div className="h-full pl-5 border-b border-ink">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
+        <div className="h-full px-5 border-b sm:border-r border-light">
           {/* 2-column grid: logo left, nav+icons right */}
-          <div className="h-full grid grid-cols-2 items-end ">
+          <div className="h-full grid grid-cols-2 items-end pb-3">
             {/* Logo */}
-            <Link
-              href="/"
-              aria-label="Studiofile — Home"
-              className="group justify-self-start pb-2.5"
-            >
-              <Logo className="h-7 w-30 fill-current text-ink group-hover:text-light transition-colors" />
+            <Link href="/" aria-label="Studiofile — Home" className="group ">
+              <Logo className="h-6 w-30 fill-current text-ink group-hover:text-light transition-colors mb-0.5" />
               {/* <LogoHover className="h-7 w-auto" /> */}
             </Link>
 
             {/* _________ Nav + Icons _________ */}
-            <div className="h-full flex justify-self-end">
+            <div className="h-full flex justify-self-end items-end">
               {/* Desktop Nav */}
               <nav
-                className="h-full hidden md:flex md:gap-8 lg:gap-16 items-end mr-8 lg:mr-36 pb-1"
+                className="hidden md:flex md:gap-8 lg:gap-20 items-end h-full mr-16 lg:mr-36"
                 aria-label="Main navigation"
               >
                 {NAV_LINKS.map((link) => (
@@ -135,7 +131,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200",
+                      "flex items-end",
+                      "font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200 leading-none",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}
@@ -145,7 +142,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ))}
               </nav>
               {/* _________ Icons _________ */}
-              <div className="flex items-center justify-center border-x border-stroke">
+              {/* <div className="flex items-center justify-center border-x border-ink"> */}
+              <div className="flex gap-6 ">
                 {/* Account Icon */}
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">
@@ -159,7 +157,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         }
                       }}
                       className={cn(
-                        "relative h-full flex w-18 justify-center items-center py-3 px-5",
+                        "relative h-full flex items-end",
                         isAccountOpen && "bg-white",
                       )}
                       aria-label="My account"
@@ -173,11 +171,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     >
                       <UserRoundCheckIcon
                         ref={userRoundCheckIconRef}
-                        size={27}
+                        size={28}
                       />
                     </button>
                     {isAccountOpen && (
-                      <div className="absolute top-[53px] right-[-1px] min-w-[200px] bg-white border border-ink z-50 flex flex-col">
+                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] bg-white border border-ink z-50 flex flex-col">
                         <div className="p-1">
                           {[
                             { label: "My Account", href: "/account" },
@@ -224,12 +222,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ) : (
                   <Link
                     href="/account/login"
-                    className="relative h-full flex w-18 justify-center items-center py-3 px-5"
+                    className="relative h-full flex"
                     aria-label="Sign in"
                     onMouseEnter={() => userIconRef.current?.startAnimation()}
                     onMouseLeave={() => userIconRef.current?.stopAnimation()}
                   >
-                    <UserIcon ref={userIconRef} size={27} />
+                    <UserIcon ref={userIconRef} size={28} />
                   </Link>
                 )}
 
@@ -245,10 +243,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       setIsAccountOpen(false);
                     }
                   }}
-                  className={cn(
-                    "h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
-                    isOpen && "bg-white",
-                  )}
+                  // className={cn(
+                  //   "h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
+                  //   isOpen && "bg-white",
+                  // )}
+                  className={cn("h-full flex relative", isOpen && "bg-white")}
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -277,7 +276,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "md:hidden h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
+                    "md:hidden h-full flex relative",
                     (isMobileMenuOpen || isClosingMenu) && "bg-white",
                   )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}

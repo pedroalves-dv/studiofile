@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 
 export const metadata: Metadata = {
@@ -58,12 +56,12 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="px-5 section-height ">
+    <main id="main-content" className="px-5 section-height">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="border-b border-stroke pb-12 sm:-mr-5">
+      <section className="pt-12 sm:pt-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
-          <div className="pt-12 sm:pt-[var(--header-height)] space-y-6 md:sticky md:top-0">
+          <div className="md:sticky md:top-28 md:self-start space-y-6 pb-24">
             {/* Left — info */}
 
             <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
@@ -99,28 +97,21 @@ export default function AboutPage() {
 
           {/* Right — image placeholder */}
           <div
-            className="aspect-[4/5] bg-lighter relative overflow-hidden"
+            className="aspect-[4/5] bg-lighter relative overflow-hidden -mx-5 -mt-12 sm:-mt-14"
             aria-label="Studio image"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-stroke to-light" />
-            <div className="absolute bottom-6 left-6">
-              <span className="text-label text-muted">Paris studio, 2024</span>
-            </div>
-          </div>
+          ></div>
         </div>
       </section>
 
       {/* ─── Studio Values / Process ─── */}
-      <section className="border-b border-stroke pt-[var(--header-height)] pb-8 section-height">
+      <section className="-mx-5 pt-12 sm:pt-14 border-t border-stroke">
         <h1 className="px-5 text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
           What we stand for
         </h1>
-        <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40">
+        <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40 pb-24">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
-              <h3 className="text-4xl mt-8 tracking-tighter">
-                {value.title}
-              </h3>
+              <h3 className="text-4xl mt-8 tracking-tighter">{value.title}</h3>
               <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
                 {value.description}
               </p>
@@ -129,9 +120,7 @@ export default function AboutPage() {
           {PROCESS_STEPS.map((step) => (
             <div key={step.number} className="space-y-4">
               {/* <span className="text-4xl tracking-tight">{step.number}</span> */}
-              <h3 className="text-4xl mt-8 tracking-tighter">
-                {step.title}
-              </h3>
+              <h3 className="text-4xl mt-8 tracking-tighter">{step.title}</h3>
               <p className="text-lg text-ink tracking-[-0.03em] leading-tight">
                 {step.description}
               </p>
@@ -141,10 +130,10 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Team / Studio ─── */}
-      <section className="border-b border-stroke pb-8 section-height">
+      <section className="-mx-5 pt-12 sm:pt-14 border-t border-stroke">
         <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
-          <div className="pt-[var(--header-height)] space-y-6 md:sticky md:top-28 pr-12">
+          <div className="space-y-6 md:sticky md:top-28 pr-12 pb-24">
             <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The team
             </h1>
@@ -168,16 +157,17 @@ export default function AboutPage() {
             </p>
           </div>
           {/* Photo placeholder */}
-          <div className="aspect-[4/5] bg-lighter relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-stroke to-light" />
-          </div>
+          <div
+            className="aspect-[4/5] bg-lighter relative overflow-hidden -mx-5 -mt-12 sm:-mt-14"
+            aria-label="Photo of Alex Dumont"
+          ></div>
         </div>
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="section-centered ">
+      <section className="section-centered border-t border-stroke -mx-5">
         <div className="text-center">
-          <h2 className="font-display text-7xl md:text-10xl leading-tight pb-8 ">
+          <h2 className="font-display text-7xl md:text-9xl tracking-tighter leading-tight pb-8 ">
             TOTEM
           </h2>
 

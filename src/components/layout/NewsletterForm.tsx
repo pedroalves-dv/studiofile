@@ -21,7 +21,7 @@ export function NewsletterForm() {
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2.5 bg-transparent text-ink text-sm tracking-tight placeholder-light focus:outline-none"
+          className="w-full px-4 py-2.5 bg-transparent text-ink text-base tracking-[-0.04em] placeholder-light focus:outline-none"
           required
         />
       </div>
@@ -29,7 +29,7 @@ export function NewsletterForm() {
       <ArrowButton
         label="Subscribe"
         type="submit"
-        className="w-full mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink justify-center disabled:opacity-50"
+        className="w-full mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.03em] rounded-md flex items-center border border-ink justify-center disabled:opacity-50"
       />
     </form>
   );

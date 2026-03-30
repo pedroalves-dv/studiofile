@@ -78,7 +78,7 @@ export function ContactForm() {
   // if (submitted) {
   //   return (
   //     <div className="space-y-6">
-  //       <h2 className="text-[5.2rem] font-medium font-inter sm:text-9xl tracking-[-0.05em] pb-8 sm:leading-[0.9] leading-[0.9]">
+  //       <h2 className="text-[5.2rem] font-medium  sm:text-9xl tracking-[-0.05em] pb-8 sm:leading-[0.9] leading-[0.9]">
   //         Thank you.
   //       </h2>
   //       <p className="text-ink text-lg tracking-[-0.04em] leading-tight">
@@ -195,10 +195,10 @@ export function ContactForm() {
       />
 
       {/* Message */}
-      <div className="w-full border border-stroke rounded-lg p-1 bg-canvas ">
+      <div className="w-full">
         <label
           htmlFor="contact-message"
-          className="px-1 block text-sm mb-1 text-light"
+          className="px-1 block text-base mb-1 text-light"
         >
           Message
         </label>
@@ -222,7 +222,7 @@ export function ContactForm() {
         type="submit"
         label={submitting ? "Sending…" : "Send message"}
         disabled={submitting}
-        className="w-full mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md  border border-ink  disabled:opacity-50"
+        className="w-full mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.03em] rounded-md  border border-ink  disabled:opacity-50"
       />
     </form>
   );
