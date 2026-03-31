@@ -23,7 +23,7 @@ const CARDS = [
   { id: "04", bg: "bg-ink/75", label: "Paris" },
 ] as const;
 
-const HEADER_H = 64;
+const HEADER_H = 56;
 
 // ── Scroll-animated card ─────────────────────────────────────────────
 function Card({
@@ -60,7 +60,7 @@ function Card({
     <motion.div
       style={{
         position: "absolute",
-        right: 48,
+        right: 0,
         top: HEADER_H,
         y,
         width: "clamp(220px, 38vw, 540px)",
@@ -104,21 +104,18 @@ function TextBlock({
     <motion.div
       style={{
         position: "absolute",
-        left: 48,
+        left: 20,
         top: HEADER_H,
         y,
-        width: "clamp(180px, 25vw, 320px)",
+        width: "35vw",
         zIndex: 10,
       }}
       className="flex flex-col gap-4 pt-6"
     >
-      <p className="text-md tracking  text-muted">01 / Concept</p>
-      <h2 className="text-ink text-9xl font-semibold leading-[100px] tracking-[-5px] ligatures">
-        Light,
-        <br />
-        stacked.
+      <h2 className="text-light text-8xl font-semibold leading-[0.9] tracking-[-0.05em] ligatures pb-8">
+        The<span className="text-ink"> modular lamp</span> that adapts to you.
       </h2>
-      <p className="text-muted text-md tracking-tight leading-5">
+      <p className="text-muted text-lg tracking-tight leading-5">
         A modular ceiling system built from 3D-printed shapes. Stack as many as
         you want, in any order.
       </p>
@@ -272,7 +269,7 @@ export function LandingParallaxImages() {
   }, []);
 
   return (
-    <section className="bg-canvas">
+    <section className="bg-canvas section-height relative">
       {/* Desktop: full scroll sequence */}
       <div className="hidden md:block">
         {mounted ? (

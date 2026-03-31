@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main id="main-content" className="px-5 section-height tracking-tight">
-      <section className="pt-12 sm:pt-14">
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start pb-24">
+      <section className="py-12 sm:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
-          <div className="space-y-6 xl:sticky xl:top-28 ">
-            <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap">
+          <div className="space-y-6">
+            <h1 className="text-7xl sm:text-8xl font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem] whitespace-nowrap">
               Let&apos;s talk
             </h1>
 

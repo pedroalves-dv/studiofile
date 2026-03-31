@@ -37,7 +37,7 @@ const PERKS = [
 
 export default function ComingSoonPage() {
   return (
-    <div className="bg-canvas">
+    <div className="bg-canvas h-full">
       {/* Logo-only fixed header */}
       <LandingMinimalHeader />
 
@@ -45,11 +45,11 @@ export default function ComingSoonPage() {
       <LandingParallaxImages />
 
       {/* 3. Offer + form */}
-      <section className="bg-canvas border-t border-stroke">
-        <div className="grid grid-cols-1 md:grid-cols-2 border-b border-stroke">
+      <section className="border-t border-light h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 border-b border-light">
           {/* Left — headline + perks */}
-          <div className="px-6 md:px-12 py-8 md:py-12 border-b border-stroke md:border-b-0 md:border-r md:border-stroke">
-            <h2 className="font-semibold tracking-tighter text-ink text-[clamp(2.8rem,6vw,5rem)] leading-[0.92] mb-6">
+          <div className="px-6 md:px-12 py-8 md:py-12 border-b border-light md:border-b-0 md:border-r md:border-light">
+            <h2 className="font-semibold tracking-[-0.07em] text-ink text-8xl leading-[0.9] mb-6 ligatures">
               Be first.
               <br />
               Get 30% off.
@@ -59,7 +59,7 @@ export default function ComingSoonPage() {
               your first order.
             </p>
 
-            <ul className="flex flex-col border-t border-stroke pt-4">
+            <ul className="flex flex-col pt-4">
               {PERKS.map((perk) => (
                 <li
                   key={perk}
@@ -101,22 +101,18 @@ export default function ComingSoonPage() {
         </div>
 
         {/* Features strip */}
-        <div className="grid grid-cols-1 md:grid-cols-3 border-b border-stroke">
+        <div className="grid grid-cols-1 md:grid-cols-3 border-b border-light mb-8">
           {FEATURES.map((f, i) => (
             <div
               key={f.num}
               className={`px-6 md:px-10 py-4 pb-12 flex flex-col gap-3
-                ${i < FEATURES.length - 1 ? "border-b border-stroke md:border-b-0 md:border-r md:border-stroke" : ""}`}
+                ${i < FEATURES.length - 1 ? "border-b border-light md:border-b-0 md:border-r md:border-light" : ""}`}
             >
-              <span className="text-md tracking-tight text-muted">
+              <span className="text-md tracking-tighter text-muted">
                 {f.num}
               </span>
-              <h3 className="text-ink text-5xl tracking-tight">
-                {f.title}
-              </h3>
-              <p className="text-muted text-md tracking-tight">
-                {f.body}
-              </p>
+              <h3 className="text-ink text-5xl tracking-tighter">{f.title}</h3>
+              <p className="text-muted text-md tracking-tight">{f.body}</p>
             </div>
           ))}
         </div>
