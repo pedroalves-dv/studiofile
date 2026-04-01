@@ -19,6 +19,7 @@ export function useScrollSnap({
       if (timerRef.current) clearTimeout(timerRef.current);
 
       timerRef.current = setTimeout(() => {
+        // if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         // Read the CSS variable once per snap attempt
         const rootFontSize = parseFloat(
           getComputedStyle(document.documentElement).fontSize,
