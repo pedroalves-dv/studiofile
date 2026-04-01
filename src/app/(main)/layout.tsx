@@ -10,6 +10,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 import { FooterBackground } from "@/components/layout/FooterBackground";
+import { ScrollSnapProvider } from "@/components/common/ScrollSnapProvider";
 
 export default async function MainLayout({
   children,
@@ -22,15 +23,17 @@ export default async function MainLayout({
       <WishlistProvider>
         <ToastProvider>
           <SmoothScroll>
-            <Header isLoggedIn={!!token} />
-            <div className=""> {children}</div>
-            <FooterBackground />
-            <Footer />
+            <ScrollSnapProvider>
+              <Header isLoggedIn={!!token} />
+              <div className=""> {children}</div>
+              <FooterBackground />
+              <Footer />
 
-            <CartDrawer />
-            <WishlistDrawer />
+              <CartDrawer />
+              <WishlistDrawer />
 
-            <CookieConsent />
+              <CookieConsent />
+            </ScrollSnapProvider>
           </SmoothScroll>
         </ToastProvider>
       </WishlistProvider>

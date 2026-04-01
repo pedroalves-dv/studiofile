@@ -4,7 +4,10 @@ import { ArrowButton } from "@/components/ui/ArrowButton";
 
 export function ProductSpotlight() {
   return (
-    <section className="relative w-full border-b border-light section-height">
+    <section
+      data-snap
+      className="relative w-full border-b border-light section-height"
+    >
       {/* ── MOBILE layout (< sm) ── */}
       <div className="sm:hidden flex flex-col">
         {/* Image — top, tall */}
