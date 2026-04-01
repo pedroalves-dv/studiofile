@@ -114,7 +114,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           {/* 2-column grid: logo left, nav+icons right */}
           <div className="h-full grid grid-cols-2 items-end pb-3">
             {/* Logo */}
-            <Link href="/" aria-label="Studiofile — Home" className="group ">
+            <Link
+              href="/"
+              aria-label="Studiofile — Home"
+              className="group w-fit"
+            >
               <Logo className="h-6 w-30 fill-current text-ink group-hover:text-light transition-colors mb-0.5" />
               {/* <LogoHover className="h-7 w-auto" /> */}
             </Link>

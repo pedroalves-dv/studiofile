@@ -64,7 +64,7 @@ function Card({
         top: HEADER_H,
         y,
         width: "clamp(220px, 38vw, 540px)",
-        aspectRatio: "3 / 4",
+        height: `calc(100vh - ${HEADER_H}px)`,
         zIndex: index + 1,
       }}
       className={`${card.bg} flex flex-col justify-between p-5`}
@@ -152,9 +152,6 @@ function ScrollSequence() {
   const scrollYProgress = useTransform(rawScrollY, scrollRange, [0, 1], {
     clamp: true,
   });
-  // useEffect(() => {
-  //   return scrollYProgress.on("change", (v) => console.log("scroll:", v));
-  // }, [scrollYProgress]);
 
   // TOTEM letter animation — plays on mount
   useEffect(() => {

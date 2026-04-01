@@ -143,7 +143,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="sticky top-[var(--header-height)] z-10">
+      <div className="sticky top-[var(--header-height)] z-10 px-5">
         <HeroContent />
       </div>
     </section>
