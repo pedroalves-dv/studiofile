@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState, useRef } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import { motion, useAnimationControls } from "motion/react";
 
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
@@ -9,31 +15,56 @@ const STACK_Y = [44, 32, 21, 10, 0] as const;
 export function HeroContent() {
   const controls = useAnimationControls();
   const [isHorizontal, setIsHorizontal] = useState(false);
-  const [targetFontSize, setTargetFontSize] = useState<number | null>(null);
+  const [fontSize, setFontSize] = useState<number | null>(null);
   const h1Ref = useRef<HTMLHeadingElement>(null);
-  // Hidden off-screen span used to measure "TOTEM" at a known size without
-  // interfering with the animated h1. offsetWidth ignores CSS transforms and
-  // is unaffected by any flex-container width constraints on the h1.
-  const measureRef = useRef<HTMLSpanElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const scaleWrapRef = useRef<HTMLDivElement>(null);
 
-  // Keep font size synced to viewport width on resize (direct DOM mutation —
-  // avoids a React re-render that would restart motion's layout FLIP).
+  const getAvailableWidth = useCallback(() => {
+    if (!containerRef.current) return window.innerWidth;
+    const style = window.getComputedStyle(containerRef.current);
+    return (
+      containerRef.current.clientWidth -
+      parseFloat(style.paddingLeft) -
+      parseFloat(style.paddingRight)
+    );
+  }, []);
+
+  /** Measure the h1's actual rendered width, then scaleX the wrapper to fit. */
+  const applyScaleCorrection = useCallback(() => {
+    const h1 = h1Ref.current;
+    const wrap = scaleWrapRef.current;
+    if (!h1 || !wrap) return;
+
+    // Reset so getBoundingClientRect returns unscaled width
+    wrap.style.transform = "scaleX(1)";
+    const available = getAvailableWidth();
+    const rendered = h1.getBoundingClientRect().width;
+    if (rendered > 0) {
+      wrap.style.transform = `scaleX(${available / rendered})`;
+    }
+  }, [getAvailableWidth]);
+
+  // Resize: recalculate base font-size + scaleX correction
   useLayoutEffect(() => {
     if (!isHorizontal) return;
-    const fit = () => {
+    const onResize = () => {
       if (!measureRef.current || !h1Ref.current) return;
-      const refWidth = measureRef.current.offsetWidth;
-      if (refWidth > 0) {
-        h1Ref.current.style.fontSize = `${Math.round((100 * window.innerWidth) / refWidth)}px`;
-      }
+      const W100 = measureRef.current.offsetWidth;
+      const available = getAvailableWidth();
+      h1Ref.current.style.fontSize = `${(100 * available) / W100}px`;
+      applyScaleCorrection();
     };
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, [isHorizontal]);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [isHorizontal, applyScaleCorrection, getAvailableWidth]);
+
+  // scaleX is applied via onLayoutAnimationComplete on the h1 — not here
+  // (measuring mid-FLIP gives wrong width and causes black-block glitch)
 
   useEffect(() => {
     const run = async () => {
-      // Phase 1: letters fall in staggered
       await controls.start((i: number) => ({
         opacity: 1,
         y: [null, STACK_Y[i], STACK_Y[i] - 6, STACK_Y[i]],
@@ -62,7 +93,6 @@ export function HeroContent() {
         },
       }));
 
-      // Phase 2: spring to readable vertical stack
       await controls.start({
         y: 0,
         scaleY: 1,
@@ -70,74 +100,87 @@ export function HeroContent() {
         transition: { type: "spring", stiffness: 110, damping: 20, mass: 1.2 },
       });
 
-      // Phase 3: compute target font size, then unfold horizontally.
-      // Both setState calls are batched by React 18 into one render, so
-      // motion's layout FLIP captures the correct large end-state in one pass —
-      // no second-render conflict.
       await new Promise<void>((resolve) => setTimeout(resolve, 500));
-      const refWidth = measureRef.current?.offsetWidth ?? 0;
-      if (refWidth > 0) {
-        setTargetFontSize(Math.round((100 * window.innerWidth) / refWidth));
-      }
+
+      // Wait for web fonts to be fully active before measuring
+      await document.fonts.ready;
+
+      const W100 = measureRef.current!.offsetWidth;
+      const available = getAvailableWidth();
+      const fs = (100 * available) / W100;
+
+      setFontSize(fs);
       setIsHorizontal(true);
     };
 
     const raf = requestAnimationFrame(() => run());
     return () => cancelAnimationFrame(raf);
-  }, [controls]);
+  }, [controls, getAvailableWidth]);
 
   return (
-    <div className="section-centered overflow-hidden">
-      {/* Off-screen reference: measures the true intrinsic width of "TOTEM"
-          in font-display at 100 px, free from any container width constraints. */}
-      <span
+    <div ref={containerRef} className="section-centered overflow-hidden">
+      {/* Hidden element for advance-width measurement at 100px */}
+      <div
         ref={measureRef}
         aria-hidden="true"
         className="font-display leading-none"
         style={{
+          display: "flex",
           position: "fixed",
           visibility: "hidden",
           pointerEvents: "none",
           fontSize: "100px",
           letterSpacing: "-0.04em",
-          whiteSpace: "nowrap",
           top: 0,
           left: 0,
         }}
       >
-        TOTEM
-      </span>
+        {LETTERS.map((letter, i) => (
+          <span
+            key={i}
+            style={i === LETTERS.length - 1 ? { letterSpacing: 0 } : undefined}
+          >
+            {letter}
+          </span>
+        ))}
+      </div>
 
-      {/* Single persistent tree — layout animates between vertical and horizontal */}
-      <motion.h1
-        ref={h1Ref}
-        layout
-        className={`flex leading-none text-ink font-display
-          ${
+      {/* Wrapper for scaleX correction — keeps motion's layout transforms separate */}
+      <div ref={scaleWrapRef} style={{ transformOrigin: "0 0" }}>
+        <motion.h1
+          ref={h1Ref}
+          layout
+          onLayoutAnimationComplete={() => applyScaleCorrection()}
+          className={`flex leading-none text-ink font-display ${
             isHorizontal
               ? "flex-row"
               : "flex-col items-center mx-auto text-9xl sm:text-10xl -space-y-6 sm:-space-y-8"
           }`}
-        style={
-          targetFontSize
-            ? { fontSize: `${targetFontSize}px`, letterSpacing: "-0.04em" }
-            : {}
-        }
-      >
-        {LETTERS.map((letter, i) => (
-          <motion.span
-            key={i}
-            layout // ← drives the FLIP between vertical and horizontal
-            animate={controls}
-            initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
-            custom={i}
-            className="origin-bottom"
-            style={{ willChange: "transform, opacity" }}
-          >
-            {letter}
-          </motion.span>
-        ))}
-      </motion.h1>
+          style={
+            fontSize
+              ? { fontSize: `${fontSize}px`, letterSpacing: "-0.04em" }
+              : {}
+          }
+        >
+          {LETTERS.map((letter, i) => (
+            <motion.span
+              key={i}
+              layout
+              animate={controls}
+              initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
+              custom={i}
+              className="origin-bottom"
+              style={
+                i === LETTERS.length - 1
+                  ? { willChange: "transform, opacity", letterSpacing: 0 }
+                  : { willChange: "transform, opacity" }
+              }
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </motion.h1>
+      </div>
     </div>
   );
 }
