@@ -12,6 +12,12 @@ import { motion, useAnimationControls } from "motion/react";
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 const STACK_Y = [44, 32, 21, 10, 0] as const;
 
+// Letter-spacing overrides per index in horizontal mode.
+// Index 3 = E: tighten to close the E→M gap caused by font kerning.
+// Index 4 = M: always 0 to strip trailing advance space.
+// Tweak EM_LETTER_SPACING until the gap looks right for your font.
+const EM_LETTER_SPACING = "-0.046em";
+
 export function HeroContent() {
   const controls = useAnimationControls();
   const [isHorizontal, setIsHorizontal] = useState(false);
@@ -31,22 +37,58 @@ export function HeroContent() {
     );
   }, []);
 
-  /** Measure the h1's actual rendered width, then scaleX the wrapper to fit. */
+  /**
+   * Uses the Range API to get actual ink (glyph) bounds — not the advance box —
+   * for the first (T) and last (M) spans, then applies scaleX + translateX so that
+   * T's ink left aligns with the container's left padding edge, and M's ink right
+   * aligns with the container's right padding edge. No gaps on either side.
+   */
   const applyScaleCorrection = useCallback(() => {
-    const h1 = h1Ref.current;
     const wrap = scaleWrapRef.current;
-    if (!h1 || !wrap) return;
+    const h1 = h1Ref.current;
+    const container = containerRef.current;
+    if (!wrap || !h1 || !container) return;
 
-    // Reset so getBoundingClientRect returns unscaled width
-    wrap.style.transform = "scaleX(1)";
-    const available = getAvailableWidth();
-    const rendered = h1.getBoundingClientRect().width;
-    if (rendered > 0) {
-      wrap.style.transform = `scaleX(${available / rendered})`;
-    }
-  }, [getAvailableWidth]);
+    // Reset so all measurements are in unscaled space
+    wrap.style.transform = "none";
 
-  // Resize: recalculate base font-size + scaleX correction
+    const cRect = container.getBoundingClientRect();
+    const cStyle = window.getComputedStyle(container);
+    const padL = parseFloat(cStyle.paddingLeft);
+    const padR = parseFloat(cStyle.paddingRight);
+    const targetLeft = cRect.left + padL;
+    const targetRight = cRect.right - padR;
+    const available = targetRight - targetLeft;
+
+    // Range.getBoundingClientRect() on a text node returns ink/glyph bounds,
+    // not the advance box — exactly what we need to eliminate side-bearing gaps.
+    const getInkRect = (el: Element): DOMRect => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return range.getBoundingClientRect();
+    };
+
+    const spans = h1.querySelectorAll("span");
+    const tRect = getInkRect(spans[0]); // T — first letter
+    const mRect = getInkRect(spans[spans.length - 1]); // M — last letter
+
+    const inkLeft = tRect.left;
+    const inkRight = mRect.right;
+    const inkWidth = inkRight - inkLeft;
+
+    if (inkWidth <= 0) return;
+
+    const scaleX = available / inkWidth;
+    const wrapLeft = wrap.getBoundingClientRect().left;
+
+    // Set transform-origin at T's ink-left edge (in wrapper-local coords).
+    // Scaling from there keeps inkLeft fixed, so inkRight lands exactly on targetRight.
+    // The translateX then shifts the whole thing so inkLeft lands on targetLeft.
+    wrap.style.transformOrigin = `${inkLeft - wrapLeft}px 0`;
+    wrap.style.transform = `translateX(${targetLeft - inkLeft}px) scaleX(${scaleX})`;
+  }, []);
+
+  // Recalculate on resize
   useLayoutEffect(() => {
     if (!isHorizontal) return;
     const onResize = () => {
@@ -59,9 +101,6 @@ export function HeroContent() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, [isHorizontal, applyScaleCorrection, getAvailableWidth]);
-
-  // scaleX is applied via onLayoutAnimationComplete on the h1 — not here
-  // (measuring mid-FLIP gives wrong width and causes black-block glitch)
 
   useEffect(() => {
     const run = async () => {
@@ -101,8 +140,6 @@ export function HeroContent() {
       });
 
       await new Promise<void>((resolve) => setTimeout(resolve, 500));
-
-      // Wait for web fonts to be fully active before measuring
       await document.fonts.ready;
 
       const W100 = measureRef.current!.offsetWidth;
@@ -118,7 +155,10 @@ export function HeroContent() {
   }, [controls, getAvailableWidth]);
 
   return (
-    <div ref={containerRef} className="section-centered overflow-hidden">
+    <div
+      ref={containerRef}
+      className="section-centered overflow-hidden pl-2 pr-1"
+    >
       {/* Hidden element for advance-width measurement at 100px */}
       <div
         ref={measureRef}
@@ -145,12 +185,11 @@ export function HeroContent() {
         ))}
       </div>
 
-      {/* Wrapper for scaleX correction — keeps motion's layout transforms separate */}
       <div ref={scaleWrapRef} style={{ transformOrigin: "0 0" }}>
         <motion.h1
           ref={h1Ref}
           layout
-          onLayoutAnimationComplete={() => applyScaleCorrection()}
+          onLayoutAnimationComplete={applyScaleCorrection}
           className={`flex leading-none text-ink font-display ${
             isHorizontal
               ? "flex-row"
@@ -162,23 +201,36 @@ export function HeroContent() {
               : {}
           }
         >
-          {LETTERS.map((letter, i) => (
-            <motion.span
-              key={i}
-              layout
-              animate={controls}
-              initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
-              custom={i}
-              className="origin-bottom"
-              style={
-                i === LETTERS.length - 1
-                  ? { willChange: "transform, opacity", letterSpacing: 0 }
-                  : { willChange: "transform, opacity" }
-              }
-            >
-              {letter}
-            </motion.span>
-          ))}
+          {LETTERS.map((letter, i) => {
+            const isLast = i === LETTERS.length - 1;
+            const isBeforeLast = i === LETTERS.length - 2; // E
+
+            // In horizontal mode, tighten E's letter-spacing to close the E→M gap.
+            // letter-spacing applies after the character, so this only affects the
+            // space between E and M — nothing else changes.
+            const letterSpacing = isLast
+              ? 0
+              : isHorizontal && isBeforeLast
+                ? EM_LETTER_SPACING
+                : undefined;
+
+            return (
+              <motion.span
+                key={i}
+                layout
+                animate={controls}
+                initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
+                custom={i}
+                className="origin-bottom"
+                style={{
+                  willChange: "transform, opacity",
+                  ...(letterSpacing !== undefined ? { letterSpacing } : {}),
+                }}
+              >
+                {letter}
+              </motion.span>
+            );
+          })}
         </motion.h1>
       </div>
     </div>
