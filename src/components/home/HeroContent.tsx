@@ -17,6 +17,7 @@ const STACK_Y = [44, 32, 21, 10, 0] as const;
 // Index 4 = M: always 0 to strip trailing advance space.
 // Tweak EM_LETTER_SPACING until the gap looks right for your font.
 const EM_LETTER_SPACING = "-0.046em";
+const MOBILE_BREAKPOINT = 768;
 
 export function HeroContent() {
   const controls = useAnimationControls();
@@ -139,6 +140,8 @@ export function HeroContent() {
         transition: { type: "spring", stiffness: 110, damping: 20, mass: 1.2 },
       });
 
+      if (window.innerWidth < MOBILE_BREAKPOINT) return;
+
       await new Promise<void>((resolve) => setTimeout(resolve, 500));
       await document.fonts.ready;
 
@@ -157,7 +160,7 @@ export function HeroContent() {
   return (
     <div
       ref={containerRef}
-      className="section-centered overflow-hidden pl-2 pr-1"
+      className="section-height overflow-hidden pl-2.5 pr-1"
     >
       {/* Hidden element for advance-width measurement at 100px */}
       <div
