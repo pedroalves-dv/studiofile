@@ -6,6 +6,29 @@
 4. The one real risk in your current stack is your Hero component — 400dvh with hardcoded pixel inputRange values for parallax. Those numbers will break the moment section heights change. Before launch, those ranges should be calculated dynamically from element positions, not hardcoded. Flag that for later.
    The stack and patterns you have are genuinely solid. The tape-and-string risk on this project isn't architectural — it's content-related (hardcoded values, magic numbers). Keep those out and you'll be fine.
 
-## Jumbled TODO items list
+## Backup Ideas Worth trying at some point
 
--
+### HeroContent.tsx
+
+- Approach 2: SVG <text textLength> (typographically correct)
+  SVG has a W3C-standard attribute designed exactly for this: textLength tells the browser to fit text into an exact pixel width. With lengthAdjust="spacing", it adjusts inter-character spacing (no glyph distortion). With spacingAndGlyphs, it also stretches glyphs.
+
+Pixel-perfect, browser-native — the SVG renderer handles all ink bounds internally
+No canvas, no JS measurement, no font metric math
+Zero glyph distortion (with lengthAdjust="spacing")
+Trade-off: moves from HTML <h1> to SVG <text> — changes the rendering context, requires rethinking how motion animates the letters (SVG transforms vs CSS transforms)
+
+<svg viewBox={`0 0 ${available} ${fontSize}`} width={available} height={fontSize}>
+<text
+textLength={available}
+lengthAdjust="spacing"
+font-family="Noka"
+font-size={fontSize}
+y={fontSize \* 0.85} // baseline offset
+
+>
+
+    TOTEM
+
+  </text>
+</svg>
