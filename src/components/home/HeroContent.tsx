@@ -160,7 +160,7 @@ export function HeroContent() {
   return (
     <div
       ref={containerRef}
-      className="section-height overflow-hidden pl-2.5 pr-1"
+      className="section-centered overflow-hidden pl-2.5 pr-1"
     >
       {/* Hidden element for advance-width measurement at 100px */}
       <div
