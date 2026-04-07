@@ -152,7 +152,7 @@ export function HeroContent() {
       */
       className={`
         relative overflow-hidden pl-2.5 pr-1 transition-all duration-1000 ease-in-out
-        ${isHorizontal ? "section-height" : "section-centered"}
+        ${isHorizontal ? "h-full" : "section-centered"}
       `}
     >
       {/* Hidden element for ink-width measurement at 100px.
@@ -199,7 +199,7 @@ export function HeroContent() {
         className={`flex leading-none text-ink font-display ${
           isHorizontal
             ? "flex-row"
-            : "flex-col items-center mx-auto text-9xl sm:text-10xl -space-y-6 sm:-space-y-8"
+            : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8"
         }`}
         style={
           fontSize

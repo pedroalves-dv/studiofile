@@ -21,29 +21,28 @@ function ParallaxBox({
 export function Hero() {
   return (
     <section className="relative w-full h-[calc(400dvh-(4*(var(--header-height))))]">
-      <div aria-hidden="true" className="absolute inset-0 flex overflow-hidden">
+      {/* ── BACK layer — renders behind HeroContent ── */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex overflow-hidden pointer-events-none"
+      >
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
           {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
-            {/* Image 1.1 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 1.1 — move to FRONT layer to appear above text */}
             <ParallaxBox
               inputRange={[-300, 1400]}
               speed={0.3}
-              className="absolute h-[600px] w-[30em] bg-red-500 bottom-12 right-12"
+              className="absolute h-[450px] w-[300px] bg-red-500 top-52 right-20"
             />
           </div>
           {/* Row 2 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-lighter">
-            {/* Image 1.2 */}
-            <ParallaxBox
-              inputRange={[400, 2200]}
-              speed={0.2}
-              className="absolute h-[300px] w-[200px] bg-red-500 bottom-24 right-4"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 1.2 (front) */}
           </div>
           {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 1.3 */}
             <ParallaxBox
               inputRange={[1200, 3200]}
@@ -52,29 +51,19 @@ export function Hero() {
             />
           </div>
           {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
-            {/* Image 1.4 */}
-            <ParallaxBox
-              inputRange={[1800, 3400]}
-              speed={0.45}
-              className="absolute h-[460px] w-[280px] bg-red-500 top-10 right-8"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 1.4 (front)*/}
           </div>
         </div>
 
         {/* Column 2 */}
         <div className="hidden md:flex flex-1 flex-col">
           {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-lighter">
-            {/* Image 2.1 */}
-            <ParallaxBox
-              inputRange={[-300, 1400]}
-              speed={0.5}
-              className="absolute h-[300px] w-[200px] bg-red-500 bottom-52 left-12"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 2.1 (front)*/}
           </div>
           {/* Row 2 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.2 */}
             <ParallaxBox
               inputRange={[400, 2200]}
@@ -83,16 +72,11 @@ export function Hero() {
             />
           </div>
           {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-lighter">
-            {/* Image 2.3 */}
-            <ParallaxBox
-              inputRange={[1200, 3200]}
-              speed={0.25}
-              className="absolute h-[280px] w-[220px] bg-red-500 bottom-60 -left-20"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 2.3 (front) */}
           </div>
           {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-stroke">
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.4 */}
             <ParallaxBox
               inputRange={[1800, 3400]}
@@ -104,26 +88,21 @@ export function Hero() {
 
         {/* Column 3 */}
         <div className="hidden xl:flex flex-1 flex-col">
-          {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full ">
-            {/* Image 3.1 */}
+          {/* Row 1 — empty: Image 3.1 is in FRONT layer */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 3.1 — above text */}
             <ParallaxBox
               inputRange={[-300, 1400]}
               speed={0.2}
-              className="absolute h-[350px] w-[500px] bg-red-500 bottom-0 right-0"
+              className="absolute h-[350px] w-[560px] bg-red-500 -bottom-8 right-0"
             />
           </div>
           {/* Row 2 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-lighter">
-            {/* Image 3.2 */}
-            <ParallaxBox
-              inputRange={[400, 2200]}
-              speed={0.55}
-              className="absolute h-[300px] w-[200px] bg-red-500 top-24 left-6"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 3.2 (front) */}
           </div>
           {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 3.3 */}
             <ParallaxBox
               inputRange={[1200, 3200]}
@@ -132,19 +111,99 @@ export function Hero() {
             />
           </div>
           {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full bg-light">
-            {/* Image 3.4 */}
-            <ParallaxBox
-              inputRange={[1800, 3400]}
-              speed={0.8}
-              className="absolute h-[280px] w-[220px] bg-red-500 top-10 left-8"
-            />
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 3.4 (front) */}
           </div>
         </div>
       </div>
 
+      {/* ── HeroContent — z-10 ── */}
       <div className="sticky top-[var(--header-height)] z-10">
         <HeroContent />
+      </div>
+
+      {/* ── FRONT layer — renders above HeroContent (z-20) ── */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 flex overflow-hidden z-20 pointer-events-none"
+      >
+        {/* Column 1 — empty (add ParallaxBox entries here to appear above text) */}
+        <div className="flex-1 flex flex-col">
+          {/* Row 1 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          {/* Row 2 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 1.2 */}
+            <ParallaxBox
+              inputRange={[400, 2200]}
+              speed={0.2}
+              className="absolute h-[300px] w-[200px] bg-red-500 bottom-24 right-4"
+            />
+          </div>
+          {/* Row 3 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          {/* Row 4 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 1.4 */}
+            <ParallaxBox
+              inputRange={[1800, 3400]}
+              speed={0.45}
+              className="absolute h-[460px] w-[320px] bg-red-500 top-10 right-8"
+            />
+          </div>
+        </div>
+
+        {/* Column 2 — empty */}
+        <div className="hidden md:flex flex-1 flex-col">
+          {/* Row 1 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 2.1 */}
+            <ParallaxBox
+              inputRange={[-300, 1400]}
+              speed={0.5}
+              className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
+            />
+          </div>
+          {/* Row 2 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          {/* Row 3 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 2.3 */}
+            <ParallaxBox
+              inputRange={[1200, 3200]}
+              speed={0.25}
+              className="absolute h-[380px] w-[300px] bg-red-500 bottom-60 -left-20"
+            />
+          </div>
+          {/* Row 4 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+        </div>
+
+        {/* Column 3 */}
+        <div className="hidden xl:flex flex-1 flex-col">
+          {/* Row 1 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          {/* Row 2 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 3.2 */}
+            <ParallaxBox
+              inputRange={[400, 2200]}
+              speed={0.55}
+              className="absolute h-[380px] w-[280px] bg-red-500 top-24 -left-6"
+            />
+          </div>
+          {/* Row 3 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          {/* Row 4 */}
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+            {/* Image 3.4 */}
+            <ParallaxBox
+              inputRange={[1800, 3400]}
+              speed={0.8}
+              className="absolute h-[320px] w-[250px] bg-red-500 top-10 left-0"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
