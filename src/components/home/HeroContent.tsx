@@ -158,9 +158,16 @@ export function HeroContent() {
   }, [controls, getAvailableWidth]);
 
   return (
-    <div
+    <motion.div
+      layout // This ensures the transition from center to top is animated
       ref={containerRef}
-      className="section-centered overflow-hidden pl-2.5 pr-1"
+      /* 1. Logic: Only use section-height if isHorizontal is true.
+         2. Transition: transition-all allows the layout shift to be smooth.
+      */
+      className={`
+        relative overflow-hidden pl-2.5 pr-1 transition-all duration-1000 ease-in-out
+        ${isHorizontal ? "section-height" : "section-centered"}
+      `}
     >
       {/* Hidden element for advance-width measurement at 100px */}
       <div
@@ -206,11 +213,8 @@ export function HeroContent() {
         >
           {LETTERS.map((letter, i) => {
             const isLast = i === LETTERS.length - 1;
-            const isBeforeLast = i === LETTERS.length - 2; // E
+            const isBeforeLast = i === LETTERS.length - 2;
 
-            // In horizontal mode, tighten E's letter-spacing to close the E→M gap.
-            // letter-spacing applies after the character, so this only affects the
-            // space between E and M — nothing else changes.
             const letterSpacing = isLast
               ? 0
               : isHorizontal && isBeforeLast
@@ -236,6 +240,6 @@ export function HeroContent() {
           })}
         </motion.h1>
       </div>
-    </div>
+    </motion.div>
   );
 }
