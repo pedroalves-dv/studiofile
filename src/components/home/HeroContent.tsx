@@ -23,10 +23,10 @@ export function HeroContent() {
   const controls = useAnimationControls();
   const [isHorizontal, setIsHorizontal] = useState(false);
   const [fontSize, setFontSize] = useState<number | null>(null);
+  const [hMarginLeft, setHMarginLeft] = useState(0);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const scaleWrapRef = useRef<HTMLDivElement>(null);
 
   const getAvailableWidth = useCallback(() => {
     if (!containerRef.current) return window.innerWidth;
@@ -39,69 +39,53 @@ export function HeroContent() {
   }, []);
 
   /**
-   * Uses the Range API to get actual ink (glyph) bounds — not the advance box —
-   * for the first (T) and last (M) spans, then applies scaleX + translateX so that
-   * T's ink left aligns with the container's left padding edge, and M's ink right
-   * aligns with the container's right padding edge. No gaps on either side.
+   * Uses the Range API to get actual ink (glyph) bounds from measureRef at 100px.
+   * Returns the ink-accurate font size (so ink fills available width exactly)
+   * and the marginLeft needed to shift T's ink to the container's left padding edge.
+   * Both values are applied in one batch render so Motion's FLIP captures the
+   * correct final positions — no post-animation correction needed.
    */
-  const applyScaleCorrection = useCallback(() => {
-    const wrap = scaleWrapRef.current;
-    const h1 = h1Ref.current;
-    const container = containerRef.current;
-    if (!wrap || !h1 || !container) return;
+  const computeLayout = useCallback(() => {
+    const measure = measureRef.current;
+    if (!measure) return null;
 
-    // Reset so all measurements are in unscaled space
-    wrap.style.transform = "none";
+    const available = getAvailableWidth();
 
-    const cRect = container.getBoundingClientRect();
-    const cStyle = window.getComputedStyle(container);
-    const padL = parseFloat(cStyle.paddingLeft);
-    const padR = parseFloat(cStyle.paddingRight);
-    const targetLeft = cRect.left + padL;
-    const targetRight = cRect.right - padR;
-    const available = targetRight - targetLeft;
-
-    // Range.getBoundingClientRect() on a text node returns ink/glyph bounds,
-    // not the advance box — exactly what we need to eliminate side-bearing gaps.
     const getInkRect = (el: Element): DOMRect => {
       const range = document.createRange();
       range.selectNodeContents(el);
       return range.getBoundingClientRect();
     };
 
-    const spans = h1.querySelectorAll("span");
-    const tRect = getInkRect(spans[0]); // T — first letter
-    const mRect = getInkRect(spans[spans.length - 1]); // M — last letter
+    const spans = measure.querySelectorAll("span");
+    const tInk = getInkRect(spans[0]);
+    const mInk = getInkRect(spans[spans.length - 1]);
+    const inkWidth100 = mInk.right - tInk.left;
 
-    const inkLeft = tRect.left;
-    const inkRight = mRect.right;
-    const inkWidth = inkRight - inkLeft;
+    if (inkWidth100 <= 0) return null;
 
-    if (inkWidth <= 0) return;
+    // Font size that makes ink (not advance box) fill the container exactly
+    const fs = (100 * available) / inkWidth100;
 
-    const scaleX = available / inkWidth;
-    const wrapLeft = wrap.getBoundingClientRect().left;
+    // T's left side bearing at 100px — shift h1 left to align ink to padding edge
+    const tBearing100 = tInk.left - measure.getBoundingClientRect().left;
+    const ml = -(tBearing100 * (fs / 100));
 
-    // Set transform-origin at T's ink-left edge (in wrapper-local coords).
-    // Scaling from there keeps inkLeft fixed, so inkRight lands exactly on targetRight.
-    // The translateX then shifts the whole thing so inkLeft lands on targetLeft.
-    wrap.style.transformOrigin = `${inkLeft - wrapLeft}px 0`;
-    wrap.style.transform = `translateX(${targetLeft - inkLeft}px) scaleX(${scaleX})`;
-  }, []);
+    return { fontSize: fs, marginLeft: ml };
+  }, [getAvailableWidth]);
 
-  // Recalculate on resize
+  // Recalculate on resize — direct DOM update to avoid triggering FLIP
   useLayoutEffect(() => {
     if (!isHorizontal) return;
     const onResize = () => {
-      if (!measureRef.current || !h1Ref.current) return;
-      const W100 = measureRef.current.offsetWidth;
-      const available = getAvailableWidth();
-      h1Ref.current.style.fontSize = `${(100 * available) / W100}px`;
-      applyScaleCorrection();
+      const layout = computeLayout();
+      if (!layout || !h1Ref.current) return;
+      h1Ref.current.style.fontSize = `${layout.fontSize}px`;
+      h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [isHorizontal, applyScaleCorrection, getAvailableWidth]);
+  }, [isHorizontal, computeLayout]);
 
   useEffect(() => {
     const run = async () => {
@@ -145,17 +129,19 @@ export function HeroContent() {
       await new Promise<void>((resolve) => setTimeout(resolve, 500));
       await document.fonts.ready;
 
-      const W100 = measureRef.current!.offsetWidth;
-      const available = getAvailableWidth();
-      const fs = (100 * available) / W100;
+      const layout = computeLayout();
+      if (!layout) return;
 
-      setFontSize(fs);
+      // Batch all three state updates in one render so FLIP captures the
+      // fully-corrected endpoint — no second adjustment after animation.
+      setFontSize(layout.fontSize);
+      setHMarginLeft(layout.marginLeft);
       setIsHorizontal(true);
     };
 
     const raf = requestAnimationFrame(() => run());
     return () => cancelAnimationFrame(raf);
-  }, [controls, getAvailableWidth]);
+  }, [controls, computeLayout]);
 
   return (
     <motion.div
@@ -169,7 +155,9 @@ export function HeroContent() {
         ${isHorizontal ? "section-height" : "section-centered"}
       `}
     >
-      {/* Hidden element for advance-width measurement at 100px */}
+      {/* Hidden element for ink-width measurement at 100px.
+          Mirrors h1's horizontal letter-spacing exactly (including EM_LETTER_SPACING on E)
+          so computeLayout() can pre-compute the full correction before the FLIP starts. */}
       <div
         ref={measureRef}
         aria-hidden="true"
@@ -185,61 +173,72 @@ export function HeroContent() {
           left: 0,
         }}
       >
-        {LETTERS.map((letter, i) => (
-          <span
-            key={i}
-            style={i === LETTERS.length - 1 ? { letterSpacing: 0 } : undefined}
-          >
-            {letter}
-          </span>
-        ))}
+        {LETTERS.map((letter, i) => {
+          const isLast = i === LETTERS.length - 1;
+          const isBeforeLast = i === LETTERS.length - 2;
+          return (
+            <span
+              key={i}
+              style={
+                isLast
+                  ? { letterSpacing: 0 }
+                  : isBeforeLast
+                    ? { letterSpacing: EM_LETTER_SPACING }
+                    : undefined
+              }
+            >
+              {letter}
+            </span>
+          );
+        })}
       </div>
 
-      <div ref={scaleWrapRef} style={{ transformOrigin: "0 0" }}>
-        <motion.h1
-          ref={h1Ref}
-          layout
-          onLayoutAnimationComplete={applyScaleCorrection}
-          className={`flex leading-none text-ink font-display ${
-            isHorizontal
-              ? "flex-row"
-              : "flex-col items-center mx-auto text-9xl sm:text-10xl -space-y-6 sm:-space-y-8"
-          }`}
-          style={
-            fontSize
-              ? { fontSize: `${fontSize}px`, letterSpacing: "-0.04em" }
-              : {}
-          }
-        >
-          {LETTERS.map((letter, i) => {
-            const isLast = i === LETTERS.length - 1;
-            const isBeforeLast = i === LETTERS.length - 2;
+      <motion.h1
+        ref={h1Ref}
+        layout
+        className={`flex leading-none text-ink font-display ${
+          isHorizontal
+            ? "flex-row"
+            : "flex-col items-center mx-auto text-9xl sm:text-10xl -space-y-6 sm:-space-y-8"
+        }`}
+        style={
+          fontSize
+            ? {
+                fontSize: `${fontSize}px`,
+                letterSpacing: "-0.04em",
+                marginLeft: `${hMarginLeft}px`,
+              }
+            : {}
+        }
+      >
+        {LETTERS.map((letter, i) => {
+          const isLast = i === LETTERS.length - 1;
+          const isBeforeLast = i === LETTERS.length - 2;
 
-            const letterSpacing = isLast
-              ? 0
-              : isHorizontal && isBeforeLast
-                ? EM_LETTER_SPACING
-                : undefined;
+          const letterSpacing = isLast
+            ? 0
+            : isHorizontal && isBeforeLast
+              ? EM_LETTER_SPACING
+              : undefined;
 
-            return (
-              <motion.span
-                key={i}
-                layout
-                animate={controls}
-                initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
-                custom={i}
-                className="origin-bottom"
-                style={{
-                  willChange: "transform, opacity",
-                  ...(letterSpacing !== undefined ? { letterSpacing } : {}),
-                }}
-              >
-                {letter}
-              </motion.span>
-            );
-          })}
-        </motion.h1>
-      </div>
+          return (
+            <motion.span
+              key={i}
+              layout
+              animate={controls}
+              initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
+              custom={i}
+              className="origin-bottom"
+              style={{
+                willChange: "transform, opacity",
+                ...(letterSpacing !== undefined ? { letterSpacing } : {}),
+              }}
+            >
+              {letter}
+            </motion.span>
+          );
+        })}
+      </motion.h1>
     </motion.div>
   );
 }
