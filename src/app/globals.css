@@ -168,6 +168,12 @@
     }
   }
   /* Base styles */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   html {
     scroll-behavior: auto;
     scrollbar-gutter: stable;
@@ -182,6 +188,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     border-right: 1px solid var(--color-light);
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 640px) {
+    body {
+      border-right: none;
+      overflow-x: hidden;
+    }
   }
 
   /* Headings */

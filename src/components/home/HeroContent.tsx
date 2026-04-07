@@ -49,7 +49,9 @@ export function HeroContent() {
     const measure = measureRef.current;
     if (!measure) return null;
 
-    const available = getAvailableWidth();
+    const TARGET_MARGIN = 16; // px-5 equivalent
+    const viewportWidth = window.innerWidth;
+    const availableInkWidth = viewportWidth - TARGET_MARGIN * 2;
 
     const getInkRect = (el: Element): DOMRect => {
       const range = document.createRange();
@@ -64,15 +66,25 @@ export function HeroContent() {
 
     if (inkWidth100 <= 0) return null;
 
-    // Font size that makes ink (not advance box) fill the container exactly
-    const fs = (100 * available) / inkWidth100;
+    const fs = (100 * availableInkWidth) / inkWidth100;
 
-    // T's left side bearing at 100px — shift h1 left to align ink to padding edge
+    // T's left bearing at 100px — shift h1 so T ink starts at TARGET_MARGIN
     const tBearing100 = tInk.left - measure.getBoundingClientRect().left;
-    const ml = -(tBearing100 * (fs / 100));
+    const ml = TARGET_MARGIN - tBearing100 * (fs / 100);
 
     return { fontSize: fs, marginLeft: ml };
-  }, [getAvailableWidth]);
+  }, []);
+
+  const mSpan = h1Ref.current?.querySelectorAll("span")[4];
+  if (mSpan) {
+    const elBottom = mSpan.getBoundingClientRect().bottom;
+    const inkBottom = (() => {
+      const r = document.createRange();
+      r.selectNodeContents(mSpan);
+      return r.getBoundingClientRect().bottom;
+    })();
+    mSpan.style.marginBottom = `${-(elBottom - inkBottom)}px`;
+  }
 
   // Recalculate on resize — direct DOM update to avoid triggering FLIP
   useLayoutEffect(() => {
@@ -121,7 +133,7 @@ export function HeroContent() {
         y: 0,
         scaleY: 1,
         scaleX: 1,
-        transition: { type: "spring", stiffness: 110, damping: 20, mass: 1.2 },
+        transition: { type: "spring", stiffness: 110, damping: 26, mass: 1.2 },
       });
 
       if (window.innerWidth < MOBILE_BREAKPOINT) return;
@@ -151,7 +163,7 @@ export function HeroContent() {
          2. Transition: transition-all allows the layout shift to be smooth.
       */
       className={`
-        relative overflow-hidden pl-2.5 pr-1 transition-all duration-1000 ease-in-out
+        relative overflow-hidden transition-all duration-1000 ease-in-out
         ${isHorizontal ? "h-full" : "section-centered"}
       `}
     >
@@ -195,10 +207,9 @@ export function HeroContent() {
 
       <motion.h1
         ref={h1Ref}
-        layout
         className={`flex leading-none text-ink font-display ${
           isHorizontal
-            ? "flex-row"
+            ? "flex-row w-full justify-center"
             : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8"
         }`}
         style={
@@ -206,7 +217,7 @@ export function HeroContent() {
             ? {
                 fontSize: `${fontSize}px`,
                 letterSpacing: "-0.04em",
-                marginLeft: `${hMarginLeft}px`,
+                // marginLeft: `${hMarginLeft}px`,
               }
             : {}
         }
@@ -228,7 +239,6 @@ export function HeroContent() {
               animate={controls}
               initial={{ y: -260, opacity: 0, scaleY: 1.06, scaleX: 0.95 }}
               custom={i}
-              className="origin-bottom"
               style={{
                 willChange: "transform, opacity",
                 ...(letterSpacing !== undefined ? { letterSpacing } : {}),

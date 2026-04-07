@@ -20,11 +20,11 @@ function ParallaxBox({
 
 export function Hero() {
   return (
-    <section className="relative w-full h-[calc(400dvh-(4*(var(--header-height))))]">
+    <section className="relative w-full md:h-[calc(400dvh-(4*(var(--header-height))))]">
       {/* ── BACK layer — renders behind HeroContent ── */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 flex overflow-hidden pointer-events-none"
+        className="hidden md:flex md:absolute md:inset-0 overflow-hidden pointer-events-none"
       >
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
@@ -61,6 +61,11 @@ export function Hero() {
           {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.1 (front)*/}
+            <ParallaxBox
+              inputRange={[-300, 1400]}
+              speed={0.5}
+              className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
+            />
           </div>
           {/* Row 2 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
@@ -122,10 +127,23 @@ export function Hero() {
         <HeroContent />
       </div>
 
+      {/* ── MOBILE image column — md:hidden, normal flow, scrolls under sticky type ── */}
+      <div
+        aria-hidden="true"
+        className="md:hidden pointer-events-none section-height"
+      >
+        {/* Slot 1: fills the initial viewport — visible behind the type on load */}
+        <div className="relative w-full section-height bg-red-500" />
+        {/* Slot 2 */}
+        <div className="relative w-full section-height bg-blue-500" />
+        {/* Slot 3 */}
+        <div className="relative w-full section-height bg-red-200" />
+      </div>
+
       {/* ── FRONT layer — renders above HeroContent (z-20) ── */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 flex overflow-hidden z-20 pointer-events-none"
+        className="hidden md:flex md:absolute md:inset-0 overflow-hidden z-20 pointer-events-none"
       >
         {/* Column 1 — empty (add ParallaxBox entries here to appear above text) */}
         <div className="flex-1 flex flex-col">
@@ -158,11 +176,11 @@ export function Hero() {
           {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.1 */}
-            <ParallaxBox
+            {/* <ParallaxBox
               inputRange={[-300, 1400]}
               speed={0.5}
               className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
-            />
+            /> */}
           </div>
           {/* Row 2 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />

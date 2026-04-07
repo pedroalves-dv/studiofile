@@ -280,7 +280,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "md:hidden h-full flex relative",
+                    "md:hidden h-full flex relative -mr-1",
                     (isMobileMenuOpen || isClosingMenu) && "bg-white",
                   )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
