@@ -2,12 +2,13 @@
 
 import {
   useEffect,
-  useLayoutEffect,
   useState,
   useRef,
   useCallback,
 } from "react";
 import { motion, useAnimationControls } from "motion/react";
+import { useIsomorphicLayoutEffect } from "@/hooks/useIsomorphicLayoutEffect";
+import { cn } from "@/lib/utils/cn";
 
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 const STACK_Y = [44, 32, 21, 10, 0] as const;
@@ -23,20 +24,9 @@ export function HeroContent() {
   const controls = useAnimationControls();
   const [isHorizontal, setIsHorizontal] = useState(false);
   const [fontSize, setFontSize] = useState<number | null>(null);
-  const [hMarginLeft, setHMarginLeft] = useState(0);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-
-  const getAvailableWidth = useCallback(() => {
-    if (!containerRef.current) return window.innerWidth;
-    const style = window.getComputedStyle(containerRef.current);
-    return (
-      containerRef.current.clientWidth -
-      parseFloat(style.paddingLeft) -
-      parseFloat(style.paddingRight)
-    );
-  }, []);
 
   /**
    * Uses the Range API to get actual ink (glyph) bounds from measureRef at 100px.
@@ -49,7 +39,7 @@ export function HeroContent() {
     const measure = measureRef.current;
     if (!measure) return null;
 
-    const TARGET_MARGIN = 16; // px-5 equivalent
+    const TARGET_MARGIN = 12; // px-5 equivalent
     const viewportWidth = window.innerWidth;
     const availableInkWidth = viewportWidth - TARGET_MARGIN * 2;
 
@@ -68,16 +58,13 @@ export function HeroContent() {
 
     const fs = (100 * availableInkWidth) / inkWidth100;
 
-    // T's left bearing at 100px — shift h1 so T ink starts at TARGET_MARGIN
-    const tBearing100 = tInk.left - measure.getBoundingClientRect().left;
-    const ml = TARGET_MARGIN - tBearing100 * (fs / 100);
-
     return { fontSize: fs };
-    // return { fontSize: fs, marginLeft: ml };
   }, []);
 
-  const mSpan = h1Ref.current?.querySelectorAll("span")[4];
-  if (mSpan) {
+  // Compensate for extra whitespace below M glyph — must run after layout changes.
+  useIsomorphicLayoutEffect(() => {
+    const mSpan = h1Ref.current?.querySelectorAll("span")[4];
+    if (!mSpan) return;
     const elBottom = mSpan.getBoundingClientRect().bottom;
     const inkBottom = (() => {
       const r = document.createRange();
@@ -85,10 +72,10 @@ export function HeroContent() {
       return r.getBoundingClientRect().bottom;
     })();
     mSpan.style.marginBottom = `${-(elBottom - inkBottom)}px`;
-  }
+  }, [isHorizontal, fontSize]);
 
   // Recalculate on resize — direct DOM update to avoid triggering FLIP
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isHorizontal) return;
     const onResize = () => {
       const layout = computeLayout();
@@ -139,8 +126,10 @@ export function HeroContent() {
 
       if (window.innerWidth < MOBILE_BREAKPOINT) return;
 
-      await new Promise<void>((resolve) => setTimeout(resolve, 500));
-      await document.fonts.ready;
+      await Promise.all([
+        document.fonts.ready,
+        new Promise<void>((resolve) => setTimeout(resolve, 500)),
+      ]);
 
       const layout = computeLayout();
       if (!layout) return;
@@ -160,13 +149,10 @@ export function HeroContent() {
     <motion.div
       layout // This ensures the transition from center to top is animated
       ref={containerRef}
-      /* 1. Logic: Only use section-height if isHorizontal is true.
-         2. Transition: transition-all allows the layout shift to be smooth.
-      */
-      className={`
-        relative overflow-hidden transition-all duration-1000 ease-in-out
-        ${isHorizontal ? "h-full" : "section-centered pt-4"}
-      `}
+      className={cn(
+        "relative overflow-hidden",
+        isHorizontal ? "h-full" : "section-centered pt-4"
+      )}
     >
       {/* Hidden element for ink-width measurement at 100px.
           Mirrors h1's horizontal letter-spacing exactly (including EM_LETTER_SPACING on E)

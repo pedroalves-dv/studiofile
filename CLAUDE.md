@@ -4,6 +4,10 @@ Project-level instructions for Claude Code. Read this at the start of every sess
 
 ---
 
+## User
+
+User is a beginner front-end enthustiast vibe-coding this project alone. Explanations and plans need to be given in readable manner for non-technical readers.
+
 ## Project
 
 Premium e-commerce + showcase website for a Paris 3D printing and design studio.

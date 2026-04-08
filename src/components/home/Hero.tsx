@@ -1,24 +1,33 @@
 "use client";
 
-import { useScroll, useTransform, motion } from "motion/react";
+import { useScroll, useTransform, motion, MotionValue } from "motion/react";
 import { HeroContent } from "@/components/home/HeroContent";
 
+// Scroll pixel ranges for each row tier — adjust if section height changes.
+const SCROLL_RANGE_1: [number, number] = [-300, 1400];
+const SCROLL_RANGE_2: [number, number] = [400, 2200];
+const SCROLL_RANGE_3: [number, number] = [1200, 3200];
+const SCROLL_RANGE_4: [number, number] = [1800, 3400];
+
 function ParallaxBox({
+  scrollY,
   className,
   inputRange,
   speed = 0.3,
 }: {
+  scrollY: MotionValue<number>;
   className: string;
   inputRange: [number, number];
   speed?: number;
 }) {
-  const { scrollY } = useScroll();
   const y = useTransform(scrollY, inputRange, ["0%", `${-speed * 100}%`]);
 
   return <motion.div style={{ y }} className={className} />;
 }
 
 export function Hero() {
+  const { scrollY } = useScroll();
+
   return (
     <section className="relative w-full md:h-[calc(400dvh-(4*(var(--header-height))))]">
       {/* ── BACK layer — renders behind HeroContent ── */}
@@ -30,9 +39,10 @@ export function Hero() {
         <div className="flex-1 flex flex-col">
           {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.1 — move to FRONT layer to appear above text */}
+            {/* Image 1.1 */}
             <ParallaxBox
-              inputRange={[-300, 1400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_1}
               speed={0.3}
               className="absolute h-[450px] w-[350px] bg-red-500 top-52 right-20"
             />
@@ -45,7 +55,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 1.3 */}
             <ParallaxBox
-              inputRange={[1200, 3200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_3}
               speed={0.5}
               className="absolute h-[650px] w-[450px] bg-red-500 top-16 left-6"
             />
@@ -57,12 +68,13 @@ export function Hero() {
         </div>
 
         {/* Column 2 */}
-        <div className="hidden md:flex flex-1 flex-col">
+        <div className="flex-1 flex flex-col">
           {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.1 (front)*/}
             <ParallaxBox
-              inputRange={[-300, 1400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_1}
               speed={0.5}
               className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
             />
@@ -71,7 +83,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.2 */}
             <ParallaxBox
-              inputRange={[400, 2200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_2}
               speed={0.4}
               className="absolute h-[420px] w-[320px] bg-red-500 bottom-8 left-10"
             />
@@ -84,7 +97,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.4 */}
             <ParallaxBox
-              inputRange={[1800, 3400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_4}
               speed={0.6}
               className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
             />
@@ -93,11 +107,12 @@ export function Hero() {
 
         {/* Column 3 */}
         <div className="hidden xl:flex flex-1 flex-col">
-          {/* Row 1 — empty: Image 3.1 is in FRONT layer */}
+          {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.1 — above text */}
+            {/* Image 3.1 */}
             <ParallaxBox
-              inputRange={[-300, 1400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_1}
               speed={0.2}
               className="absolute h-[350px] w-[500px] bg-red-500 -bottom-8 right-8"
             />
@@ -110,7 +125,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 3.3 */}
             <ParallaxBox
-              inputRange={[1200, 3200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_3}
               speed={0.4}
               className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
             />
@@ -145,7 +161,7 @@ export function Hero() {
         aria-hidden="true"
         className="hidden md:flex md:absolute md:inset-0 overflow-hidden z-20 pointer-events-none"
       >
-        {/* Column 1 — empty (add ParallaxBox entries here to appear above text) */}
+        {/* Column 1 */}
         <div className="flex-1 flex flex-col">
           {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
@@ -153,7 +169,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 1.2 */}
             <ParallaxBox
-              inputRange={[400, 2200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_2}
               speed={0.2}
               className="absolute h-[300px] w-[200px] bg-red-500 bottom-24 right-4"
             />
@@ -164,31 +181,26 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 1.4 */}
             <ParallaxBox
-              inputRange={[1800, 3400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_4}
               speed={0.45}
               className="absolute h-[460px] w-[320px] bg-red-500 top-10 right-8"
             />
           </div>
         </div>
 
-        {/* Column 2 — empty */}
-        <div className="hidden md:flex flex-1 flex-col">
+        {/* Column 2 */}
+        <div className="flex-1 flex flex-col">
           {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.1 */}
-            {/* <ParallaxBox
-              inputRange={[-300, 1400]}
-              speed={0.5}
-              className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
-            /> */}
-          </div>
+          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
           {/* Row 2 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
           {/* Row 3 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 2.3 */}
             <ParallaxBox
-              inputRange={[1200, 3200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_3}
               speed={0.25}
               className="absolute h-[380px] w-[300px] bg-red-500 bottom-20 -left-20"
             />
@@ -205,7 +217,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 3.2 */}
             <ParallaxBox
-              inputRange={[400, 2200]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_2}
               speed={0.55}
               className="absolute h-[380px] w-[280px] bg-red-500 top-24 -left-6"
             />
@@ -216,7 +229,8 @@ export function Hero() {
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             {/* Image 3.4 */}
             <ParallaxBox
-              inputRange={[1800, 3400]}
+              scrollY={scrollY}
+              inputRange={SCROLL_RANGE_4}
               speed={0.8}
               className="absolute h-[320px] w-[250px] bg-red-500 top-10 left-0"
             />

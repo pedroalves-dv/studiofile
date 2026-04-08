@@ -6,13 +6,6 @@ import { motion, useAnimationControls } from "motion/react";
 const LETTERS = ["T", "O", "T", "E", "M"] as const;
 const STACK_Y = [44, 32, 21, 10, 0] as const;
 
-const GRID_OVERLAY = {
-  backgroundImage:
-    "linear-gradient(rgba(95, 85, 235, 0.04) 1px, transparent 1px), " +
-    "linear-gradient(90deg, rgba(255, 92, 63, 0.04) 1px, transparent 1px)",
-  backgroundSize: "80px 80px",
-} as const;
-
 export function LandingHero() {
   const controls = useAnimationControls();
 
