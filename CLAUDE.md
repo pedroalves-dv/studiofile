@@ -19,7 +19,7 @@ Modular home decor, lighting, and furniture. Art-directed, editorial aesthetic �
 | ---------- | ------------------------------------------------------------------------ |
 | Frontend   | Next.js 16.2.1 App Router, TypeScript 5.6.0 (`strict: false`)           |
 | Styling    | Tailwind CSS 3.4.0                                                       |
-| Backend    | Shopify Storefront API 2024-01 (GraphQL, no SDK — custom fetch wrapper)  |
+| Backend    | Shopify Storefront API 2026 - Headless (Integrated App) - (GraphQL, no SDK — custom fetch wrapper)  |
 | Animations | CSS transitions · `motion` 12.37.0 · View Transitions API                |
 | Scroll     | Lenis 1.3.18 via `SmoothScroll` component                               |
 | Analytics  | Vercel Analytics 1.3.0 + Speed Insights 1.0.0                           |
@@ -76,17 +76,6 @@ Modular home decor, lighting, and furniture. Art-directed, editorial aesthetic �
 - When given a bug report: just fix it. Don't ask for hand-holding
 - Point at logs, errors, failing tests — then resolve them
 - Zero context switching required from the user
-
----
-
-## Task Management
-
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to `tasks/todo.md`
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
 
 ---
 
