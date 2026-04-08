@@ -66,13 +66,13 @@ export function LandingHero() {
   return (
     <section
       id="landing-hero"
-      className="relative w-full bg-canvas overflow-hidden border-b border-accent/10"
-      style={{ minHeight: "100dvh" }}
+      className="relative w-full bg-canvas overflow-hidden border-b border-accent/10 section-centered"
+      // style={{ minHeight: "100dvh" }}
     >
       <div
         className="relative z-10 flex flex-col items-center justify-center gap-10
-          w-full px-6 md:px-12 py-10 md:py-14"
-        style={{ minHeight: "100dvh" }}
+          w-full px-6 md:px-12 py-10 md:py-14 section-centered"
+        // style={{ minHeight: "100dvh" }}
       >
         {/* TOTEM title */}
         <h1

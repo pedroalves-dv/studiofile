@@ -136,7 +136,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     href={link.href}
                     className={cn(
                       "flex items-end",
-                      "font-semibold tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200 leading-none",
+                      "font-medium tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200 leading-none",
                       pathname === link.href ? "text-light" : "text-ink",
                       link.linkClassName,
                     )}

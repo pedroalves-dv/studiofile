@@ -34,7 +34,7 @@ export function Hero() {
             <ParallaxBox
               inputRange={[-300, 1400]}
               speed={0.3}
-              className="absolute h-[450px] w-[300px] bg-red-500 top-52 right-20"
+              className="absolute h-[450px] w-[350px] bg-red-500 top-52 right-20"
             />
           </div>
           {/* Row 2 */}
@@ -47,7 +47,7 @@ export function Hero() {
             <ParallaxBox
               inputRange={[1200, 3200]}
               speed={0.5}
-              className="absolute h-[350px] w-[250px] bg-red-500 top-16 left-10"
+              className="absolute h-[650px] w-[450px] bg-red-500 top-16 left-6"
             />
           </div>
           {/* Row 4 */}
@@ -99,7 +99,7 @@ export function Hero() {
             <ParallaxBox
               inputRange={[-300, 1400]}
               speed={0.2}
-              className="absolute h-[350px] w-[560px] bg-red-500 -bottom-8 right-0"
+              className="absolute h-[350px] w-[500px] bg-red-500 -bottom-8 right-8"
             />
           </div>
           {/* Row 2 */}
@@ -190,7 +190,7 @@ export function Hero() {
             <ParallaxBox
               inputRange={[1200, 3200]}
               speed={0.25}
-              className="absolute h-[380px] w-[300px] bg-red-500 bottom-60 -left-20"
+              className="absolute h-[380px] w-[300px] bg-red-500 bottom-20 -left-20"
             />
           </div>
           {/* Row 4 */}

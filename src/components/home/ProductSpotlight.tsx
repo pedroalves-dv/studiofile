@@ -29,7 +29,7 @@ export function ProductSpotlight() {
 
         {/* Text — below image */}
         <div className="px-5 py-24 space-y-4">
-          <p className="text-6xl font-medium tracking-[-0.06em] leading-[1]">
+          <p className="text-7xl font-medium tracking-[-0.06em] leading-[1]">
             Introducing TOTEM — <br />
           </p>
           <p className="text-6xl text-light font-medium tracking-[-0.06em] leading-[0.9] pb-16">
@@ -51,7 +51,7 @@ export function ProductSpotlight() {
       <div className="section-height hidden sm:grid pl-5 grid-cols-2 gap-12 lg:gap-20 items-start">
         {/* Left — sticky text */}
         <div className="py-24 space-y-4 xl:space-y-8">
-          <p className="text-8xl font-medium tracking-[-0.07em] leading-[0.9]">
+          <p className="text-9xl font-medium tracking-[-0.07em] leading-[0.9]">
             Introducing <br />
             <span className="tracking-[-0.07em]">
               TOT
@@ -60,7 +60,7 @@ export function ProductSpotlight() {
               </span>
             </span>
           </p>
-          <p className="text-8xl text-light font-medium tracking-[-0.07em] leading-[0.8] pb-16">
+          <p className="text-9xl text-light font-medium tracking-[-0.07em] leading-[0.8] pb-16">
             The{" "}
             <span className="text-ink tracking-[-0.07em]">
               mo<span className="ml-[1px]">d</span>
@@ -69,11 +69,6 @@ export function ProductSpotlight() {
             </span>{" "}
             that adapts to you.
           </p>
-          {/* <ArrowButton
-            href="/shop"
-            label="Discover"
-            className="w-fit mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md  border border-ink  disabled:opacity-50 justify-self-end"
-          /> */}
         </div>
 
         {/* Right — image */}

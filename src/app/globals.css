@@ -22,6 +22,14 @@
 }
 
 @font-face {
+  font-family: "Instrument";
+  src: url("/fonts/InstrumentSerif-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "KH Regular";
   src: url("/fonts/KHTeka-Regular.woff2") format("woff2");
   font-weight: normal;
@@ -109,7 +117,7 @@
     --font-body: var(--font-geist-sans), sans-serif;
     --font-mono: var(--font-geist-sans), monospace;
     --font-mono2: var(--font-jetbrains), monospace;
-    --font-serif: var(--font-instrument-serif), serif;
+    --font-serif: "Instrument", serif;
     --font-inter: var(--font-inter-tight), sans-serif;
     --font-stack: "Stack Regular", sans-serif;
     --font-stacktext: "StackText", sans-serif;

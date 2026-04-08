@@ -72,7 +72,8 @@ export function HeroContent() {
     const tBearing100 = tInk.left - measure.getBoundingClientRect().left;
     const ml = TARGET_MARGIN - tBearing100 * (fs / 100);
 
-    return { fontSize: fs, marginLeft: ml };
+    return { fontSize: fs };
+    // return { fontSize: fs, marginLeft: ml };
   }, []);
 
   const mSpan = h1Ref.current?.querySelectorAll("span")[4];
@@ -93,7 +94,7 @@ export function HeroContent() {
       const layout = computeLayout();
       if (!layout || !h1Ref.current) return;
       h1Ref.current.style.fontSize = `${layout.fontSize}px`;
-      h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+      // h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -147,7 +148,7 @@ export function HeroContent() {
       // Batch all three state updates in one render so FLIP captures the
       // fully-corrected endpoint — no second adjustment after animation.
       setFontSize(layout.fontSize);
-      setHMarginLeft(layout.marginLeft);
+      // setHMarginLeft(layout.marginLeft);
       setIsHorizontal(true);
     };
 
@@ -164,7 +165,7 @@ export function HeroContent() {
       */
       className={`
         relative overflow-hidden transition-all duration-1000 ease-in-out
-        ${isHorizontal ? "h-full" : "section-centered"}
+        ${isHorizontal ? "h-full" : "section-centered pt-4"}
       `}
     >
       {/* Hidden element for ink-width measurement at 100px.
@@ -210,7 +211,7 @@ export function HeroContent() {
         className={`flex leading-none text-ink font-display ${
           isHorizontal
             ? "flex-row w-full justify-center"
-            : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8"
+            : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8 sm:-space-y-10"
         }`}
         style={
           fontSize

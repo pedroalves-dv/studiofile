@@ -61,10 +61,10 @@ export default function AboutPage() {
       <section className="section-height">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
-          <div className="md:sticky md:top-14 md:self-start space-y-6 py-12 sm:py-24">
+          <div className="md:sticky md:top-14 md:self-start space-y-6 py-12 sm:pb-24 sm:pt-14">
             {/* Left — info */}
 
-            <h1 className="text-7xl sm:text-8xl font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-12">
+            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-12">
               The studio
             </h1>
             <div className="text-ink tracking-[-0.03em] text-lg leading-tight space-y-6 pr-12">
@@ -104,8 +104,8 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Studio Values / Process ─── */}
-      <section className="-mx-5 border-t border-stroke py-12 sm:py-24">
-        <h1 className="px-5 text-7xl sm:text-8xl font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-24 ">
+      <section className="-mx-5 border-t border-stroke py-12 sm:pb-24 sm:pt-14 section-height">
+        <h1 className="px-5 text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-24 ">
           The process
         </h1>
         <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40 ">
@@ -133,8 +133,8 @@ export default function AboutPage() {
       <section className="-mx-5 border-t border-stroke">
         <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
-          <div className="space-y-6 md:sticky md:top-14 pr-12 py-12 sm:py-24">
-            <h1 className="text-7xl sm:text-8xl font-semibold tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+          <div className="space-y-6 md:sticky md:top-14 pr-12 py-12 sm:pb-24 sm:pt-14">
+            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
               The team
             </h1>
             <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">

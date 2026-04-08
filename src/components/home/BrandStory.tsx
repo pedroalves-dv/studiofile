@@ -15,7 +15,7 @@ function AnimatedParagraph({
   const isInView = useInView(ref, { once: false, amount: 0.3 });
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
@@ -55,7 +55,10 @@ export default function BrandStory() {
     "z-10 text-4xl lg:text-7xl xl:text-8xl leading-[1] font-medium tracking-[-0.1rem] md:tracking-[-0.2rem] lg:tracking-[-0.3rem] xl:tracking-[-0.4rem] text-ink text-justify ligatures";
 
   return (
-    <section className="relative overflow-hidden" onMouseMove={handleMouseMove}>
+    <section
+      className="relative py-20 overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
       {/* Cursor-following hover image */}
       <div
         ref={imgRef}

@@ -75,7 +75,7 @@ export default function FaqPage() {
           {/* Left — info */}
           <div className="space-y-8 xl:sticky xl:top-28">
             <div className="h-full flex flex-col items-start justify-center space-y-8">
-              <h1 className="text-7xl sm:text-9xl font-semibold tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
+              <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
                 FAQ
               </h1>
 
