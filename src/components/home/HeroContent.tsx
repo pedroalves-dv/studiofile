@@ -24,22 +24,24 @@ export function HeroContent() {
   const controls = useAnimationControls();
   const [isHorizontal, setIsHorizontal] = useState(false);
   const [fontSize, setFontSize] = useState<number | null>(null);
+  const [marginLeft, setMarginLeft] = useState(0);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
 
   /**
    * Uses the Range API to get actual ink (glyph) bounds from measureRef at 100px.
-   * Returns the ink-accurate font size (so ink fills available width exactly)
-   * and the marginLeft needed to shift T's ink to the container's left padding edge.
-   * Both values are applied in one batch render so Motion's FLIP captures the
+   * - fontSize: scales ink span (T left → M right) to fill viewportWidth − 2×TARGET_MARGIN
+   * - marginLeft: shifts h1 so T's ink left edge lands exactly at TARGET_MARGIN
+   *   M's ink right edge then lands at viewportWidth − TARGET_MARGIN by arithmetic.
+   * Both values are applied in one batched render so Motion's FLIP captures the
    * correct final positions — no post-animation correction needed.
    */
   const computeLayout = useCallback(() => {
     const measure = measureRef.current;
     if (!measure) return null;
 
-    const TARGET_MARGIN = 12; // px-5 equivalent
+    const TARGET_MARGIN = 12;
     const viewportWidth = window.innerWidth;
     const availableInkWidth = viewportWidth - TARGET_MARGIN * 2;
 
@@ -58,7 +60,15 @@ export function HeroContent() {
 
     const fs = (100 * availableInkWidth) / inkWidth100;
 
-    return { fontSize: fs };
+    // Measure T's actual left bearing at fs directly — avoids linear-scaling error from 100px.
+    measure.style.fontSize = `${fs}px`;
+    const tInkAtFs = getInkRect(spans[0]);
+    const measureLeft = measure.getBoundingClientRect().left;
+    measure.style.fontSize = "100px";
+
+    const ml = TARGET_MARGIN - (tInkAtFs.left - measureLeft);
+
+    return { fontSize: fs, marginLeft: ml };
   }, []);
 
   // Compensate for extra whitespace below M glyph — must run after layout changes.
@@ -81,7 +91,7 @@ export function HeroContent() {
       const layout = computeLayout();
       if (!layout || !h1Ref.current) return;
       h1Ref.current.style.fontSize = `${layout.fontSize}px`;
-      // h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+      h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -134,10 +144,10 @@ export function HeroContent() {
       const layout = computeLayout();
       if (!layout) return;
 
-      // Batch all three state updates in one render so FLIP captures the
+      // Batch all state updates in one render so FLIP captures the
       // fully-corrected endpoint — no second adjustment after animation.
       setFontSize(layout.fontSize);
-      // setHMarginLeft(layout.marginLeft);
+      setMarginLeft(layout.marginLeft);
       setIsHorizontal(true);
     };
 
@@ -196,7 +206,7 @@ export function HeroContent() {
         ref={h1Ref}
         className={`flex leading-none text-ink font-display ${
           isHorizontal
-            ? "flex-row w-full justify-center"
+            ? "flex-row w-full"
             : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8 sm:-space-y-10"
         }`}
         style={
@@ -204,7 +214,7 @@ export function HeroContent() {
             ? {
                 fontSize: `${fontSize}px`,
                 letterSpacing: "-0.04em",
-                // marginLeft: `${hMarginLeft}px`,
+                marginLeft: `${marginLeft}px`,
               }
             : {}
         }
