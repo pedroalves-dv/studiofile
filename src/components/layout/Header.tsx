@@ -162,7 +162,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       }}
                       className={cn(
                         "relative h-full flex items-end",
-                        isAccountOpen && "bg-white",
+                        isAccountOpen && "opacity-50",
                       )}
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
@@ -179,7 +179,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       />
                     </button>
                     {isAccountOpen && (
-                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] bg-white border border-ink z-50 flex flex-col">
+                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] opacity-50 border border-ink z-50 flex flex-col">
                         <div className="p-1">
                           {[
                             { label: "My Account", href: "/account" },
@@ -247,11 +247,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       setIsAccountOpen(false);
                     }
                   }}
-                  // className={cn(
-                  //   "h-full flex w-18 justify-center items-center py-3 px-5 border-l border-ink relative",
-                  //   isOpen && "bg-white",
-                  // )}
-                  className={cn("h-full flex relative", isOpen && "bg-white")}
+                  className={cn("h-full flex relative", isOpen && "opacity-50")}
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -281,7 +277,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   }}
                   className={cn(
                     "md:hidden h-full flex relative -mr-1",
-                    (isMobileMenuOpen || isClosingMenu) && "bg-white",
+                    (isMobileMenuOpen || isClosingMenu) && "opacity-50",
                   )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
