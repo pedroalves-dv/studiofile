@@ -1,13 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import {
-  Minus,
-  Plus,
-  ShieldCheck,
-  RotateCcw,
-  PackageCheck,
-} from "lucide-react";
+import { ShieldCheck, RotateCcw, PackageCheck } from "lucide-react";
+import { QuantityStepper } from "@/components/ui/QuantityStepper";
 import type {
   ShopifyProduct,
   ShopifyProductVariant,
@@ -74,9 +69,6 @@ export function ProductInfoPanel({
     setSelectedVariant(variant);
     setQuantity(1);
   }, []);
-
-  const decreaseQty = () => setQuantity((q) => Math.max(1, q - 1));
-  const increaseQty = () => setQuantity((q) => Math.min(maxQty, q + 1));
 
   const handleAddToCart = async () => {
     if (!selectedVariant.availableForSale) return;
@@ -156,27 +148,12 @@ export function ProductInfoPanel({
           <span className="text-lg text-muted">Quantity</span>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex items-center rounded-full border border-stroke w-fit">
-                <button
-                  onClick={decreaseQty}
-                  disabled={quantity <= 1}
-                  aria-label="Decrease quantity"
-                  className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="px-5 py-3 text-sm min-w-[3.5rem] text-center border-x border-stroke">
-                  {quantity}
-                </span>
-                <button
-                  onClick={increaseQty}
-                  disabled={quantity >= maxQty}
-                  aria-label="Increase quantity"
-                  className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
+              <QuantityStepper
+                value={quantity}
+                onChange={setQuantity}
+                max={maxQty}
+                size="md"
+              />
 
               {quantity > 1 && (
                 <p className="text-4xl text-light tracking-[-0.02em]">

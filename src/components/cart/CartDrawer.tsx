@@ -40,14 +40,14 @@ export function CartDrawer() {
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
-        className="w-full fixed top-0 bottom-0 right-0 max-w-md flex flex-col bg-white sm:border-x sm:border-ink"
+        className="w-full fixed top-0 bottom-0 right-0 max-w-md flex flex-col bg-white sm:border-x sm:border-light"
         style={{
           animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}
       >
         {/* Header */}
         <div className="flex items-center justify-between py-4 border-b border-stroke px-5">
-          <h2 className="text-3xl font-semibold text-ink tracking-[-0.03em] leading-tight">
+          <h2 className="text-3xl font-semibold text-ink tracking-[-0.03em] leading-none translate-y-[2px]">
             Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
           </h2>
           <button onClick={closeCart} aria-label="Close cart">

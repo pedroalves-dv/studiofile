@@ -83,7 +83,7 @@ export function DiscountInput() {
           <button
             onClick={handleApply}
             disabled={isLoading || !code.trim()}
-            className="px-3 py-1.5 text-base bg-ink text-canvas disabled:opacity-50 hover:opacity-90 transition-opacity rounded-md"
+            className="px-4 py-1.5 text-base bg-ink text-canvas disabled:opacity-50 hover:opacity-90 transition-opacity rounded-md"
           >
             {isLoading ? "..." : "Apply"}
           </button>

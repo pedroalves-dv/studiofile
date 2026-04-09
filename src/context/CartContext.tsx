@@ -34,7 +34,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case 'SET_CART':
-      return { ...state, cart: action.cart, cartId: action.cart.id };
+      return {
+        ...state,
+        cart: action.cart,
+        cartId: action.cart.lines.length > 0 ? action.cart.id : null,
+      };
     case 'SET_CART_ID':
       return { ...state, cartId: action.cartId };
     case 'CLEAR_CART':
@@ -69,7 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_LOADING', loading: true });
     getCart(stored)
       .then((cart) => {
-        if (cart) {
+        if (cart && cart.lines.length > 0) {
           dispatch({ type: 'SET_CART', cart });
         } else {
           localStorage.removeItem(CART_ID_KEY);

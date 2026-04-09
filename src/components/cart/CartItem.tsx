@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils/format";
+import { QuantityStepper } from "@/components/ui/QuantityStepper";
 import type { ShopifyCartLine } from "@/lib/shopify/types";
 
 interface CartItemProps {
@@ -28,7 +29,7 @@ export function CartItem({ line }: CartItemProps) {
   return (
     <div className="flex gap-4 py-4 border-b border-stroke last:border-b-0">
       {/* Thumbnail */}
-      <div className="flex-shrink-0 w-16 h-16 bg-stone-100 relative overflow-hidden">
+      <div className="flex-shrink-0 w-24 aspect-square bg-stone-100 relative overflow-hidden">
         {merchandise.image ? (
           <Image
             src={merchandise.image.url}
@@ -44,7 +45,7 @@ export function CartItem({ line }: CartItemProps) {
 
       {/* Details */}
       <div className="flex-1 min-w-0">
-        <p className="text-3xl font-semibold tracking-tighter leading-none text-ink truncate">
+        <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
           {merchandise.product.title}
         </p>
         {merchandise.title !== "Default Title" && (
@@ -72,26 +73,14 @@ export function CartItem({ line }: CartItemProps) {
 
         {/* Quantity stepper + line total */}
         <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLocalQuantity((q) => Math.max(1, q - 1))}
-              aria-label="Decrease quantity"
-              className="w-6 h-6 flex items-center justify-center border border-stroke hover:border-ink transition-colors"
-            >
-              <Minus size={12} />
-            </button>
-            <span className="text-xs w-4 text-center">{localQuantity}</span>
-            <button
-              onClick={() => setLocalQuantity((q) => q + 1)}
-              aria-label="Increase quantity"
-              className="w-6 h-6 flex items-center justify-center border border-stroke hover:border-ink transition-colors"
-            >
-              <Plus size={12} />
-            </button>
-          </div>
+          <QuantityStepper
+            value={localQuantity}
+            onChange={setLocalQuantity}
+            size="sm"
+          />
 
-          <div className="flex items-center gap-3">
-            <span className="text-xs">
+          <div className="flex items-center gap-3 leading-none">
+            <span className="text-base mt-0.5">
               {formatPrice(
                 line.cost.totalAmount.amount,
                 line.cost.totalAmount.currencyCode,
@@ -100,9 +89,9 @@ export function CartItem({ line }: CartItemProps) {
             <button
               onClick={() => removeItem(line.id)}
               aria-label={`Remove ${merchandise.product.title}`}
-              className="text-muted hover:text-error transition-colors"
+              className="flex items-center text-muted hover:text-error transition-colors"
             >
-              <Trash2 size={14} />
+              <Trash2 size={16} />
             </button>
           </div>
         </div>
