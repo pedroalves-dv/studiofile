@@ -6,7 +6,7 @@ export function EmptyCart() {
   return (
     <div className="flex flex-col h-full gap-6 pb-24">
       <div className="py-4">
-        <p className="text-7xl font-semibold tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
+        <p className="text-7xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
           Your cart is empty
         </p>
       </div>

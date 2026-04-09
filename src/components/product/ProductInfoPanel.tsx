@@ -108,8 +108,8 @@ export function ProductInfoPanel({
       </h1>
 
       {/* Price */}
-      <div className="flex items-start gap-4">
-        <span className="text-4xl tracking-tight text-ink">
+      <div className="flex items-start gap-4 py-2">
+        <span className="text-4xl tracking-tighter text-ink translate-y-[-3px]">
           {formatPrice(price.amount, price.currencyCode)}
         </span>
         {onSale && compareAtPrice && (
@@ -130,7 +130,7 @@ export function ProductInfoPanel({
       {/* Short description teaser */}
       <span className="text-lg text-muted">Description</span>
       {product.description && (
-        <p className="text-sm text-light leading-none">
+        <p className="text-base text-light leading-none">
           {getFirstTwoSentences(product.description)}
         </p>
       )}
@@ -156,7 +156,7 @@ export function ProductInfoPanel({
               />
 
               {quantity > 1 && (
-                <p className="text-4xl text-light tracking-[-0.02em]">
+                <p className="text-4xl text-light tracking-tighter">
                   {/* {quantity} × {formatPrice(price.amount, price.currencyCode)}{" "}
                 &middot;{" "} */}
                   <span className="text-light">
@@ -165,7 +165,6 @@ export function ProductInfoPanel({
                       price.currencyCode,
                     )}
                   </span>{" "}
-                  total
                 </p>
               )}
             </div>
@@ -208,20 +207,25 @@ export function ProductInfoPanel({
       {/* Accordion — Description, Specs, Materials, Care */}
       <AccordionRoot
         type="multiple"
-        className="border border-stroke rounded-md"
+        className="border border-stroke rounded-lg bg-canvas tracking-tight"
       >
-        <AccordionItem value="description" className="border-b border-stroke">
-          <AccordionTrigger className="p-4 text-lg text-ink">
-            Description
+        <AccordionItem
+          value="description"
+          className="border-b border-stroke last:border-b-0"
+        >
+          <AccordionTrigger className="px-4 pt-4">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight pb-4">
+              Description
+            </p>
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="p-2">
             {product.descriptionHtml ? (
               <div
-                className="p-4 text-base text-muted leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+                className="text-lg text-ink tracking-[-0.03em] leading-tight p-4 [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
                 dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
               />
             ) : (
-              <p className="p-4 text-sm text-muted">
+              <p className="text-lg text-ink tracking-[-0.03em] leading-tight p-4">
                 No description available.
               </p>
             )}
@@ -230,12 +234,14 @@ export function ProductInfoPanel({
 
         <AccordionItem
           value="specifications"
-          className="border-b border-stroke"
+          className="border-b border-stroke last:border-b-0"
         >
-          <AccordionTrigger className="p-4 text-lg text-ink">
-            Specifications
+          <AccordionTrigger className="px-4 pt-4">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight pb-4">
+              Specifications
+            </p>
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent className="p-2">
             {specs.length > 0 ? (
               <dl className="p-4 divide-y divide-stroke">
                 {specs.map(({ key, value }) => (
@@ -246,31 +252,41 @@ export function ProductInfoPanel({
                 ))}
               </dl>
             ) : (
-              <p className="p-4 text-base text-muted">
+              <p className="text-lg text-ink tracking-[-0.03em] leading-tight p-4">
                 Specifications will be added soon.
               </p>
             )}
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="materials" className="border-b border-stroke">
-          <AccordionTrigger className="p-4 text-lg text-ink">
-            Materials
+        <AccordionItem
+          value="materials"
+          className="border-b border-stroke last:border-b-0"
+        >
+          <AccordionTrigger className="px-4 pt-4">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight pb-4">
+              Materials
+            </p>
           </AccordionTrigger>
-          <AccordionContent>
-            <p className="p-4 text-base text-muted leading-relaxed">
+          <AccordionContent className="p-2">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight p-4">
               All Studiofile pieces are printed in PLA+ using professional FDM
               printers. Materials may vary by colorway.
             </p>
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="care" className="">
-          <AccordionTrigger className="p-4 text-lg text-ink">
-            Care & Assembly
+        <AccordionItem
+          value="care"
+          className="border-b border-stroke last:border-b-0"
+        >
+          <AccordionTrigger className="px-4 pt-4">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight pb-4">
+              Care & Assembly
+            </p>
           </AccordionTrigger>
-          <AccordionContent>
-            <p className="p-4 text-base text-muted leading-relaxed">
+          <AccordionContent className="p-2">
+            <p className="text-lg text-ink tracking-[-0.03em] leading-tight p-4">
               Handle with care. Wipe clean with a dry cloth. Assembly
               instructions are included with your order.
             </p>

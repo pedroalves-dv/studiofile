@@ -195,7 +195,7 @@
     letter-spacing: -0.03em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    border-right: 1px solid var(--color-light);
+    border-right: 1px solid var(--color-stroke);
     overflow-x: hidden;
   }
 

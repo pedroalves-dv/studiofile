@@ -102,7 +102,7 @@ export default function FaqPage() {
                   value={`step-${i}`}
                   className="border-b border-stroke last:border-b-0"
                 >
-                  <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-6 pt-4">
+                  <AccordionTrigger className="grid grid-cols-[10fr_1fr] md:grid-cols-2 px-4 pt-4">
                     <div className="flex flex-col text-left">
                       <p className="text-lg text-ink tracking-[-0.03em] leading-tight pb-4">
                         {step.title}

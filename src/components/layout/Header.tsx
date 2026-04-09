@@ -96,6 +96,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
     }
   }, [isMobileMenuOpen]);
 
+  const hasActiveLink = NAV_LINKS.some((l) => pathname === l.href);
+  const someIconActive =
+    isOpen || isAccountOpen || isMobileMenuOpen || isClosingMenu;
+
   return (
     <>
       {/* Backdrop for mobile menu */}
@@ -110,7 +114,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
-        <div className="h-full px-5 border-b sm:border-r border-light">
+        <div className="h-full px-5 border-b sm:border-r border-stroke">
           {/* 2-column grid: logo left, nav+icons right */}
           <div className="h-full grid grid-cols-2 items-end pb-3">
             {/* Logo */}
@@ -127,7 +131,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             <div className="h-full flex justify-self-end items-end">
               {/* Desktop Nav */}
               <nav
-                className="hidden md:flex md:gap-8 lg:gap-20 items-end h-full mr-16 lg:mr-36"
+                className="hidden md:flex md:gap-8 lg:gap-20 items-end h-full mr-16 lg:mr-36 group"
                 aria-label="Main navigation"
               >
                 {NAV_LINKS.map((link) => (
@@ -135,9 +139,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "flex items-end",
-                      "font-medium tracking-[-0.04em] text-lg hover:text-light transition-colors duration-200 leading-none",
-                      pathname === link.href ? "text-light" : "text-ink",
+                      "flex items-end text-ink",
+                      "font-medium tracking-[-0.04em] text-lg leading-none",
+                      "transition-opacity duration-200",
+                      "group-hover:opacity-35 hover:!opacity-100",
+                      hasActiveLink && pathname !== link.href && "opacity-35",
                       link.linkClassName,
                     )}
                   >
@@ -147,7 +153,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               </nav>
               {/* _________ Icons _________ */}
               {/* <div className="flex items-center justify-center border-x border-ink"> */}
-              <div className="flex gap-6 ">
+              <div
+                className={cn(
+                  "flex gap-6 sm:gap-8",
+                  !someIconActive && "group",
+                )}
+              >
                 {/* Account Icon */}
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">
@@ -161,8 +172,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         }
                       }}
                       className={cn(
-                        "relative h-full flex items-end",
-                        isAccountOpen && "opacity-50",
+                        "relative h-full flex items-end transition-opacity duration-200",
+                        !someIconActive &&
+                          "group-hover:opacity-35 hover:!opacity-100",
+                        someIconActive && !isAccountOpen && "opacity-35",
                       )}
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
@@ -179,7 +192,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       />
                     </button>
                     {isAccountOpen && (
-                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] opacity-50 border border-ink z-50 flex flex-col">
+                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] opacity-35 border border-ink z-50 flex flex-col">
                         <div className="p-1">
                           {[
                             { label: "My Account", href: "/account" },
@@ -215,7 +228,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                                 }
                               });
                             }}
-                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-50 disabled:pointer-events-none"
+                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-35 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
                           </button>
@@ -226,7 +239,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ) : (
                   <Link
                     href="/account/login"
-                    className="relative h-full flex"
+                    className={cn(
+                      "relative h-full flex transition-opacity duration-200",
+                      !someIconActive &&
+                        "group-hover:opacity-35 hover:!opacity-100",
+                      someIconActive && "opacity-35",
+                    )}
                     aria-label="Sign in"
                     onMouseEnter={() => userIconRef.current?.startAnimation()}
                     onMouseLeave={() => userIconRef.current?.stopAnimation()}
@@ -247,7 +265,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                       setIsAccountOpen(false);
                     }
                   }}
-                  className={cn("h-full flex relative", isOpen && "opacity-50")}
+                  className={cn(
+                    "h-full flex relative transition-opacity duration-200",
+                    !someIconActive &&
+                      "group-hover:opacity-35 hover:!opacity-100",
+                    someIconActive && !isOpen && "opacity-35",
+                  )}
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -276,8 +299,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "md:hidden h-full flex relative -mr-1",
-                    (isMobileMenuOpen || isClosingMenu) && "opacity-50",
+                    "md:hidden h-full flex relative -mr-1 transition-opacity duration-200",
+                    !someIconActive &&
+                      "group-hover:opacity-35 hover:!opacity-100",
+                    someIconActive &&
+                      !(isMobileMenuOpen || isClosingMenu) &&
+                      "opacity-35",
                   )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
@@ -296,7 +323,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between "
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between group"
           aria-label="Mobile navigation"
         >
           <div>
@@ -306,8 +333,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
-                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures",
-                  pathname === link.href ? "text-light" : "text-ink",
+                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
+                  "transition-opacity duration-200",
+                  "group-hover:opacity-35 hover:!opacity-100",
+                  hasActiveLink && pathname !== link.href && "opacity-35",
                   link.linkClassName,
                 )}
               >
@@ -318,7 +347,11 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex pt-4 border-t border-ink mt-4 w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink  ligatures"
+              className={cn(
+                "flex pt-4 border-t border-ink mt-4 w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                "transition-opacity duration-200 group-hover:opacity-35 hover:!opacity-100",
+                hasActiveLink && "opacity-35",
+              )}
             >
               {isLoggedIn ? "Account" : "Sign in"}
             </Link>
