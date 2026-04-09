@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import type { ShopifyProductVariant } from '@/lib/shopify/types';
-import { cn } from '@/lib/utils/cn';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { ShopifyProductVariant } from "@/lib/shopify/types";
+import { cn } from "@/lib/utils/cn";
 
 interface VariantSelectorProps {
   variants: ShopifyProductVariant[];
@@ -17,22 +17,26 @@ export function VariantSelector({
   onVariantChange,
 }: VariantSelectorProps) {
   const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(
-    Object.fromEntries(selectedVariant.selectedOptions.map((o) => [o.name, o.value]))
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string>
+  >(
+    Object.fromEntries(
+      selectedVariant.selectedOptions.map((o) => [o.name, o.value]),
+    ),
   );
 
   // If single variant with default "Title" option, nothing to show
   if (
     variants.length === 1 &&
     variants[0].selectedOptions.length === 1 &&
-    variants[0].selectedOptions[0].name === 'Title'
+    variants[0].selectedOptions[0].name === "Title"
   ) {
     return null;
   }
 
   // Collect all unique option names
   const optionNames = Array.from(
-    new Set(variants.flatMap((v) => v.selectedOptions.map((o) => o.name)))
+    new Set(variants.flatMap((v) => v.selectedOptions.map((o) => o.name))),
   );
 
   const handleSelect = (optionName: string, value: string) => {
@@ -40,12 +44,14 @@ export function VariantSelector({
     setSelectedOptions(newOptions);
 
     const match = variants.find((v) =>
-      v.selectedOptions.every((o) => newOptions[o.name] === o.value)
+      v.selectedOptions.every((o) => newOptions[o.name] === o.value),
     );
     if (match) {
       onVariantChange(match);
       // Sync selected variant to URL so it can be shared
-      router.replace(`?variant=${encodeURIComponent(match.id)}`, { scroll: false });
+      router.replace(`?variant=${encodeURIComponent(match.id)}`, {
+        scroll: false,
+      });
     }
   };
 
@@ -55,7 +61,7 @@ export function VariantSelector({
     return variants.some(
       (v) =>
         v.availableForSale &&
-        v.selectedOptions.every((o) => testOptions[o.name] === o.value)
+        v.selectedOptions.every((o) => testOptions[o.name] === o.value),
     );
   };
 
@@ -67,15 +73,17 @@ export function VariantSelector({
             variants
               .flatMap((v) => v.selectedOptions)
               .filter((o) => o.name === optionName)
-              .map((o) => o.value)
-          )
+              .map((o) => o.value),
+          ),
         );
 
         return (
           <div key={optionName}>
             <div className="flex items-baseline justify-between mb-3">
-              <span className="text-label text-muted">{optionName}</span>
-              <span className="text-label text-ink">{selectedOptions[optionName]}</span>
+              <span className="text-lg text-muted">{optionName}</span>
+              {/* <span className="text-lg text-ink">
+                {selectedOptions[optionName]}
+              </span> */}
             </div>
             <div className="flex flex-wrap gap-2">
               {values.map((value) => {
@@ -87,14 +95,15 @@ export function VariantSelector({
                     key={value}
                     onClick={() => available && handleSelect(optionName, value)}
                     disabled={!available}
-                    aria-label={`${optionName}: ${value}${!available ? ' (unavailable)' : ''}`}
+                    aria-label={`${optionName}: ${value}${!available ? " (unavailable)" : ""}`}
                     aria-pressed={selected}
                     className={cn(
-                      'px-4 py-2 text-xs uppercase tracking-wider border transition-all duration-200',
+                      "px-6 py-3 text-sm tracking-normal border rounded-full transition-all duration-200",
                       selected
-                        ? 'bg-ink text-canvas border-ink'
-                        : 'bg-transparent text-ink border-border hover:border-ink',
-                      !available && 'opacity-40 cursor-not-allowed line-through'
+                        ? "bg-ink text-canvas border-ink"
+                        : "bg-transparent text-ink border-stroke hover:border-ink",
+                      !available &&
+                        "opacity-40 cursor-not-allowed line-through",
                     )}
                   >
                     {value}

@@ -15,6 +15,12 @@ import type {
 import { formatPrice, isOnSale, getDiscountPercent } from "@/lib/utils/format";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import {
+  AccordionRoot,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/Accordion";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { StockIndicator } from "./StockIndicator";
 import { VariantSelector } from "./VariantSelector";
@@ -44,8 +50,14 @@ export function ProductInfoPanel({
     firstAvailableVariant,
   );
   const [quantity, setQuantity] = useState(1);
-  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+
+  const specs = product.tags
+    .filter((tag) => tag.includes(":"))
+    .map((tag) => {
+      const i = tag.indexOf(":");
+      return { key: tag.slice(0, i).trim(), value: tag.slice(i + 1).trim() };
+    });
 
   const { addItem } = useCart();
 
@@ -77,8 +89,6 @@ export function ProductInfoPanel({
   };
 
   const shortDescription = getFirstTwoSentences(product.description);
-  const hasMoreDescription =
-    product.description.length > shortDescription.length + 10;
 
   const breadcrumbItems = [
     ...(collectionHandle && collectionTitle
@@ -91,9 +101,9 @@ export function ProductInfoPanel({
   ];
 
   return (
-    <div className="flex flex-col gap-6 py-2">
+    <div className="flex flex-col gap-6">
       {/* Breadcrumb */}
-      <Breadcrumb items={breadcrumbItems} />
+      {/* <Breadcrumb items={breadcrumbItems} /> */}
 
       {/* Product type */}
       {product.productType && (
@@ -101,13 +111,20 @@ export function ProductInfoPanel({
       )}
 
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl leading-tight tracking-tight">
+      <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
         {product.title}
       </h1>
 
+      {/* Short description teaser */}
+      {product.description && (
+        <p className="text-lg text-muted leading-none">
+          {getFirstTwoSentences(product.description)}
+        </p>
+      )}
+
       {/* Price */}
-      <div className="flex items-baseline gap-4">
-        <span className="text-2xl text-ink">
+      <div className="flex items-start gap-4">
+        <span className="text-5xl tracking-tight text-ink">
           {formatPrice(price.amount, price.currencyCode)}
         </span>
         {onSale && compareAtPrice && (
@@ -118,32 +135,12 @@ export function ProductInfoPanel({
             <Badge variant="sale">−{discountPercent}%</Badge>
           </>
         )}
+        {/* Stock indicator */}
+        <StockIndicator
+          availableForSale={selectedVariant.availableForSale}
+          quantityAvailable={selectedVariant.quantityAvailable}
+        />
       </div>
-
-      {/* Stock indicator */}
-      <StockIndicator
-        availableForSale={selectedVariant.availableForSale}
-        quantityAvailable={selectedVariant.quantityAvailable}
-      />
-
-      {/* Short description */}
-      {product.description && (
-        <div className="text-sm text-ink/80 leading-relaxed">
-          <p>
-            {descriptionExpanded || !hasMoreDescription
-              ? product.description
-              : shortDescription}
-          </p>
-          {hasMoreDescription && (
-            <button
-              onClick={() => setDescriptionExpanded((v) => !v)}
-              className="mt-2 text-label text-muted hover:text-ink transition-colors underline"
-            >
-              {descriptionExpanded ? "Read less" : "Read more"}
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Variant selector */}
       <VariantSelector
@@ -155,8 +152,8 @@ export function ProductInfoPanel({
       {/* Quantity stepper */}
       {selectedVariant.availableForSale && (
         <div className="flex flex-col gap-2">
-          <span className="text-label text-muted">Quantity</span>
-          <div className="flex items-center border border-border w-fit">
+          <span className="text-lg text-muted">Quantity</span>
+          <div className="flex items-center rounded-full border border-stroke w-fit">
             <button
               onClick={decreaseQty}
               disabled={quantity <= 1}
@@ -165,7 +162,7 @@ export function ProductInfoPanel({
             >
               <Minus size={14} />
             </button>
-            <span className="px-5 py-3 text-sm min-w-[3rem] text-center border-x border-border">
+            <span className="px-5 py-3 text-sm min-w-[3.5rem] text-center border-x border-border">
               {quantity}
             </span>
             <button
@@ -201,7 +198,7 @@ export function ProductInfoPanel({
       </p>
 
       {/* Trust badges */}
-      <div className="flex flex-wrap gap-5 pt-2 border-t border-border">
+      <div className="flex flex-wrap gap-5 pt-2 border-t border-stroke">
         <div className="flex items-center gap-2 text-label text-muted">
           <RotateCcw size={14} className="text-muted" />
           Free returns
@@ -215,6 +212,76 @@ export function ProductInfoPanel({
           Made to order
         </div>
       </div>
+
+      {/* Accordion — Description, Specs, Materials, Care */}
+      <AccordionRoot type="multiple" className="border-t border-stroke">
+        <AccordionItem value="description" className="border-b border-stroke">
+          <AccordionTrigger className="py-4 text-sm text-ink">
+            Description
+          </AccordionTrigger>
+          <AccordionContent>
+            {product.descriptionHtml ? (
+              <div
+                className="pb-5 text-sm text-ink/80 leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
+            ) : (
+              <p className="pb-5 text-sm text-muted">
+                No description available.
+              </p>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem
+          value="specifications"
+          className="border-b border-stroke"
+        >
+          <AccordionTrigger className="py-4 text-sm text-ink">
+            Specifications
+          </AccordionTrigger>
+          <AccordionContent>
+            {specs.length > 0 ? (
+              <dl className="pb-5 divide-y divide-stroke">
+                {specs.map(({ key, value }) => (
+                  <div key={key} className="flex justify-between py-2 gap-4">
+                    <dt className="text-label text-muted capitalize">{key}</dt>
+                    <dd className="text-xs text-ink">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p className="pb-5 text-sm text-muted">
+                Specifications will be added soon.
+              </p>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="materials" className="border-b border-stroke">
+          <AccordionTrigger className="py-4 text-sm text-ink">
+            Materials
+          </AccordionTrigger>
+          <AccordionContent>
+            <p className="pb-5 text-sm text-ink/80 leading-relaxed">
+              All Studiofile pieces are printed in PLA+ using professional FDM
+              printers. Materials may vary by colorway.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="care" className="border-b border-stroke">
+          <AccordionTrigger className="py-4 text-sm text-ink">
+            Care & Assembly
+          </AccordionTrigger>
+          <AccordionContent>
+            <p className="pb-5 text-sm text-ink/80 leading-relaxed">
+              Handle with care. Wipe clean with a dry cloth. Assembly
+              instructions are included with your order.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionRoot>
     </div>
   );
 }

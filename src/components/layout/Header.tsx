@@ -262,7 +262,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 >
                   <ShoppingBagIcon ref={cartIconRef} />
                   {cartCount > 0 && (
-                    <span className="absolute top-2 right-2 sm:top-1.5 sm:right-1.5 w-4 h-4 flex font-semibold items-center justify-center rounded-full">
+                    <span className="absolute -top-3 -right-3 w-4 h-4 text-sm font-medium">
                       ({cartCount})
                     </span>
                   )}

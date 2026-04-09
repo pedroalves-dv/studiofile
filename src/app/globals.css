@@ -256,8 +256,8 @@
   .text-label {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    letter-spacing: var(--letter-spacing-display);
-    text-transform: uppercase;
+    letter-spacing: 0;
+    /* text-transform: uppercase; */
   }
 
   /* Layout utilities */
