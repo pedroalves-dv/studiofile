@@ -13,7 +13,7 @@ import type {
   ShopifyProductVariant,
 } from "@/lib/shopify/types";
 import { formatPrice, isOnSale, getDiscountPercent } from "@/lib/utils/format";
-import { Button } from "@/components/ui/Button";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 import { Badge } from "@/components/ui/Badge";
 import {
   AccordionRoot,
@@ -101,7 +101,7 @@ export function ProductInfoPanel({
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3">
       {/* Breadcrumb */}
       {/* <Breadcrumb items={breadcrumbItems} /> */}
 
@@ -115,21 +115,14 @@ export function ProductInfoPanel({
         {product.title}
       </h1>
 
-      {/* Short description teaser */}
-      {product.description && (
-        <p className="text-lg text-muted leading-none">
-          {getFirstTwoSentences(product.description)}
-        </p>
-      )}
-
       {/* Price */}
       <div className="flex items-start gap-4">
-        <span className="text-5xl tracking-tight text-ink">
+        <span className="text-4xl tracking-tight text-ink">
           {formatPrice(price.amount, price.currencyCode)}
         </span>
         {onSale && compareAtPrice && (
           <>
-            <span className="text-base text-muted line-through">
+            <span className="text-sm text-muted line-through">
               {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
             </span>
             <Badge variant="sale">−{discountPercent}%</Badge>
@@ -142,6 +135,14 @@ export function ProductInfoPanel({
         />
       </div>
 
+      {/* Short description teaser */}
+      <span className="text-lg text-muted">Description</span>
+      {product.description && (
+        <p className="text-sm text-light leading-none">
+          {getFirstTwoSentences(product.description)}
+        </p>
+      )}
+
       {/* Variant selector */}
       <VariantSelector
         variants={product.variants}
@@ -149,84 +150,101 @@ export function ProductInfoPanel({
         onVariantChange={handleVariantChange}
       />
 
-      {/* Quantity stepper */}
+      {/* Quantity stepper + wishlist */}
       {selectedVariant.availableForSale && (
         <div className="flex flex-col gap-2">
           <span className="text-lg text-muted">Quantity</span>
-          <div className="flex items-center rounded-full border border-stroke w-fit">
-            <button
-              onClick={decreaseQty}
-              disabled={quantity <= 1}
-              aria-label="Decrease quantity"
-              className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <Minus size={14} />
-            </button>
-            <span className="px-5 py-3 text-sm min-w-[3.5rem] text-center border-x border-border">
-              {quantity}
-            </span>
-            <button
-              onClick={increaseQty}
-              disabled={quantity >= maxQty}
-              aria-label="Increase quantity"
-              className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <Plus size={14} />
-            </button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center rounded-full border border-stroke w-fit">
+                <button
+                  onClick={decreaseQty}
+                  disabled={quantity <= 1}
+                  aria-label="Decrease quantity"
+                  className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="px-5 py-3 text-sm min-w-[3.5rem] text-center border-x border-stroke">
+                  {quantity}
+                </span>
+                <button
+                  onClick={increaseQty}
+                  disabled={quantity >= maxQty}
+                  aria-label="Increase quantity"
+                  className="px-4 py-3 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+
+              {quantity > 1 && (
+                <p className="text-4xl text-light tracking-[-0.02em]">
+                  {/* {quantity} × {formatPrice(price.amount, price.currencyCode)}{" "}
+                &middot;{" "} */}
+                  <span className="text-light">
+                    {formatPrice(
+                      (parseFloat(price.amount) * quantity).toFixed(2),
+                      price.currencyCode,
+                    )}
+                  </span>{" "}
+                  total
+                </p>
+              )}
+            </div>
+            <WishlistButton
+              productHandle={product.handle}
+              iconSize={38}
+              strokeWidth={1}
+            />
           </div>
         </div>
       )}
 
-      {/* Add to cart + wishlist */}
-      <div className="flex gap-3 mt-2">
-        <Button
-          variant="primary"
-          size="lg"
+      {/* Add to cart + trust badges */}
+      <div className="flex flex-col gap-3 my-2">
+        <ArrowButton
+          label={
+            selectedVariant.availableForSale ? "Add to cart" : "Out of stock"
+          }
           isLoading={isAdding}
           disabled={!selectedVariant.availableForSale || isAdding}
           onClick={handleAddToCart}
-          className="flex-1"
-        >
-          {selectedVariant.availableForSale ? "Add to cart" : "Out of stock"}
-        </Button>
-        <WishlistButton productHandle={product.handle} />
-      </div>
-
-      {/* Custom order note */}
-      <p className="text-label text-muted border-l-2 border-accent pl-3">
-        All pieces are printed to order. Estimated dispatch: 5–7 business days.
-      </p>
-
-      {/* Trust badges */}
-      <div className="flex flex-wrap gap-5 pt-2 border-t border-stroke">
-        <div className="flex items-center gap-2 text-label text-muted">
-          <RotateCcw size={14} className="text-muted" />
-          Free returns
-        </div>
-        <div className="flex items-center gap-2 text-label text-muted">
-          <ShieldCheck size={14} className="text-muted" />
-          Secure checkout
-        </div>
-        <div className="flex items-center gap-2 text-label text-muted">
-          <PackageCheck size={14} className="text-muted" />
-          Made to order
+          className="w-full py-3 bg-white text-ink text-lg font-medium tracking-tight rounded-md border border-ink disabled:opacity-50"
+        />
+        <div className="flex justify-between">
+          <div className="flex items-center gap-2 text-base text-muted">
+            <RotateCcw size={14} className="text-muted" />
+            Free returns
+          </div>
+          <div className="flex items-center gap-2 text-base text-muted">
+            <ShieldCheck size={14} className="text-muted" />
+            Secure checkout
+          </div>
+          <div className="flex items-center gap-2 text-base text-muted">
+            <PackageCheck size={14} className="text-muted" />
+            Made to order
+          </div>
         </div>
       </div>
 
       {/* Accordion — Description, Specs, Materials, Care */}
-      <AccordionRoot type="multiple" className="border-t border-stroke">
+      <AccordionRoot
+        type="multiple"
+        className="border border-stroke rounded-md"
+      >
         <AccordionItem value="description" className="border-b border-stroke">
-          <AccordionTrigger className="py-4 text-sm text-ink">
+          <AccordionTrigger className="p-4 text-lg text-ink">
             Description
           </AccordionTrigger>
           <AccordionContent>
             {product.descriptionHtml ? (
               <div
-                className="pb-5 text-sm text-ink/80 leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+                className="p-4 text-base text-muted leading-relaxed [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
                 dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
               />
             ) : (
-              <p className="pb-5 text-sm text-muted">
+              <p className="p-4 text-sm text-muted">
                 No description available.
               </p>
             )}
@@ -237,12 +255,12 @@ export function ProductInfoPanel({
           value="specifications"
           className="border-b border-stroke"
         >
-          <AccordionTrigger className="py-4 text-sm text-ink">
+          <AccordionTrigger className="p-4 text-lg text-ink">
             Specifications
           </AccordionTrigger>
           <AccordionContent>
             {specs.length > 0 ? (
-              <dl className="pb-5 divide-y divide-stroke">
+              <dl className="p-4 divide-y divide-stroke">
                 {specs.map(({ key, value }) => (
                   <div key={key} className="flex justify-between py-2 gap-4">
                     <dt className="text-label text-muted capitalize">{key}</dt>
@@ -251,7 +269,7 @@ export function ProductInfoPanel({
                 ))}
               </dl>
             ) : (
-              <p className="pb-5 text-sm text-muted">
+              <p className="p-4 text-base text-muted">
                 Specifications will be added soon.
               </p>
             )}
@@ -259,23 +277,23 @@ export function ProductInfoPanel({
         </AccordionItem>
 
         <AccordionItem value="materials" className="border-b border-stroke">
-          <AccordionTrigger className="py-4 text-sm text-ink">
+          <AccordionTrigger className="p-4 text-lg text-ink">
             Materials
           </AccordionTrigger>
           <AccordionContent>
-            <p className="pb-5 text-sm text-ink/80 leading-relaxed">
+            <p className="p-4 text-base text-muted leading-relaxed">
               All Studiofile pieces are printed in PLA+ using professional FDM
               printers. Materials may vary by colorway.
             </p>
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="care" className="border-b border-stroke">
-          <AccordionTrigger className="py-4 text-sm text-ink">
+        <AccordionItem value="care" className="">
+          <AccordionTrigger className="p-4 text-lg text-ink">
             Care & Assembly
           </AccordionTrigger>
           <AccordionContent>
-            <p className="pb-5 text-sm text-ink/80 leading-relaxed">
+            <p className="p-4 text-base text-muted leading-relaxed">
               Handle with care. Wipe clean with a dry cloth. Assembly
               instructions are included with your order.
             </p>

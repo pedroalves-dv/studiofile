@@ -66,7 +66,7 @@ export function VariantSelector({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {optionNames.map((optionName) => {
         const values = Array.from(
           new Set(

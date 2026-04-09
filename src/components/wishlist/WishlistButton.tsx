@@ -8,9 +8,11 @@ import { useToast } from '@/components/common/Toast'
 interface WishlistButtonProps {
   productHandle: string
   className?: string
+  iconSize?: number
+  strokeWidth?: number
 }
 
-export function WishlistButton({ productHandle, className = '' }: WishlistButtonProps) {
+export function WishlistButton({ productHandle, className = '', iconSize = 18, strokeWidth = 2 }: WishlistButtonProps) {
   const { isWishlisted, toggleItem } = useWishlist()
   const { success } = useToast()
   const [animate, setAnimate] = useState(false)
@@ -41,7 +43,8 @@ export function WishlistButton({ productHandle, className = '' }: WishlistButton
         className={`p-2 bg-canvas/80 hover:bg-canvas transition-colors ${animate ? 'wishlist-pop' : ''} ${className}`}
       >
         <Heart
-          size={18}
+          size={iconSize}
+          strokeWidth={strokeWidth}
           fill={wishlisted ? 'currentColor' : 'none'}
           className={wishlisted ? 'text-accent' : 'text-ink'}
         />
