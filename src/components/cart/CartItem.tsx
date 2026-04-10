@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils/format";
@@ -16,13 +16,48 @@ export function CartItem({ line }: CartItemProps) {
   const { updateItem, removeItem } = useCart();
   const [localQuantity, setLocalQuantity] = useState(line.quantity);
 
+  // Always mirrors the latest updateItem to avoid stale closures in effect cleanups
+  const updateItemRef = useRef(updateItem);
+  updateItemRef.current = updateItem;
+
+  // Tracks a pending user-initiated change.
+  // Dual purpose: guards the sync effect from overriding user intent,
+  // and carries the value to flush on unmount.
+  const pendingRef = useRef<{ lineId: string; quantity: number } | null>(null);
+
+  // Sync localQuantity when the server-side quantity changes externally
+  // (e.g. addItem called from the product page while the cart drawer is open).
+  // Without this, the stale localQuantity triggers the debounce and reverts the cart.
+  // Skipped when a user-initiated change is in flight so we don't override their intent.
   useEffect(() => {
-    if (localQuantity === line.quantity) return;
+    if (!pendingRef.current) {
+      setLocalQuantity(line.quantity);
+    }
+  }, [line.quantity]);
+
+  // Debounced update for user-initiated stepper changes, with flush on unmount.
+  // Flush ensures a quantity change isn't silently dropped when the drawer closes
+  // mid-debounce (the 150ms close animation keeps CartItem mounted briefly).
+  useEffect(() => {
+    if (localQuantity === line.quantity) {
+      pendingRef.current = null;
+      return;
+    }
+    pendingRef.current = { lineId: line.id, quantity: localQuantity };
+
     const timer = setTimeout(() => {
-      updateItem(line.id, localQuantity);
+      pendingRef.current = null;
+      updateItemRef.current(line.id, localQuantity);
     }, 500);
-    return () => clearTimeout(timer);
-  }, [localQuantity, line.quantity]);
+
+    return () => {
+      clearTimeout(timer);
+      if (pendingRef.current) {
+        updateItemRef.current(pendingRef.current.lineId, pendingRef.current.quantity);
+        pendingRef.current = null;
+      }
+    };
+  }, [localQuantity, line.quantity, line.id]);
 
   const { merchandise } = line;
 
@@ -77,6 +112,7 @@ export function CartItem({ line }: CartItemProps) {
             value={localQuantity}
             onChange={setLocalQuantity}
             size="sm"
+            max={line.merchandise.quantityAvailable ?? 999}
           />
 
           <div className="flex items-center gap-3 leading-none">

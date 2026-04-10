@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
 
   experimental: {
     viewTransition: true,
+    webpackMemoryOptimizations: true,
   },
 
   async headers() {

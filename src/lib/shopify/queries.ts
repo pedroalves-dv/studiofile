@@ -1,5 +1,5 @@
 // GraphQL queries for Shopify Storefront API
-import { CART_FIELDS } from './mutations';
+import { CART_FIELDS } from "./mutations";
 
 // Fragment for product fields used across multiple queries
 const PRODUCT_FRAGMENT = `
@@ -293,7 +293,7 @@ export const GET_CUSTOMER = `
       lastName
       email
       phone
-      orders(first: 20, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: 100, sortKey: PROCESSED_AT, reverse: true) {
         edges {
           node {
             id
@@ -307,7 +307,7 @@ export const GET_CUSTOMER = `
               amount
               currencyCode
             }
-            lineItems(first: 5) {
+            lineItems(first: 100) {
               edges {
                 node {
                   title

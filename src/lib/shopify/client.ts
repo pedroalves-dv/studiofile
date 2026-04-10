@@ -1,17 +1,17 @@
 // Shopify Storefront API client with typed fetch wrapper
-import { ApiResponse, ShopifyError } from './types';
+import { ApiResponse, ShopifyError } from "./types";
 
-const SHOPIFY_ENDPOINT = `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/2024-01/graphql.json`;
+const SHOPIFY_ENDPOINT = `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/2026-01/graphql.json`;
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
 if (!SHOPIFY_ENDPOINT || !ACCESS_TOKEN) {
   throw new Error(
-    'Missing Shopify environment variables. Ensure NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN and NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN are set.'
+    "Missing Shopify environment variables. Ensure NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN and NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN are set.",
   );
 }
 
 interface FetchOptions extends RequestInit {
-  cache?: 'no-store' | 'force-cache' | 'no-cache' | 'reload';
+  cache?: "no-store" | "force-cache" | "no-cache" | "reload";
   next?: { revalidate?: number | false; tags?: string[] };
 }
 
@@ -23,34 +23,39 @@ interface FetchOptions extends RequestInit {
 export async function storefront<T>(
   query: string,
   variables?: Record<string, unknown>,
-  options?: FetchOptions
+  options?: FetchOptions,
 ): Promise<T> {
   try {
     const response = await fetch(SHOPIFY_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       headers: {
-  'Content-Type': 'application/json',
-  ...(process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN
-    ? { 'Shopify-Storefront-Private-Token': process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN }
-    : { 'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN! }
-  ),
-},
+        "Content-Type": "application/json",
+        "X-Shopify-Storefront-Access-Token":
+          process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
+      },
       body: JSON.stringify({
         query,
         variables,
       }),
-      cache: options?.cache || 'force-cache',
-      next: options?.next,
+      // FIX: Only set a default cache if revalidate isn't set
+      ...(options?.next?.revalidate
+        ? { next: options.next }
+        : { cache: options?.cache ?? "no-store", next: options?.next }),
+    });
+    // TEMP DEBUG
+    console.log("storefront request:", {
+      status: response.status,
+      url: SHOPIFY_ENDPOINT,
     });
 
     if (!response.ok) {
       const error = new ShopifyError(
         `Shopify API Error: ${response.statusText}`,
-        response.status
+        response.status,
       );
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Shopify API Request Failed:', {
+
+      if (process.env.NODE_ENV === "development") {
+        console.error("Shopify API Request Failed:", {
           status: response.status,
           statusText: response.statusText,
           query,
@@ -68,11 +73,11 @@ export async function storefront<T>(
       const error = new ShopifyError(
         `GraphQL Error: ${data.errors[0].message}`,
         undefined,
-        data.errors
+        data.errors,
       );
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('GraphQL Errors:', {
+      if (process.env.NODE_ENV === "development") {
+        console.error("GraphQL Errors:", {
           errors: data.errors,
           query,
           variables,
@@ -83,10 +88,10 @@ export async function storefront<T>(
     }
 
     if (!data.data) {
-      const error = new ShopifyError('No data returned from Shopify API');
+      const error = new ShopifyError("No data returned from Shopify API");
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Empty response from Shopify API:', { query, variables });
+      if (process.env.NODE_ENV === "development") {
+        console.error("Empty response from Shopify API:", { query, variables });
       }
 
       throw error;
@@ -99,12 +104,12 @@ export async function storefront<T>(
     }
 
     const shopifyError = new ShopifyError(
-      error instanceof Error ? error.message : 'Unknown error occurred',
-      undefined
+      error instanceof Error ? error.message : "Unknown error occurred",
+      undefined,
     );
 
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Shopify API Error:', error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Shopify API Error:", error);
     }
 
     throw shopifyError;

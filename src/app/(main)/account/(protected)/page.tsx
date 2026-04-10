@@ -10,9 +10,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AccountPage() {
   const token = await getCustomerToken();
-  if (!token) redirect('/account/login');
+  if (!token) redirect("/account/login");
   const customer = await getCustomer(token);
-  if (!customer) redirect('/account/login');
+  if (!customer) redirect("/account/login");
 
   const recentOrders = customer.orders.edges.slice(0, 3).map((e) => e.node);
 

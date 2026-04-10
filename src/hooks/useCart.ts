@@ -1,3 +1,4 @@
+// useCart hook encapsulates all cart-related logic and state management, providing a clean API for components to interact with the cart without worrying about implementation details.
 "use client";
 
 import { track } from "@vercel/analytics";
@@ -25,7 +26,8 @@ import { CURRENCY_CODE } from "@/lib/constants";
 import type { MoneyV2, ShopifyCart } from "@/lib/shopify/types";
 
 export function useCart() {
-  const { state, dispatch, cartIconRef, pendingCartRef } = useCartContext();
+  const { state, dispatch, cartIconRef, pendingCartRef, hasUserActionRef } =
+    useCartContext();
   const toast = useToast();
 
   /**
@@ -34,17 +36,44 @@ export function useCart() {
    * don't create two separate carts.
    */
   async function createOrAdd(
-    lines: Array<{ merchandiseId: string; quantity: number; attributes?: Array<{ key: string; value: string }> }>
+    lines: Array<{
+      merchandiseId: string;
+      quantity: number;
+      attributes?: Array<{ key: string; value: string }>;
+    }>,
   ): Promise<ShopifyCart> {
-    if (state.cartId) return addToCart(state.cartId, lines);
-    if (pendingCartRef.current) {
-      const existingCart = await pendingCartRef.current;
-      return addToCart(existingCart.id, lines);
-    }
-    const promise = createCart(lines);
-    pendingCartRef.current = promise;
+    // TEMP DEBUG
+    console.log("createOrAdd called", {
+      cartId: state.cartId,
+      hasPending: !!pendingCartRef.current,
+      lines,
+    });
     try {
-      return await promise;
+      // 1. If we have a cartId, try adding to it
+      if (state.cartId) {
+        return await addToCart(state.cartId, lines);
+      }
+
+      // 2. If a creation is already in progress, wait for it
+      if (pendingCartRef.current) {
+        const existingCart = await pendingCartRef.current;
+        return await addToCart(existingCart.id, lines);
+      }
+
+      // 3. Otherwise, create a brand new cart
+      const promise = createCart(lines);
+      pendingCartRef.current = promise;
+      const newCart = await promise;
+      return newCart;
+    } catch (error: any) {
+      // 4. SELF-HEALING: If Shopify says the cart is gone, clear our state and try one last time
+      if (error.message?.toLowerCase().includes("does not exist")) {
+        console.warn("Cart expired or invalid. Creating fresh cart...");
+        dispatch({ type: "CLEAR_CART" });
+        localStorage.removeItem("sf-cart-id"); // also clear storage or the next reload re-reads the dead ID
+        return await createCart(lines);
+      }
+      throw error;
     } finally {
       pendingCartRef.current = null;
     }
@@ -61,15 +90,42 @@ export function useCart() {
   const closeCart = () => dispatch({ type: "CLOSE_CART" });
 
   const addItem = async (variantId: string, quantity: number) => {
+    // TEMP DEBUG
+    console.log("addItem variantId:", variantId);
+    console.log("addItem called", { variantId, cartId: state.cartId });
+    dispatch({ type: "SET_LOADING", loading: true });
     dispatch({ type: "SET_LOADING", loading: true });
     try {
-      const updatedCart = await createOrAdd([{ merchandiseId: variantId, quantity }]);
+      // This correctly finds the specific Variant ID (e.g., Pink / Fuzzy)
+      const existingLine = cart?.lines.find((line) => {
+        const isSameVariant = line.merchandise.id === variantId;
+        const isNotBundle = !line.attributes.some((a) => a.key === "_build_id");
+        return isSameVariant && isNotBundle;
+      });
+
+      let updatedCart: ShopifyCart;
+      hasUserActionRef.current = true;
+      if (existingLine && state.cartId) {
+        // If found, we update the existing line
+        updatedCart = await updateCartLine(
+          state.cartId,
+          existingLine.id,
+          existingLine.quantity + quantity,
+        );
+      } else {
+        // If NOT found (e.g. you switched to Smooth), we add a NEW line
+        updatedCart = await createOrAdd([
+          { merchandiseId: variantId, quantity },
+        ]);
+      }
+
       dispatch({ type: "SET_CART", cart: updatedCart });
       openCart();
       toast.success("Added to cart");
-      track("AddToCart", { productHandle: variantId, quantity });
-    } catch {
-      toast.error("Failed to add to cart. Please try again.");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to add to cart.";
+      toast.error(message);
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }

@@ -1,3 +1,4 @@
+// Product page with image gallery, product info panel, related products, and recently viewed products. Uses server components for data fetching and client components for interactivity and state management.
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProduct, getProductRecommendations } from "@/lib/shopify/products";

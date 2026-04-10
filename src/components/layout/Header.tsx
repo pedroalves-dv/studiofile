@@ -141,8 +141,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     className={cn(
                       "flex items-end text-ink",
                       "font-medium tracking-[-0.04em] text-lg leading-none",
-                      "transition-opacity duration-200",
-                      "group-hover:opacity-35 hover:!opacity-100",
+                      "transition-opacity duration-1000",
+                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                       hasActiveLink && pathname !== link.href && "opacity-35",
                       link.linkClassName,
                     )}
@@ -172,9 +172,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         }
                       }}
                       className={cn(
-                        "relative h-full flex items-end transition-opacity duration-200",
+                        "relative h-full flex items-end transition-opacity duration-1000",
                         !someIconActive &&
-                          "group-hover:opacity-35 hover:!opacity-100",
+                          "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                         someIconActive && !isAccountOpen && "opacity-35",
                       )}
                       aria-label="My account"
@@ -240,9 +240,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <Link
                     href="/account/login"
                     className={cn(
-                      "relative h-full flex transition-opacity duration-200",
+                      "relative h-full flex transition-opacity duration-1000",
                       !someIconActive &&
-                        "group-hover:opacity-35 hover:!opacity-100",
+                        "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                       someIconActive && "opacity-35",
                     )}
                     aria-label="Sign in"
@@ -266,9 +266,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "h-full flex relative transition-opacity duration-200",
+                    "h-full flex relative transition-opacity duration-1000",
                     !someIconActive &&
-                      "group-hover:opacity-35 hover:!opacity-100",
+                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                     someIconActive && !isOpen && "opacity-35",
                   )}
                   aria-label={
@@ -299,9 +299,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "md:hidden h-full flex relative -mr-1 transition-opacity duration-200",
+                    "md:hidden h-full flex relative -mr-1 transition-opacity duration-1000",
                     !someIconActive &&
-                      "group-hover:opacity-35 hover:!opacity-100",
+                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                     someIconActive &&
                       !(isMobileMenuOpen || isClosingMenu) &&
                       "opacity-35",
@@ -334,8 +334,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={cn(
                   "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
-                  "transition-opacity duration-200",
-                  "group-hover:opacity-35 hover:!opacity-100",
+                  "transition-opacity duration-1000",
+                  "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
                   hasActiveLink && pathname !== link.href && "opacity-35",
                   link.linkClassName,
                 )}
