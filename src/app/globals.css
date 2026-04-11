@@ -182,14 +182,23 @@
     box-sizing: border-box;
   }
 
+  html,
+  body,
+  body > div:first-child,
+  div#root {
+    position: relative;
+    min-height: 100%;
+  }
+
   html {
-    scroll-behavior: auto;
+    scroll-behavior: auto; /* Required for Lenis */
     scrollbar-gutter: stable;
-    /* scrollbar-color: var(--color-light) var(--color-ink); */
+    /* Add this: matches your --header-height variable */
+    scroll-padding-top: var(--header-height);
   }
 
   body {
-    background-color: var(--color-canvas);
+    background-color: rgb(var(--color-canvas));
     color: var(--color-ink);
     font-family: var(--font-body);
     letter-spacing: -0.03em;
@@ -270,7 +279,7 @@
   }
 
   .section-height {
-    min-height: calc(100dvh - var(--header-height));
+    height: calc(100dvh - var(--header-height));
   }
   .section-padding {
     @apply py-20;

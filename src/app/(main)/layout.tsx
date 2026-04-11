@@ -24,14 +24,19 @@ export default async function MainLayout({
         <ToastProvider>
           <SmoothScroll>
             <ScrollSnapProvider>
+              {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
               <Header isLoggedIn={!!token} />
-              <div className=""> {children}</div>
-              <FooterBackground />
-              <Footer />
+              {/* 2. Wrap EVERYTHING that scrolls in a single relative container */}
+              <div className="relative flex flex-col min-h-screen">
+                <main className="flex-1">{children}</main>
 
+                <FooterBackground />
+                <Footer />
+              </div>
+
+              {/* 3. Drawers are portals/fixed, so they stay outside */}
               <CartDrawer />
               <WishlistDrawer />
-
               <CookieConsent />
             </ScrollSnapProvider>
           </SmoothScroll>
