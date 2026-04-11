@@ -7,13 +7,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RegisterPage() {
   return (
-    <main className="flex items-center justify-center min-h-screen bg-canvas">
+    <div className="flex items-center justify-center min-h-screen bg-canvas">
       <div className="w-full max-w-md px-6 py-12">
         <h1 className="text-3xl tracking-tighter leading-tight text-ink mb-8">
           Create account
         </h1>
         <RegisterForm />
       </div>
-    </main>
+    </div>
   );
 }

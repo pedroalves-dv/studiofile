@@ -11,8 +11,8 @@ export default async function SettingsPage() {
   const customer = await getCustomer(token!);
 
   return (
-    <main className="bg-canvas">
-      <div className="">
+    <div>
+      <section>
         {/* Header */}
         <div className="mb-6">
           <h1 className="font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
@@ -22,7 +22,7 @@ export default async function SettingsPage() {
         <div className="border border-stroke rounded-md p-4 mb-12">
           <SettingsForm customer={customer!} />
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

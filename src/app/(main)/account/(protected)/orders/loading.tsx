@@ -2,8 +2,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function OrdersLoading() {
   return (
-    <main className="bg-canvas">
-      <div>
+    <div>
+      <section>
         <div className="mb-6">
           <Skeleton className="h-10 w-32 rounded-sm" />
         </div>
@@ -18,7 +18,7 @@ export default function OrdersLoading() {
             </div>
           ))}
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

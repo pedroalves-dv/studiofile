@@ -69,7 +69,7 @@ export default function FaqPage() {
     },
   ];
   return (
-    <main id="main-content" className="px-5 section-height">
+    <div className="px-5 section-height">
       <section className="pt-12 sm:pt-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
@@ -123,6 +123,6 @@ export default function FaqPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

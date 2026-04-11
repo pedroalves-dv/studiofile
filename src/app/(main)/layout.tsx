@@ -26,13 +26,15 @@ export default async function MainLayout({
             <ScrollSnapProvider>
               {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
               <Header isLoggedIn={!!token} />
-              {/* 2. Wrap EVERYTHING that scrolls in a single relative container */}
-              <div className="relative flex flex-col min-h-screen">
-                <main className="flex-1">{children}</main>
-
+              {/* 2. This is the ONLY <main> tag.*/}
+              <main
+                id="main-content"
+                className="relative flex flex-col min-h-screen"
+              >
+                <div className="flex-1">{children}</div>
                 <FooterBackground />
                 <Footer />
-              </div>
+              </main>
 
               {/* 3. Drawers are portals/fixed, so they stay outside */}
               <CartDrawer />

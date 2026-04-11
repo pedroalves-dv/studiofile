@@ -10,16 +10,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AddressesPage() {
   const token = await getCustomerToken();
-  if (!token) redirect('/account/login');
+  if (!token) redirect("/account/login");
   const [customer, countries] = await Promise.all([
     getCustomer(token),
     getLocalization(),
   ]);
-  if (!customer) redirect('/account/login');
+  if (!customer) redirect("/account/login");
 
   return (
-    <main className="bg-canvas">
-      <div className="">
+    <div>
+      <section>
         <div className="mb-6">
           <h1 className="font-semibold tracking-tighter text-4xl md:text-5xl text-ink">
             Addresses
@@ -28,7 +28,7 @@ export default async function AddressesPage() {
         <div className="border border-stroke rounded-md p-4 mb-12">
           <AddressManager customer={customer} countries={countries} />
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

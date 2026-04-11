@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   return (
-    <main className="relative">
+    <>
       <Hero />
       <ProductSpotlight />
       <BrandStory />
-    </main>
+    </>
   );
 }

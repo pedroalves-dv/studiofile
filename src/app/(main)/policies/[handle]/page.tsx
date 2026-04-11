@@ -51,8 +51,8 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
   if (!policy) notFound();
 
   return (
-    <main id="main-content" className="section-centered py-12">
-      <div className="px-5">
+    <div className="section-centered py-12">
+      <section className="px-5">
         <div className="mb-10">
           <Breadcrumb items={[{ label: policy.title }]} />
         </div>
@@ -73,7 +73,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
             Policy content is not available at this time.
           </p>
         )}
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

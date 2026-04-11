@@ -40,7 +40,7 @@ export function CartDrawer() {
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
-        className="w-full fixed top-0 bottom-0 right-0 max-w-md flex flex-col bg-white sm:border-x sm:border-light"
+        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-white sm:border-x sm:border-stroke"
         style={{
           animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}

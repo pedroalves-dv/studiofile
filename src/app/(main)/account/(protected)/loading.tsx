@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function AccountLoading() {
   return (
-    <main>
+    <div>
       <section>
         <div className="flex items-center justify-between mb-6">
           <Skeleton className="h-10 w-48 rounded-sm" />
@@ -19,6 +19,6 @@ export default function AccountLoading() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

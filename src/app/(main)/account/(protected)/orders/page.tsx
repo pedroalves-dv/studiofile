@@ -10,15 +10,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function OrdersPage() {
   const token = await getCustomerToken();
-  if (!token) redirect('/account/login');
+  if (!token) redirect("/account/login");
   const customer = await getCustomer(token);
-  if (!customer) redirect('/account/login');
+  if (!customer) redirect("/account/login");
 
   const orders = customer.orders.edges.map((e) => e.node);
 
   return (
-    <main className="bg-canvas">
-      <div>
+    <div>
+      <section>
         {/* Header */}
         <div className="mb-6">
           <h1 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
@@ -46,7 +46,7 @@ export default async function OrdersPage() {
             ))}
           </div>
         )}
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }

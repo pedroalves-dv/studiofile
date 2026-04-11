@@ -78,8 +78,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hasQuery = Boolean(q?.trim());
 
   return (
-    <main id="main-content" className="section-padding">
-      <div className="container-wide">
+    <div>
+      <section>
         {/* Page heading */}
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl tracking-tight mb-6">
@@ -164,7 +164,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </div>
           </div>
         )}
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }
