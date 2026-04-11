@@ -1,188 +1,189 @@
 "use client";
 
+import { useRef, useState, useEffect } from "react";
 import { useScroll, useTransform, motion, MotionValue } from "motion/react";
 import { HeroContent } from "@/components/home/HeroContent";
 
-// Scroll pixel ranges for each row tier — adjust if section height changes.
-const SCROLL_RANGE_1: [number, number] = [-300, 1400];
-const SCROLL_RANGE_2: [number, number] = [400, 2200];
-const SCROLL_RANGE_3: [number, number] = [1200, 3200];
-const SCROLL_RANGE_4: [number, number] = [1800, 3400];
+/**
+ * Number of 100dvh rows that make up the desktop parallax section.
+ * Drives both the section height (set imperatively) and the parallax
+ * transform range. When you add or remove rows, update this constant
+ * AND the column row structure below together.
+ */
+const SCROLL_ROWS = 3;
+
+/**
+ * Must stay in sync with Tailwind's `md` breakpoint (768px) and with
+ * the same constant in HeroContent. Consider moving both to a shared
+ * constants file (e.g. lib/constants.ts) if this grows.
+ */
+const MOBILE_BREAKPOINT = 768;
+
+// ─── Sub-components ──────────────────────────────────────────────────────────
+
+// Defined outside Hero so React doesn't treat it as a new component type
+// on every render, which would cause unnecessary DOM unmount/remount.
+function RowSpacer() {
+  return (
+    <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+  );
+}
+
+interface ParallaxProps {
+  scrollYProgress: MotionValue<number>;
+  /** Real scrollable distance of the section in px, updated on resize. */
+  scrollDistance: number;
+  className: string;
+  speed?: number;
+}
 
 function ParallaxBox({
-  scrollY,
+  scrollYProgress,
+  scrollDistance,
   className,
-  inputRange,
   speed = 0.3,
-}: {
-  scrollY: MotionValue<number>;
-  className: string;
-  inputRange: [number, number];
-  speed?: number;
-}) {
-  const y = useTransform(scrollY, inputRange, ["0%", `${-speed * 100}%`]);
-
+}: ParallaxProps) {
+  // scrollDistance replaces the old hardcoded 800px magic number.
+  // It is the section's actual scrollable distance (offsetHeight − viewport),
+  // so the parallax range is always proportional to the real scroll travel.
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0px", `-${speed * scrollDistance}px`],
+  );
   return <motion.div style={{ y }} className={className} />;
 }
 
+// ─── Hero ────────────────────────────────────────────────────────────────────
+
 export function Hero() {
-  const { scrollY } = useScroll();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      const isDesktop = window.innerWidth >= MOBILE_BREAKPOINT;
+
+      // Drive section height from SCROLL_ROWS imperatively on desktop.
+      // This avoids a hardcoded Tailwind arbitrary value (md:h-[400dvh])
+      // that can't reference the constant. On mobile, clear it so the
+      // stacked mobile image column dictates the natural height.
+      el.style.height = isDesktop ? `${SCROLL_ROWS * 100}dvh` : "";
+
+      // Measure after height is applied so offsetHeight is accurate.
+      setScrollDistance(isDesktop ? window.innerHeight : 0);
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Spread into every ParallaxBox to avoid repetition.
+  const parallaxProps = { scrollYProgress, scrollDistance };
 
   return (
-    <section className="relative w-full md:h-[calc(400dvh-(4*(var(--header-height))))]">
-      {/* ── BACK layer — renders behind HeroContent ── */}
-      <div
-        aria-hidden="true"
-        className="hidden md:flex md:absolute md:inset-0 overflow-hidden pointer-events-none"
-      >
+    <section ref={containerRef} className="relative w-full">
+      {/* ── BACKGROUND LAYER ── */}
+      <div className="hidden md:flex absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
-          {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.1 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_1}
+              {...parallaxProps}
               speed={0.3}
-              className="absolute h-[450px] w-[350px] bg-red-500 top-52 right-20"
+              className="absolute h-[450px] w-[350px] bg-red-500 top-52 left-5"
             />
           </div>
-          {/* Row 2 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.2 (front) */}
-          </div>
-          {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.3 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_3}
+              {...parallaxProps}
               speed={0.5}
               className="absolute h-[650px] w-[450px] bg-red-500 top-16 left-6"
             />
           </div>
-          {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.4 (front)*/}
-          </div>
+          <RowSpacer />
         </div>
 
         {/* Column 2 */}
         <div className="flex-1 flex flex-col">
-          {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.1 (front)*/}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_1}
+              {...parallaxProps}
               speed={0.5}
               className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
             />
           </div>
-          {/* Row 2 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.2 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_2}
+              {...parallaxProps}
               speed={0.4}
               className="absolute h-[420px] w-[320px] bg-red-500 bottom-8 left-10"
             />
           </div>
-          {/* Row 3 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.3 (front) */}
-          </div>
-          {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.4 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_4}
+              {...parallaxProps}
               speed={0.6}
               className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
             />
           </div>
         </div>
 
-        {/* Column 3 */}
+        {/* Column 3 (XL only) */}
         <div className="hidden xl:flex flex-1 flex-col">
-          {/* Row 1 */}
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.1 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_1}
+              {...parallaxProps}
               speed={0.2}
-              className="absolute h-[350px] w-[500px] bg-red-500 -bottom-8 right-8"
+              className="absolute h-[350px] w-[500px] bg-red-500 -bottom-8 right-5"
             />
           </div>
-          {/* Row 2 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.2 (front) */}
-          </div>
-          {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.3 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_3}
+              {...parallaxProps}
               speed={0.4}
               className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
             />
           </div>
-          {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.4 (front) */}
-          </div>
+          <RowSpacer />
         </div>
       </div>
 
-      {/* ── HeroContent — z-10 ── */}
-      <div className="sticky top-[var(--header-height)] z-10">
-        <HeroContent />
+      {/* ── STICKY CONTENT (The "TOTEM" type) ── */}
+      <div className="sticky top-[var(--header-height)] h-[calc(100dvh-var(--header-height))] w-full z-10 overflow-hidden">
+        <div className="relative w-full h-full">
+          <HeroContent />
+        </div>
       </div>
 
-      {/* ── MOBILE image column — md:hidden, normal flow, scrolls under sticky type ── */}
-      <div
-        aria-hidden="true"
-        className="md:hidden pointer-events-none section-height"
-      >
-        {/* Slot 1: fills the initial viewport — visible behind the type on load */}
-        <div className="relative w-full section-height bg-red-500" />
-        {/* Slot 2 */}
-        <div className="relative w-full section-height bg-blue-500" />
-        {/* Slot 3 */}
-        <div className="relative w-full section-height bg-red-200" />
-      </div>
-
-      {/* ── FRONT layer — renders above HeroContent (z-20) ── */}
-      <div
-        aria-hidden="true"
-        className="hidden md:flex md:absolute md:inset-0 overflow-hidden z-20 pointer-events-none"
-      >
+      {/* ── FRONT LAYER ── */}
+      <div className="hidden md:flex absolute inset-0 pointer-events-none z-20 overflow-hidden">
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
-          {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 2 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.2 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_2}
+              {...parallaxProps}
               speed={0.2}
               className="absolute h-[300px] w-[200px] bg-red-500 bottom-24 right-4"
             />
           </div>
-          {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 4 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 1.4 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_4}
+              {...parallaxProps}
               speed={0.45}
               className="absolute h-[460px] w-[320px] bg-red-500 top-10 right-8"
             />
@@ -191,51 +192,44 @@ export function Hero() {
 
         {/* Column 2 */}
         <div className="flex-1 flex flex-col">
-          {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 2 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 3 */}
+          <RowSpacer />
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 2.3 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_3}
+              {...parallaxProps}
               speed={0.25}
               className="absolute h-[380px] w-[300px] bg-red-500 bottom-20 -left-20"
             />
           </div>
-          {/* Row 4 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
+          <RowSpacer />
         </div>
 
-        {/* Column 3 */}
+        {/* Column 3 (XL only) */}
         <div className="hidden xl:flex flex-1 flex-col">
-          {/* Row 1 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 2 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.2 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_2}
+              {...parallaxProps}
               speed={0.55}
               className="absolute h-[380px] w-[280px] bg-red-500 top-24 -left-6"
             />
           </div>
-          {/* Row 3 */}
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-          {/* Row 4 */}
+          <RowSpacer />
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
-            {/* Image 3.4 */}
             <ParallaxBox
-              scrollY={scrollY}
-              inputRange={SCROLL_RANGE_4}
+              {...parallaxProps}
               speed={0.8}
               className="absolute h-[320px] w-[250px] bg-red-500 top-10 left-0"
             />
           </div>
         </div>
+      </div>
+
+      {/* ── MOBILE IMAGE COLUMN ── */}
+      <div aria-hidden="true" className="md:hidden pointer-events-none">
+        <div className="relative w-full h-[100dvh] bg-red-500" />
+        <div className="relative w-full h-[100dvh] bg-blue-500" />
+        <div className="relative w-full h-[100dvh] bg-red-200" />
       </div>
     </section>
   );

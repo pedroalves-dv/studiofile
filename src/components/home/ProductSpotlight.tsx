@@ -1,6 +1,39 @@
-import Link from "next/link";
+"use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "motion/react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+
+// ── animation primitives ──────────────────────────────────────────────────────
+
+function useSectionInView() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.25 });
+  return { ref, isInView };
+}
+
+function FadeUp({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, isInView } = useSectionInView();
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 28 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export function ProductSpotlight() {
   return (
