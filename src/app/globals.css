@@ -130,21 +130,41 @@
     --font-khbold: "KH Bold", sans-serif;
 
     /* Palette */
-    --color-black: #141414;
-    --color-ink: #31302e;
-    /* --color-canvas: #f0f5fa; */
-    /* --color-canvas: 250 245 240; */
+    /* --color-black: #141414; */
+    --color-black: 20 20 20;
+
+    /* --color-ink: #31302e; */
+    --color-ink: 49 48 46;
+
+    /* --color-canvas: #f8f8f5; */
     --color-canvas: 248 248 245;
-    --color-accent: #ffaaaa;
-    --color-tamed: #ff8c21;
-    --color-muted: #6b6560;
-    /* --color-light: #b4b0ac; */
-    --color-light: #c2bfbc;
-    --color-lighter: #eeeeee;
-    --color-stroke: #e5e0d8;
-    --color-success: #4a7c59;
-    --color-error: #d15151;
-    --color-white: #ffffff;
+
+    /* --color-accent: #ffaaaa; */
+    --color-accent: 255 170 170;
+
+    /* --color-tamed: #ff8c21; */
+    --color-tamed: 255 140 33;
+
+    /* --color-muted: #6b6560; */
+    --color-muted: 107 101 96;
+
+    /* --color-light: #c2bfbc; */
+    --color-light: 194 191 188;
+
+    /* --color-lighter: #eeeeee; */
+    --color-lighter: 238 238 238;
+
+    /* --color-stroke: #e5e0d8; */
+    --color-stroke: 229 224 216;
+
+    /* --color-success: #4a7c59; */
+    --color-success: 74 124 89;
+
+    /* --color-error: #d15151; */
+    --color-error: 209 81 81;
+
+    /* --color-white: #ffffff; */
+    --color-white: 255 255 255;
 
     /* Spacing */
     --spacing-xs: 0.25rem;
@@ -193,18 +213,17 @@
   html {
     scroll-behavior: auto; /* Required for Lenis */
     scrollbar-gutter: stable;
-    /* Add this: matches your --header-height variable */
     scroll-padding-top: var(--header-height);
   }
 
   body {
     background-color: rgb(var(--color-canvas));
-    color: var(--color-ink);
+    color: rgb(var(--color-ink));
     font-family: var(--font-body);
     letter-spacing: -0.03em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    border-right: 1px solid var(--color-stroke);
+    border-right: 1px solid rgb(var(--color-stroke));
     overflow-x: hidden;
   }
 
@@ -229,8 +248,8 @@
 
   /* Selection styles */
   ::selection {
-    background-color: var(--color-light);
-    color: var(--color-ink);
+    background-color: rgb(var(--color-light));
+    color: rgb(var(--color-ink));
   }
 
   /* Custom scrollbar */
@@ -239,20 +258,20 @@
   }
 
   ::-webkit-scrollbar-track {
-    background-color: var(--color-canvas);
+    background-color: rgb(var(--color-canvas));
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: var(--color-light);
+    background-color: rgb(var(--color-light));
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-muted);
+    background-color: rgb(var(--color-muted));
   }
 
   /* Links */
   a {
-    color: var(--color-ink);
+    color: rgb(var(--color-ink));
     text-decoration: none;
   }
 }
@@ -345,8 +364,8 @@
     top: 1rem;
     left: 1rem;
     z-index: 50;
-    background-color: var(--color-accent);
-    color: var(--color-canvas);
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-canvas));
   }
 }
 
