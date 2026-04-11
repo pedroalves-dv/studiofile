@@ -237,37 +237,33 @@ export function ProductSpotlight() {
           </motion.div>
 
           {/* Right: text + CTA — justify-between pushes label up, CTA down */}
-          <div className="flex flex-col justify-between px-8 pt-14 pb-14 border-l border-light">
-            {/* Top anchor: eyebrow label */}
-            <FadeUp delay={0.1}>
-              <p className="text-label text-muted tracking-[-0.01em]">
-                TOTEM configurator
-              </p>
-            </FadeUp>
-
+          <div className="flex flex-col justify-between px-8 pt-24 pb-14 border-l border-stroke">
             {/* Bottom anchor: headline + descriptor + CTA */}
             <div className="flex flex-col gap-5">
               <FadeUp delay={0.2}>
                 <p
-                  className="font-medium tracking-[-0.07em] leading-[0.92] text-ink"
-                  style={{ fontSize: "clamp(2.5rem, 3.8vw, 5rem)" }}
+                  className="font-medium tracking-[-0.07em] leading-[0.72] text-ink pb-8"
+                  style={{ fontSize: "clamp(4rem, 9vw, 9rem)" }}
                 >
                   Build
                   <br />
-                  your own.
+                  your own
                 </p>
               </FadeUp>
               <FadeUp delay={0.32}>
-                <p className="text-sm text-muted tracking-[-0.02em] max-w-[22ch]">
-                  Choose your modules, height, and finish — made to order in
-                  Paris.
+                <p
+                  className="text-sm text-light tracking-[-0.04em] leading-[0.92] pb-12"
+                  style={{ fontSize: "clamp(2.2rem, 11vw, 3.5rem)" }}
+                >
+                  Choose your modules, colors, and finish —{" "}
+                  <span className="text-ink">exactly how you want it.</span>
                 </p>
               </FadeUp>
               <FadeUp delay={0.42}>
                 <ArrowTracedButton
                   href="/shop"
                   label="Try the configurator"
-                  className="w-fit px-5 py-2.5 text-base font-medium tracking-[-0.04em] rounded-md text-ink ring-1 ring-ink/20"
+                  className="w-fit px-8 py-4 text-lg font-medium tracking-[-0.04em] rounded-md text-ink ring-1 ring-ink/20"
                 />
               </FadeUp>
             </div>

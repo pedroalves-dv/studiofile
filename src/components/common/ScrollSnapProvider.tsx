@@ -56,6 +56,7 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
 
       if (distanceToHeader > 5) {
         isSnapping.current = true;
+        document.body.setAttribute("data-snapping", "true"); // LOCK ON
 
         lenis.scrollTo(activeSection.current, {
           offset: -headerHeight,
@@ -64,6 +65,7 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
           onComplete: () => {
             setTimeout(() => {
               isSnapping.current = false;
+              document.body.removeAttribute("data-snapping"); // LOCK OFF
             }, 50);
           },
         });
