@@ -21,7 +21,7 @@ const CONDITIONS_POLICIES_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="w-full flex flex-col bg-canvas/20 backdrop-blur-[0.4rem] sm:backdrop-blur-md z-10">
+    <footer className="w-full flex flex-col bg-canvas/20  z-10 transform-gpu will-change-[backdrop-filter] contain-paint">
       <div className="px-5 border-t border-stroke pt-3">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center justify-between ">
