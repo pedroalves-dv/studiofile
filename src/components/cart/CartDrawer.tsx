@@ -21,12 +21,25 @@ export function CartDrawer() {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
+    const mainElement = document.getElementById("main-content");
+
     if (isOpen) {
       lenis?.stop();
       setIsVisible(true);
       setIsClosing(false);
+      if (mainElement) {
+        // Create depth via scale and brightness, NOT blur
+        mainElement.style.transform = "scale(0.98)";
+        mainElement.style.filter = "brightness(0.7)";
+        mainElement.style.transition = "all 0.15s ease-in-out";
+        mainElement.style.overflow = "hidden";
+      }
     } else if (isVisible) {
       lenis?.start();
+      if (mainElement) {
+        mainElement.style.transform = "scale(1)";
+        mainElement.style.filter = "none";
+      }
       setIsClosing(true);
       const timer = setTimeout(() => {
         setIsVisible(false);
@@ -34,13 +47,12 @@ export function CartDrawer() {
       }, 150);
       return () => clearTimeout(timer);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, lenis]);
+  }, [isOpen, lenis, isVisible]);
 
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
-        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-white sm:border-x sm:border-stroke"
+        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke"
         style={{
           animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}

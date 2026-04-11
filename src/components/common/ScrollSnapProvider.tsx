@@ -12,11 +12,19 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lenis) return;
 
+    // Helper to reset the snapping state safely from anywhere
+    const releaseLock = () => {
+      isSnapping.current = false;
+      document.body.removeAttribute("data-snapping");
+    };
+
     /**
-     * SENSOR: Intersection Observer
-     * threshold: 0.5 ensures that as soon as a section takes up more than half
-     * the screen, it is marked as the "active" target.
+     * INTERRUPT HANDLING:
+     * If Lenis is stopped (by CartDrawer, etc.), we MUST release the lock.
      */
+    // @ts-ignore
+    lenis.on("stop", releaseLock);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -32,56 +40,51 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
       .querySelectorAll("[data-snap]")
       .forEach((el) => observer.observe(el));
 
-    /**
-     * MAGNET LOGIC: performSnap
-     * This is where we decide if the user is "close enough" to merit a snap.
-     */
     const performSnap = () => {
       if (!activeSection.current || isSnapping.current) return;
 
       const header = document.querySelector("header");
       const headerHeight = header?.offsetHeight || 0;
       const rect = activeSection.current.getBoundingClientRect();
-
-      // Distance between the target alignment and current position
       const distanceToHeader = Math.abs(rect.top - headerHeight);
-
-      // snapThresholdPx: Only trigger if the user is within 150px of the top.
-      // This prevents the "fighting" feeling if they stop in the middle.
       const snapThresholdPx = 150;
 
-      if (distanceToHeader > snapThresholdPx) {
-        return;
-      }
+      if (distanceToHeader > snapThresholdPx) return;
 
       if (distanceToHeader > 5) {
         isSnapping.current = true;
-        document.body.setAttribute("data-snapping", "true"); // LOCK ON
+        document.body.setAttribute("data-snapping", "true");
 
         lenis.scrollTo(activeSection.current, {
           offset: -headerHeight,
           duration: 0.8,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           onComplete: () => {
-            setTimeout(() => {
-              isSnapping.current = false;
-              document.body.removeAttribute("data-snapping"); // LOCK OFF
-            }, 50);
+            // Short delay to allow the physics to settle before unlocking
+            setTimeout(releaseLock, 100);
           },
         });
+
+        /**
+         * EMERGENCY FAILSAFE
+         * If for any reason onComplete doesn't fire (browser lag, etc.),
+         * force release the lock after 1.2s so the UI never stays "frozen".
+         */
+        setTimeout(() => {
+          if (isSnapping.current) releaseLock();
+        }, 1200);
       }
     };
 
     const handleScroll = () => {
+      // 1. If the user scrolls manually while a snap is in progress, release lock immediately
+      if (lenis.velocity !== 0 && isSnapping.current) {
+        releaseLock();
+      }
+
       if (isSnapping.current) return;
 
-      // Clear previous timeout while user is actively moving
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-      // Reset snapping lock if user manually interrupts a snap
-      if (lenis.velocity !== 0 && isSnapping.current) {
-        isSnapping.current = false;
-      }
 
       // Wait for 550ms of stillness before attempting a snap
       timeoutRef.current = setTimeout(() => {
@@ -95,8 +98,11 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
 
     return () => {
       lenis.off("scroll", handleScroll);
+      // @ts-ignore
+      lenis.off("stop", releaseLock); // Critical cleanup
       observer.disconnect();
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      releaseLock(); // Clean up body attribute on unmount
     };
   }, [lenis]);
 

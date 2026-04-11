@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className="grain relative bg-canvas">
+      <body className="relative bg-canvas">
         {children}
 
         {/* JSON-LD — WebSite */}

@@ -36,6 +36,12 @@ export default async function MainLayout({
                 <Footer />
               </main>
 
+              {/* The Performance-Blur Layer */}
+              <div
+                id="blur-overlay"
+                className="fixed inset-0 z-[40] opacity-0 pointer-events-none transition-opacity duration-300 bg-canvas/30"
+                style={{ backdropFilter: "blur(8px)" }}
+              />
               {/* 3. Drawers are portals/fixed, so they stay outside */}
               <CartDrawer />
               <WishlistDrawer />
