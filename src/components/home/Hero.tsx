@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useScroll, useTransform, motion, MotionValue } from "motion/react";
+import Image from "next/image";
 import { HeroContent } from "@/components/home/HeroContent";
 
 /**
@@ -19,6 +20,9 @@ const SCROLL_ROWS = 3;
  */
 const MOBILE_BREAKPOINT = 768;
 
+/** Swap these out for real Shopify CDN URLs when product photos are ready. */
+const PLACEHOLDER = "https://placehold.co/600x800/1a1a1a/333333";
+
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 // Defined outside Hero so React doesn't treat it as a new component type
@@ -35,6 +39,8 @@ interface ParallaxProps {
   scrollDistance: number;
   className: string;
   speed?: number;
+  src: string;
+  priority?: boolean;
 }
 
 function ParallaxBox({
@@ -42,6 +48,8 @@ function ParallaxBox({
   scrollDistance,
   className,
   speed = 0.3,
+  src,
+  priority = false,
 }: ParallaxProps) {
   // scrollDistance replaces the old hardcoded 800px magic number.
   // It is the section's actual scrollable distance (offsetHeight − viewport),
@@ -51,7 +59,25 @@ function ParallaxBox({
     [0, 1],
     ["0px", `-${speed * scrollDistance}px`],
   );
-  return <motion.div style={{ y }} className={className} />;
+  // The motion.div is `absolute` (for parallax placement) so it can't also be
+  // `relative` for <Image fill> anchoring — those are mutually exclusive CSS
+  // positions. The inner div inherits the outer box's fixed h-/w- dimensions
+  // via `h-full w-full` and gives fill a proper positioned ancestor.
+  return (
+    <motion.div style={{ y }} className={`overflow-hidden ${className}`}>
+      <div className="relative w-full h-full">
+        <Image
+          src={src}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
+          alt=""
+          priority={priority}
+          unoptimized
+        />
+      </div>
+    </motion.div>
+  );
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
@@ -100,7 +126,9 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.3}
-              className="absolute h-[450px] w-[350px] bg-red-500 top-52 left-5"
+              className="absolute h-[450px] w-[350px] top-52 left-5"
+              src={PLACEHOLDER}
+              priority
             />
           </div>
           <RowSpacer />
@@ -108,7 +136,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.5}
-              className="absolute h-[650px] w-[450px] bg-red-500 top-16 left-6"
+              className="absolute h-[650px] w-[450px] top-16 left-6"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -120,14 +149,17 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.5}
-              className="absolute h-[300px] w-[200px] bg-red-500 bottom-20 left-12"
+              className="absolute h-[300px] w-[200px] bottom-20 left-12"
+              src={PLACEHOLDER}
+              priority
             />
           </div>
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.4}
-              className="absolute h-[420px] w-[320px] bg-red-500 bottom-8 left-10"
+              className="absolute h-[420px] w-[320px] bottom-8 left-10"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -135,7 +167,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.6}
-              className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
+              className="absolute h-[360px] w-[280px] bottom-10 right-8"
+              src={PLACEHOLDER}
             />
           </div>
         </div>
@@ -146,7 +179,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.2}
-              className="absolute h-[350px] w-[500px] bg-red-500 -bottom-8 right-5"
+              className="absolute h-[350px] w-[500px] -bottom-8 right-5"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -154,7 +188,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.4}
-              className="absolute h-[360px] w-[280px] bg-red-500 bottom-10 right-8"
+              className="absolute h-[360px] w-[280px] bottom-10 right-8"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -177,7 +212,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.2}
-              className="absolute h-[300px] w-[200px] bg-red-500 bottom-24 right-4"
+              className="absolute h-[300px] w-[200px] bottom-24 right-4"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -185,7 +221,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.45}
-              className="absolute h-[460px] w-[320px] bg-red-500 top-10 right-8"
+              className="absolute h-[460px] w-[320px] top-10 right-8"
+              src={PLACEHOLDER}
             />
           </div>
         </div>
@@ -198,7 +235,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.25}
-              className="absolute h-[380px] w-[300px] bg-red-500 bottom-20 -left-20"
+              className="absolute h-[380px] w-[300px] bottom-20 -left-20"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -211,7 +249,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.55}
-              className="absolute h-[380px] w-[280px] bg-red-500 top-24 -left-6"
+              className="absolute h-[380px] w-[280px] top-24 -left-6"
+              src={PLACEHOLDER}
             />
           </div>
           <RowSpacer />
@@ -219,7 +258,8 @@ export function Hero() {
             <ParallaxBox
               {...parallaxProps}
               speed={0.8}
-              className="absolute h-[320px] w-[250px] bg-red-500 top-10 left-0"
+              className="absolute h-[320px] w-[250px] top-10 left-0"
+              src={PLACEHOLDER}
             />
           </div>
         </div>
@@ -227,9 +267,37 @@ export function Hero() {
 
       {/* ── MOBILE IMAGE COLUMN ── */}
       <div aria-hidden="true" className="md:hidden pointer-events-none">
-        <div className="relative w-full h-[100dvh] bg-red-500" />
-        <div className="relative w-full h-[100dvh] bg-blue-500" />
-        <div className="relative w-full h-[100dvh] bg-red-200" />
+        <div className="relative w-full h-[100dvh] overflow-hidden">
+          <Image
+            src={PLACEHOLDER}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            alt=""
+            priority
+            unoptimized
+          />
+        </div>
+        <div className="relative w-full h-[100dvh] overflow-hidden">
+          <Image
+            src={PLACEHOLDER}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            alt=""
+            unoptimized
+          />
+        </div>
+        <div className="relative w-full h-[100dvh] overflow-hidden">
+          <Image
+            src={PLACEHOLDER}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            alt=""
+            unoptimized
+          />
+        </div>
       </div>
     </section>
   );

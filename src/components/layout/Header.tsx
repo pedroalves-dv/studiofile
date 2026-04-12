@@ -4,14 +4,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import { useState, useEffect, useRef, useCallback, useTransition } from "react";
-import { LogoHover } from "@/components/ui/LogoHover";
 import { customerLogout } from "@/lib/shopify/auth";
-import { useScroll } from "@/hooks/useScroll";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/context/ToastContext";
-import Image from "next/image";
 import Logo from "public/images/logo/newlogov2.svg";
 
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
@@ -25,6 +22,10 @@ import {
   type ShoppingBagIconHandle,
 } from "@/components/ui/ShoppingBagIcon";
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const CLOSE_DURATION = 250;
+
 const NAV_LINKS: {
   label: string;
   href: string;
@@ -32,73 +33,145 @@ const NAV_LINKS: {
 }[] = [
   { label: "TOTEM", href: "/products/totem" },
   { label: "Studio", href: "/about" },
-
   { label: "Contact", href: "/contact" },
   { label: "FAQ", href: "/faq" },
 ];
+
+// Extracted once — desktop dropdown and mobile overlay share this list
+const ACCOUNT_LINKS = [
+  { label: "My Account", href: "/account" },
+  { label: "Orders", href: "/account/orders" },
+  { label: "Settings", href: "/account/settings" },
+  { label: "Addresses", href: "/account/addresses" },
+];
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+// 3-state machine eliminates dual-boolean flicker
+type PanelState = "closed" | "open" | "closing";
 
 interface HeaderProps {
   isLoggedIn?: boolean;
 }
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function Header({ isLoggedIn = false }: HeaderProps) {
   const menuIconRef = useRef<MenuIconHandle>(null);
   const userIconRef = useRef<UserIconHandle>(null);
   const userRoundCheckIconRef = useRef<UserRoundCheckIconHandle>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const cartIconRef = useRef<ShoppingBagIconHandle>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+  const mobileAccountOverlayRef = useRef<HTMLElement>(null);
+
+  // Timer refs — prevent stale closures and memory leaks
+  const menuCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const accountCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // State refs — let useCallback read current state without stale closure issues
+  const menuStateRef = useRef<PanelState>("closed");
+  const accountStateRef = useRef<PanelState>("closed");
 
   const pathname = usePathname();
-  const { isScrolled } = useScroll(60);
   const router = useRouter();
   const { success: toastSuccess, error: toastError } = useToast();
   const [isPendingLogout, startLogoutTransition] = useTransition();
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isClosingMenu, setIsClosingMenu] = useState(false);
+
+  const [menuState, setMenuState] = useState<PanelState>("closed");
+  const [accountState, setAccountState] = useState<PanelState>("closed");
+
+  // Keep refs in sync with state
+  menuStateRef.current = menuState;
+  accountStateRef.current = accountState;
+
+  // Convenience derived booleans
+  const isMobileMenuOpen = menuState === "open";
+  const isClosingMenu = menuState === "closing";
+  const isAccountOpen = accountState === "open";
+  const isClosingAccount = accountState === "closing";
+
+  // ─── Close helpers ──────────────────────────────────────────────────────────
 
   const closeMenu = useCallback(() => {
-    setIsClosingMenu(true);
-    setTimeout(() => {
-      setIsMobileMenuOpen(false);
-      setIsClosingMenu(false);
-    }, 250);
+    // Guard: only close if actually open — prevents useClickOutside from
+    // flashing the panel on every click when it's already closed
+    if (menuStateRef.current !== "open") return;
+    if (menuCloseTimer.current) return;
+    setMenuState("closing");
+    menuCloseTimer.current = setTimeout(() => {
+      setMenuState("closed");
+      menuCloseTimer.current = null;
+    }, CLOSE_DURATION);
   }, []);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [isClosingAccount, setIsClosingAccount] = useState(false);
-  const accountRef = useRef<HTMLDivElement>(null);
-  const mobileAccountOverlayRef = useRef<HTMLElement>(null);
 
   const closeAccount = useCallback(() => {
-    setIsClosingAccount(true);
-    setTimeout(() => {
-      setIsAccountOpen(false);
-      setIsClosingAccount(false);
-    }, 250);
+    // Same guard as above — critical for preventing the flash-on-click bug
+    if (accountStateRef.current !== "open") return;
+    if (accountCloseTimer.current) return;
+    setAccountState("closing");
+    accountCloseTimer.current = setTimeout(() => {
+      setAccountState("closed");
+      accountCloseTimer.current = null;
+    }, CLOSE_DURATION);
   }, []);
 
+  // Extracted logout — used by both desktop dropdown and mobile overlay
+  const handleLogout = useCallback(() => {
+    closeAccount();
+    startLogoutTransition(async () => {
+      try {
+        await customerLogout();
+        toastSuccess("You've been signed out");
+        router.push("/");
+      } catch {
+        toastError("Sign out failed. Please try again.");
+      }
+    });
+  }, [closeAccount, router, toastSuccess, toastError]);
+
+  // ─── Cleanup on unmount ─────────────────────────────────────────────────────
+
+  useEffect(() => {
+    return () => {
+      if (menuCloseTimer.current) clearTimeout(menuCloseTimer.current);
+      if (accountCloseTimer.current) clearTimeout(accountCloseTimer.current);
+    };
+  }, []);
+
+  // ─── Outside click ──────────────────────────────────────────────────────────
+
   useClickOutside([accountRef, mobileAccountOverlayRef], closeAccount);
-  useScrollLock(isSearchOpen || isAccountOpen);
+
+  // Locks scroll for both full-screen mobile overlays.
+  // Note: isAccountOpen also locks scroll on desktop (small dropdown) — to
+  // gate it to mobile only, add a useIsMobile hook and wrap isAccountOpen with it.
+  useScrollLock(isMobileMenuOpen || isAccountOpen);
+
+  // ─── Keyboard: Escape ───────────────────────────────────────────────────────
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeMenu();
-        closeAccount();
-        setIsSearchOpen(false);
-      }
+      if (e.key !== "Escape") return;
+      closeMenu();
+      closeAccount();
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [closeMenu]);
+  }, [closeMenu, closeAccount]);
+
+  // ─── Close everything on route change ──────────────────────────────────────
 
   useEffect(() => {
-    setIsAccountOpen(false);
-    setIsClosingAccount(false);
-    setIsMobileMenuOpen(false);
-    setIsClosingMenu(false);
+    if (menuCloseTimer.current) clearTimeout(menuCloseTimer.current);
+    if (accountCloseTimer.current) clearTimeout(accountCloseTimer.current);
+    menuCloseTimer.current = null;
+    accountCloseTimer.current = null;
+    setMenuState("closed");
+    setAccountState("closed");
   }, [pathname]);
+
+  // ─── Sync hamburger icon animation ─────────────────────────────────────────
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -108,9 +181,33 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
     }
   }, [isMobileMenuOpen]);
 
+  // ─── Derived state ──────────────────────────────────────────────────────────
+
   const hasActiveLink = NAV_LINKS.some((l) => pathname === l.href);
   const someIconActive =
-    isOpen || isAccountOpen || isClosingAccount || isMobileMenuOpen || isClosingMenu;
+    isOpen ||
+    isAccountOpen ||
+    isClosingAccount ||
+    isMobileMenuOpen ||
+    isClosingMenu;
+
+  // Hover effects on desktop only — touch devices get sticky :hover after tap
+  const iconOpacity = (isActive: boolean) =>
+    cn(
+      "transition-opacity duration-1000",
+      !someIconActive &&
+        "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
+      someIconActive && !isActive && "opacity-35",
+    );
+
+  const navLinkOpacity = (href: string) =>
+    cn(
+      "transition-opacity duration-1000",
+      "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
+      hasActiveLink && pathname !== href && "opacity-35",
+    );
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <>
@@ -127,7 +224,6 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
         <div className="h-full px-5 border-b sm:border-r border-stroke">
-          {/* 2-column grid: logo left, nav+icons right */}
           <div className="h-full grid grid-cols-2 items-end pb-3">
             {/* Logo */}
             <Link
@@ -135,11 +231,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               aria-label="Studiofile — Home"
               className="group w-fit"
             >
-              <Logo className="h-6 w-30 fill-current text-ink group-hover:text-light transition-colors mb-0.5" />
-              {/* <LogoHover className="h-7 w-auto" /> */}
+              <Logo className="h-6 w-30 fill-current text-ink md:group-hover:text-light transition-colors mb-0.5" />
             </Link>
 
-            {/* _________ Nav + Icons _________ */}
+            {/* Nav + Icons */}
             <div className="h-full flex justify-self-end items-end">
               {/* Desktop Nav */}
               <nav
@@ -151,11 +246,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "flex items-end text-ink",
-                      "font-medium tracking-[-0.04em] text-lg leading-none",
-                      "transition-opacity duration-1000",
-                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                      hasActiveLink && pathname !== link.href && "opacity-35",
+                      "flex items-end text-ink font-medium tracking-[-0.04em] text-lg leading-none",
+                      navLinkOpacity(link.href),
                       link.linkClassName,
                     )}
                   >
@@ -163,14 +255,15 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   </Link>
                 ))}
               </nav>
-              {/* _________ Icons _________ */}
+
+              {/* Icons */}
               <div
                 className={cn(
                   "flex gap-10 sm:gap-8",
                   !someIconActive && "group",
                 )}
               >
-                {/* Account Icon */}
+                {/* Account / Login */}
                 {isLoggedIn ? (
                   <div ref={accountRef} className="relative">
                     <button
@@ -178,16 +271,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         if (isAccountOpen || isClosingAccount) {
                           closeAccount();
                         } else {
-                          setIsAccountOpen(true);
+                          setAccountState("open");
                           closeCart();
                           if (isMobileMenuOpen) closeMenu();
                         }
                       }}
                       className={cn(
-                        "relative h-full flex items-end transition-opacity duration-1000",
-                        !someIconActive &&
-                          "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                        someIconActive && !(isAccountOpen || isClosingAccount) && "opacity-35",
+                        "relative h-full flex items-end",
+                        iconOpacity(isAccountOpen || isClosingAccount),
                       )}
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
@@ -203,16 +294,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         size={28}
                       />
                     </button>
-                    {/* Account Dropdown — desktop only */}
+
+                    {/* Account dropdown — desktop only */}
                     {isAccountOpen && (
                       <div className="hidden md:flex absolute top-[calc(var(--header-height)-10px)] -right-4 min-w-[200px] bg-canvas border border-stroke rounded-lg z-50 flex-col">
                         <div className="p-1">
-                          {[
-                            { label: "My Account", href: "/account" },
-                            { label: "Orders", href: "/account/orders" },
-                            { label: "Settings", href: "/account/settings" },
-                            { label: "Addresses", href: "/account/addresses" },
-                          ].map((item) => (
+                          {ACCOUNT_LINKS.map((item) => (
                             <Link
                               key={item.href}
                               href={item.href}
@@ -227,20 +314,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                           <button
                             type="button"
                             disabled={isPendingLogout}
-                            onClick={() => {
-                              closeAccount();
-                              startLogoutTransition(async () => {
-                                try {
-                                  await customerLogout();
-                                  toastSuccess("You've been signed out");
-                                  router.push("/");
-                                } catch {
-                                  toastError(
-                                    "Sign out failed. Please try again.",
-                                  );
-                                }
-                              });
-                            }}
+                            onClick={handleLogout}
                             className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-accent hover:text-canvas rounded-md transition-colors font-medium disabled:opacity-35 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
@@ -253,10 +327,8 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <Link
                     href="/account/login"
                     className={cn(
-                      "relative h-full flex transition-opacity duration-1000",
-                      !someIconActive &&
-                        "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                      someIconActive && "opacity-35",
+                      "relative h-full flex items-end",
+                      iconOpacity(false),
                     )}
                     aria-label="Sign in"
                     onMouseEnter={() => userIconRef.current?.startAnimation()}
@@ -266,24 +338,18 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   </Link>
                 )}
 
-                {/* Cart Icon */}
+                {/* Cart */}
                 <button
-                  ref={buttonRef}
                   onClick={() => {
                     if (isOpen) {
                       closeCart();
                     } else {
                       openCart();
                       if (isMobileMenuOpen) closeMenu();
-                      setIsAccountOpen(false);
+                      if (isAccountOpen) closeAccount();
                     }
                   }}
-                  className={cn(
-                    "h-full flex relative transition-opacity duration-1000",
-                    !someIconActive &&
-                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                    someIconActive && !isOpen && "opacity-35",
-                  )}
+                  className={cn("h-full flex relative", iconOpacity(isOpen))}
                   aria-label={
                     isOpen
                       ? "Close cart"
@@ -303,21 +369,17 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {/* Mobile Hamburger */}
                 <button
                   onClick={() => {
-                    if (isMobileMenuOpen && !isClosingMenu) {
+                    if (isMobileMenuOpen) {
                       closeMenu();
-                    } else if (!isMobileMenuOpen) {
-                      setIsMobileMenuOpen(true);
+                    } else if (menuState === "closed") {
+                      setMenuState("open");
                       closeCart();
-                      setIsAccountOpen(false);
+                      if (isAccountOpen) closeAccount();
                     }
                   }}
                   className={cn(
-                    "md:hidden h-full flex relative -mr-1 transition-opacity duration-1000",
-                    !someIconActive &&
-                      "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                    someIconActive &&
-                      !(isMobileMenuOpen || isClosingMenu) &&
-                      "opacity-35",
+                    "md:hidden h-full flex relative -mr-1",
+                    iconOpacity(isMobileMenuOpen || isClosingMenu),
                   )}
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
@@ -330,25 +392,26 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Hamburger Dropdown */}
+      {/* Mobile Nav Menu */}
       {(isMobileMenuOpen || isClosingMenu) && (
         <nav
           style={{
-            animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
+            animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col justify-between group"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col space-y-6"
           aria-label="Mobile navigation"
         >
-          <div>
+          <div className="group">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMenu}
                 className={cn(
                   "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
                   "transition-opacity duration-1000",
-                  "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
+                  // No hover effects on mobile — sticky tap-hover is broken UX
+                  "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
                   hasActiveLink && pathname !== link.href && "opacity-35",
                   link.linkClassName,
                 )}
@@ -356,21 +419,19 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {link.label}
               </Link>
             ))}
-
+            <div className="border-t border-stroke my-4 -mx-5" />
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={closeMenu}
               className={cn(
-                "flex pt-4 border-t border-ink mt-4 w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
-                "transition-opacity duration-200 group-hover:opacity-35 hover:!opacity-100",
+                "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                "transition-opacity duration-200",
+                "md:group-hover:opacity-35 md:hover:!opacity-100",
                 hasActiveLink && "opacity-35",
               )}
             >
               {isLoggedIn ? "Account" : "Sign in"}
             </Link>
-          </div>
-          <div className="text-lg font-medium text-light tracking-[-0.04em] pb-12 pt-4 border-t border-light">
-            <p>© {new Date().getFullYear()} STUDIO filé</p>
           </div>
         </nav>
       )}
@@ -380,53 +441,41 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
         <nav
           ref={mobileAccountOverlayRef}
           style={{
-            animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
+            animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[48] md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between group"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col"
           aria-label="Account navigation"
         >
-          <div>
-            {[
-              { label: "My Account", href: "/account" },
-              { label: "Orders", href: "/account/orders" },
-              { label: "Settings", href: "/account/settings" },
-              { label: "Addresses", href: "/account/addresses" },
-            ].map((item) => (
+          <div className="group">
+            {ACCOUNT_LINKS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={closeAccount}
                 className={cn(
-                  "flex w-full text-left text-6xl tracking-[-0.05em] leading-[3.5rem] font-medium text-ink",
+                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
                   "transition-opacity duration-1000",
-                  "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
+                  "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
                 )}
               >
                 {item.label}
               </Link>
             ))}
           </div>
-          <div className="border-t border-stroke pb-12 pt-4">
-            <button
-              type="button"
-              disabled={isPendingLogout}
-              onClick={() => {
-                closeAccount();
-                startLogoutTransition(async () => {
-                  try {
-                    await customerLogout();
-                    toastSuccess("You've been signed out");
-                    router.push("/");
-                  } catch {
-                    toastError("Sign out failed. Please try again.");
-                  }
-                });
-              }}
-              className="text-6xl tracking-[-0.05em] font-medium text-ink disabled:opacity-35 disabled:pointer-events-none"
-            >
-              {isPendingLogout ? "Signing out..." : "Sign out"}
-            </button>
-          </div>
+          <div className="border-t border-stroke my-4 -mx-5" />
+          <button
+            type="button"
+            disabled={isPendingLogout}
+            onClick={handleLogout}
+            className={cn(
+              "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+              "transition-opacity duration-200",
+              "md:group-hover:opacity-35 md:hover:!opacity-100",
+              hasActiveLink && "opacity-35",
+            )}
+          >
+            {isPendingLogout ? "Signing out..." : "Sign out"}
+          </button>
         </nav>
       )}
 

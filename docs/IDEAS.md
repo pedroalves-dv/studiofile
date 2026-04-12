@@ -1,6 +1,8 @@
 # docs/IDEAS.md — Creative & Future Roadmap
 
-## Typographically Perfect Hero Text (SVG Approach)
+## [SUPERSEDED] Typographically Perfect Hero Text (SVG Approach)
+
+Solved via ink-rect measurement in HeroContent.tsx.
 
 Concept: Switch from standard <h1> to SVG <text> with textLength and lengthAdjust="spacing".
 Why: Ensures the word "TOTEM" perfectly fits the container width across all screen sizes without font metric math or glyph distortion.
@@ -30,7 +32,9 @@ Implementation Strategy:
 - Use useScroll from motion/react.
 - Target: Calculate target and offset based on the actual ref of the section to prevent breaking on mobile or screen resize.
 
-## Interactive Design "Quirks"
+### 💡 Future Wishlist (Unimplemented)
+
+> Note: These are conceptual ideas for future iterations and have no current code implementation.
 
 - Cursor Effects: Custom cursor that morphs into a 3D "wireframe" when hovering over configurator elements.
 - Scroll-Triggered Color Shift: Background canvas color subtly morphs based on the most common color in the current TOTEM stack.
