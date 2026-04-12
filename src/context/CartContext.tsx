@@ -49,7 +49,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return {
         ...state,
         cart: action.cart,
-        cartId: action.cart.lines.length > 0 ? action.cart.id : null,
+        cartId: action.cart.id,
       };
     case "SET_CART_ID":
       return { ...state, cartId: action.cartId };
@@ -136,6 +136,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(CART_ID_KEY);
     }
   }, [state.cartId]);
+
+  // Re-validate the stored cart whenever the user returns to the tab.
+  // Catches expired or completed carts before they cause mutation errors.
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState !== "visible") return;
+      const stored = localStorage.getItem(CART_ID_KEY);
+      if (!stored) return;
+      getCart(stored)
+        .then((cart) => {
+          if (hasUserActionRef.current) return; // user acted mid-flight, don't overwrite
+          if (!cart) {
+            localStorage.removeItem(CART_ID_KEY);
+            dispatch({ type: "CLEAR_CART" });
+          } else {
+            dispatch({ type: "SET_CART", cart });
+          }
+        })
+        .catch(() => {
+          // Network error — keep stored ID, retry on next focus
+        });
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []); // stable: reads localStorage and refs directly, no reactive deps needed
 
   return (
     <CartContext.Provider

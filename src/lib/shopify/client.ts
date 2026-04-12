@@ -1,4 +1,4 @@
-// Shopify Storefront API client with typed fetch wrapper
+// src/lib/shopify/client.ts
 import { ApiResponse, ShopifyError } from "./types";
 
 const SHOPIFY_ENDPOINT = `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/2026-01/graphql.json`;
@@ -42,12 +42,6 @@ export async function storefront<T>(
         ? { next: options.next }
         : { cache: options?.cache ?? "no-store", next: options?.next }),
     });
-    // TEMP DEBUG
-    console.log("storefront request:", {
-      status: response.status,
-      url: SHOPIFY_ENDPOINT,
-    });
-
     if (!response.ok) {
       const error = new ShopifyError(
         `Shopify API Error: ${response.statusText}`,

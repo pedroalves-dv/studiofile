@@ -1,3 +1,4 @@
+// src/app/(main)/account/(protected)/page.tsx
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";

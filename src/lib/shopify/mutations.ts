@@ -1,6 +1,4 @@
-// GraphQL mutations for Shopify Storefront API
-
-// Shared cart fields — used by all cart mutations and GET_CART query
+// src/lib/shopify/mutations.ts
 export const CART_FIELDS = `
   id
   checkoutUrl

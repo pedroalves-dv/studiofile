@@ -1,3 +1,4 @@
+// src/components/cart/CartItem.tsx
 "use client";
 
 import Image from "next/image";
@@ -16,28 +17,17 @@ export function CartItem({ line }: CartItemProps) {
   const { updateItem, removeItem } = useCart();
   const [localQuantity, setLocalQuantity] = useState(line.quantity);
 
-  // Always mirrors the latest updateItem to avoid stale closures in effect cleanups
   const updateItemRef = useRef(updateItem);
   updateItemRef.current = updateItem;
 
-  // Tracks a pending user-initiated change.
-  // Dual purpose: guards the sync effect from overriding user intent,
-  // and carries the value to flush on unmount.
   const pendingRef = useRef<{ lineId: string; quantity: number } | null>(null);
 
-  // Sync localQuantity when the server-side quantity changes externally
-  // (e.g. addItem called from the product page while the cart drawer is open).
-  // Without this, the stale localQuantity triggers the debounce and reverts the cart.
-  // Skipped when a user-initiated change is in flight so we don't override their intent.
   useEffect(() => {
     if (!pendingRef.current) {
       setLocalQuantity(line.quantity);
     }
   }, [line.quantity]);
 
-  // Debounced update for user-initiated stepper changes, with flush on unmount.
-  // Flush ensures a quantity change isn't silently dropped when the drawer closes
-  // mid-debounce (the 150ms close animation keeps CartItem mounted briefly).
   useEffect(() => {
     if (localQuantity === line.quantity) {
       pendingRef.current = null;
@@ -53,7 +43,10 @@ export function CartItem({ line }: CartItemProps) {
     return () => {
       clearTimeout(timer);
       if (pendingRef.current) {
-        updateItemRef.current(pendingRef.current.lineId, pendingRef.current.quantity);
+        updateItemRef.current(
+          pendingRef.current.lineId,
+          pendingRef.current.quantity,
+        );
         pendingRef.current = null;
       }
     };

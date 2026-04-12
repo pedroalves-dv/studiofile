@@ -1,4 +1,4 @@
-// Shopify cart management with server actions for cart mutations and client-side hooks for cart state management.
+// src/lib/shopify/cart.ts
 "use server";
 
 import { storefront } from "./client";
@@ -82,11 +82,6 @@ export async function createCart(lines?: CartLine[]): Promise<ShopifyCart> {
     { input },
     { cache: "no-store" },
   );
-  console.log("CREATED CART ID:", response.cartCreate.cart.id);
-  console.log(
-    "CREATED CART userErrors:",
-    JSON.stringify(response.cartCreate.userErrors),
-  ); // ← add this
   if (response.cartCreate.userErrors.length > 0) {
     throw new Error(response.cartCreate.userErrors[0].message);
   }
@@ -134,7 +129,6 @@ export async function removeFromCart(
   cartId: string,
   lineIds: string[],
 ): Promise<ShopifyCart> {
-  console.log("ATTEMPTING REMOVE ON ID:", cartId);
   const response = await storefront<CartRemoveResponse>(
     CART_LINES_REMOVE,
     {
