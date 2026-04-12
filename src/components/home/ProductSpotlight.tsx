@@ -1,38 +1,9 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
+import { FadeUp } from "@/components/ui/FadeUp";
 import { ArrowTracedButton } from "@/components/ui/ArrowTracedButton";
-
-function useSectionInView(amount = 0.25, once = true) {
-  const ref = useRef(null);
-  // once: false — re-animates every time, matching BrandStory behaviour
-  const isInView = useInView(ref, { once: false, amount });
-  return { ref, isInView };
-}
-
-function FadeUp({
-  children,
-  delay = 0,
-  className,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const { ref, isInView } = useSectionInView();
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 28 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import { useSectionInView } from "@/hooks/useSectionInView";
 
 function DrawLine({
   delay = 0,
@@ -127,17 +98,17 @@ export function ProductSpotlight() {
               to you.
             </p>
           </FadeUp>
-          <FadeUp delay={0.65}>
+          <FadeUp delay={0.65} once={true}>
             <ArrowTracedButton
               href="/shop/totem"
               label="Explore TOTEM"
-              className="w-fit px-5 py-2.5 text-sm font-medium tracking-[-0.03em] rounded-md text-white ring-1 ring-white/20"
+              className="w-fit bg-ink btn btn-cta text-white border border-white/20"
             />
           </FadeUp>
         </div>
 
         {/* ── DESKTOP ── */}
-        <div className="hidden sm:flex relative z-10 h-full flex-col justify-start px-5 py-52 max-w-5xl gap-1">
+        <div className="hidden sm:flex relative z-10 h-full flex-col justify-start px-5 py-60 max-w-5xl gap-1">
           <FadeUp delay={0.05}>
             <p
               className="font-medium tracking-[-0.06em] leading-[0.92] text-white"
@@ -165,11 +136,11 @@ export function ProductSpotlight() {
               you.
             </p>
           </FadeUp>
-          <FadeUp delay={0.7}>
+          <FadeUp delay={0.7} once={true}>
             <ArrowTracedButton
               href="/shop/totem"
               label="Explore TOTEM"
-              className="w-fit px-8 py-4 text-lg font-medium tracking-[-0.04em] rounded-md text-white ring-1 ring-white/20"
+              className="w-fit bg-ink btn btn-cta text-white border border-white/20"
             />
           </FadeUp>
         </div>
@@ -207,11 +178,11 @@ export function ProductSpotlight() {
                 <span className="text-ink">exactly how you want it.</span>
               </p>
             </FadeUp>
-            <FadeUp delay={0.32}>
+            <FadeUp delay={0.32} once={true}>
               <ArrowTracedButton
                 href="/shop"
                 label="Try the configurator"
-                className="w-fit px-5 py-2.5 text-sm font-medium tracking-[-0.03em] rounded-md text-ink ring-1 ring-ink/20"
+                className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
               />
             </FadeUp>
           </div>
@@ -228,15 +199,11 @@ export function ProductSpotlight() {
             transition={{ duration: 1, ease: "easeOut" }}
           >
             {/* swap for <video autoPlay loop muted playsInline> */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-label text-muted">
-                configurator preview
-              </span>
-            </div>
+            <div className="absolute inset-0 flex items-center justify-center"></div>
           </motion.div>
 
           {/* Right: text + CTA — justify-between pushes label up, CTA down */}
-          <div className="flex flex-col justify-between px-8 pt-24 pb-14">
+          <div className="flex flex-col justify-between px-8 py-60">
             {/* Bottom anchor: headline + descriptor + CTA */}
             <div className="flex flex-col gap-5">
               <FadeUp delay={0.2}>
@@ -258,11 +225,11 @@ export function ProductSpotlight() {
                   <span className="text-ink">exactly how you want it.</span>
                 </p>
               </FadeUp>
-              <FadeUp delay={0.42}>
+              <FadeUp delay={0.42} once={true}>
                 <ArrowTracedButton
                   href="/shop"
                   label="Try the configurator"
-                  className="w-fit px-8 py-4 text-lg font-medium tracking-[-0.04em] rounded-md text-ink ring-1 ring-ink/20"
+                  className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
                 />
               </FadeUp>
             </div>

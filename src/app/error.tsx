@@ -28,12 +28,12 @@ export default function Error({
         <ArrowButton
           label="Try again"
           onClick={() => reset()}
-          className="w-fit mt-4 px-6 py-2 bg-ink text-white text-base font-medium tracking-tight rounded-md  border border-stroke  disabled:opacity-50"
+          className="btn btn-normal w-full mt-4 bg-white text-ink border border-ink disabled:btn-disabled"
         />
         <ArrowButton
           href="/"
           label="Back to Home"
-          className="w-fit mt-4 px-6 py-2 bg-canvas text-ink text-base font-medium tracking-tight rounded-md  border border-stroke  disabled:opacity-50"
+          className="btn btn-normal w-full mt-4 bg-ink text-white border border-white disabled:btn-disabled"
         />
       </div>
     </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ArrowButton } from "@/components/ui/ArrowButton";
+import { FadeUp } from "@/components/ui/FadeUp";
+import { ArrowTracedButton } from "@/components/ui/ArrowTracedButton";
 
 export const metadata: Metadata = {
   title: "About",
@@ -58,13 +59,13 @@ export default function AboutPage() {
   return (
     <div className="px-5">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="section-height">
+      <section className="section-height page-pt page-pb">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
-          <div className="md:sticky md:top-14 md:self-start space-y-6 py-12 sm:pb-24 sm:pt-14">
+          <div className="md:sticky md:top-[calc(var(--header-height)+90px)] self-start space-y-6">
             {/* Left — info */}
 
-            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-12">
+            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9] pb-2">
               The studio
             </h1>
             <div className="text-ink tracking-[-0.03em] text-lg leading-tight space-y-6 pr-12">
@@ -96,19 +97,25 @@ export default function AboutPage() {
           </div>
 
           {/* Right — image placeholder */}
-          <div
-            className="aspect-[4/5] bg-lighter relative overflow-hidden -mx-5"
-            aria-label="Studio image"
-          ></div>
+          <div className="-mt-[90px] -mr-5">
+            <div
+              className="aspect-[4/5] bg-lighter relative overflow-hidden"
+              aria-label="Studio image"
+            ></div>
+            <div
+              className="aspect-[4/5] bg-light relative overflow-hidden"
+              aria-label="Studio image"
+            ></div>
+          </div>
         </div>
       </section>
 
       {/* ─── Studio Values / Process ─── */}
-      <section className="-mx-5 border-t border-stroke py-12 sm:pb-24 sm:pt-14 section-height">
-        <h1 className="px-5 text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-24 ">
+      <section className="page-pt page-pb section-height">
+        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-6">
           The process
         </h1>
-        <div className="px-5 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-40 ">
           {STUDIO_VALUES.map((value) => (
             <div key={value.title} className="space-y-4">
               <h3 className="text-4xl mt-8 tracking-tighter">{value.title}</h3>
@@ -130,11 +137,11 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Team / Studio ─── */}
-      <section className="-mx-5 border-t border-stroke">
-        <div className="px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <section className="page-pt page-pb section-height">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
-          <div className="space-y-6 md:sticky md:top-14 pr-12 py-12 sm:pb-24 sm:pt-14">
-            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-12 sm:leading-[0.9] leading-[4rem]">
+          <div className="space-y-6 md:sticky md:top-[calc(var(--header-height)+90px)]">
+            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-6 leading-[0.9]">
               The team
             </h1>
             <h2 className="text-4xl md:text-5xl leading-tight tracking-tighter">
@@ -165,16 +172,18 @@ export default function AboutPage() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="border-t border-stroke -mx-5 pt-24 pb-40 flex flex-col items-center">
-        <h2 className="font-display text-7xl md:text-15xl tracking-tight leading-none">
+      <section className="py-80 sm:py-60 flex flex-col items-center">
+        <h2 className="font-display text-7xl md:text-15xl tracking-tight leading-none mb-20">
           TOTEM
         </h2>
 
-        <ArrowButton
-          href="/shop"
-          label="Shop"
-          className="w-fit mt-4 px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md border border-ink disabled:opacity-50"
-        />
+        <FadeUp delay={0.32}>
+          <ArrowTracedButton
+            href="/shop"
+            label="Explore TOTEM"
+            className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
+          />
+        </FadeUp>
       </section>
     </div>
   );

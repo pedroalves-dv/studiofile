@@ -13,14 +13,12 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="section-height px-5">
-      <Breadcrumb items={[{ label: "Contact" }]} />
-
-      <section className="pb-12 mt-6 ">
+    <div className="px-5">
+      <section className="section-heigh page-pt page-pb">
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
           <div className="space-y-6">
-            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] mb-2 sm:-ml-[8px] leading-[0.9] whitespace-nowrap">
+            <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.06em] sm:tracking-[-0.07em] mb-2 sm:-ml-[8px] leading-[0.9] whitespace-nowrap">
               Let&apos;s talk
             </h1>
 

@@ -183,11 +183,6 @@
     /* Footer height */
     --footer-height: 28rem;
 
-    /* The total height of your breadcrumb + its top margin */
-    --breadcrumb-offset: 74px;
-    /* Your standard page top padding (pb-12 mt-6 equivalent) */
-    --page-pt-standard: 120px;
-
     /* Animation */
     --duration-fast: 150ms;
     --duration-base: 300ms;
@@ -253,7 +248,6 @@
   h5,
   h6 {
     font-family: var(--font-body);
-    /* font-weight: 500; */
     margin-top: 0;
   }
 
@@ -293,18 +287,44 @@
 @layer components {
   /* Typography utilities */
   .text-label {
-    font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0;
-    /* text-transform: uppercase; */
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px; /* rounded-md */
+    font-weight: 500; /* font-medium */
+    transition: all 0.2s ease;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-out-allowed;
+  }
+
+  /* 2. Normal Button (Your Subscribe/Checkout Style) */
+  .btn-normal {
+    padding: 8px 24px; /* py-2 px-6 */
+    font-size: 1rem; /* text-base */
+    letter-spacing: -0.025em;
+  }
+
+  /* 3. CTA Button (Your Explore/Large Style) */
+  .btn-cta {
+    padding: 16px 32px; /* py-4 px-8 */
+    font-size: 1.125rem; /* text-lg */
+    letter-spacing: -0.04em;
   }
 
   .page-pt {
-    padding-top: var(--page-pt-standard);
+    padding-top: 90px;
   }
 
-  .page-pt-breadcrumb {
-    padding-top: calc(var(--page-pt-standard) - var(--breadcrumb-offset));
+  .page-pb {
+    padding-bottom: 48px;
   }
 
   /* Layout utilities */
