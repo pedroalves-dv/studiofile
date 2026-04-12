@@ -6,6 +6,7 @@ import { useLenis } from "@/components/common/SmoothScroll";
 export function ScrollSnapProvider({ children }: { children: ReactNode }) {
   const lenis = useLenis();
   const isSnapping = useRef(false);
+  const isProgrammaticScroll = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const activeSection = useRef<HTMLElement | null>(null);
 
@@ -15,6 +16,7 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
     // Helper to reset the snapping state safely from anywhere
     const releaseLock = () => {
       isSnapping.current = false;
+      isProgrammaticScroll.current = false;
       document.body.removeAttribute("data-snapping");
     };
 
@@ -53,6 +55,7 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
 
       if (distanceToHeader > 5) {
         isSnapping.current = true;
+        isProgrammaticScroll.current = true;
         document.body.setAttribute("data-snapping", "true");
 
         lenis.scrollTo(activeSection.current, {
@@ -78,7 +81,11 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
 
     const handleScroll = () => {
       // 1. If the user scrolls manually while a snap is in progress, release lock immediately
-      if (lenis.velocity !== 0 && isSnapping.current) {
+      if (
+        lenis.velocity !== 0 &&
+        isSnapping.current &&
+        !isProgrammaticScroll.current
+      ) {
         releaseLock();
       }
 
@@ -88,7 +95,7 @@ export function ScrollSnapProvider({ children }: { children: ReactNode }) {
 
       // Wait for 550ms of stillness before attempting a snap
       timeoutRef.current = setTimeout(() => {
-        if (lenis.velocity === 0) {
+        if (Math.abs(lenis.velocity) < 0.05) {
           performSnap();
         }
       }, 550);

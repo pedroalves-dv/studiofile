@@ -96,7 +96,7 @@ export function ArrowTracedButton({
   const sharedProps = {
     onMouseEnter: () => setHovered(true),
     onMouseLeave: () => setHovered(false),
-    className: cn("group relative", className),
+    className: cn("group relative block", className),
   };
 
   if (href) {

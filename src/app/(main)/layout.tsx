@@ -23,30 +23,21 @@ export default async function MainLayout({
       <WishlistProvider>
         <ToastProvider>
           <SmoothScroll>
-            <ScrollSnapProvider>
-              {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
-              <Header isLoggedIn={!!token} />
-              {/* 2. This is the ONLY <main> tag.*/}
-              <main
-                id="main-content"
-                className="relative flex flex-col min-h-screen"
-              >
-                <div className="flex-1">{children}</div>
-                <FooterBackground />
-                <Footer />
-              </main>
-
-              {/* The Performance-Blur Layer */}
-              <div
-                id="blur-overlay"
-                className="fixed inset-0 z-[40] opacity-0 pointer-events-none transition-opacity duration-300 bg-canvas/30"
-                style={{ backdropFilter: "blur(8px)" }}
-              />
-              {/* 3. Drawers are portals/fixed, so they stay outside */}
-              <CartDrawer />
-              <WishlistDrawer />
-              <CookieConsent />
-            </ScrollSnapProvider>
+            {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
+            <Header isLoggedIn={!!token} />
+            {/* 2. This is the ONLY <main> tag.*/}
+            <main
+              id="main-content"
+              className="relative flex flex-col min-h-screen"
+            >
+              <div className="flex-1">{children}</div>
+              <FooterBackground />
+              <Footer />
+            </main>
+            {/* 3. Drawers are portals/fixed, so they stay outside */}
+            <CartDrawer />
+            <WishlistDrawer />
+            <CookieConsent />
           </SmoothScroll>
         </ToastProvider>
       </WishlistProvider>

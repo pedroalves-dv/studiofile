@@ -183,6 +183,11 @@
     /* Footer height */
     --footer-height: 28rem;
 
+    /* The total height of your breadcrumb + its top margin */
+    --breadcrumb-offset: 74px;
+    /* Your standard page top padding (pb-12 mt-6 equivalent) */
+    --page-pt-standard: 120px;
+
     /* Animation */
     --duration-fast: 150ms;
     --duration-base: 300ms;
@@ -294,6 +299,14 @@
     /* text-transform: uppercase; */
   }
 
+  .page-pt {
+    padding-top: var(--page-pt-standard);
+  }
+
+  .page-pt-breadcrumb {
+    padding-top: calc(var(--page-pt-standard) - var(--breadcrumb-offset));
+  }
+
   /* Layout utilities */
   .section-centered {
     min-height: calc(100dvh - var(--header-height));
@@ -304,7 +317,7 @@
   }
 
   .section-height {
-    height: calc(100dvh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
   }
   .section-padding {
     @apply py-20;

@@ -27,14 +27,20 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     setLenis(instance);
 
+    // ✅ FIX: track running state so the recursive RAF stops on unmount
+    let rafId: number;
+    let running = true;
+
     function raf(time: number) {
+      if (!running) return;
       instance.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      running = false; // ✅ stops the recursive loop
       cancelAnimationFrame(rafId);
       instance.destroy();
       setLenis(null);

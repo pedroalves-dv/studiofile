@@ -6,6 +6,7 @@ import {
   AccordionContent,
 } from "@/components/ui/Accordion";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
@@ -70,12 +71,12 @@ export default function FaqPage() {
   ];
   return (
     <div className="px-5 section-height">
-      <section className="pt-12 sm:pt-14">
+      <section className="pb-12 page-pt">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
           <div className="space-y-8 xl:sticky xl:top-28">
             <div className="h-full flex flex-col items-start justify-center space-y-8">
-              <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-8 sm:-ml-[5px] sm:leading-[0.9] leading-[4rem]">
+              <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] pb-8 sm:-ml-[8px] sm:leading-[0.9] leading-[4rem]">
                 FAQ
               </h1>
 

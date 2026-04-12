@@ -37,21 +37,21 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
 
       {/* Breadcrumb Navigation */}
       <nav
-        className="text-base font-medium tracking-tighter text-muted tracking-tight"
+        className="mt-8 border border-stroke px-4 py-2 w-fit rounded-full text-base font-medium tracking-[-0.03em] text-ink/20"
         aria-label="Breadcrumb"
       >
         <ol className="flex items-center gap-3 flex-wrap">
           {breadcrumbItems.map((item, index) => (
             <li key={index} className="flex items-center gap-3">
               {index > 0 && (
-                <span aria-hidden="true" className="text-muted">
+                <span aria-hidden="true" className="text-ink/20">
                   ›
                 </span>
               )}
               {item.href && index !== breadcrumbItems.length - 1 ? (
                 <Link
                   href={item.href}
-                  className="text-muted hover:text-ink transition-colors link-underline"
+                  className="text-ink/20 hover:text-ink/90 transition-colors link-underline"
                 >
                   {item.label}
                 </Link>
@@ -62,8 +62,8 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
                   }
                   className={
                     index === breadcrumbItems.length - 1
-                      ? "text-ink"
-                      : "text-muted"
+                      ? "text-ink/90"
+                      : "text-ink/20"
                   }
                 >
                   {item.label}
