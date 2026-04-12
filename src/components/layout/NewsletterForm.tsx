@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+import { Input } from "@/components/ui/Input";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -14,17 +15,15 @@ export function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="bg-white border border-stroke rounded-md focus-within:border-ink transition-colors">
-        <input
-          id="newsletter-email"
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2.5 bg-transparent text-ink text-base tracking-[-0.04em] placeholder-light focus:outline-none"
-          required
-        />
-      </div>
+      <Input
+        id="newsletter-email"
+        type="email"
+        placeholder="your@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className=""
+      />
 
       <ArrowButton
         label="Subscribe"

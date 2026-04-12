@@ -291,11 +291,12 @@
     letter-spacing: 0;
   }
 
+  /* Button utilities */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px; /* rounded-md */
+    border-radius: 8px; /* rounded-lg */
     font-weight: 500; /* font-medium */
     transition: all 0.2s ease;
   }
@@ -319,6 +320,36 @@
     letter-spacing: -0.04em;
   }
 
+  /* Input utilities */
+  input {
+    font-size: 1rem !important;
+  }
+
+  /* Target the autofill state */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    /* This overrides the blue background with whatever color you want (e.g., white) */
+    -webkit-box-shadow: 0 0 0 1000px rgb(227, 227, 255) inset !important;
+
+    /* This overrides the text color */
+    -webkit-text-fill-color: var(--color-ink) !important;
+
+    /* This ensures the font stays consistent with your design */
+    font-family: "Geist", sans-serif !important;
+    font-size: 1rem !important;
+
+    /* Match your input transition speed if needed */
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  input:-webkit-autofill::first-line {
+    font-family: inherit !important;
+    font-size: 1rem !important;
+  }
+
+  /* Page utilities */
   .page-pt {
     padding-top: 90px;
   }

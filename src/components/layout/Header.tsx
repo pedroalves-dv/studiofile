@@ -66,16 +66,27 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   }, []);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isClosingAccount, setIsClosingAccount] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
-  useClickOutside(accountRef, () => setIsAccountOpen(false));
-  useScrollLock(isSearchOpen);
+  const mobileAccountOverlayRef = useRef<HTMLElement>(null);
+
+  const closeAccount = useCallback(() => {
+    setIsClosingAccount(true);
+    setTimeout(() => {
+      setIsAccountOpen(false);
+      setIsClosingAccount(false);
+    }, 250);
+  }, []);
+
+  useClickOutside([accountRef, mobileAccountOverlayRef], closeAccount);
+  useScrollLock(isSearchOpen || isAccountOpen);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeMenu();
+        closeAccount();
         setIsSearchOpen(false);
-        setIsAccountOpen(false);
       }
     };
     window.addEventListener("keydown", handleEscape);
@@ -84,6 +95,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
   useEffect(() => {
     setIsAccountOpen(false);
+    setIsClosingAccount(false);
     setIsMobileMenuOpen(false);
     setIsClosingMenu(false);
   }, [pathname]);
@@ -98,7 +110,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
   const hasActiveLink = NAV_LINKS.some((l) => pathname === l.href);
   const someIconActive =
-    isOpen || isAccountOpen || isMobileMenuOpen || isClosingMenu;
+    isOpen || isAccountOpen || isClosingAccount || isMobileMenuOpen || isClosingMenu;
 
   return (
     <>
@@ -152,10 +164,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 ))}
               </nav>
               {/* _________ Icons _________ */}
-              {/* <div className="flex items-center justify-center border-x border-ink"> */}
               <div
                 className={cn(
-                  "flex gap-6 sm:gap-8",
+                  "flex gap-10 sm:gap-8",
                   !someIconActive && "group",
                 )}
               >
@@ -164,9 +175,10 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <div ref={accountRef} className="relative">
                     <button
                       onClick={() => {
-                        const opening = !isAccountOpen;
-                        setIsAccountOpen((v) => !v);
-                        if (opening) {
+                        if (isAccountOpen || isClosingAccount) {
+                          closeAccount();
+                        } else {
+                          setIsAccountOpen(true);
                           closeCart();
                           if (isMobileMenuOpen) closeMenu();
                         }
@@ -175,7 +187,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         "relative h-full flex items-end transition-opacity duration-1000",
                         !someIconActive &&
                           "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
-                        someIconActive && !isAccountOpen && "opacity-35",
+                        someIconActive && !(isAccountOpen || isClosingAccount) && "opacity-35",
                       )}
                       aria-label="My account"
                       aria-expanded={isAccountOpen}
@@ -191,8 +203,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                         size={28}
                       />
                     </button>
+                    {/* Account Dropdown — desktop only */}
                     {isAccountOpen && (
-                      <div className="absolute top-[var(--header-height)] right-[-1px] min-w-[200px] opacity-35 border border-ink z-50 flex flex-col">
+                      <div className="hidden md:flex absolute top-[calc(var(--header-height)-10px)] -right-4 min-w-[200px] bg-canvas border border-stroke rounded-lg z-50 flex-col">
                         <div className="p-1">
                           {[
                             { label: "My Account", href: "/account" },
@@ -203,19 +216,19 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                             <Link
                               key={item.href}
                               href={item.href}
-                              onClick={() => setIsAccountOpen(false)}
-                              className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-semibold"
+                              onClick={closeAccount}
+                              className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-medium rounded-md"
                             >
                               {item.label}
                             </Link>
                           ))}
                         </div>
-                        <div className="border-t border-ink p-1 bg-lighter">
+                        <div className="border-t border-stroke p-1 bg-lighter">
                           <button
                             type="button"
                             disabled={isPendingLogout}
                             onClick={() => {
-                              setIsAccountOpen(false);
+                              closeAccount();
                               startLogoutTransition(async () => {
                                 try {
                                   await customerLogout();
@@ -228,7 +241,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                                 }
                               });
                             }}
-                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-error hover:text-canvas transition-colors font-semibold disabled:opacity-35 disabled:pointer-events-none"
+                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-accent hover:text-canvas rounded-md transition-colors font-medium disabled:opacity-35 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
                           </button>
@@ -358,6 +371,61 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           </div>
           <div className="text-lg font-medium text-light tracking-[-0.04em] pb-12 pt-4 border-t border-light">
             <p>© {new Date().getFullYear()} STUDIO filé</p>
+          </div>
+        </nav>
+      )}
+
+      {/* Mobile Account Overlay */}
+      {(isAccountOpen || isClosingAccount) && (
+        <nav
+          ref={mobileAccountOverlayRef}
+          style={{
+            animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} 250ms ease-in-out forwards`,
+          }}
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[48] md:hidden px-5 pt-20 section-height bg-canvas flex flex-col justify-between group"
+          aria-label="Account navigation"
+        >
+          <div>
+            {[
+              { label: "My Account", href: "/account" },
+              { label: "Orders", href: "/account/orders" },
+              { label: "Settings", href: "/account/settings" },
+              { label: "Addresses", href: "/account/addresses" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeAccount}
+                className={cn(
+                  "flex w-full text-left text-6xl tracking-[-0.05em] leading-[3.5rem] font-medium text-ink",
+                  "transition-opacity duration-1000",
+                  "group-hover:opacity-35 hover:!opacity-100 group-hover:duration-200",
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          <div className="border-t border-stroke pb-12 pt-4">
+            <button
+              type="button"
+              disabled={isPendingLogout}
+              onClick={() => {
+                closeAccount();
+                startLogoutTransition(async () => {
+                  try {
+                    await customerLogout();
+                    toastSuccess("You've been signed out");
+                    router.push("/");
+                  } catch {
+                    toastError("Sign out failed. Please try again.");
+                  }
+                });
+              }}
+              className="text-6xl tracking-[-0.05em] font-medium text-ink disabled:opacity-35 disabled:pointer-events-none"
+            >
+              {isPendingLogout ? "Signing out..." : "Sign out"}
+            </button>
           </div>
         </nav>
       )}

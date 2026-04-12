@@ -66,7 +66,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         <div className="flex justify-end px-1">
           <Link
             href="/account/forgot-password"
-            className="text-xs text-light hover:text-ink transition-colors"
+            className="text-base text-light hover:text-ink transition-colors"
           >
             Forgot password?
           </Link>
@@ -76,18 +76,14 @@ export function LoginForm({ nextPath }: LoginFormProps) {
       <ArrowButton
         type="submit"
         label={isPending ? "Signing in…" : "Sign in"}
-        // glowColor="var(--color-black)"
         disabled={isPending}
-        className="w-full py-2.5 bg-ink text-canvas tracking-wide
-         text-sm rounded-lg border border-stroke"
+        className="w-full btn btn-normal bg-ink text-white border border-ink/20"
       />
 
       <ArrowButton
         label="Create Account"
         href="/account/register"
-        // glowColor="var(--color-black)"
-        className="block w-full text-center py-2.5 bg-white text-ink tracking-wide
-         text-sm rounded-lg border border-stroke"
+        className="w-full btn btn-normal bg-white text-ink border border-stroke"
       />
     </form>
   );
