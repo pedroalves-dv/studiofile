@@ -21,7 +21,7 @@ export default async function AccountPage() {
     <div className="">
       <section className="">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="tracking-tighter font-semibold text-4xl md:text-5xl text-ink">
+          <h2 className="tracking-tighter font-medium text-4xl md:text-6xl text-ink">
             Recent orders
           </h2>
           {customer.orders.edges.length > 3 && (
@@ -35,7 +35,7 @@ export default async function AccountPage() {
         </div>
 
         {recentOrders.length === 0 ? (
-          <p className="text-sm text-muted py-12 text-center rounded-md border border-stroke">
+          <p className="text-sm text-muted py-12 text-center rounded-lg border border-stroke">
             No orders yet.
           </p>
         ) : (

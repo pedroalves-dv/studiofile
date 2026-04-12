@@ -177,6 +177,9 @@
     --spacing-4xl: 5rem;
     --spacing-5xl: 6rem;
 
+    /* Site Padding */
+    --site-pad: 1rem;
+
     /* Header height (Mobile first) */
     --header-height: 4rem;
 
@@ -193,6 +196,10 @@
   @media (min-width: 640px) {
     :root {
       --header-height: 3.5rem;
+    }
+
+    :root {
+      --site-pad: 1.25rem;
     }
   }
   /* Base styles */

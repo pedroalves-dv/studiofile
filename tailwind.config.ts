@@ -7,6 +7,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        site: "var(--site-pad)",
+      },
       fontSize: {
         "1xs": "0.65rem",
         "10xl": "10rem",

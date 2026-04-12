@@ -33,17 +33,23 @@ export function AccountNav() {
     const navRect = navEl.getBoundingClientRect();
     const itemRect = itemEl.getBoundingClientRect();
     setIndicator({
-      left: itemRect.left - navRect.left,
+      left: itemRect.left - navRect.left + navEl.scrollLeft,
       width: itemRect.width,
     });
+
+    // Scroll active item into view on mobile
+    itemEl.scrollIntoView({ block: "nearest", inline: "center" });
   }, [activeIndex]);
 
   return (
-    <nav ref={navRef} className="relative flex gap-1 mb-10">
+    <nav
+      ref={navRef}
+      className="relative flex justify-between sm:justify-start mb-10 overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden w-fit"
+    >
       {indicator && (
         <div
           aria-hidden
-          className="absolute inset-y-0 rounded-lg border border-ink transition-all duration-300 ease-in-out"
+          className="absolute inset-y-0 rounded-full border border-ink transition-all duration-300 ease-in-out "
           style={{ left: indicator.left, width: indicator.width }}
         />
       )}
@@ -57,8 +63,8 @@ export function AccountNav() {
               itemRefs.current[i] = el;
             }}
             className={cn(
-              "relative text-base font-medium tracking-[-0.04em] px-4 py-2 rounded-lg transition-colors",
-              isActive ? "text-ink" : "text-light hover:text-ink"
+              "relative shrink-0 text-base md:text-lg font-medium tracking-[-0.02em] px-4 py-2 rounded-lg transition-colors",
+              isActive ? "text-ink" : "text-ink/20 hover:text-ink",
             )}
           >
             {link.label}
