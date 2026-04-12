@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div>
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
-        <section className="px-5 section-height py-12 sm:py-14 pb-8">
+        <section className="px-site section-height py-12 sm:py-14 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
             {/* Left — image gallery with zoom */}
             <div className="md:sticky md:top-28">

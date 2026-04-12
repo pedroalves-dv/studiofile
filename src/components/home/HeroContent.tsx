@@ -141,7 +141,7 @@ export function HeroContent() {
     <motion.div
       layout
       ref={containerRef}
-      // ml and mr are needed to align the text on the website padding (px-5)
+      // ml and mr are needed to align the text on the website padding (px-site)
       // Because the side bearings of the letters create different paddings inside their bounding boxes.
       className={cn(
         "relative overflow-hidden ml-[10px] mr-[5px]",

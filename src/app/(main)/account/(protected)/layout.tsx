@@ -15,18 +15,16 @@ export default async function AccountLayout({
   const customer = token ? await getCustomer(token) : null;
 
   return (
-    <div className="px-5 mt-8 page-pb section-height">
-      <AccountNav />
-      <div className="-mx-5 px-5 pb-8">
-        {customer && (
-          <CustomerAvatar
-            firstName={customer.firstName}
-            lastName={customer.lastName}
-            email={customer.email}
-          />
-        )}
-      </div>
+    <div className="px-site mt-8 page-pb section-height">
+      {customer && (
+        <CustomerAvatar
+          firstName={customer.firstName}
+          lastName={customer.lastName}
+          email={customer.email}
+        />
+      )}
 
+      <AccountNav />
       {children}
     </div>
   );

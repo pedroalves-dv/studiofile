@@ -223,7 +223,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
-        <div className="h-full px-5 border-b sm:border-r border-stroke">
+        <div className="h-full px-site border-b sm:border-r border-stroke">
           <div className="h-full grid grid-cols-2 items-end pb-3">
             {/* Logo */}
             <Link
@@ -398,7 +398,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col space-y-6"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col space-y-6"
           aria-label="Mobile navigation"
         >
           <div className="group">
@@ -419,7 +419,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {link.label}
               </Link>
             ))}
-            <div className="border-t border-stroke my-4 -mx-5" />
+            <div className="border-t border-stroke my-4 -mx-site" />
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={closeMenu}
@@ -443,7 +443,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-5 pt-20 section-height bg-white flex flex-col"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col"
           aria-label="Account navigation"
         >
           <div className="group">
@@ -462,7 +462,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               </Link>
             ))}
           </div>
-          <div className="border-t border-stroke my-4 -mx-5" />
+          <div className="border-t border-stroke my-4 -mx-site" />
           <button
             type="button"
             disabled={isPendingLogout}

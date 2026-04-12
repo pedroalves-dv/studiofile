@@ -44,7 +44,7 @@ export function AccountNav() {
   return (
     <nav
       ref={navRef}
-      className="relative flex justify-between sm:justify-start mb-10 overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden w-fit"
+      className="relative flex justify-between sm:justify-start mb-10 overflow-x-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden w-full sm:w-fit"
     >
       {indicator && (
         <div
@@ -63,7 +63,7 @@ export function AccountNav() {
               itemRefs.current[i] = el;
             }}
             className={cn(
-              "relative shrink-0 text-base md:text-lg font-medium tracking-[-0.02em] px-4 py-2 rounded-lg transition-colors",
+              "relative shrink-0 text-base md:text-lg font-medium tracking-[-0.02em] px-4 py-2 sm:px-7 sm:py-3 rounded-lg transition-colors",
               isActive ? "text-ink" : "text-ink/20 hover:text-ink",
             )}
           >

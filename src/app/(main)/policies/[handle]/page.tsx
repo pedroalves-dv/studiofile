@@ -51,7 +51,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
   if (!policy) notFound();
 
   return (
-    <div className="px-5">
+    <div className="px-site">
       <Breadcrumb items={[{ label: policy.title }]} />
 
       <section className="pb-12 mt-4">
@@ -61,7 +61,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
           </h1>
         </header>
 
-        <div className="mb-12 border-b border-stroke -mx-5"></div>
+        <div className="mb-12 border-b border-stroke -mx-site"></div>
 
         {policy.body ? (
           <div

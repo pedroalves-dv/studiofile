@@ -75,7 +75,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 1 */}
-      <div className="section-height flex items-center px-5">
+      <div className="section-height flex items-center px-site">
         <AnimatedParagraph className={pClassName}>
           We are a design studio founded in{" "}
           <HoverWord
@@ -109,7 +109,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 2 */}
-      <div className="section-height flex items-center px-5">
+      <div className="section-height flex items-center px-site">
         <AnimatedParagraph className={pClassName}>
           Our objects blend{" "}
           <span className="text-accent">architectural thinking</span> with a
@@ -120,7 +120,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 3 */}
-      <div className="section-height flex items-center px-5">
+      <div className="section-height flex items-center px-site">
         <AnimatedParagraph className={pClassName}>
           Each piece is{" "}
           <HoverWord

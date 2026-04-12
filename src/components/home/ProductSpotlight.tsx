@@ -70,7 +70,7 @@ export function ProductSpotlight() {
         <div className="absolute inset-0 bg-black/45" aria-hidden />
 
         {/* ── MOBILE ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-5 py-80 gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site py-80 gap-2">
           <FadeUp delay={0.05}>
             <p
               className="font-medium tracking-[-0.05em] leading-[1] text-white"
@@ -108,7 +108,7 @@ export function ProductSpotlight() {
         </div>
 
         {/* ── DESKTOP ── */}
-        <div className="hidden sm:flex relative z-10 h-full flex-col justify-start px-5 py-60 max-w-5xl gap-1">
+        <div className="hidden sm:flex relative z-10 h-full flex-col justify-start px-site py-60 max-w-5xl gap-1">
           <FadeUp delay={0.05}>
             <p
               className="font-medium tracking-[-0.06em] leading-[0.92] text-white"
@@ -152,14 +152,14 @@ export function ProductSpotlight() {
         aria-label="TOTEM configurator"
       >
         {/* ── MOBILE: stacked, each half breathes ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-5 py-80 gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site py-80 gap-2">
           {/* Top: configurator placeholder — flex-1 takes all available space */}
           <div className="flex-1 relative bg-lighter overflow-hidden">
             <div className="absolute inset-0 flex items-center justify-center"></div>
           </div>
 
           {/* Bottom: fixed-height CTA block — doesn't squish */}
-          <div className="shrink-0 px-5 pt-8 pb-10 flex flex-col gap-5">
+          <div className="shrink-0 px-site pt-8 pb-10 flex flex-col gap-5">
             <FadeUp delay={0.05}>
               <p
                 className="font-medium tracking-[-0.05em] leading-[0.9] text-ink"

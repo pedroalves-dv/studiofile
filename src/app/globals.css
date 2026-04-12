@@ -178,7 +178,7 @@
     --spacing-5xl: 6rem;
 
     /* Site Padding */
-    --site-pad: 1rem;
+    --site-pad: 0.9rem;
 
     /* Header height (Mobile first) */
     --header-height: 4rem;

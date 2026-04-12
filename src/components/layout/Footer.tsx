@@ -22,7 +22,7 @@ const CONDITIONS_POLICIES_LINKS = [
 export function Footer() {
   return (
     <footer className="w-full flex flex-col bg-canvas/20  z-10 transform-gpu will-change-[backdrop-filter] contain-paint">
-      <div className="px-5 border-t border-stroke pt-3">
+      <div className="px-site border-t border-stroke pt-3">
         {/* Main footer content */}
         <div className="w-full flex flex-col items-center justify-between ">
           <div className="w-full grid grid-cols-1 sm:grid-cols-[auto_minmax(0,380px)] md:grid-cols-[auto_auto_minmax(0,380px)] xl:grid-cols-[1fr_1fr_1fr_minmax(0,380px)]">

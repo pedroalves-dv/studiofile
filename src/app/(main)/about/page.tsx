@@ -57,7 +57,7 @@ const STUDIO_VALUES = [
 
 export default function AboutPage() {
   return (
-    <div className="px-5">
+    <div className="px-site">
       {/* ─── Hero / Studio Story ─── */}
       <section className="section-height page-pt page-pb">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -165,7 +165,7 @@ export default function AboutPage() {
           </div>
           {/* Photo placeholder */}
           <div
-            className="aspect-[4/5] bg-lighter relative overflow-hidden -mx-5"
+            className="aspect-[4/5] bg-lighter relative overflow-hidden -mx-site"
             aria-label="Photo of Alex Dumont"
           ></div>
         </div>

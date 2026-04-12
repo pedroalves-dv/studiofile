@@ -10,7 +10,7 @@ const sizes = {
   },
   md: {
     button: "px-4 py-3",
-    span: "px-5 py-3 text-sm min-w-[3.5rem]",
+    span: "px-site py-3 text-sm min-w-[3.5rem]",
     icon: 14,
   },
 };

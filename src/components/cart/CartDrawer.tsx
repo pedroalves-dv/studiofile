@@ -59,7 +59,7 @@ export function CartDrawer() {
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between py-4 border-b border-stroke px-5">
+        <div className="flex items-center justify-between py-4 border-b border-stroke px-site">
           <h2 className="text-3xl font-semibold text-ink tracking-[-0.03em] leading-none translate-y-[2px]">
             Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
           </h2>
@@ -72,7 +72,7 @@ export function CartDrawer() {
         <FreeShippingBar cart={cart} />
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto py-4 px-5" data-lenis-prevent>
+        <div className="flex-1 overflow-y-auto py-4 px-site" data-lenis-prevent>
           {!cart || cart.lines.length === 0 ? (
             <EmptyCart />
           ) : (
@@ -105,7 +105,7 @@ export function CartDrawer() {
 
         {/* Footer — sticky */}
         {cart && cart.lines.length > 0 && (
-          <div className="border-t border-stroke px-5 py-4 flex flex-col gap-4">
+          <div className="border-t border-stroke px-site py-4 flex flex-col gap-4">
             <DiscountInput />
             <CartNote />
             <CartSummary cart={cart} />

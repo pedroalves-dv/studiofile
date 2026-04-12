@@ -45,7 +45,7 @@ function Countdown() {
 export function LandingMinimalHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
-      <div className="h-full px-5 border-b sm:border-r border-light">
+      <div className="h-full px-site border-b sm:border-r border-light">
         <div className="h-full grid grid-cols-2 items-end pb-3">
           <Link href="/" aria-label="Studiofile — Home" className="group w-fit">
             <Logo className="h-6 w-30 fill-current text-ink group-hover:text-light transition-colors mb-0.5" />
