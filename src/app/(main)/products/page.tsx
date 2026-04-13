@@ -3,9 +3,9 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import { getProducts } from "@/lib/shopify/products";
 import { SITE_URL } from "@/lib/utils/seo";
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { SortSelect } from "@/components/search/SortSelect";
 import { ProductsFilters } from "@/components/products/ProductsFilters";
+import { MobileFilterBar } from "@/components/products/MobileFilterBar";
 import { ProductCard } from "@/components/product/ProductCard";
 import { SkeletonCard } from "@/components/common/SkeletonCard";
 
@@ -105,27 +105,30 @@ async function ShopContent({ searchParams }: ShopPageProps) {
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const breadcrumbs = [{ label: "Products", href: "/products" }];
-
   return (
     <div className="px-site page-pt page-pb">
-      {/* <Breadcrumb items={breadcrumbs} /> */}
+      {/* Sticky header: h1 + controls — pins under site header on mobile, static on desktop */}
+      <div className="sticky md:relative top-[var(--header-height)] z-30 bg-canvas pb-4">
+        <header>
+          <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9] mb-4 -ml-[5px]">
+            Products
+          </h1>
+        </header>
 
-      {/* Editorial header */}
-      <header className="">
-        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9] mb-4 -ml-[5px]">
-          Products
-        </h1>
-      </header>
+        {/* Mobile: Filter + Sort pills — hidden on desktop */}
+        <Suspense fallback={null}>
+          <MobileFilterBar />
+        </Suspense>
 
-      {/* Controls: filter toggles (left) + sort (right) */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-        <Suspense fallback={null}>
-          <ProductsFilters />
-        </Suspense>
-        <Suspense fallback={null}>
-          <SortSelect />
-        </Suspense>
+        {/* Desktop: sidebar filters + sort select — hidden on mobile */}
+        <div className="hidden md:flex flex-row items-center justify-between gap-4">
+          <Suspense fallback={null}>
+            <ProductsFilters />
+          </Suspense>
+          <Suspense fallback={null}>
+            <SortSelect />
+          </Suspense>
+        </div>
       </div>
 
       {/* Product grid */}
