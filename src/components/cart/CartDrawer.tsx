@@ -23,37 +23,53 @@ export function CartDrawer() {
 
   useEffect(() => {
     const mainElement = document.getElementById("main-content");
-
+    let resetTimer: NodeJS.Timeout;
+    let closeTimer: NodeJS.Timeout;
     if (isOpen) {
       lenis?.stop();
       setIsVisible(true);
       setIsClosing(false);
       if (mainElement) {
-        // Create depth via scale and brightness, NOT blur
+        mainElement.style.willChange = "transform";
+        mainElement.style.transition =
+          "transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)";
         mainElement.style.transform = "scale(0.98)";
-        mainElement.style.filter = "brightness(0.7)";
-        mainElement.style.transition = "all 0.15s ease-in-out";
+        // mainElement.style.filter = "contrast(1.1)";
+        // mainElement.style.transition = "all 0.1s ease-in-out";
         mainElement.style.overflow = "hidden";
       }
     } else if (isVisible) {
       lenis?.start();
       if (mainElement) {
         mainElement.style.transform = "scale(1)";
-        mainElement.style.filter = "none";
+
+        const timer = setTimeout(() => {
+          mainElement.style.transform = "";
+          mainElement.style.willChange = "";
+          mainElement.style.transition = "";
+          mainElement.style.overflow = "";
+
+          // Force a scroll recalculation for Lenis/Sticky
+          lenis?.resize();
+        }, 400);
       }
       setIsClosing(true);
       const timer = setTimeout(() => {
         setIsVisible(false);
         setIsClosing(false);
       }, 150);
-      return () => clearTimeout(timer);
+
+      return () => {
+        if (resetTimer) clearTimeout(resetTimer);
+        if (closeTimer) clearTimeout(closeTimer);
+      };
     }
   }, [isOpen, lenis, isVisible]);
 
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
-        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke"
+        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke sm:shadow-[-25px_30px_60px_-20px_rgba(0,0,0,0.06)]"
         style={{
           animation: `${isClosing ? "slideOutRight" : "slideInRight"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}

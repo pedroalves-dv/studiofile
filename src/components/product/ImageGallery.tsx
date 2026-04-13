@@ -65,7 +65,7 @@ export function ImageGallery({
           src={mainImage.url}
           alt={mainImage.altText || productTitle}
           fill
-          className="object-cover transition-transform duration-700 hover:scale-105"
+          className="object-cover transition-transform duration-200 hover:scale-105"
           sizes="(max-width: 768px) 100vw, 50vw"
           priority
         />

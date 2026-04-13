@@ -117,9 +117,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </h1>
       </header>
 
-      {/* Full-width divider */}
-      {/* <div className="border-b border-stroke -mx-site mb-6 mt-4" /> */}
-
       {/* Controls: filter toggles (left) + sort (right) */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <Suspense fallback={null}>
