@@ -23,8 +23,7 @@ export function CartDrawer() {
 
   useEffect(() => {
     const mainElement = document.getElementById("main-content");
-    let resetTimer: NodeJS.Timeout;
-    let closeTimer: NodeJS.Timeout;
+
     if (isOpen) {
       lenis?.stop();
       setIsVisible(true);
@@ -33,35 +32,31 @@ export function CartDrawer() {
         mainElement.style.willChange = "transform";
         mainElement.style.transition =
           "transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)";
+        mainElement.style.transformOrigin = "top center";
         mainElement.style.transform = "scale(0.98)";
-        // mainElement.style.filter = "contrast(1.1)";
-        // mainElement.style.transition = "all 0.1s ease-in-out";
-        mainElement.style.overflow = "hidden";
       }
     } else if (isVisible) {
       lenis?.start();
+      let styleTimer: NodeJS.Timeout | undefined;
       if (mainElement) {
         mainElement.style.transform = "scale(1)";
-
-        const timer = setTimeout(() => {
+        styleTimer = setTimeout(() => {
           mainElement.style.transform = "";
           mainElement.style.willChange = "";
           mainElement.style.transition = "";
-          mainElement.style.overflow = "";
-
-          // Force a scroll recalculation for Lenis/Sticky
+          mainElement.style.transformOrigin = "";
           lenis?.resize();
         }, 400);
       }
       setIsClosing(true);
-      const timer = setTimeout(() => {
+      const closeTimer = setTimeout(() => {
         setIsVisible(false);
         setIsClosing(false);
       }, 150);
 
       return () => {
-        if (resetTimer) clearTimeout(resetTimer);
-        if (closeTimer) clearTimeout(closeTimer);
+        clearTimeout(styleTimer);
+        clearTimeout(closeTimer);
       };
     }
   }, [isOpen, lenis, isVisible]);
