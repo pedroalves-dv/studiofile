@@ -401,7 +401,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col space-y-6"
           aria-label="Mobile navigation"
         >
-          <div className="group">
+          <div className="group space-y-1">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -419,7 +419,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 {link.label}
               </Link>
             ))}
-            <div className="border-t border-stroke my-4 -mx-site" />
+            <div className="py-6">
+              <div className="border-t border-stroke -mx-site" />
+            </div>
             <Link
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={closeMenu}
@@ -446,7 +448,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col"
           aria-label="Account navigation"
         >
-          <div className="group">
+          <div className="group space-y-1">
             {ACCOUNT_LINKS.map((item) => (
               <Link
                 key={item.href}
@@ -462,7 +464,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
               </Link>
             ))}
           </div>
-          <div className="border-t border-stroke my-4 -mx-site" />
+          <div className="py-6">
+            <div className="border-t border-stroke -mx-site" />
+          </div>
           <button
             type="button"
             disabled={isPendingLogout}
