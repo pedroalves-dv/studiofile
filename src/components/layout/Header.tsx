@@ -11,6 +11,8 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/context/ToastContext";
 import { LogOut } from "lucide-react";
+import { useWishlist } from "@/hooks/useWishlist";
+import { HeartIcon, type HeartIconHandle } from "@/components/ui/HeartIcon";
 import Logo from "public/images/logo/newlogov2.svg";
 
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
@@ -45,6 +47,7 @@ const NAV_LINKS: {
 const ACCOUNT_LINKS = [
   { label: "My Account", href: "/account" },
   { label: "Orders", href: "/account/orders" },
+  { label: "Wishlist", href: "/account/wishlist" },
   { label: "Settings", href: "/account/settings" },
   { label: "Addresses", href: "/account/addresses" },
 ];
@@ -65,6 +68,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const userIconRef = useRef<UserIconHandle>(null);
   const userRoundCheckIconRef = useRef<UserRoundCheckIconHandle>(null);
   const cartIconRef = useRef<ShoppingBagIconHandle>(null);
+  const heartIconRef = useRef<HeartIconHandle>(null);
   const accountRef = useRef<HTMLDivElement>(null);
   const mobileAccountOverlayRef = useRef<HTMLElement>(null);
 
@@ -81,6 +85,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const { success: toastSuccess, error: toastError } = useToast();
   const [isPendingLogout, startLogoutTransition] = useTransition();
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
+  const { totalCount: wishlistCount, isOpen: isWishlistOpen, openDrawer: openWishlist, closeDrawer: closeWishlist } = useWishlist();
 
   const [menuState, setMenuState] = useState<PanelState>("closed");
   const [accountState, setAccountState] = useState<PanelState>("closed");
@@ -190,6 +195,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const hasActiveLink = NAV_LINKS.some((l) => pathname === l.href);
   const someIconActive =
     isOpen ||
+    isWishlistOpen ||
     isAccountOpen ||
     isClosingAccount ||
     isMobileMenuOpen ||
@@ -348,6 +354,34 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     <UserIcon ref={userIconRef} size={28} />
                   </Link>
                 )}
+
+                {/* Wishlist */}
+                <button
+                  onClick={() => {
+                    if (isWishlistOpen) {
+                      closeWishlist();
+                    } else {
+                      openWishlist();
+                      if (isMobileMenuOpen) closeMenu();
+                      if (isAccountOpen) closeAccount();
+                      if (isOpen) closeCart();
+                    }
+                  }}
+                  className={cn(
+                    "hidden md:flex h-full relative items-end",
+                    iconOpacity(isWishlistOpen),
+                  )}
+                  aria-label={isWishlistOpen ? "Close wishlist" : `Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`}
+                  onMouseEnter={() => heartIconRef.current?.startAnimation()}
+                  onMouseLeave={() => heartIconRef.current?.stopAnimation()}
+                >
+                  <HeartIcon ref={heartIconRef} size={28} />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-3 -right-3 w-4 h-4 text-sm font-medium">
+                      ({wishlistCount})
+                    </span>
+                  )}
+                </button>
 
                 {/* Cart */}
                 <button
