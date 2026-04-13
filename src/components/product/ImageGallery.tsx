@@ -93,7 +93,7 @@ export function ImageGallery({
 
       {/* Thumbnails — desktop sidebar only */}
       {images.length > 1 && (
-        <div className="hidden md:flex md:flex-col md:order-first md:overflow-y-auto md:w-14 md:flex-shrink-0 gap-2 py-1">
+        <div className="hidden md:flex md:flex-col md:order-first md:overflow-y-auto md:w-14 md:flex-shrink-0 gap-2 mr-2">
           {images.map((img, i) => (
             <button
               key={i}

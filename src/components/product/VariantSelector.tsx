@@ -66,7 +66,7 @@ export function VariantSelector({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-4">
       {optionNames.map((optionName) => {
         const values = Array.from(
           new Set(
@@ -79,11 +79,8 @@ export function VariantSelector({
 
         return (
           <div key={optionName}>
-            <div className="flex items-baseline justify-between mb-3">
+            <div className="flex items-baseline mb-1 mx-1">
               <span className="text-lg text-muted">{optionName}</span>
-              {/* <span className="text-lg text-ink">
-                {selectedOptions[optionName]}
-              </span> */}
             </div>
             <div className="flex flex-wrap gap-2">
               {values.map((value) => {

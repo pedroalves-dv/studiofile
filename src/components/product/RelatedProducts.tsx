@@ -19,9 +19,9 @@ export function RelatedProducts({
   if (filtered.length === 0) return null;
 
   return (
-    <section className="border-t border-border section-padding">
-      <div className="container-wide">
-        <h2 className="text-3xl md:text-4xl tracking-tight mb-10">
+    <section className="px-site py-32">
+      <div className="">
+        <h2 className="text-6xl md:text-8xl tracking-[-0.07em] text-end">
           You may also like
         </h2>
         <HorizontalScrollRow>

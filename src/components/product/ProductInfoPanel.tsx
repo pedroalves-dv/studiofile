@@ -63,8 +63,6 @@ export function ProductInfoPanel({
   const discountPercent =
     onSale && compareAtPrice ? getDiscountPercent(price, compareAtPrice) : 0;
 
-  // Fix 4: Subtract what's already in the cart from the available stock so the
-  // stepper can't let the user order more than Shopify will accept.
   const inCartQty = getItemQuantity(selectedVariant.id);
   const maxQty = Math.max(
     0,
@@ -95,7 +93,7 @@ export function ProductInfoPanel({
   ];
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Title + price block — hidden on mobile (rendered above gallery in page.tsx) */}
       <div className="hidden md:block">
         {/* Product type */}
@@ -104,19 +102,22 @@ export function ProductInfoPanel({
         )}
 
         {/* Title */}
-        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
+        <h1 className="text-8xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[0.9] -mt-2 mb-5">
           {product.title}
         </h1>
 
         {/* Price */}
-        <div className="flex items-start gap-4 py-2">
+        <div className="flex items-start gap-4">
           <span className="text-4xl tracking-tighter text-ink translate-y-[-3px]">
             {formatPrice(price.amount, price.currencyCode)}
           </span>
           {onSale && compareAtPrice && (
             <>
               <span className="text-sm text-muted line-through">
-                {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+                {formatPrice(
+                  compareAtPrice.amount,
+                  compareAtPrice.currencyCode,
+                )}
               </span>
               <Badge variant="sale">−{discountPercent}%</Badge>
             </>
@@ -137,11 +138,11 @@ export function ProductInfoPanel({
 
       {/* Quantity stepper + wishlist */}
       {selectedVariant.availableForSale && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3">
-            <span className="text-lg text-muted">Quantity</span>
+            <span className="text-lg text-muted mx-1">Quantity</span>
             {inCartQty > 0 && (
-              <span className="text-sm text-muted">{inCartQty} in cart</span>
+              <span className="text-lg text-light">({inCartQty} in cart)</span>
             )}
           </div>
           <div className="flex items-center justify-between">
@@ -176,7 +177,7 @@ export function ProductInfoPanel({
       )}
 
       {/* Add to cart + trust badges */}
-      <div className="flex flex-col gap-3 my-2">
+      <div className="flex flex-col gap-3">
         <ArrowButton
           label={
             !selectedVariant.availableForSale
@@ -192,17 +193,17 @@ export function ProductInfoPanel({
           onClick={handleAddToCart}
           className="w-full py-3 bg-white text-ink text-lg font-medium tracking-tight rounded-md border border-ink disabled:opacity-50"
         />
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2 text-base text-muted">
-            <RotateCcw size={14} className="text-muted" />
+        <div className="flex justify-between mt-4 px-1">
+          <div className="flex items-center gap-2 text-lg text-light">
+            <RotateCcw size={18} className="text-light" />
             Free returns
           </div>
-          <div className="flex items-center gap-2 text-base text-muted">
-            <ShieldCheck size={14} className="text-muted" />
+          <div className="flex items-center gap-2 text-lg text-light">
+            <ShieldCheck size={18} className="text-light" />
             Secure checkout
           </div>
-          <div className="flex items-center gap-2 text-base text-muted">
-            <PackageCheck size={14} className="text-muted" />
+          <div className="flex items-center gap-2 text-lg text-light">
+            <PackageCheck size={18} className="text-light" />
             Made to order
           </div>
         </div>

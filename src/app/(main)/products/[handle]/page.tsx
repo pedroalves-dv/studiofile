@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
         <section className="px-site section-min-h pt-6 sm:page-pt page-pb">
           <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-3 lg:gap-5 items-start">
-            {/* Mobile header — title + price + stock, shown above gallery on mobile only */}
+            {/* Mobile */}
             <div className="md:hidden">
               {product.productType && (
                 <span className="text-label text-muted">
@@ -103,7 +103,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
             </div>
 
-            {/* Right — product info panel */}
+            {/* Desktop - Right Product Info Panel */}
             <ProductInfoPanel product={product} />
           </div>
         </section>
