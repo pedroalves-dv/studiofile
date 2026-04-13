@@ -383,22 +383,6 @@
     min-height: calc(100dvh - var(--header-height));
   }
 
-  .section-padding {
-    @apply py-20;
-  }
-
-  .container-wide {
-    @apply max-w-screen-xl mx-auto px-6 md:px-12;
-  }
-
-  .container-wider {
-    @apply max-w-screen-2xl mx-auto px-6 md:px-12;
-  }
-
-  .container-narrow {
-    @apply max-w-2xl mx-auto px-6;
-  }
-
   /* Skip to content link */
   .sr-only {
     position: absolute;
