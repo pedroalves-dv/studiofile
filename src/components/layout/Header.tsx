@@ -33,7 +33,7 @@ const NAV_LINKS: {
   linkClassName?: string;
 }[] = [
   { label: "TOTEM", href: "/products/totem" },
-  { label: "All products", href: "/products" },
+  { label: "Products", href: "/products" },
   { label: "Studio", href: "/about", hideOnDesktop: true },
   { label: "Contact", href: "/contact" },
   { label: "FAQ", href: "/faq" },

@@ -42,10 +42,10 @@ export function ProductsFilters() {
       {/* Type group */}
       <button
         onClick={() => setParam("type", null)}
-        className={`shrink-0 px-3 py-1.5 text-sm border transition-colors ${
+        className={`shrink-0 px-4 py-2 sm:px-7 sm:py-3 text-base md:text-lg border border-stroke rounded-full transition-colors ${
           !activeType
             ? "border-ink bg-ink text-canvas"
-            : "border-stroke text-muted hover:border-ink hover:text-ink"
+            : "border-stroke bg-white text-muted hover:border-ink hover:text-ink"
         }`}
       >
         All
@@ -57,10 +57,10 @@ export function ProductsFilters() {
           onClick={() =>
             setParam("type", activeType === f.value ? null : f.value)
           }
-          className={`shrink-0 px-3 py-1.5 text-sm border transition-colors ${
+          className={`shrink-0 px-4 py-2 sm:px-7 sm:py-3 text-base md:text-lg border border-stroke rounded-full transition-colors ${
             activeType === f.value
               ? "border-ink bg-ink text-canvas"
-              : "border-stroke text-muted hover:border-ink hover:text-ink"
+              : "border-stroke bg-white text-muted hover:border-ink hover:text-ink"
           }`}
         >
           {f.label}
@@ -75,10 +75,10 @@ export function ProductsFilters() {
         <button
           key={f.value}
           onClick={() => toggleAvailability(f.value)}
-          className={`shrink-0 px-3 py-1.5 text-sm border transition-colors ${
+          className={`shrink-0 px-4 py-2 sm:px-7 sm:py-3 text-base md:text-lg border border-stroke rounded-full transition-colors ${
             activeAvail === f.value
               ? "border-ink bg-ink text-canvas"
-              : "border-stroke text-muted hover:border-ink hover:text-ink"
+              : "border-stroke bg-white text-muted hover:border-ink hover:text-ink"
           }`}
         >
           {f.label}

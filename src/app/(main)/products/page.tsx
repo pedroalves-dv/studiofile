@@ -104,24 +104,21 @@ async function ShopContent({ searchParams }: ShopPageProps) {
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const breadcrumbs = [
-    { label: "Home", href: "/" },
-    { label: "Shop", href: "/products" },
-  ];
+  const breadcrumbs = [{ label: "Products", href: "/products" }];
 
   return (
     <div className="px-site page-pt page-pb">
-      <Breadcrumb items={breadcrumbs} />
+      {/* <Breadcrumb items={breadcrumbs} /> */}
 
       {/* Editorial header */}
-      <header className="mb-2 mt-4">
+      <header className="">
         <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9]">
-          Shop
+          Products
         </h1>
       </header>
 
       {/* Full-width divider */}
-      <div className="border-b border-stroke -mx-site mb-6 mt-4" />
+      {/* <div className="border-b border-stroke -mx-site mb-6 mt-4" /> */}
 
       {/* Controls: filter toggles (left) + sort (right) */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">

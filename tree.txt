@@ -195,7 +195,6 @@
 │   │   │   ├── ImageGallery.tsx
 │   │   │   ├── ImageGalleryWithZoom.tsx
 │   │   │   ├── ImageZoom.tsx
-│   │   │   ├── ImageZoomGallery.tsx
 │   │   │   ├── ProductCard.tsx
 │   │   │   ├── ProductGrid.tsx
 │   │   │   ├── ProductImage.tsx
