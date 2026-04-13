@@ -7,7 +7,7 @@ import { siInstagram, siPinterest, siX, siTiktok } from "simple-icons";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
 
 const FOOTER_LINKS = [
-  { label: "Shop", href: "/shop" },
+  { label: "Shop", href: "/products" },
   { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "Process", href: "/about#process" },

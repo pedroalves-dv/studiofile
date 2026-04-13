@@ -38,4 +38,4 @@ Implementation Strategy:
 
 - Cursor Effects: Custom cursor that morphs into a 3D "wireframe" when hovering over configurator elements.
 - Scroll-Triggered Color Shift: Background canvas color subtly morphs based on the most common color in the current TOTEM stack.
-- View Transitions: Use the native View Transitions API for seamless navigation between the /shop grid and the /products/[handle] detail page.
+- View Transitions: Use the native View Transitions API for seamless navigation between the /products grid and the /products/[handle] detail page.

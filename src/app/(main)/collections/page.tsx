@@ -109,7 +109,7 @@ export default async function CollectionsPage() {
                 soon.
               </p>
               <Link
-                href="/shop"
+                href="/products"
                 className="inline-block px-6 py-3 border border-ink text-ink hover:bg-ink hover:text-canvas transition-colors"
               >
                 Browse Shop

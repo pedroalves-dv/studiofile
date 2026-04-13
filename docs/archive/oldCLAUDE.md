@@ -185,7 +185,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 | `/coming-soon` | Landing page — editorial hero, email signup, social links |
 | `/products/totem` | TOTEM modular lamp configurator (replaces standard PDP for this product) |
 | `/products/[handle]` | Standard product detail page |
-| `/shop` | All products with filter, sort, pagination |
+| `/products` | All products with filter, sort, pagination |
 | `/collections` | Collection grid |
 | `/collections/[handle]` | Dynamic collection with products |
 | `/search` | Full search with filters and sort |
@@ -303,7 +303,7 @@ TypeScript constants in `src/lib/totem-config.ts` — not separate Shopify produ
 
 - `src/lib/utils/params.ts` exports `SORT_MAP` and `parseFilters` — shared between shop, collection, and search pages. Do not duplicate inline.
 - Sort uses Shopify's `sortKey` + `reverse` pattern — not `PRICE_ASC`/`PRICE_DESC` strings.
-- `components/search/FilterPanel` re-exports from `components/shop/FilterPanel` — the shop version is canonical. **Do not delete `shop/FilterPanel`.**
+- `components/search/FilterPanel` re-exports from `components/products/FilterPanel` — the shop version is canonical. **Do not delete `shop/FilterPanel`.**
 
 ## Contact
 

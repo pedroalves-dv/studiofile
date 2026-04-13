@@ -11,7 +11,7 @@ export function EmptyCart() {
         </p>
       </div>
       <ArrowButton
-        href="/shop"
+        href="/products"
         label="Shop"
         className="w-fit px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.04em] rounded-md border border-ink disabled:opacity-50"
       />

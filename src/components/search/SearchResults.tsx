@@ -24,7 +24,7 @@ export function SearchResults({
         </p>
         <div className="flex flex-wrap justify-center gap-4 pt-4">
           <Link
-            href="/shop"
+            href="/products"
             className="text-label text-muted hover:text-ink transition-colors underline"
           >
             Shop All

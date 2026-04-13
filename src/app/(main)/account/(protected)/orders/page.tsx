@@ -33,7 +33,7 @@ export default async function OrdersPage() {
               You haven&apos;t placed any orders yet.
             </p>
             <ArrowButton
-              href="/shop"
+              href="/products"
               label="Start shopping"
               className="mt-4 h-12 px-8 py-3 bg-canvas text-ink text-base font-medium tracking-[-0.04em] rounded-md flex items-center border border-ink
         justify-center w-fit mx-auto"

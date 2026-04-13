@@ -148,7 +148,7 @@ export function WishlistDrawer() {
                 Your wishlist is empty.
               </p>
               <Button onClick={closeDrawer} asChild>
-                <Link href="/shop">Browse Products</Link>
+                <Link href="/products">Browse Products</Link>
               </Button>
             </div>
           )}

@@ -6,17 +6,17 @@ import type { ShopifyImage } from "@/lib/shopify/types";
 import { ImageGallery } from "./ImageGallery";
 import { ImageZoom } from "./ImageZoom";
 
-interface ImageGalleryWithZoomClientProps {
+interface ImageGalleryWithZoomProps {
   images: ShopifyImage[];
   productTitle: string;
   productHandle?: string;
 }
 
-export function ImageGalleryWithZoomClient({
+export function ImageGalleryWithZoom({
   images,
   productTitle,
   productHandle,
-}: ImageGalleryWithZoomClientProps) {
+}: ImageGalleryWithZoomProps) {
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoomIndex, setZoomIndex] = useState(0);
 

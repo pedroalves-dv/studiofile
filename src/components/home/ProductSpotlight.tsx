@@ -100,7 +100,7 @@ export function ProductSpotlight() {
           </FadeUp>
           <FadeUp delay={0.65} once={true}>
             <ArrowTracedButton
-              href="/shop/totem"
+              href="/products/totem"
               label="Explore TOTEM"
               className="w-fit bg-ink btn btn-cta text-white border border-white/20"
             />
@@ -138,7 +138,7 @@ export function ProductSpotlight() {
           </FadeUp>
           <FadeUp delay={0.7} once={true}>
             <ArrowTracedButton
-              href="/shop/totem"
+              href="/products/totem"
               label="Explore TOTEM"
               className="w-fit bg-ink btn btn-cta text-white border border-white/20"
             />
@@ -180,7 +180,7 @@ export function ProductSpotlight() {
             </FadeUp>
             <FadeUp delay={0.32} once={true}>
               <ArrowTracedButton
-                href="/shop"
+                href="/products"
                 label="Try the configurator"
                 className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
               />
@@ -227,7 +227,7 @@ export function ProductSpotlight() {
               </FadeUp>
               <FadeUp delay={0.42} once={true}>
                 <ArrowTracedButton
-                  href="/shop"
+                  href="/products"
                   label="Try the configurator"
                   className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
                 />

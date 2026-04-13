@@ -179,7 +179,7 @@ export default function AboutPage() {
 
         <FadeUp delay={0.32}>
           <ArrowTracedButton
-            href="/shop"
+            href="/products"
             label="Explore TOTEM"
             className="w-fit bg-white btn btn-cta text-ink border border-ink/20"
           />

@@ -88,7 +88,7 @@ export function ProductInfoPanel({
           { label: "Collections", href: "/collections" },
           { label: collectionTitle, href: `/collections/${collectionHandle}` },
         ]
-      : [{ label: "Shop", href: "/shop" }]),
+      : [{ label: "Shop", href: "/products" }]),
     { label: product.title },
   ];
 

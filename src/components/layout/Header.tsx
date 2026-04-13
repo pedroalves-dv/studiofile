@@ -29,10 +29,12 @@ const CLOSE_DURATION = 250;
 const NAV_LINKS: {
   label: string;
   href: string;
+  hideOnDesktop?: boolean;
   linkClassName?: string;
 }[] = [
   { label: "TOTEM", href: "/products/totem" },
-  { label: "Studio", href: "/about" },
+  { label: "All products", href: "/products" },
+  { label: "Studio", href: "/about", hideOnDesktop: true },
   { label: "Contact", href: "/contact" },
   { label: "FAQ", href: "/faq" },
 ];
@@ -224,7 +226,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
         <div className="h-full px-site border-b sm:border-r border-stroke">
-          <div className="h-full grid grid-cols-2 items-end pb-3">
+          <div className="h-full grid grid-cols-[auto_1fr] items-end pb-3">
             {/* Logo */}
             <Link
               href="/"
@@ -241,12 +243,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 className="hidden md:flex md:gap-8 lg:gap-20 items-end h-full mr-16 lg:mr-36 group"
                 aria-label="Main navigation"
               >
-                {NAV_LINKS.map((link) => (
+                {NAV_LINKS.filter((l) => !l.hideOnDesktop).map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "flex items-end text-ink font-medium tracking-[-0.04em] text-lg leading-none",
+                      "flex items-end text-ink font-medium tracking-[-0.04em] text-lg leading-none w-fit",
                       navLinkOpacity(link.href),
                       link.linkClassName,
                     )}
@@ -408,7 +410,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 href={link.href}
                 onClick={closeMenu}
                 className={cn(
-                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
+                  "flex w-fit text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
                   "transition-opacity duration-1000",
                   // No hover effects on mobile — sticky tap-hover is broken UX
                   "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",

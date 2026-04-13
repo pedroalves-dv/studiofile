@@ -8,8 +8,7 @@ import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { RecentlyViewed } from "@/components/product/RecentlyViewed";
 import { ProductViewTracker } from "@/components/product/ProductViewTracker";
 import { ProductViewEvent } from "@/components/product/ProductViewEvent";
-import { ImageGalleryWithZoomClient } from "@/components/product/ImageGalleryWithZoom";
-import { ImageZoomGallery } from "@/components/product/ImageZoomGallery";
+import { ImageGalleryWithZoom } from "@/components/product/ImageGalleryWithZoom";
 import { StockIndicator } from "@/components/product/StockIndicator";
 import { formatPrice } from "@/lib/utils/format";
 
@@ -95,7 +94,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {/* Left — image gallery with zoom */}
             <div className="md:sticky md:top-[calc(var(--header-height)+var(--page-pt))] md:sticky-gallery-h overflow-hidden">
               <div className="h-full w-full">
-                <ImageGalleryWithZoomClient
+                <ImageGalleryWithZoom
                   images={product.images}
                   productTitle={product.title}
                   productHandle={product.handle}
