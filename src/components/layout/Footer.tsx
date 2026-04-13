@@ -47,12 +47,12 @@ export function Footer() {
               <h3 className="text-base tracking-[-0.02em] font-medium text-light">
                 Navigation
               </h3>
-              <nav className="flex flex-col">
+              <nav className="flex flex-col group">
                 {FOOTER_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-base tracking-[-0.02em] font-medium text-ink hover:text-light transition-colors py-2"
+                    className="text-base tracking-[-0.02em] font-medium text-ink transition-opacity duration-1000 py-2 md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200 w-fit"
                   >
                     {link.label}
                   </Link>
@@ -65,12 +65,12 @@ export function Footer() {
               <h3 className="text-base tracking-[-0.02em] font-medium text-light">
                 Policies
               </h3>
-              <nav className="flex flex-col">
+              <nav className="flex flex-col group">
                 {CONDITIONS_POLICIES_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-base tracking-[-0.02em] font-medium text-ink hover:text-light transition-colors py-2"
+                    className="text-base tracking-[-0.02em] font-medium text-ink transition-opacity duration-1000 py-2 md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200 w-fit"
                   >
                     {link.label}
                   </Link>
@@ -127,12 +127,12 @@ export function Footer() {
             {/* Column 2: Navigation */}
             <div className="space-y-4 tracking-[-0.04em] font-medium order-2 sm:order-1 md:order-1 lg:order-1 xl:order-2 pb-8 sm:pb-12">
               <h3 className="text-base sm:text-lg text-light">Navigation</h3>
-              <nav className="space-y-2 flex flex-col">
+              <nav className="space-y-2 flex flex-col group w-fit">
                 {FOOTER_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-base sm:text-lg text-ink hover:text-light transition-colors w-fit"
+                    className="text-base sm:text-lg text-ink transition-opacity duration-1000 w-fit md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200"
                   >
                     {link.label}
                   </Link>
@@ -145,12 +145,12 @@ export function Footer() {
               <h3 className="text-base sm:text-lg text-light">
                 Conditions & Policies
               </h3>
-              <nav className="space-y-2 flex flex-col">
+              <nav className="space-y-2 flex flex-col group w-fit">
                 {CONDITIONS_POLICIES_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-base sm:text-lg text-ink hover:text-light transition-colors w-fit"
+                    className="text-base sm:text-lg text-ink transition-opacity duration-1000 w-fit md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200"
                   >
                     {link.label}
                   </Link>
