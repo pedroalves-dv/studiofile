@@ -59,7 +59,7 @@ export default function AboutPage() {
   return (
     <div className="px-site">
       {/* ─── Hero / Studio Story ─── */}
-      <section className="section-height page-pt page-pb">
+      <section className="section-min-h page-pt page-pb">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — long-form text */}
           <div className="md:sticky md:top-[calc(var(--header-height)+90px)] self-start space-y-6">
@@ -111,7 +111,7 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Studio Values / Process ─── */}
-      <section className="page-pt page-pb section-height">
+      <section className="page-pt page-pb section-min-h">
         <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem] pb-6">
           The process
         </h1>
@@ -137,7 +137,7 @@ export default function AboutPage() {
       </section>
 
       {/* ─── Team / Studio ─── */}
-      <section className="page-pt page-pb section-height">
+      <section className="page-pt page-pb section-min-h">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Bio */}
           <div className="space-y-6 md:sticky md:top-[calc(var(--header-height)+90px)]">

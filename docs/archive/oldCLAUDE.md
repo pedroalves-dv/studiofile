@@ -158,7 +158,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 
 | Class              | What it does                                     |
 | ------------------ | ------------------------------------------------ |
-| `section-height`   | min-height = 100dvh minus header                 |
+| `section-min-h`   | min-height = 100dvh minus header                 |
 | `section-centered` | full viewport height (minus header), flex-center |
 
 ## TypeScript Standards

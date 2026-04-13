@@ -398,7 +398,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col space-y-6"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-min-h bg-white flex flex-col space-y-6"
           aria-label="Mobile navigation"
         >
           <div className="group space-y-1">
@@ -445,7 +445,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
           style={{
             animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-height bg-white flex flex-col"
+          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-min-h bg-white flex flex-col"
           aria-label="Account navigation"
         >
           <div className="group space-y-1">

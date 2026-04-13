@@ -15,7 +15,7 @@ export default async function AccountLayout({
   const customer = token ? await getCustomer(token) : null;
 
   return (
-    <div className="px-site mt-8 page-pb section-height">
+    <div className="px-site mt-8 page-pb section-min-h">
       {customer && (
         <CustomerAvatar
           firstName={customer.firstName}

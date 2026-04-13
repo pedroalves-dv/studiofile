@@ -374,9 +374,14 @@
     align-items: center;
   }
 
-  .section-height {
+  .section-h {
+    height: calc(100dvh - var(--header-height));
+  }
+
+  .section-min-h {
     min-height: calc(100dvh - var(--header-height));
   }
+
   .section-padding {
     @apply py-20;
   }

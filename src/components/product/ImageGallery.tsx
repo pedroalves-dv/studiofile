@@ -1,9 +1,10 @@
-'use client';
+//src/components/product/ImageGallery.tsx
+"use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import type { ShopifyImage } from '@/lib/shopify/types';
-import { cn } from '@/lib/utils/cn';
+import React, { useState } from "react";
+import Image from "next/image";
+import type { ShopifyImage } from "@/lib/shopify/types";
+import { cn } from "@/lib/utils/cn";
 
 interface ImageGalleryProps {
   images: ShopifyImage[];
@@ -12,7 +13,12 @@ interface ImageGalleryProps {
   onImageClick?: (index: number) => void;
 }
 
-export function ImageGallery({ images, productTitle, productHandle, onImageClick }: ImageGalleryProps) {
+export function ImageGallery({
+  images,
+  productTitle,
+  productHandle,
+  onImageClick,
+}: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   if (!images.length) {
@@ -30,7 +36,13 @@ export function ImageGallery({ images, productTitle, productHandle, onImageClick
       {/* Main image */}
       <div
         className="relative aspect-square bg-stone-50 overflow-hidden cursor-zoom-in"
-        style={productHandle ? ({ viewTransitionName: `product-image-${productHandle}` } as React.CSSProperties) : undefined}
+        style={
+          productHandle
+            ? ({
+                viewTransitionName: `product-image-${productHandle}`,
+              } as React.CSSProperties)
+            : undefined
+        }
         onClick={() => onImageClick?.(selectedIndex)}
       >
         <Image
@@ -52,10 +64,10 @@ export function ImageGallery({ images, productTitle, productHandle, onImageClick
               onClick={() => setSelectedIndex(i)}
               aria-label={`View image ${i + 1}`}
               className={cn(
-                'flex-shrink-0 relative w-16 h-16 border-2 transition-all duration-200 overflow-hidden',
+                "flex-shrink-0 relative w-16 h-16 border-2 transition-all duration-200 overflow-hidden",
                 i === selectedIndex
-                  ? 'border-ink'
-                  : 'border-transparent opacity-60 hover:opacity-100 hover:border-border'
+                  ? "border-ink"
+                  : "border-transparent opacity-60 hover:opacity-100 hover:border-border",
               )}
             >
               <Image

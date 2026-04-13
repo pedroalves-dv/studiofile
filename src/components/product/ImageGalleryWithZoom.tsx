@@ -1,9 +1,10 @@
-'use client';
+//src/components/product/ImageGalleryWithZoom.tsx
+"use client";
 
-import { useState } from 'react';
-import type { ShopifyImage } from '@/lib/shopify/types';
-import { ImageGallery } from './ImageGallery';
-import { ImageZoom } from './ImageZoom';
+import { useState } from "react";
+import type { ShopifyImage } from "@/lib/shopify/types";
+import { ImageGallery } from "./ImageGallery";
+import { ImageZoom } from "./ImageZoom";
 
 interface ImageGalleryWithZoomClientProps {
   images: ShopifyImage[];
@@ -26,19 +27,21 @@ export function ImageGalleryWithZoomClient({
 
   return (
     <>
-      <ImageGallery
-        images={images}
-        productTitle={productTitle}
-        productHandle={productHandle}
-        onImageClick={handleImageClick}
-      />
-      <ImageZoom
-        images={images}
-        open={zoomOpen}
-        onOpenChange={setZoomOpen}
-        currentIndex={zoomIndex}
-        onIndexChange={setZoomIndex}
-      />
+      <div className="h-full w-full">
+        <ImageGallery
+          images={images}
+          productTitle={productTitle}
+          productHandle={productHandle}
+          onImageClick={handleImageClick}
+        />
+        <ImageZoom
+          images={images}
+          open={zoomOpen}
+          onOpenChange={setZoomOpen}
+          currentIndex={zoomIndex}
+          onIndexChange={setZoomIndex}
+        />
+      </div>
     </>
   );
 }

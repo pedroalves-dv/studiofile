@@ -1,4 +1,4 @@
-// src/app/(main)/products/[handle]/page.tsx / Product page with image gallery, product info panel, related products, and recently viewed products. Uses server components for data fetching and client components for interactivity and state management.
+// src/app/(main)/products/[handle]/page.tsx
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProduct, getProductRecommendations } from "@/lib/shopify/products";
@@ -59,15 +59,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div>
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
-        <section className="px-site section-height py-12 sm:py-14 pb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20 items-start">
+        <section className="px-site section-min-h sm:page-pt page-pb">
+          <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-10 lg:gap-5 items-start">
             {/* Left — image gallery with zoom */}
-            <div className="md:sticky md:top-28">
-              <ImageGalleryWithZoomClient
-                images={product.images}
-                productTitle={product.title}
-                productHandle={product.handle}
-              />
+            <div className="md:sticky md:top-[calc(var(--header-height)+90px)] flex flex-col items-center justify-center section-h border border-ink overflow-hidden">
+              <div className="h-full w-full">
+                <ImageGalleryWithZoomClient
+                  images={product.images}
+                  productTitle={product.title}
+                  productHandle={product.handle}
+                />
+              </div>
             </div>
 
             {/* Right — product info panel */}
@@ -78,7 +80,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {/* ─── Section 2 — Additional image gallery (click to zoom) ─── */}
         {product.images.length > 1 && (
           <section className="border-t border-stroke section-padding">
-            <div className="container-wide">
+            <div className="">
               <h2 className="text-label text-muted mb-8">Gallery</h2>
               <ImageZoomGallery
                 images={product.images}

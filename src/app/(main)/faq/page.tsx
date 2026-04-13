@@ -71,7 +71,7 @@ export default function FaqPage() {
   ];
   return (
     <div className="px-site">
-      <section className="section-height page-pt page-pb">
+      <section className="section-min-h page-pt page-pb">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left — info */}
           <div className="space-y-8 xl:sticky xl:md:top-[calc(var(--header-height)+90px)]">

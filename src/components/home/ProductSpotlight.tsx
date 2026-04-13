@@ -62,7 +62,7 @@ export function ProductSpotlight() {
       {/* Note: no wrapper div — sections must be direct children of the scroll  */}
 
       <section
-        className="section-height relative w-full overflow-hidden"
+        className="section-min-h relative w-full overflow-hidden"
         aria-label="Introducing TOTEM"
       >
         {/* Background — swap for next/image */}
@@ -148,7 +148,7 @@ export function ProductSpotlight() {
 
       {/* ── Panel 2: Build your own ─────────────────────────────────────────── */}
       <section
-        className="section-height relative w-full overflow-hidden flex flex-col"
+        className="section-min-h relative w-full overflow-hidden flex flex-col"
         aria-label="TOTEM configurator"
       >
         {/* ── MOBILE: stacked, each half breathes ── */}

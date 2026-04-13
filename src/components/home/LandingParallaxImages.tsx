@@ -266,7 +266,7 @@ export function LandingParallaxImages() {
   }, []);
 
   return (
-    <section className="bg-canvas section-height relative">
+    <section className="bg-canvas section-min-h relative">
       {/* Desktop: full scroll sequence */}
       <div className="hidden md:block">
         {mounted ? (
