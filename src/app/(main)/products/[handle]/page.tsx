@@ -59,10 +59,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div>
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
-        <section className="px-site section-min-h sm:page-pt page-pb">
-          <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-10 lg:gap-5 items-start">
+        <section className="px-site section-min-h pt-3 sm:page-pt page-pb">
+          <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-5 lg:gap-5 items-start">
             {/* Left — image gallery with zoom */}
-            <div className="md:sticky md:top-[calc(var(--header-height)+90px)] flex flex-col items-center justify-center section-h border border-ink overflow-hidden">
+            <div className="md:sticky md:top-[calc(var(--header-height)+var(--page-pt))] md:sticky-gallery-h overflow-hidden">
               <div className="h-full w-full">
                 <ImageGalleryWithZoomClient
                   images={product.images}

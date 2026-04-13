@@ -23,7 +23,7 @@ export function ImageGallery({
 
   if (!images.length) {
     return (
-      <div className="aspect-square bg-stone-100 flex items-center justify-center">
+      <div className="bg-stone-100 flex items-center justify-center">
         <span className="text-label text-muted">No image</span>
       </div>
     );
@@ -32,10 +32,10 @@ export function ImageGallery({
   const mainImage = images[selectedIndex];
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Main image */}
+    <div className="flex flex-col md:flex-row md:h-full">
+      {/* Main image — comes first in DOM so it's on top on mobile */}
       <div
-        className="relative aspect-square bg-stone-50 overflow-hidden cursor-zoom-in"
+        className="relative w-full aspect-square md:aspect-auto md:flex-1 overflow-hidden cursor-zoom-in"
         style={
           productHandle
             ? ({
@@ -55,19 +55,19 @@ export function ImageGallery({
         />
       </div>
 
-      {/* Thumbnail strip */}
+      {/* Thumbnails — bottom bar on mobile, left sidebar on desktop (sm:order-first) */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex flex-row overflow-x-auto gap-2 py-2 md:order-first md:flex-col md:overflow-x-hidden md:overflow-y-auto md:w-14 md:flex-shrink-0">
           {images.map((img, i) => (
             <button
               key={i}
               onClick={() => setSelectedIndex(i)}
               aria-label={`View image ${i + 1}`}
               className={cn(
-                "flex-shrink-0 relative w-16 h-16 border-2 transition-all duration-200 overflow-hidden",
+                "flex-shrink-0 relative w-14 h-14 border rounded-lg transition-all duration-200 overflow-hidden",
                 i === selectedIndex
-                  ? "border-ink"
-                  : "border-transparent opacity-60 hover:opacity-100 hover:border-border",
+                  ? "border-black"
+                  : "border-transparent opacity-60 hover:opacity-100 hover:border-stroke",
               )}
             >
               <Image
@@ -75,7 +75,7 @@ export function ImageGallery({
                 alt={img.altText || `${productTitle} — image ${i + 1}`}
                 fill
                 className="object-cover"
-                sizes="64px"
+                sizes="56px"
               />
             </button>
           ))}

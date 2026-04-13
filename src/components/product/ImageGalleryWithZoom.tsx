@@ -26,22 +26,20 @@ export function ImageGalleryWithZoomClient({
   };
 
   return (
-    <>
-      <div className="h-full w-full">
-        <ImageGallery
-          images={images}
-          productTitle={productTitle}
-          productHandle={productHandle}
-          onImageClick={handleImageClick}
-        />
-        <ImageZoom
-          images={images}
-          open={zoomOpen}
-          onOpenChange={setZoomOpen}
-          currentIndex={zoomIndex}
-          onIndexChange={setZoomIndex}
-        />
-      </div>
-    </>
+    <div className="h-full w-full">
+      <ImageGallery
+        images={images}
+        productTitle={productTitle}
+        productHandle={productHandle}
+        onImageClick={handleImageClick}
+      />
+      <ImageZoom
+        images={images}
+        open={zoomOpen}
+        onOpenChange={setZoomOpen}
+        currentIndex={zoomIndex}
+        onIndexChange={setZoomIndex}
+      />
+    </div>
   );
 }

@@ -179,6 +179,8 @@
 
     /* Site Padding */
     --site-pad: 0.9rem;
+    --page-pt: 90px;
+    --page-pb: 48px;
 
     /* Header height (Mobile first) */
     --header-height: 4rem;
@@ -358,13 +360,14 @@
 
   /* Page utilities */
   .page-pt {
-    padding-top: 90px;
+    padding-top: var(--page-pt);
   }
-
   .page-pb {
-    padding-bottom: 48px;
+    padding-bottom: var(--page-pb);
   }
-
+  .sticky-gallery-h {
+    height: calc(100dvh - var(--header-height) - (2 * (var(--page-pt))));
+  }
   /* Layout utilities */
   .section-centered {
     min-height: calc(100dvh - var(--header-height));
