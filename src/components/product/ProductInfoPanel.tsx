@@ -96,46 +96,37 @@ export function ProductInfoPanel({
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Breadcrumb */}
-      {/* <Breadcrumb items={breadcrumbItems} /> */}
-
-      {/* Product type */}
-      {product.productType && (
-        <span className="text-label text-muted">{product.productType}</span>
-      )}
-
-      {/* Title */}
-      <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
-        {product.title}
-      </h1>
-
-      {/* Price */}
-      <div className="flex items-start gap-4 py-2">
-        <span className="text-4xl tracking-tighter text-ink translate-y-[-3px]">
-          {formatPrice(price.amount, price.currencyCode)}
-        </span>
-        {onSale && compareAtPrice && (
-          <>
-            <span className="text-sm text-muted line-through">
-              {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
-            </span>
-            <Badge variant="sale">−{discountPercent}%</Badge>
-          </>
+      {/* Title + price block — hidden on mobile (rendered above gallery in page.tsx) */}
+      <div className="hidden md:block">
+        {/* Product type */}
+        {product.productType && (
+          <span className="text-label text-muted">{product.productType}</span>
         )}
-        {/* Stock indicator */}
-        <StockIndicator
-          availableForSale={selectedVariant.availableForSale}
-          quantityAvailable={selectedVariant.quantityAvailable}
-        />
-      </div>
 
-      {/* Short description teaser */}
-      <span className="text-lg text-muted">Description</span>
-      {product.description && (
-        <p className="text-base text-light leading-none">
-          {getFirstTwoSentences(product.description)}
-        </p>
-      )}
+        {/* Title */}
+        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] sm:leading-[0.9] leading-[4rem]">
+          {product.title}
+        </h1>
+
+        {/* Price */}
+        <div className="flex items-start gap-4 py-2">
+          <span className="text-4xl tracking-tighter text-ink translate-y-[-3px]">
+            {formatPrice(price.amount, price.currencyCode)}
+          </span>
+          {onSale && compareAtPrice && (
+            <>
+              <span className="text-sm text-muted line-through">
+                {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+              </span>
+              <Badge variant="sale">−{discountPercent}%</Badge>
+            </>
+          )}
+          <StockIndicator
+            availableForSale={selectedVariant.availableForSale}
+            quantityAvailable={selectedVariant.quantityAvailable}
+          />
+        </div>
+      </div>
 
       {/* Variant selector */}
       <VariantSelector

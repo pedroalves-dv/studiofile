@@ -97,7 +97,7 @@ export default function AboutPage() {
           </div>
 
           {/* Right — image placeholder */}
-          <div className="-mt-[90px] -mr-5">
+          <div className="sm:-mt-[90px] sm:-mr-5">
             <div
               className="aspect-[4/5] bg-lighter relative overflow-hidden"
               aria-label="Studio image"

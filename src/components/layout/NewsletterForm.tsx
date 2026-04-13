@@ -1,3 +1,4 @@
+// src/components/layout/NewsletterForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -26,7 +27,7 @@ export function NewsletterForm() {
       />
 
       <ArrowButton
-        label="Subscribe"
+        label="Stay in the loop"
         type="submit"
         className="btn btn-normal w-full mt-4 bg-white text-ink border border-ink disabled:btn-disabled"
       />

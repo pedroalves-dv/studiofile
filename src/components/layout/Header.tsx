@@ -214,7 +214,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
       {/* Backdrop for mobile menu */}
       {(isMobileMenuOpen || isClosingMenu) && (
         <div
-          className="fixed inset-0 backdrop-blur-xl z-40 md:hidden"
+          className="fixed inset-0 backdrop-blur-md z-40 md:hidden"
           onClick={() => {
             if (!isClosingMenu) closeMenu();
           }}

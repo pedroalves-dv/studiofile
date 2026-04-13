@@ -10,6 +10,8 @@ import { ProductViewTracker } from "@/components/product/ProductViewTracker";
 import { ProductViewEvent } from "@/components/product/ProductViewEvent";
 import { ImageGalleryWithZoomClient } from "@/components/product/ImageGalleryWithZoom";
 import { ImageZoomGallery } from "@/components/product/ImageZoomGallery";
+import { StockIndicator } from "@/components/product/StockIndicator";
+import { formatPrice } from "@/lib/utils/format";
 
 interface ProductPageProps {
   params: Promise<{ handle: string }>;
@@ -59,8 +61,37 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div>
         {/* ─── Section 1 — Hero (50/50 desktop, stacked mobile) ─── */}
-        <section className="px-site section-min-h pt-3 sm:page-pt page-pb">
-          <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-5 lg:gap-5 items-start">
+        <section className="px-site section-min-h pt-6 sm:page-pt page-pb">
+          <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-3 lg:gap-5 items-start">
+            {/* Mobile header — title + price + stock, shown above gallery on mobile only */}
+            <div className="md:hidden">
+              {product.productType && (
+                <span className="text-label text-muted">
+                  {product.productType}
+                </span>
+              )}
+              <h1 className="text-6xl font-medium tracking-[-0.07em] leading-[4rem]">
+                {product.title}
+              </h1>
+              <div className="flex items-start gap-2 sm:gap-3 pt-2">
+                <span className="text-3xl tracking-tighter text-ink translate-y-[-3px]">
+                  {formatPrice(
+                    product.priceRange.minVariantPrice.amount,
+                    product.priceRange.minVariantPrice.currencyCode,
+                  )}
+                </span>
+                <StockIndicator
+                  availableForSale={product.availableForSale}
+                  quantityAvailable={
+                    (
+                      product.variants.find((v) => v.availableForSale) ??
+                      product.variants[0]
+                    )?.quantityAvailable ?? null
+                  }
+                />
+              </div>
+            </div>
+
             {/* Left — image gallery with zoom */}
             <div className="md:sticky md:top-[calc(var(--header-height)+var(--page-pt))] md:sticky-gallery-h overflow-hidden">
               <div className="h-full w-full">
@@ -77,27 +108,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </section>
 
-        {/* ─── Section 2 — Additional image gallery (click to zoom) ─── */}
-        {product.images.length > 1 && (
-          <section className="border-t border-stroke section-padding">
-            <div className="">
-              <h2 className="text-label text-muted mb-8">Gallery</h2>
-              <ImageZoomGallery
-                images={product.images}
-                productTitle={product.title}
-              />
-            </div>
-          </section>
-        )}
-
-        {/* Track this product view (client components, render null) */}
+        {/* ─── Section 2 —Track this product view (client components, render null) */}
         <ProductViewTracker handle={product.handle} />
         <ProductViewEvent handle={product.handle} title={product.title} />
 
-        {/* ─── Section 4 — Recently viewed ─── */}
+        {/* ─── Section 3 — Recently viewed ─── */}
         <RecentlyViewed currentHandle={product.handle} />
 
-        {/* ─── Section 5 — Related products ─── */}
+        {/* ─── Section 4 — Related products ─── */}
         <RelatedProducts
           products={recommendations}
           currentHandle={product.handle}
