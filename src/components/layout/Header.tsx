@@ -1,3 +1,4 @@
+// src/components/layout/Header.tsx
 "use client";
 
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/context/ToastContext";
+import { LogOut } from "lucide-react";
 import Logo from "public/images/logo/newlogov2.svg";
 
 import { UserIcon, type UserIconHandle } from "@/components/ui/UserIcon";
@@ -299,27 +301,34 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
                     {/* Account dropdown — desktop only */}
                     {isAccountOpen && (
-                      <div className="hidden md:flex absolute top-[calc(var(--header-height)-10px)] -right-4 min-w-[200px] bg-canvas border border-stroke rounded-lg z-50 flex-col">
+                      <div
+                        style={{
+                          animation: "navSlideDown 0.15s ease-out both",
+                          transformOrigin: "top",
+                        }}
+                        className="hidden md:flex absolute top-[calc(var(--header-height)-10px)] -right-4 min-w-[200px] bg-canvas border border-stroke rounded-lg z-50 flex-col"
+                      >
                         <div className="p-1">
                           {ACCOUNT_LINKS.map((item) => (
                             <Link
                               key={item.href}
                               href={item.href}
                               onClick={closeAccount}
-                              className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-lighter transition-colors font-medium rounded-md"
+                              className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-white transition-colors rounded-md"
                             >
                               {item.label}
                             </Link>
                           ))}
                         </div>
-                        <div className="border-t border-stroke p-1 bg-lighter">
+                        <div className="border-t border-stroke p-1">
                           <button
                             type="button"
                             disabled={isPendingLogout}
                             onClick={handleLogout}
-                            className="block w-full text-left px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-accent hover:text-canvas rounded-md transition-colors font-medium disabled:opacity-35 disabled:pointer-events-none"
+                            className="flex items-center justify-between w-full px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-accent hover:text-canvas rounded-md transition-colors font-medium disabled:opacity-35 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
+                            {!isPendingLogout && <LogOut size={16} strokeWidth={2} />}
                           </button>
                         </div>
                       </div>

@@ -6,14 +6,22 @@ import { ChevronDown } from "lucide-react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils/cn";
 
+type SelectOption = string | { value: string; label: string };
+
 interface CustomSelectProps {
   id: string;
   value: string;
   onChange: (value: string) => void;
-  options: string[];
+  options: SelectOption[];
   label?: string;
   disabledOptions?: string[];
+  rounded?: "lg" | "full";
 }
+
+const triggerRounded = {
+  lg: "rounded-lg",
+  full: "rounded-full",
+};
 
 export function CustomSelect({
   id,
@@ -22,10 +30,19 @@ export function CustomSelect({
   options,
   label,
   disabledOptions,
+  rounded = "lg",
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useClickOutside(ref, () => setIsOpen(false));
+
+  // Normalize each option to { value, label } so the rest of the component is uniform
+  const normalized = options.map((opt) =>
+    typeof opt === "string" ? { value: opt, label: opt } : opt,
+  );
+
+  const displayLabel =
+    normalized.find((opt) => opt.value === value)?.label ?? value;
 
   return (
     <div className="">
@@ -35,47 +52,52 @@ export function CustomSelect({
         </label>
       )}
 
-      <div ref={ref} className="relative rounded-md bg-white text-base">
-        {/* Trigger */}
+      <div ref={ref} className="relative text-base">
+        {/* Trigger — keeps its full shape at all times */}
         <button
           id={id}
           type="button"
           onClick={() => setIsOpen((v) => !v)}
           className={cn(
-            "w-full px-4 py-2 flex items-center justify-between",
-            "border border-stroke transition-colors text-ink bg-transparent cursor-pointer",
-            isOpen ? "rounded-t-lg border-ink" : "rounded-lg",
+            "w-full px-4 py-2 flex items-center justify-between gap-3",
+            "border transition-colors text-ink bg-white cursor-pointer",
+            triggerRounded[rounded],
+            isOpen ? "border-ink" : "border-stroke",
           )}
         >
-          <span>{value}</span>
+          <span>{displayLabel}</span>
           <ChevronDown
             size={16}
             className={cn(
-              "transition-transform duration-200",
+              "shrink-0 transition-transform duration-200",
               isOpen && "rotate-180",
             )}
           />
         </button>
 
-        {/* Dropdown */}
+        {/* Dropdown — detached floating panel, always rounded-lg */}
         {isOpen && (
           <ul
             role="listbox"
-            className="absolute z-50 w-full border border-t-0 border-ink rounded-b-lg bg-canvas overflow-hidden text-base"
+            style={{
+              animation: "navSlideDown 0.15s ease-out both",
+              transformOrigin: "top",
+            }}
+            className="absolute z-50 mt-1 min-w-full w-max border border-stroke rounded-lg bg-canvas overflow-hidden text-base"
           >
-            {options.map((option) => {
-              const isDisabled = disabledOptions?.includes(option) ?? false;
+            {normalized.map((opt) => {
+              const isDisabled = disabledOptions?.includes(opt.value) ?? false;
               return (
                 <li
-                  key={option}
+                  key={opt.value}
                   role="option"
-                  aria-selected={option === value}
+                  aria-selected={opt.value === value}
                   aria-disabled={isDisabled}
                   onClick={
                     isDisabled
                       ? undefined
                       : () => {
-                          onChange(option);
+                          onChange(opt.value);
                           setIsOpen(false);
                         }
                   }
@@ -84,10 +106,10 @@ export function CustomSelect({
                     isDisabled
                       ? "opacity-50 cursor-not-allowed pointer-events-none"
                       : "cursor-pointer hover:bg-white",
-                    !isDisabled && option === value && "bg-white",
+                    !isDisabled && opt.value === value && "bg-white",
                   )}
                 >
-                  {option}
+                  {opt.label}
                 </li>
               );
             })}
