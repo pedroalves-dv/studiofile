@@ -1,3 +1,5 @@
+// src/components/product/ProductCard.tsx
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -30,7 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link href={`/products/${handle}`} className="group block">
       {/* Image */}
       <div
-        className="relative overflow-hidden bg-stone-50 aspect-[3/4] mb-4"
+        className="relative overflow-hidden bg-stone-50 aspect-square mb-3"
         style={
           {
             viewTransitionName: `product-image-${handle}`,
@@ -42,8 +44,9 @@ export function ProductCard({ product }: ProductCardProps) {
             src={featuredImage.url}
             alt={featuredImage.altText || title}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={false}
           />
         ) : (
           <div className="w-full h-full bg-stone-100 flex items-center justify-center">

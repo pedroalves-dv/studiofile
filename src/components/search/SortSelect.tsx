@@ -1,3 +1,4 @@
+// src/components/search/SortSelect.tsx
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,12 +38,6 @@ export function SortSelect() {
 
   return (
     <div className="flex items-center gap-3">
-      {/* <label
-        htmlFor="search-sort"
-        className="text-label text-muted whitespace-nowrap"
-      >
-        Sort by
-      </label> */}
       <select
         id="search-sort"
         value={currentSort}

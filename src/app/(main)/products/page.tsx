@@ -1,3 +1,4 @@
+// src/app/(main)/products/page.tsx
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { getProducts } from "@/lib/shopify/products";
@@ -112,7 +113,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       {/* Editorial header */}
       <header className="">
-        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9]">
+        <h1 className="text-7xl sm:text-9xl font-medium tracking-[-0.07em] leading-[0.9] mb-4 -ml-[5px]">
           Products
         </h1>
       </header>
