@@ -1,30 +1,47 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Heart } from 'lucide-react'
-import { useWishlist } from '@/hooks/useWishlist'
-import { useToast } from '@/components/common/Toast'
+import { useState } from "react";
+import { Heart } from "lucide-react";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useToast } from "@/components/common/Toast";
+import type { WishlistItem } from "@/context/WishlistContext";
 
 interface WishlistButtonProps {
-  productHandle: string
-  className?: string
-  iconSize?: number
-  strokeWidth?: number
+  productHandle: string;
+  variantId?: string;
+  selectedOptions?: WishlistItem["selectedOptions"];
+  className?: string;
+  iconSize?: number;
+  strokeWidth?: number;
 }
 
-export function WishlistButton({ productHandle, className = '', iconSize = 18, strokeWidth = 2 }: WishlistButtonProps) {
-  const { isWishlisted, toggleItem } = useWishlist()
-  const { success } = useToast()
-  const [animate, setAnimate] = useState(false)
-  const wishlisted = isWishlisted(productHandle)
+export function WishlistButton({
+  productHandle,
+  variantId,
+  selectedOptions,
+  className = "",
+  iconSize = 18,
+  strokeWidth = 2,
+}: WishlistButtonProps) {
+  const { items, isWishlisted, toggleItem } = useWishlist();
+  const { success } = useToast();
+  const [animate, setAnimate] = useState(false);
+  const wishlisted = isWishlisted(productHandle);
 
   function handleToggle(e: React.MouseEvent) {
-    e.preventDefault()    // prevent Link navigation if button is inside a card Link
-    e.stopPropagation()
-    toggleItem(productHandle)
-    success(wishlisted ? 'Removed from wishlist' : 'Added to wishlist')
-    setAnimate(true)
-    setTimeout(() => setAnimate(false), 300)
+    e.preventDefault(); // prevent Link navigation if button is inside a card Link
+    e.stopPropagation();
+    const existing = items.find((i) => i.handle === productHandle);
+    const isUpgrade = existing && variantId && existing.variantId !== variantId;
+    const toastMsg = isUpgrade
+      ? "Wishlist updated"
+      : existing
+        ? "Removed from wishlist"
+        : "Added to wishlist";
+    toggleItem(productHandle, variantId, selectedOptions);
+    success(toastMsg);
+    setAnimate(true);
+    setTimeout(() => setAnimate(false), 300);
   }
 
   return (
@@ -39,16 +56,16 @@ export function WishlistButton({ productHandle, className = '', iconSize = 18, s
       `}</style>
       <button
         onClick={handleToggle}
-        aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-        className={`p-2 bg-canvas/80 hover:bg-canvas transition-colors ${animate ? 'wishlist-pop' : ''} ${className}`}
+        aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        className={`p-2 bg-transparent transition-colors ${animate ? "wishlist-pop" : ""} ${className}`}
       >
         <Heart
           size={iconSize}
           strokeWidth={strokeWidth}
-          fill={wishlisted ? 'currentColor' : 'none'}
-          className={wishlisted ? 'text-accent' : 'text-ink'}
+          fill={wishlisted ? "currentColor" : "none"}
+          className={wishlisted ? "text-ink" : "text-ink"}
         />
       </button>
     </>
-  )
+  );
 }

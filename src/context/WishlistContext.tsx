@@ -2,14 +2,20 @@
 
 import { createContext, useContext, useReducer, useEffect, useRef, ReactNode } from 'react'
 
+export interface WishlistItem {
+  handle: string
+  variantId?: string
+  selectedOptions?: Array<{ name: string; value: string }>
+}
+
 interface WishlistState {
-  items: string[]    // product handles
+  items: WishlistItem[]
   isOpen: boolean
 }
 
 type WishlistAction =
-  | { type: 'LOAD'; items: string[] }
-  | { type: 'ADD'; handle: string }
+  | { type: 'LOAD'; items: WishlistItem[] }
+  | { type: 'ADD'; item: WishlistItem }
   | { type: 'REMOVE'; handle: string }
   | { type: 'CLEAR' }
   | { type: 'OPEN_DRAWER' }
@@ -26,11 +32,15 @@ function reducer(state: WishlistState, action: WishlistAction): WishlistState {
     case 'LOAD':
       return { ...state, items: action.items }
     case 'ADD':
-      return state.items.includes(action.handle)
-        ? state
-        : { ...state, items: [...state.items, action.handle] }
+      // Replace existing entry for the same handle — upgrades handle-only to variant-aware
+      return {
+        ...state,
+        items: state.items.some(i => i.handle === action.item.handle)
+          ? state.items.map(i => i.handle === action.item.handle ? action.item : i)
+          : [...state.items, action.item],
+      }
     case 'REMOVE':
-      return { ...state, items: state.items.filter(h => h !== action.handle) }
+      return { ...state, items: state.items.filter(i => i.handle !== action.handle) }
     case 'CLEAR':
       return { ...state, items: [] }
     case 'OPEN_DRAWER':
@@ -48,12 +58,19 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { items: [], isOpen: false })
   const wishlistIconRef = useRef<HTMLButtonElement>(null)
 
-  // SSR guard on mount — localStorage does not exist server-side
+  // SSR guard on mount — migrate old string[] format gracefully
   useEffect(() => {
     const stored = localStorage.getItem('sf-wishlist')
     if (stored) {
-      try { dispatch({ type: 'LOAD', items: JSON.parse(stored) }) }
-      catch {}
+      try {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed)) {
+          const items: WishlistItem[] = parsed.map((i: unknown) =>
+            typeof i === 'string' ? { handle: i } : i as WishlistItem
+          )
+          dispatch({ type: 'LOAD', items })
+        }
+      } catch {}
     }
   }, [])
 

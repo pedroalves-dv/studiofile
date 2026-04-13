@@ -24,15 +24,15 @@ export function RecentlyViewed({ currentHandle }: RecentlyViewedProps) {
     fetch(`/api/products/batch?handles=${handles.join(",")}`)
       .then((r) => r.json())
       .then(setProducts)
-      .catch((err) => console.error('[RecentlyViewed]', err));
+      .catch((err) => console.error("[RecentlyViewed]", err));
   }, [currentHandle]);
 
   if (products.length < 2) return null;
 
   return (
-    <section className="border-t border-border section-padding">
-      <div className="container-wide">
-        <h2 className="text-3xl md:text-4xl tracking-tight mb-10">
+    <section className="px-site py-32">
+      <div className="">
+        <h2 className="text-6xl md:text-8xl tracking-[-0.07em] text-end">
           Recently Viewed
         </h2>
         <HorizontalScrollRow>

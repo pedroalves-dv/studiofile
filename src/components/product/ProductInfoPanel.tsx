@@ -169,6 +169,8 @@ export function ProductInfoPanel({
             </div>
             <WishlistButton
               productHandle={product.handle}
+              variantId={selectedVariant?.id}
+              selectedOptions={selectedVariant?.selectedOptions}
               iconSize={38}
               strokeWidth={1}
             />

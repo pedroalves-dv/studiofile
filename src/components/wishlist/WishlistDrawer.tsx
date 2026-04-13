@@ -10,6 +10,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "@/hooks/useCart";
 import { useLenis } from "@/components/common/SmoothScroll";
 import { formatPrice } from "@/lib/utils/format";
+import type { WishlistItem } from "@/context/WishlistContext";
 import type { ShopifyProduct } from "@/lib/shopify/types";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -18,7 +19,10 @@ function WishlistSkeleton() {
   return (
     <div>
       {[1, 2, 3].map((i) => (
-        <div key={i} className="flex gap-4 py-4 border-b border-stroke animate-pulse">
+        <div
+          key={i}
+          className="flex gap-4 py-4 border-b border-stroke animate-pulse"
+        >
           <div className="w-24 aspect-square bg-stone-100 flex-shrink-0" />
           <div className="flex-1 space-y-2 py-1">
             <div className="h-4 bg-stone-100 rounded w-3/4" />
@@ -32,20 +36,20 @@ function WishlistSkeleton() {
 
 // ─── Item ─────────────────────────────────────────────────────────────────────
 
-interface WishlistItemProps {
+interface WishlistItemRowProps {
   product: ShopifyProduct;
+  item: WishlistItem;
   onClose: () => void;
 }
 
-function WishlistItem({ product, onClose }: WishlistItemProps) {
+function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
   const { removeItem } = useWishlist();
   const { addItem } = useCart();
   const price = product.priceRange.minVariantPrice;
-  const firstAvailableVariant =
-    product.variants.find((v) => v.availableForSale) ?? product.variants[0];
+  const hasVariant = !!item.variantId;
 
   return (
-    <div className="flex gap-4 py-4 border-b border-stroke last:border-b-0">
+    <div className="flex gap-4 p-2 border border-stroke rounded-lg mb-2">
       {/* Thumbnail */}
       <Link
         href={`/products/${product.handle}`}
@@ -68,24 +72,48 @@ function WishlistItem({ product, onClose }: WishlistItemProps) {
       </Link>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
+      <div className="flex flex-1 flex-col justify-between">
         <Link href={`/products/${product.handle}`} onClick={onClose}>
           <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
             {product.title}
           </p>
         </Link>
-        <p className="text-xs text-muted mt-1">
-          {formatPrice(price.amount, price.currencyCode)}
-        </p>
-        <button
-          onClick={() =>
-            firstAvailableVariant && addItem(firstAvailableVariant.id, 1)
-          }
-          disabled={!firstAvailableVariant}
-          className="mt-2 text-label text-ink hover:text-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          Add to Cart
-        </button>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-xs text-muted">
+            {formatPrice(price.amount, price.currencyCode)}
+          </p>
+          {hasVariant && item.selectedOptions && item.selectedOptions.length > 0 && (
+            <>
+              <span className="text-xs text-muted">·</span>
+              <p className="text-xs text-muted">
+                {item.selectedOptions.map((o) => o.value).join(" / ")}
+              </p>
+            </>
+          )}
+        </div>
+
+        {/* CTA */}
+        {hasVariant ? (
+          <Button
+            variant="primary"
+            size="md"
+            className="mt-2 rounded-lg self-start"
+            onClick={() => item.variantId && addItem(item.variantId, 1)}
+          >
+            Add to Cart
+          </Button>
+        ) : (
+          <Button
+            asChild
+            variant="secondary"
+            size="md"
+            className="mt-2 rounded-lg border-stroke self-start"
+          >
+            <Link href={`/products/${product.handle}`} onClick={onClose}>
+              Add Options
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Remove */}
@@ -134,7 +162,8 @@ export function WishlistDrawer() {
       return;
     }
     setIsLoading(true);
-    fetch(`/api/products/batch?handles=${items.join(",")}`)
+    const handles = items.map((i) => i.handle).join(",");
+    fetch(`/api/products/batch?handles=${handles}`)
       .then((r) => r.json())
       .then((data) => {
         setProducts(data);
@@ -162,7 +191,7 @@ export function WishlistDrawer() {
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto py-4 px-site" data-lenis-prevent>
+        <div className="flex-1 overflow-y-auto py-2 px-2" data-lenis-prevent>
           {isLoading && <WishlistSkeleton />}
 
           {!isLoading && items.length === 0 && (
@@ -178,13 +207,18 @@ export function WishlistDrawer() {
           )}
 
           {!isLoading &&
-            products.map((product) => (
-              <WishlistItem
-                key={product.handle}
-                product={product}
-                onClose={closeDrawer}
-              />
-            ))}
+            products.map((product) => {
+              const item = items.find((i) => i.handle === product.handle);
+              if (!item) return null;
+              return (
+                <WishlistItemRow
+                  key={product.handle}
+                  product={product}
+                  item={item}
+                  onClose={closeDrawer}
+                />
+              );
+            })}
         </div>
       </div>
     </Dialog>
