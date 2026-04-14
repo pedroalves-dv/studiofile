@@ -21,7 +21,7 @@ const SCROLL_ROWS = 3;
 const MOBILE_BREAKPOINT = 768;
 
 /** Swap these out for real Shopify CDN URLs when product photos are ready. */
-const PLACEHOLDER = "https://placehold.co/600x800/fcaeae/333333";
+const PLACEHOLDER = "https://placehold.co/600x800/fcaeae/78c0ff";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
