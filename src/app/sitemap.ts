@@ -3,7 +3,8 @@ import { getAllProductHandles } from "@/lib/shopify/products";
 import { getCollections } from "@/lib/shopify/collections";
 
 // Must be set in Vercel env vars — fallback is canonical domain
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://studiofile.fr";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://studiofile.vercel.app";
 
 const POLICY_HANDLES = [
   "privacy-policy",

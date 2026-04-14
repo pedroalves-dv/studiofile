@@ -26,7 +26,7 @@ The Missing Variable: NEXT_PUBLIC_SITE_URL
 Your code uses this in the sitemap, robots.txt, and SEO metadata across many pages, but it's not in your .env.local. You need to add it in Vercel:
 
 For the preview deploy: use your Vercel preview URL (e.g. https://studiofile.vercel.app)
-For production: https://studiofile.fr
+For production: https://studiofile.vercel.app
 Without it, your sitemap and og:url tags will generate broken/empty URLs.
 
 Everything Else Looks Good

@@ -324,7 +324,7 @@ See `.env.local.example` for the full list.
 | `NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN` | ✓ | Shopify store domain (e.g. `store.myshopify.com`) |
 | `NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN` | ✓ | Public Storefront API token |
 | `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` | — | Private token for authenticated server-only queries |
-| `NEXT_PUBLIC_SITE_URL` | ✓ | Canonical URL (e.g. `https://studiofile.fr`) |
+| `NEXT_PUBLIC_SITE_URL` | ✓ | Canonical URL (e.g. `https://studiofile.vercel.app`) |
 | `NEXT_PUBLIC_GA_ID` | ✓ | Google Analytics ID (optional) |
 
 ## Rules for Claude Code

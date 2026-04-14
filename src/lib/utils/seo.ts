@@ -2,7 +2,12 @@ import type { Metadata } from 'next'
 import type { ShopifyProduct, ShopifyCollection } from '@/lib/shopify/types'
 import { truncate } from '@/lib/utils/format'
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://studiofile.fr'
+function normalizeSiteUrl(url: string | undefined): string {
+  if (!url) return 'https://studiofile.vercel.app'
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+  return `https://${url}`
+}
+export const SITE_URL = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL)
 const TWITTER_HANDLE = '@studiofile'
 
 export const DEFAULT_METADATA: Metadata = {
