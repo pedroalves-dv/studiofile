@@ -193,7 +193,6 @@
     --duration-base: 300ms;
     --duration-slow: 500ms;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-
   }
 
   /* Dynamic sm+ */
@@ -209,7 +208,6 @@
       overflow-x: hidden;
     }
   }
-
   /* Base styles */
   *,
   *::before,
@@ -289,10 +287,35 @@
   }
 }
 
+@layer utilities {
+  /* Mobile hero: scale stacked letters to fit svh exactly */
+  @media (max-width: 767px) {
+    .hero-stack-fit {
+      /*
+      Available height : 100svh - header
+      Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
+      × 0.92           : small breathing room for descenders / address bar bounce
+    */
+      font-size: calc((100svh - var(--header-height) + 8rem) / 5 * 0.92);
+    }
+  }
+}
+
 /* ==========================================
    UTILITY CLASSES
    ========================================== */
 @layer components {
+  /* Mobile hero: scale stacked letters to fit svh exactly */
+  @media (max-width: 767px) {
+    .hero-stack-fit {
+      /*
+      Available height : 100svh - header
+      Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
+      × 0.92           : small breathing room for descenders / address bar bounce
+    */
+      font-size: calc((100svh - var(--header-height) + 8rem) / 5 * 0.92);
+    }
+  }
   /* Typography utilities */
   .text-label {
     font-size: 0.75rem;

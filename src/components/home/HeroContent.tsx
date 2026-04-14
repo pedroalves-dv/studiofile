@@ -147,7 +147,7 @@ export function HeroContent() {
         "relative overflow-hidden ml-[10px] mr-[5px]",
         // padding top "pt" is another hack to vertically center the animation up to phase 2,
         // h-full and section centered arent enough. further fixing might be required
-        isHorizontal ? "h-full" : "section-centered pt-5",
+        isHorizontal ? "h-full" : "section-centered pt-6",
       )}
     >
       {/* Measurement element (hidden) */}
@@ -194,7 +194,7 @@ export function HeroContent() {
       <motion.h1
         layout
         ref={h1Ref}
-        className={`flex leading-none text-ink font-display ${
+        className={`flex leading-none text-ink font-display hero-stack-fit ${
           isHorizontal
             ? "flex-row"
             : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8 sm:-space-y-10"
