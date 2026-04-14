@@ -15,6 +15,16 @@ import { getCart } from "@/lib/shopify/cart";
 
 const CART_ID_KEY = "sf-cart-id";
 
+// Retry getCart once after a short delay before treating null as "cart truly gone".
+// A single transient Shopify API blip can return null for a valid cart; a retry
+// filters out the vast majority of false-positives without noticeable UX delay.
+async function fetchCartWithRetry(cartId: string): Promise<ShopifyCart | null> {
+  const cart = await getCart(cartId);
+  if (cart !== null) return cart;
+  await new Promise<void>((resolve) => setTimeout(resolve, 500));
+  return getCart(cartId);
+}
+
 interface CartState {
   cartId: string | null;
   cart: ShopifyCart | null;
@@ -104,7 +114,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     dispatch({ type: "SET_LOADING", loading: true });
-    getCart(stored)
+    fetchCartWithRetry(stored)
       .then((cart) => {
         // Fix 2: If a user action (addItem, etc.) already dispatched SET_CART
         // with fresher data, don't overwrite it with this stale hydration snapshot.
@@ -144,7 +154,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (document.visibilityState !== "visible") return;
       const stored = localStorage.getItem(CART_ID_KEY);
       if (!stored) return;
-      getCart(stored)
+      fetchCartWithRetry(stored)
         .then((cart) => {
           if (hasUserActionRef.current) return; // user acted mid-flight, don't overwrite
           if (!cart) {

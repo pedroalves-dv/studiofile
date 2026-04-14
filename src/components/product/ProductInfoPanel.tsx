@@ -95,7 +95,7 @@ export function ProductInfoPanel({
   return (
     <div className="flex flex-col gap-4">
       {/* Title + price block — hidden on mobile (rendered above gallery in page.tsx) */}
-      <div className="hidden md:block">
+      <div className="hidden md:block -mt-1">
         {/* Product type */}
         {product.productType && (
           <span className="text-label text-muted">{product.productType}</span>

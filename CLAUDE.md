@@ -22,7 +22,7 @@ Detailed instructions are offloaded to reduce context tokens:
 
 ## Workflow
 
-1. **Plan Mode**: Default for 3+ step tasks.
+1. **Plan Mode**: Default to "Plan mode" for non trivial 3+ step tasks.
 2. **Subagents**: Use for research to keep main window clean.
 3. **Maintenance**: After a correction, update @.claude/rules/lessons.md.
   

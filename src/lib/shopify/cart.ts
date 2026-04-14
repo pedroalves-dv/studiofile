@@ -26,15 +26,6 @@ function normalizeCart(raw: RawCart): ShopifyCart {
   };
 }
 
-function isStaleCartError(message: string) {
-  return /cart does not exist/i.test(message);
-}
-
-async function clearCartCookie() {
-  const { cookies } = await import("next/headers");
-  (await cookies()).delete("cartId");
-}
-
 // --- TYPES ---
 
 interface CreateCartResponse {
@@ -110,12 +101,7 @@ export async function addToCart(
     { cache: "no-store" },
   );
   if (response.cartLinesAdd.userErrors.length > 0) {
-    const message = response.cartLinesAdd.userErrors[0].message;
-    if (isStaleCartError(message)) {
-      await clearCartCookie();
-      throw new Error("STALE_CART");
-    }
-    throw new Error(message);
+    throw new Error(response.cartLinesAdd.userErrors[0].message);
   }
   return normalizeCart(response.cartLinesAdd.cart);
 }
@@ -134,12 +120,7 @@ export async function updateCartLine(
     { cache: "no-store" },
   );
   if (response.cartLinesUpdate.userErrors.length > 0) {
-    const message = response.cartLinesUpdate.userErrors[0].message;
-    if (isStaleCartError(message)) {
-      await clearCartCookie();
-      throw new Error("STALE_CART");
-    }
-    throw new Error(message);
+    throw new Error(response.cartLinesUpdate.userErrors[0].message);
   }
   return normalizeCart(response.cartLinesUpdate.cart);
 }
@@ -157,12 +138,7 @@ export async function removeFromCart(
     { cache: "no-store" },
   );
   if (response.cartLinesRemove.userErrors.length > 0) {
-    const message = response.cartLinesRemove.userErrors[0].message;
-    if (isStaleCartError(message)) {
-      await clearCartCookie();
-      throw new Error("STALE_CART");
-    }
-    throw new Error(message);
+    throw new Error(response.cartLinesRemove.userErrors[0].message);
   }
   return normalizeCart(response.cartLinesRemove.cart);
 }
@@ -225,7 +201,6 @@ export async function getCart(cartId: string): Promise<ShopifyCart | null> {
     { cache: "no-store" },
   );
   if (!response.cart) {
-    await clearCartCookie();
     return null;
   }
   return normalizeCart(response.cart);
