@@ -173,7 +173,7 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Column 3 (XL only) */}
+        {/* Column 3 (xl only) */}
         <div className="hidden xl:flex flex-1 flex-col">
           <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
             <ParallaxBox
