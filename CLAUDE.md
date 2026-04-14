@@ -26,3 +26,9 @@ Detailed instructions are offloaded to reduce context tokens:
 2. **Subagents**: Use for research to keep main window clean.
 3. **Maintenance**: After a correction, update @.claude/rules/lessons.md.
   
+## Design
+
+- Treat the code as truth.
+- Use lucid for icons.
+- Use rounded-lg for border radius.
+- use global.css utilities.
