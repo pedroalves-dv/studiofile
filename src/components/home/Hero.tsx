@@ -85,25 +85,33 @@ export function Hero() {
   const [scrollDistance, setScrollDistance] = useState(0);
 
   useEffect(() => {
+    let rafId: number;
+
     const update = () => {
       const el = containerRef.current;
       if (!el) return;
 
       const isDesktop = window.innerWidth >= MOBILE_BREAKPOINT;
 
-      // Drive section height from SCROLL_ROWS imperatively on desktop.
-      // This avoids a hardcoded Tailwind arbitrary value (md:h-[400dvh])
-      // that can't reference the constant. On mobile, clear it so the
-      // stacked mobile image column dictates the natural height.
+      // svh = stable "small viewport" height — never changes with iOS chrome
       el.style.height = isDesktop ? `${SCROLL_ROWS * 100}dvh` : "";
 
-      // Measure after height is applied so offsetHeight is accurate.
       setScrollDistance(isDesktop ? window.innerHeight : 0);
     };
 
+    // Debounce via rAF: coalesces rapid resize events (iOS chrome toggle)
+    // into a single paint, preventing mid-scroll layout recalculation
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+
     update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const { scrollYProgress } = useScroll({
