@@ -181,6 +181,7 @@ export function Hero() {
               speed={0.2}
               className="absolute h-[350px] w-[500px] -bottom-8 right-5"
               src={PLACEHOLDER}
+              priority
             />
           </div>
           <RowSpacer />

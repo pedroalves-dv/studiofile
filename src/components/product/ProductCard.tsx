@@ -10,9 +10,10 @@ import { WishlistButton } from "@/components/wishlist/WishlistButton";
 
 interface ProductCardProps {
   product: ShopifyProduct;
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const {
     handle,
     title,
@@ -46,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-transform duration-200 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={false}
+            priority={priority}
           />
         ) : (
           <div className="w-full h-full bg-stone-100 flex items-center justify-center">

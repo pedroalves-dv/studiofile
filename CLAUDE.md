@@ -2,7 +2,8 @@
 
 ## Context
 
-Premium Paris 3D studio e-commerce. User is a beginner "vibe-coder."
+Premium Paris design studio's e-commerce website.
+User is a beginner "vibe-coder."
 Current Status: Soft-launch (All traffic redirected to `/coming-soon`).
 
 ## Modular Rules

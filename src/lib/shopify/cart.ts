@@ -26,6 +26,15 @@ function normalizeCart(raw: RawCart): ShopifyCart {
   };
 }
 
+function isStaleCartError(message: string) {
+  return /cart does not exist/i.test(message);
+}
+
+async function clearCartCookie() {
+  const { cookies } = await import("next/headers");
+  (await cookies()).delete("cartId");
+}
+
 // --- TYPES ---
 
 interface CreateCartResponse {
@@ -101,7 +110,12 @@ export async function addToCart(
     { cache: "no-store" },
   );
   if (response.cartLinesAdd.userErrors.length > 0) {
-    throw new Error(response.cartLinesAdd.userErrors[0].message);
+    const message = response.cartLinesAdd.userErrors[0].message;
+    if (isStaleCartError(message)) {
+      await clearCartCookie();
+      throw new Error("STALE_CART");
+    }
+    throw new Error(message);
   }
   return normalizeCart(response.cartLinesAdd.cart);
 }
@@ -120,7 +134,12 @@ export async function updateCartLine(
     { cache: "no-store" },
   );
   if (response.cartLinesUpdate.userErrors.length > 0) {
-    throw new Error(response.cartLinesUpdate.userErrors[0].message);
+    const message = response.cartLinesUpdate.userErrors[0].message;
+    if (isStaleCartError(message)) {
+      await clearCartCookie();
+      throw new Error("STALE_CART");
+    }
+    throw new Error(message);
   }
   return normalizeCart(response.cartLinesUpdate.cart);
 }
@@ -138,7 +157,12 @@ export async function removeFromCart(
     { cache: "no-store" },
   );
   if (response.cartLinesRemove.userErrors.length > 0) {
-    throw new Error(response.cartLinesRemove.userErrors[0].message);
+    const message = response.cartLinesRemove.userErrors[0].message;
+    if (isStaleCartError(message)) {
+      await clearCartCookie();
+      throw new Error("STALE_CART");
+    }
+    throw new Error(message);
   }
   return normalizeCart(response.cartLinesRemove.cart);
 }
@@ -183,7 +207,7 @@ export async function updateCartNote(
   const response = await storefront<NoteUpdateResponse>(
     CART_NOTE_UPDATE,
     {
-      cartId, // PROTECTED: No cleanId here
+      cartId,
       note,
     },
     { cache: "no-store" },
@@ -197,8 +221,12 @@ export async function updateCartNote(
 export async function getCart(cartId: string): Promise<ShopifyCart | null> {
   const response = await storefront<CartFetchResponse>(
     GET_CART,
-    { cartId }, // PROTECTED: No cleanId here
+    { cartId },
     { cache: "no-store" },
   );
-  return response.cart ? normalizeCart(response.cart) : null;
+  if (!response.cart) {
+    await clearCartCookie();
+    return null;
+  }
+  return normalizeCart(response.cart);
 }

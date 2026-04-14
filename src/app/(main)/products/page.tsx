@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-interface ShopPageProps {
+interface ProductsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
@@ -42,7 +42,7 @@ function ProductGridSkeleton() {
   );
 }
 
-async function ShopContent({ searchParams }: ShopPageProps) {
+async function ProductsGrid({ searchParams }: ProductsProps) {
   const params = await searchParams;
 
   const sortParam = (params.sort as string) || "BEST_SELLING";
@@ -96,15 +96,19 @@ async function ShopContent({ searchParams }: ShopPageProps) {
     <div>
       <p className="text-label text-muted mb-6">{products.length} products</p>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {products.map((product, index) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            priority={index === 0}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-export default async function ShopPage({ searchParams }: ShopPageProps) {
+export default async function Products({ searchParams }: ProductsProps) {
   return (
     <div className="px-site page-pt page-pb">
       {/* Sticky header: h1 + controls — pins under site header on mobile, static on desktop */}
@@ -133,7 +137,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       {/* Product grid */}
       <Suspense fallback={<ProductGridSkeleton />}>
-        <ShopContent searchParams={searchParams} />
+        <ProductsGrid searchParams={searchParams} />
       </Suspense>
     </div>
   );
