@@ -135,6 +135,14 @@ export function TotemConfigurator() {
           typeof data.shapes === "object" &&
           typeof data.cables === "object"
         ) {
+          if (process.env.NODE_ENV !== "production") {
+            console.log(
+              "[totem-variants] shape/fixture keys:",
+              Object.keys(data.shapes),
+              "\ncable keys:",
+              Object.keys(data.cables),
+            );
+          }
           setVariantMap(data);
         }
       })
@@ -524,7 +532,7 @@ export function TotemConfigurator() {
   );
 
   return (
-    <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-3 sm:items-start pb-20">
+    <div className="flex flex-col sm:gap-10 sm:grid sm:grid-cols-[2.9fr_2fr] sm:items-start pb-20">
       {/* ── Product title — mobile only, above viewer ── */}
       <h1 className="sm:hidden text-left text-4xl font-display tracking-tight mb-2">
         TOTEM
@@ -533,7 +541,7 @@ export function TotemConfigurator() {
       {/* ── Section A: Viewer + Panels ── */}
       <div
         ref={viewerRef}
-        className="relative bg-white border border-ink rounded-md col-span-2 cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[480px] sm:h-[680px] mb-6"
+        className="relative bg-white border border-ink rounded-lg cursor-default sm:sticky sm:top-[calc(2*(var(--header-height)))] flex flex-col h-[480px] sm:h-[680px] mb-6"
       >
         {/* Inner row: visual panel + list/action panel */}
         <div className="flex flex-row items-stretch flex-1 min-h-0 overflow-hidden">
@@ -699,7 +707,7 @@ export function TotemConfigurator() {
               {pieces.length === 0 && (
                 <>
                   {/* Mobile empty-state helper */}
-                  <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
+                  <div className="absolute inset-0 flex sm:hidden flex-col items-center justify-center pointer-events-none bg-white/95 rounded-lg z-10">
                     <p className="font-medium text-xl tracking-tighter text-ink">
                       Add shapes &amp; start building!
                     </p>
@@ -712,7 +720,7 @@ export function TotemConfigurator() {
                     </p>
                   </div>
                   {/* Desktop empty-state helper */}
-                  <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none bg-white/95 rounded-md z-10">
+                  <div className="absolute inset-0 hidden sm:flex flex-col items-center justify-center pointer-events-none bg-white/95 rounded-lg z-10">
                     <p className="font-medium text-2xl tracking-tighter text-ink">
                       Add shapes &amp; start building!
                     </p>
@@ -967,7 +975,7 @@ export function TotemConfigurator() {
                 <button
                   type="button"
                   onClick={() => setPendingClear(false)}
-                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
+                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-lg"
                 >
                   Cancel
                 </button>
@@ -983,7 +991,7 @@ export function TotemConfigurator() {
                     setSelectedElement(null);
                     setPendingClear(false);
                   }}
-                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
+                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-lg"
                 >
                   Clear
                 </button>
@@ -1006,7 +1014,7 @@ export function TotemConfigurator() {
                 <button
                   type="button"
                   onClick={() => setPendingPresetId(null)}
-                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-md"
+                  className="text-sm border border-stroke px-4 py-1.5 hover:border-ink transition-colors rounded-lg"
                 >
                   Cancel
                 </button>
@@ -1016,7 +1024,7 @@ export function TotemConfigurator() {
                     applyPreset(pendingPresetId);
                     setPendingPresetId(null);
                   }}
-                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-md"
+                  className="text-sm bg-ink text-canvas px-4 py-1.5 hover:opacity-80 transition-opacity rounded-lg"
                 >
                   Replace
                 </button>
@@ -1095,7 +1103,7 @@ export function TotemConfigurator() {
                 type="button"
                 onClick={() => setMode(tab)}
                 className={cn(
-                  "text-base tracking-tight py-1 px-3 border rounded-md transition-colors",
+                  "text-base tracking-tight py-1 px-3 border rounded-lg transition-colors",
                   mode === tab
                     ? "border-ink text-ink"
                     : "border-transparent text-light hover:text-ink",
@@ -1112,7 +1120,6 @@ export function TotemConfigurator() {
             <span className="text-sm tracking-tight text-muted px-2">
               Shapes
             </span>
-            {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           {mode === "build" && (
             <div className="grid grid-cols-3 gap-1">
@@ -1132,10 +1139,10 @@ export function TotemConfigurator() {
                         aria-label={`Add ${shape.name}`}
                         disabled={unavailable}
                         onClick={() => addShape(shape.id)}
-                        className={`group relative bg-canvas border border-stroke rounded-md hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed" : ""}`}
+                        className={`group relative bg-canvas border border-stroke rounded-lg hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed" : ""}`}
                       >
                         {/* image placeholder  */}
-                        <div className="aspect-square w-full rounded-md transition-colors bg-lighter" />
+                        <div className="aspect-square w-full rounded-lg transition-colors bg-lighter" />
                         {/* bottom label  */}
                         <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
                           <div>
@@ -1169,7 +1176,7 @@ export function TotemConfigurator() {
                   <div
                     key={preset.id}
                     className={cn(
-                      "bg-white border border-stroke rounded-md flex flex-col gap-3 p-4",
+                      "bg-white border border-stroke rounded-lg flex flex-col gap-3 p-4",
                       !presetAvailable && "opacity-60",
                     )}
                   >
@@ -1214,7 +1221,7 @@ export function TotemConfigurator() {
                               applyPreset(preset.id);
                             }
                           }}
-                          className="text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-md"
+                          className="text-sm border border-ink px-3 py-1.5 hover:bg-lighter transition-colors rounded-lg"
                         >
                           Use
                         </button>
@@ -1225,7 +1232,7 @@ export function TotemConfigurator() {
                               type="button"
                               disabled
                               tabIndex={-1}
-                              className="text-sm border border-ink px-3 py-1.5 rounded-md opacity-50 pointer-events-none"
+                              className="text-sm border border-ink px-3 py-1.5 rounded-lg opacity-50 pointer-events-none"
                             >
                               Use
                             </button>
@@ -1245,7 +1252,6 @@ export function TotemConfigurator() {
             <span className="text-sm tracking-tight text-muted px-2">
               Fixture
             </span>
-            {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <div className="grid grid-cols-3 gap-1">
             {catalogFixtures.map((f) => {
@@ -1258,7 +1264,7 @@ export function TotemConfigurator() {
                   onClick={() => setFixtureId(f.id)}
                   disabled={unavailable}
                   className={cn(
-                    "relative bg-canvas border transition-colors text-left p-3 rounded-md",
+                    "relative bg-canvas border transition-colors text-left p-3 rounded-lg",
                     isActive
                       ? "border-ink bg-lighter"
                       : "border-stroke hover:border-ink",
@@ -1283,7 +1289,6 @@ export function TotemConfigurator() {
             <span className="text-sm tracking-tight text-muted px-2">
               Cable
             </span>
-            {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <CustomSelect
             id="cable-select"
@@ -1326,7 +1331,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : !configAvailable ? (
@@ -1334,7 +1339,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : (
@@ -1342,7 +1347,7 @@ export function TotemConfigurator() {
                 label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
                 disabled={isAdding || variantMapLoading}
-                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-md transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
               />
             )}
           </div>

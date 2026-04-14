@@ -25,6 +25,7 @@ const GET_TOTEM_COLLECTION = `
             priceRange {
               minVariantPrice {
                 amount
+                currencyCode
               }
             }
             metafield(namespace: "descriptors", key: "height") {
@@ -48,6 +49,7 @@ const GET_TOTEM_CABLES = `
                 title
                 price {
                   amount
+                  currencyCode
                 }
               }
             }
@@ -68,7 +70,7 @@ interface CollectionResponse {
           handle: string;
           title: string;
           priceRange: {
-            minVariantPrice: { amount: string };
+            minVariantPrice: { amount: string; currencyCode: string };
           };
           metafield: ShopifyMetafield | null;
         };
@@ -85,7 +87,7 @@ interface CablesResponse {
           edges: Array<{
             node: {
               title: string;
-              price: { amount: string };
+              price: { amount: string; currencyCode: string };
             };
           }>;
         };
@@ -131,6 +133,9 @@ export async function getTotemShapes(): Promise<TotemShape[]> {
       };
     });
 
+    if (mapped.length === 0 && process.env.NODE_ENV !== 'production') {
+      console.warn('[totem-catalog] totem-shapes collection is empty or missing. Using hardcoded fallback.');
+    }
     return mapped.length > 0 ? mapped : TOTEM_SHAPES;
   } catch (error) {
     console.error('[totem-catalog] Failed to fetch totem-shapes:', error);
@@ -162,6 +167,9 @@ export async function getTotemFixtures(): Promise<TotemFixture[]> {
       };
     });
 
+    if (mapped.length === 0 && process.env.NODE_ENV !== 'production') {
+      console.warn('[totem-catalog] totem-fixtures collection is empty or missing. Using hardcoded fallback.');
+    }
     return mapped.length > 0 ? mapped : TOTEM_FIXTURES;
   } catch (error) {
     console.error('[totem-catalog] Failed to fetch totem-fixtures:', error);
@@ -195,6 +203,9 @@ export async function getTotemCables(): Promise<TotemCable[]> {
       }
     }
 
+    if (cables.length === 0 && process.env.NODE_ENV !== 'production') {
+      console.warn('[totem-catalog] No products tagged totem-cable found. Using hardcoded fallback.');
+    }
     return cables.length > 0 ? cables : TOTEM_CABLES;
   } catch (error) {
     console.error('[totem-catalog] Failed to fetch totem-cable:', error);

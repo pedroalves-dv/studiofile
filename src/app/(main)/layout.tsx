@@ -10,7 +10,6 @@ import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { WishlistDrawer } from "@/components/wishlist/WishlistDrawer";
 import { FooterBackground } from "@/components/layout/FooterBackground";
-import { ScrollSnapProvider } from "@/components/common/ScrollSnapProvider";
 
 export default async function MainLayout({
   children,
