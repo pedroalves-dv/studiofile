@@ -77,7 +77,6 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
   const heartIconRef = useRef<HeartIconHandle>(null);
   const accountRef = useRef<HTMLDivElement>(null);
 
-
   // Timer refs — prevent stale closures and memory leaks
   const menuCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const accountCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -454,13 +453,13 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Nav Menu */}
+      {/* Mobile Dropdown Menu */}
       {(isMobileMenuOpen || isClosingMenu) && (
         <nav
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-min-h bg-white flex flex-col space-y-6"
+          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site pt-20 overflow-y-auto bg-white flex flex-col space-y-6"
           aria-label="Mobile navigation"
         >
           <div className="group space-y-1">
@@ -470,7 +469,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
                 href={link.href}
                 onClick={closeMenu}
                 className={cn(
-                  "flex w-fit text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
+                  "flex w-fit text-left text-6xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
                   "transition-opacity duration-1000",
                   // No hover effects on mobile — sticky tap-hover is broken UX
                   "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
@@ -515,7 +514,6 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
           </div>
         </nav>
       )}
-
 
       {/* Spacer */}
       <div className="h-[var(--header-height)]" aria-hidden="true" />

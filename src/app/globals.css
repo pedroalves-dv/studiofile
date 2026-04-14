@@ -194,16 +194,6 @@
     --duration-slow: 500ms;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Safe area — iOS browser chrome bottom inset.
-       env(safe-area-inset-bottom) only covers the home indicator (~34px).
-       iOS Chrome's navigation bar adds ~49px on top of that, so we
-       use 80px as the minimum to ensure content clears all chrome. */
-    --nav-bar-inset: max(env(safe-area-inset-bottom, 0px), 80px);
-
-    /* Locked viewport height — set by JS on first paint and only
-       updated on WIDTH changes (device rotation). Ignores the
-       height oscillation caused by iOS bars appearing/hiding. */
-    --svh-100: 100svh;
   }
 
   /* Dynamic sm+ */
@@ -213,8 +203,6 @@
       --site-pad: 1.25rem;
       --page-pt: 90px; /* desktop */
       --page-pb: 48px; /* desktop */
-      --nav-bar-inset: 0px; /* no browser chrome on desktop */
-      --svh-100: 100svh; /* desktop: svh is correct, no JS override needed */
     }
     body {
       border-right: none;
@@ -376,51 +364,45 @@
   .page-pb {
     padding-bottom: var(--page-pb);
   }
+  /* Gallery image height — svh so the sticky panel always fits when chrome is visible */
   .sticky-gallery-h {
-    height: calc(var(--svh-100, 100svh) - var(--header-height) - (2 * (var(--page-pt))));
-  }
-  /* Layout utilities */
-  .section-centered {
-    min-height: calc(var(--svh-100, 100svh) - var(--header-height));
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    height: calc(100svh - var(--header-height) - (2 * (var(--page-pt))));
   }
 
+  /* Layout utilities */
+
+  /* Section containers use dvh — they breathe naturally as browser chrome appears/hides */
   .section-h {
-    height: calc(var(--svh-100, 100svh) - var(--header-height));
+    height: calc(100dvh - var(--header-height));
   }
 
   .section-min-h {
-    min-height: calc(var(--svh-100, 100svh) - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
   }
 
-  /* Full viewport height that stays locked on iOS bar appear/hide */
-  .h-screen-safe {
-    height: var(--svh-100, 100svh);
-  }
-
-  /* Sticky hero panel height (locked viewport minus header) */
-  .sticky-hero-h {
-    height: calc(var(--svh-100, 100svh) - var(--header-height));
-  }
-
-  /* Adds bottom padding that clears the iOS bottom nav bar.
-     Falls back to 1.5rem minimum so sections always breathe. */
-  .pb-safe {
-    padding-bottom: max(var(--nav-bar-inset), 1.5rem);
-  }
-
-  /* Like section-centered, but shifts the flex-center axis upward
-     by the browser chrome height so content lands above the bar. */
-  .section-centered-safe {
-    min-height: calc(var(--svh-100, 100svh) - var(--header-height));
+  /* Content inside sections uses svh — always fits even when browser chrome is fully visible */
+  .section-centered {
+    min-height: calc(100svh - var(--header-height));
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-bottom: max(var(--nav-bar-inset), 1.5rem);
+  }
+
+  /* Hero sticky panel — svh so the hero copy is never clipped by the toolbar */
+  .sticky-hero-h {
+    height: calc(100svh - var(--header-height));
+  }
+
+  /* Mobile full-viewport image blocks — dvh so they breathe with the viewport */
+  .h-screen-safe {
+    height: 100dvh;
+  }
+
+  /* Bottom padding for home indicator (notch iPhones).
+     svh already handles toolbar clearance — this only covers the ~34px home bar. */
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
   }
 
   /* Skip to content link */
