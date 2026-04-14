@@ -12,39 +12,51 @@ function DrawLine({
   delay?: number;
   light?: boolean;
 }) {
-  const { ref, isInView } = useSectionInView(0.25, false);
+  const { ref, isInView } = useSectionInView(0.25, true);
 
   return (
     <motion.div
       ref={ref}
       initial={{ scaleX: 0 }}
-      animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+      // animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+      animate={isInView ? { scaleX: 1 } : {}}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay }}
       className={`h-px w-full my-5 ${light ? "bg-white/25" : "bg-ink/25"}`}
-      style={{ transformOrigin: "left" }}
+      style={{
+        transformOrigin: "left",
+        willChange: "transform", // Forces GPU layer
+      }}
     />
   );
 }
 
 function TotemLetters({ delay = 0 }: { delay?: number }) {
-  const { ref, isInView } = useSectionInView(0.1, false);
+  const { ref, isInView } = useSectionInView(0.1, true);
   return (
     <span ref={ref} className="inline-flex" aria-label="TOTEM">
       {["T", "O", "T", "E", "M"].map((l, i) => (
         <motion.span
           key={i}
           initial={{ opacity: 0, y: 36, rotateX: -20 }}
-          animate={
-            isInView
-              ? { opacity: 1, y: 0, rotateX: 0 }
-              : { opacity: 0, y: 36, rotateX: -20 }
-          }
+          // animate={
+          //   isInView
+          //     ? { opacity: 1, y: 0, rotateX: 0 }
+          //     : { opacity: 0, y: 36, rotateX: -20 }
+          // }
+          animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
           transition={{
             duration: 0.55,
             ease: [0.16, 1, 0.3, 1],
             delay: delay + i * 0.06,
           }}
-          style={{ display: "inline-block", perspective: 600 }}
+          style={{
+            display: "inline-block",
+            perspective: 600,
+            // This is the "GPU logic"
+            willChange: "transform, opacity",
+            transformPerspective: 1000,
+            backfaceVisibility: "hidden",
+          }}
         >
           {l}
         </motion.span>
