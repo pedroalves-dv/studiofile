@@ -1,5 +1,5 @@
 // 1. Next.js built-ins
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 
 // 2. Fonts (next/font + font packages)
@@ -19,6 +19,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   ...DEFAULT_METADATA,
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

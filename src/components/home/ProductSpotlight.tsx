@@ -82,7 +82,7 @@ export function ProductSpotlight() {
         <div className="absolute inset-0 bg-black/45" aria-hidden />
 
         {/* ── MOBILE ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-site py-80 gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site pt-80 pb-safe gap-2">
           <FadeUp delay={0.05}>
             <p
               className="font-medium tracking-[-0.05em] leading-[1] text-white"
@@ -164,7 +164,7 @@ export function ProductSpotlight() {
         aria-label="TOTEM configurator"
       >
         {/* ── MOBILE: stacked, each half breathes ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-site py-80 gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site pt-80 pb-safe gap-2">
           {/* Top: configurator placeholder — flex-1 takes all available space */}
           <div className="flex-1 relative bg-lighter overflow-hidden min-h-[300px]">
             <div className="absolute inset-0 flex items-center justify-center"></div>

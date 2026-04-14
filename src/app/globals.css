@@ -193,6 +193,9 @@
     --duration-base: 300ms;
     --duration-slow: 500ms;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Safe area — iOS browser chrome bottom inset */
+    --nav-bar-inset: env(safe-area-inset-bottom, 0px);
   }
 
   /* Dynamic sm+ */
@@ -202,6 +205,7 @@
       --site-pad: 1.25rem;
       --page-pt: 90px; /* desktop */
       --page-pb: 48px; /* desktop */
+      --nav-bar-inset: 0px; /* no browser chrome on desktop */
     }
     body {
       border-right: none;
@@ -381,6 +385,23 @@
 
   .section-min-h {
     min-height: calc(100svh - var(--header-height));
+  }
+
+  /* Adds bottom padding that clears the iOS bottom nav bar.
+     Falls back to 1.5rem minimum so sections always breathe. */
+  .pb-safe {
+    padding-bottom: max(var(--nav-bar-inset), 1.5rem);
+  }
+
+  /* Like section-centered, but shifts the flex-center axis upward
+     by the browser chrome height so content lands above the bar. */
+  .section-centered-safe {
+    min-height: calc(100svh - var(--header-height));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: max(var(--nav-bar-inset), 1.5rem);
   }
 
   /* Skip to content link */

@@ -56,7 +56,7 @@ export default function BrandStory() {
 
   return (
     <section
-      className="relative py-20 overflow-hidden"
+      className="relative pt-20 pb-safe overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* Cursor-following hover image */}

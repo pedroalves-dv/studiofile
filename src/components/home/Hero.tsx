@@ -205,7 +205,7 @@ export function Hero() {
 
       {/* ── STICKY CONTENT (The "TOTEM" type) ── */}
       <div className="sticky top-[var(--header-height)] h-[calc(100svh-var(--header-height))] w-full z-10 overflow-hidden">
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full pb-safe md:pb-0">
           <HeroContent />
         </div>
       </div>

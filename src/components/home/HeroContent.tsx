@@ -147,7 +147,7 @@ export function HeroContent() {
         "relative overflow-hidden ml-[10px] mr-[5px]",
         // padding top "pt" is another hack to vertically center the animation up to phase 2,
         // h-full and section centered arent enough. further fixing might be required
-        isHorizontal ? "h-full" : "section-centered pt-5",
+        isHorizontal ? "h-full" : "section-centered-safe pt-5",
       )}
     >
       {/* Measurement element (hidden) */}
