@@ -6,7 +6,7 @@ import Image from "next/image";
 import { HeroContent } from "@/components/home/HeroContent";
 
 /**
- * Number of 100dvh rows that make up the desktop parallax section.
+ * Number of 100svh rows that make up the desktop parallax section.
  * Drives both the section height (set imperatively) and the parallax
  * transform range. When you add or remove rows, update this constant
  * AND the column row structure below together.
@@ -28,9 +28,7 @@ const PLACEHOLDER = "https://placehold.co/600x800/fcaeae/78c0ff";
 // Defined outside Hero so React doesn't treat it as a new component type
 // on every render, which would cause unnecessary DOM unmount/remount.
 function RowSpacer() {
-  return (
-    <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full" />
-  );
+  return <div className="relative section-min-h w-full" />;
 }
 
 interface ParallaxProps {
@@ -122,7 +120,7 @@ export function Hero() {
       <div className="hidden md:flex absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.3}
@@ -132,7 +130,7 @@ export function Hero() {
             />
           </div>
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.5}
@@ -145,7 +143,7 @@ export function Hero() {
 
         {/* Column 2 */}
         <div className="flex-1 flex flex-col">
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.5}
@@ -154,7 +152,7 @@ export function Hero() {
               priority
             />
           </div>
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.4}
@@ -163,7 +161,7 @@ export function Hero() {
             />
           </div>
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.6}
@@ -175,7 +173,7 @@ export function Hero() {
 
         {/* Column 3 (xl only) */}
         <div className="hidden xl:flex flex-1 flex-col">
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.2}
@@ -185,7 +183,7 @@ export function Hero() {
             />
           </div>
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.4}
@@ -198,7 +196,7 @@ export function Hero() {
       </div>
 
       {/* ── STICKY CONTENT (The "TOTEM" type) ── */}
-      <div className="sticky top-[var(--header-height)] h-[calc(100dvh-var(--header-height))] w-full z-10 overflow-hidden">
+      <div className="sticky top-[var(--header-height)] h-[calc(100svh-var(--header-height))] w-full z-10 overflow-hidden">
         <div className="relative w-full h-full">
           <HeroContent />
         </div>
@@ -209,7 +207,7 @@ export function Hero() {
         {/* Column 1 */}
         <div className="flex-1 flex flex-col">
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.2}
@@ -218,7 +216,7 @@ export function Hero() {
             />
           </div>
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.45}
@@ -232,7 +230,7 @@ export function Hero() {
         <div className="flex-1 flex flex-col">
           <RowSpacer />
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.25}
@@ -246,7 +244,7 @@ export function Hero() {
         {/* Column 3 (XL only) */}
         <div className="hidden xl:flex flex-1 flex-col">
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.55}
@@ -255,7 +253,7 @@ export function Hero() {
             />
           </div>
           <RowSpacer />
-          <div className="relative min-h-[calc(100dvh-var(--header-height))] w-full">
+          <div className="relative section-min-h w-full">
             <ParallaxBox
               {...parallaxProps}
               speed={0.8}
@@ -268,7 +266,7 @@ export function Hero() {
 
       {/* ── MOBILE IMAGE COLUMN ── */}
       <div aria-hidden="true" className="md:hidden pointer-events-none">
-        <div className="relative w-full h-[100dvh] overflow-hidden">
+        <div className="relative w-full h-[100svh] overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill
@@ -279,7 +277,7 @@ export function Hero() {
             unoptimized
           />
         </div>
-        <div className="relative w-full h-[100dvh] overflow-hidden">
+        <div className="relative w-full h-[100svh] overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill
@@ -289,7 +287,7 @@ export function Hero() {
             unoptimized
           />
         </div>
-        <div className="relative w-full h-[100dvh] overflow-hidden">
+        <div className="relative w-full h-[100svh] overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill
