@@ -20,7 +20,7 @@ export const VIRTUAL_PRODUCTS: VirtualProduct[] = [
     handle: "totem",
     title: "Totem",
     description:
-      "Build your modular lamp. Choose shapes, colors, cable, and fixation. Made to order in Paris.",
+      "Build your modular lamp. Choose shapes, colors, cable, and fixture. Made to order in Paris.",
     href: "/products/totem",
     image: {
       url: "/images/totem-cover.jpg",

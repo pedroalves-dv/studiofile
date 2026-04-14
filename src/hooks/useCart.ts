@@ -17,7 +17,7 @@ import { generateUid } from "@/lib/utils/uid";
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
-  TOTEM_FIXATIONS,
+  TOTEM_FIXTURES,
   TOTEM_CABLES,
   COLOR_MAP,
   type TotemBuildConfig,
@@ -310,27 +310,27 @@ export function useCart() {
         });
       }
 
-      const fixationKey = `${config.fixationId}-${config.fixationColorId}`;
-      const fixationVariant = shapes[fixationKey];
-      if (!fixationVariant?.id || !fixationVariant.available) {
-        toast.error("The selected fixation color is out of stock.");
+      const fixtureKey = `${config.fixtureId}-${config.fixtureColorId}`;
+      const fixtureVariant = shapes[fixtureKey];
+      if (!fixtureVariant?.id || !fixtureVariant.available) {
+        toast.error("The selected fixture color is out of stock.");
         return;
       }
-      const fixation = TOTEM_FIXATIONS.find((f) => f.id === config.fixationId);
-      const fixationColorName =
-        COLOR_MAP.get(config.fixationColorId)?.name ?? config.fixationColorId;
+      const fixture = TOTEM_FIXTURES.find((f) => f.id === config.fixtureId);
+      const fixtureColorName =
+        COLOR_MAP.get(config.fixtureColorId)?.name ?? config.fixtureColorId;
       lines.push({
-        merchandiseId: fixationVariant.id,
+        merchandiseId: fixtureVariant.id,
         quantity: 1,
         attributes: [
           { key: "_build_id", value: buildId },
           {
             key: "_build_label",
-            value: `Custom Totem · ${fixation?.name ?? config.fixationId} — ${fixationColorName}`,
+            value: `Custom Totem · ${fixture?.name ?? config.fixtureId} — ${fixtureColorName}`,
           },
-          { key: "_part", value: "Fixation" },
-          { key: "_fixation_id", value: config.fixationId },
-          { key: "_fixation_color_id", value: config.fixationColorId },
+          { key: "_part", value: "Fixture" },
+          { key: "_fixture_id", value: config.fixtureId },
+          { key: "_fixture_color_id", value: config.fixtureColorId },
           // Full pieces snapshot — lets handleEdit reconstruct order + counts exactly,
           // regardless of how Shopify consolidates duplicate shape lines.
           {

@@ -50,7 +50,7 @@ async function ProductsGrid({ searchParams }: ProductsProps) {
 
   // Build Shopify query string from active filters
   const queryParts: string[] = [];
-  if (params.type) queryParts.push(`product_type:${params.type}`);
+  if (params.tag) queryParts.push(`tag:${params.tag}`);
   if (params.availability === "in-stock")
     queryParts.push("available_for_sale:true");
   if (params.availability === "on-sale") queryParts.push("tag:Sale");

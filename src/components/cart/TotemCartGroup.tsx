@@ -23,7 +23,7 @@ function getLineLabel(line: ShopifyCartLine): {
   const part = line.attributes.find((a) => a.key === "_part")?.value;
   const productTitle = line.merchandise.product.title;
   const variantTitle = line.merchandise.title;
-  if (part === "Shape" || part === "Fixation") {
+  if (part === "Shape" || part === "Fixture") {
     return { primary: productTitle, secondary: variantTitle };
   }
   return { primary: productTitle };
@@ -66,7 +66,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
     setIsEditing(true);
     try {
       const shapeLines = lines.filter((l) => lineAttr(l, "_part") === "Shape");
-      const fixLine = lines.find((l) => lineAttr(l, "_part") === "Fixation");
+      const fixLine = lines.find((l) => lineAttr(l, "_part") === "Fixture");
       const cabLine = lines.find((l) => lineAttr(l, "_part") === "Cable");
 
       if (
@@ -75,8 +75,8 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           (l) => !lineAttr(l, "_shape_id") || !lineAttr(l, "_color_id"),
         ) ||
         !fixLine ||
-        !lineAttr(fixLine, "_fixation_id") ||
-        !lineAttr(fixLine, "_fixation_color_id") ||
+        !lineAttr(fixLine, "_fixture_id") ||
+        !lineAttr(fixLine, "_fixture_color_id") ||
         !cabLine ||
         !lineAttr(cabLine, "_cable_id")
       ) {
@@ -126,8 +126,8 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
 
       await removeBundleItems(lines.map((l) => l.id));
       notify("sf-totem-pieces", JSON.stringify(pieces));
-      notify("sf-totem-fixation", JSON.stringify(lineAttr(fixLine, "_fixation_id")));
-      notify("sf-totem-fixation-color", JSON.stringify(lineAttr(fixLine, "_fixation_color_id")));
+      notify("sf-totem-fixture", JSON.stringify(lineAttr(fixLine, "_fixture_id")));
+      notify("sf-totem-fixture-color", JSON.stringify(lineAttr(fixLine, "_fixture_color_id")));
       notify("sf-totem-cable", JSON.stringify(lineAttr(cabLine, "_cable_id")));
       closeCart();
       router.push("/products/totem");

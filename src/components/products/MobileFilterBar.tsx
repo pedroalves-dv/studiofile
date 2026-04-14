@@ -6,11 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown, Check, ListFilter } from "lucide-react";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 
-const TYPE_FILTERS = [
-  { label: "Lighting", value: "Lighting" },
-  { label: "Furniture", value: "Furniture" },
-  { label: "Décor", value: "Décor" },
-  { label: "Accessories", value: "Accessories" },
+const TAG_FILTERS = [
+  { label: "Shapes", value: "totem-shape" },
+  { label: "Fixtures", value: "totem-fixture" },
+  { label: "Cables", value: "totem-cable" },
 ];
 
 const AVAIL_FILTERS = [
@@ -31,14 +30,14 @@ export function MobileFilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const activeType = searchParams.get("type");
+  const activeTag = searchParams.get("tag");
   const activeAvail = searchParams.get("availability");
   const activeSort = searchParams.get("sort") || "BEST_SELLING";
 
-  const isFilterActive = !!(activeType || activeAvail);
+  const isFilterActive = !!(activeTag || activeAvail);
   const isSortActive = activeSort !== "BEST_SELLING";
 
-  const activeFilterCount = [activeType, activeAvail].filter(Boolean).length;
+  const activeFilterCount = [activeTag, activeAvail].filter(Boolean).length;
 
   function setParam(key: string, value: string | null) {
     const p = new URLSearchParams(searchParams.toString());
@@ -122,26 +121,26 @@ export function MobileFilterBar() {
       >
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto px-site py-4 space-y-6">
-            {/* Type group */}
+            {/* Component group */}
             <section>
               <p className="text-base font-medium tracking-normal text-muted mb-3">
-                Type
+                Component
               </p>
               <div className="flex flex-wrap gap-2">
                 <button
-                  className={!activeType ? pillActive : pillInactive}
-                  onClick={() => setParam("type", null)}
+                  className={!activeTag ? pillActive : pillInactive}
+                  onClick={() => setParam("tag", null)}
                 >
                   All
                 </button>
-                {TYPE_FILTERS.map((f) => (
+                {TAG_FILTERS.map((f) => (
                   <button
                     key={f.value}
                     className={
-                      activeType === f.value ? pillActive : pillInactive
+                      activeTag === f.value ? pillActive : pillInactive
                     }
                     onClick={() =>
-                      setParam("type", activeType === f.value ? null : f.value)
+                      setParam("tag", activeTag === f.value ? null : f.value)
                     }
                   >
                     {f.label}

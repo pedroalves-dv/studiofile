@@ -33,8 +33,8 @@ The color swatch for OOS colors currently has `pointer-events-none` directly on 
 
   ```tsx
   {TOTEM_COLORS.map((c) => {
-    const colorAvailable = fixationSelected
-      ? isFixationColorAvailable(fixationId, c.id)
+    const colorAvailable = fixtureSelected
+      ? isfixtureColorAvailable(fixtureId, c.id)
       : selectedPiece
         ? isColorAvailableForShape(selectedPiece.shapeId, c.id)
         : true;
@@ -209,13 +209,13 @@ Add an availability check for presets and disable/grey-out unavailable preset ca
   import {
     TOTEM_SHAPES,
     TOTEM_COLORS,
-    TOTEM_FIXATIONS,
+    TOTEM_fixtureS,
     TOTEM_CABLES,
     TOTEM_PRESETS,
     COLOR_MAP,
     calcTotemPrice,
     type TotemShape,
-    type TotemFixation,
+    type Totemfixture,
     type TotemCable,
     type TotemPiece,
   } from "@/lib/totem-config";
@@ -227,13 +227,13 @@ Add an availability check for presets and disable/grey-out unavailable preset ca
   import {
     TOTEM_SHAPES,
     TOTEM_COLORS,
-    TOTEM_FIXATIONS,
+    TOTEM_fixtureS,
     TOTEM_CABLES,
     TOTEM_PRESETS,
     COLOR_MAP,
     calcTotemPrice,
     type TotemShape,
-    type TotemFixation,
+    type Totemfixture,
     type TotemCable,
     type TotemPiece,
     type TotemPreset,
@@ -245,7 +245,7 @@ Add an availability check for presets and disable/grey-out unavailable preset ca
   Find the end of the availability helpers block (around line 252–257):
 
   ```typescript
-  function isFixationFullyUnavailable(fxId: string): boolean {
+  function isfixtureFullyUnavailable(fxId: string): boolean {
     if (!variantMap) return false;
     return TOTEM_COLORS.every(
       (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
@@ -262,13 +262,13 @@ Add an availability check for presets and disable/grey-out unavailable preset ca
       preset.pieces.every((p) =>
         isColorAvailableForShape(p.shapeId, p.colorId),
       ) &&
-      isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
+      isfixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id) &&
       isCableAvailable(preset.cableId)
     );
   }
   ```
 
-  **Why `TOTEM_COLORS[0].id`:** `applyPreset()` always calls `setFixationColorId(TOTEM_COLORS[0].id)` (i.e., `"beige"`). The preset has no stored fixation color, so `"beige"` is the effective fixation color after applying any preset.
+  **Why `TOTEM_COLORS[0].id`:** `applyPreset()` always calls `setfixtureColorId(TOTEM_COLORS[0].id)` (i.e., `"beige"`). The preset has no stored fixture color, so `"beige"` is the effective fixture color after applying any preset.
 
 - [ ] **Step 3: Update the preset card render**
 
@@ -420,5 +420,5 @@ Add an availability check for presets and disable/grey-out unavailable preset ca
 
 - [ ] **Color swatches:** Hover over an OOS swatch → `cursor-not-allowed` appears + "Out of stock" tooltip fires. Clicking does nothing. Available swatches unchanged.
 - [ ] **Viewer whitespace:** Select a piece. Click on empty white space inside the viewer → piece stays selected. Click anywhere outside the viewer (page header, below the configurator, etc.) → selection clears.
-- [ ] **Preset cards:** If a preset has an OOS piece/cable/fixation color → card is greyed out (`opacity-60`), "Out of stock" label appears below price, "Use" button is disabled + shows "Out of stock" tooltip on hover. Available presets are unaffected.
+- [ ] **Preset cards:** If a preset has an OOS piece/cable/fixture color → card is greyed out (`opacity-60`), "Out of stock" label appears below price, "Use" button is disabled + shows "Out of stock" tooltip on hover. Available presets are unaffected.
 - [ ] **Type-check:** `npm run type-check` → zero errors.

@@ -13,7 +13,7 @@ export interface TotemColor {
   hex: string;
 }
 
-export interface TotemFixation {
+export interface TotemFixture {
   id: string;
   name: string;
   price: number;
@@ -32,7 +32,7 @@ export interface TotemPreset {
   name: string;
   description: string;
   pieces: Array<{ shapeId: string; colorId: string; flipped: boolean }>;
-  fixationId: string;
+  fixtureId: string;
   cableId: string;
 }
 
@@ -45,8 +45,8 @@ export interface TotemPiece {
 
 export interface TotemBuildConfig {
   pieces: TotemPiece[];
-  fixationId: string;
-  fixationColorId: string;
+  fixtureId: string;
+  fixtureColorId: string;
   cableId: string;
 }
 
@@ -62,7 +62,7 @@ export const TOTEM_COLORS: TotemColor[] = [
   { id: "yellow", name: "Yellow", hex: "#eebd1b" },
 ];
 
-export const TOTEM_FIXATIONS: TotemFixation[] = [
+export const TOTEM_FIXTURES: TotemFixture[] = [
   { id: "rosette", name: "Rosette", price: 12, height: 24 },
   { id: "rail", name: "Rail", price: 14, height: 22 }, // TODO before launch: confirm rail price/height with client
   { id: "canopy", name: "Canopy", price: 18, height: 20 },
@@ -83,7 +83,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
       { shapeId: "arch", colorId: "beige", flipped: false },
       { shapeId: "dome", colorId: "beige", flipped: false },
     ],
-    fixationId: "rosette",
+    fixtureId: "rosette",
     cableId: "black-textile",
   },
   {
@@ -95,7 +95,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
       { shapeId: "arch", colorId: "beige", flipped: false },
       { shapeId: "dome", colorId: "blue", flipped: false },
     ],
-    fixationId: "rosette",
+    fixtureId: "rosette",
     cableId: "brass",
   },
   {
@@ -109,7 +109,7 @@ export const TOTEM_PRESETS: TotemPreset[] = [
       { shapeId: "arch", colorId: "blue", flipped: false },
       { shapeId: "arch", colorId: "blue", flipped: false },
     ],
-    fixationId: "canopy",
+    fixtureId: "canopy",
     cableId: "black-textile",
   },
   {
@@ -120,14 +120,14 @@ export const TOTEM_PRESETS: TotemPreset[] = [
       { shapeId: "arch", colorId: "beige", flipped: false },
       { shapeId: "dome", colorId: "blue", flipped: false },
     ],
-    fixationId: "rosette",
+    fixtureId: "rosette",
     cableId: "transparent",
   },
 ];
 
 export const SHAPE_MAP    = new Map(TOTEM_SHAPES.map((s) => [s.id, s]));
 export const COLOR_MAP    = new Map(TOTEM_COLORS.map((c) => [c.id, c]));
-export const FIXATION_MAP = new Map(TOTEM_FIXATIONS.map((f) => [f.id, f]));
+export const FIXTURE_MAP = new Map(TOTEM_FIXTURES.map((f) => [f.id, f]));
 export const CABLE_MAP    = new Map(TOTEM_CABLES.map((c) => [c.id, c]));
 
 /** Authoritative hex lookup by colorId — used by totem-catalog.ts */
@@ -148,7 +148,7 @@ export const CABLE_HEX_MAP: Record<string, string> = {
 export function calcTotemPrice(
   config: TotemBuildConfig,
   shapeMap?: Map<string, TotemShape>,
-  fixationMap?: Map<string, TotemFixation>,
+  fixtureMap?: Map<string, TotemFixture>,
   cableMap?: Map<string, TotemCable>,
 ): number {
   let total = 0;
@@ -158,8 +158,8 @@ export function calcTotemPrice(
     total += shape?.price ?? 0;
   }
 
-  const fixation = (fixationMap ?? FIXATION_MAP).get(config.fixationId);
-  total += fixation?.price ?? 0;
+  const fixture = (fixtureMap ?? FIXTURE_MAP).get(config.fixtureId);
+  total += fixture?.price ?? 0;
 
   const cable = (cableMap ?? CABLE_MAP).get(config.cableId);
   total += cable?.price ?? 0;

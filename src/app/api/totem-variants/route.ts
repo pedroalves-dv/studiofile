@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getShapeAndFixationVariantMap, getCableVariantMap } from '@/lib/shopify/totem-variants';
+import { getShapeAndFixtureVariantMap, getCableVariantMap } from '@/lib/shopify/totem-variants';
 
 export async function GET() {
   try {
     const [shapes, cables] = await Promise.all([
-      getShapeAndFixationVariantMap(),
+      getShapeAndFixtureVariantMap(),
       getCableVariantMap(),
     ]);
     return NextResponse.json({ shapes, cables });

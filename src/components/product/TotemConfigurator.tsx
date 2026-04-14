@@ -24,13 +24,13 @@ import { generateUid } from "@/lib/utils/uid";
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
-  TOTEM_FIXATIONS,
+  TOTEM_FIXTURES,
   TOTEM_CABLES,
   TOTEM_PRESETS,
   COLOR_MAP,
   calcTotemPrice,
   type TotemShape,
-  type TotemFixation,
+  type TotemFixture,
   type TotemCable,
   type TotemPiece,
   type TotemPreset,
@@ -57,12 +57,12 @@ export function TotemConfigurator() {
     [],
   );
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
-  const [fixationId, setFixationId] = useLocalStorage(
-    "sf-totem-fixation",
-    TOTEM_FIXATIONS[0].id,
+  const [fixtureId, setFixtureId] = useLocalStorage(
+    "sf-totem-fixture",
+    TOTEM_FIXTURES[0].id,
   );
-  const [fixationColorId, setFixationColorId] = useLocalStorage(
-    "sf-totem-fixation-color",
+  const [fixtureColorId, setFixtureColorId] = useLocalStorage(
+    "sf-totem-fixture-color",
     TOTEM_COLORS[0].id,
   );
   const [cableId, setCableId] = useLocalStorage(
@@ -89,8 +89,8 @@ export function TotemConfigurator() {
   // Dynamic catalog — loaded from Shopify on mount, falls back to static arrays
   const [catalogShapes, setCatalogShapes] =
     useState<TotemShape[]>(TOTEM_SHAPES);
-  const [catalogFixations, setCatalogFixations] =
-    useState<TotemFixation[]>(TOTEM_FIXATIONS);
+  const [catalogFixtures, setCatalogFixtures] =
+    useState<TotemFixture[]>(TOTEM_FIXTURES);
   const [catalogCables, setCatalogCables] =
     useState<TotemCable[]>(TOTEM_CABLES);
   const [catalogLoading, setCatalogLoading] = useState(true);
@@ -106,8 +106,8 @@ export function TotemConfigurator() {
         if (cancelled) return;
         if (Array.isArray(data.shapes) && data.shapes.length > 0)
           setCatalogShapes(data.shapes);
-        if (Array.isArray(data.fixations) && data.fixations.length > 0)
-          setCatalogFixations(data.fixations);
+        if (Array.isArray(data.fixtures) && data.fixtures.length > 0)
+          setCatalogFixtures(data.fixtures);
         if (Array.isArray(data.cables) && data.cables.length > 0)
           setCatalogCables(data.cables);
       })
@@ -147,9 +147,9 @@ export function TotemConfigurator() {
     () => new Map(catalogShapes.map((s) => [s.id, s])),
     [catalogShapes],
   );
-  const fixationMap = useMemo(
-    () => new Map(catalogFixations.map((f) => [f.id, f])),
-    [catalogFixations],
+  const fixtureMap = useMemo(
+    () => new Map(catalogFixtures.map((f) => [f.id, f])),
+    [catalogFixtures],
   );
   const cableMap = useMemo(
     () => new Map(catalogCables.map((c) => [c.id, c])),
@@ -176,17 +176,17 @@ export function TotemConfigurator() {
                 colorId: p.colorId,
                 flipped: p.flipped,
               })),
-              fixationId: preset.fixationId,
-              fixationColorId: TOTEM_COLORS[0].id,
+              fixtureId: preset.fixtureId,
+              fixtureColorId: TOTEM_COLORS[0].id,
               cableId: preset.cableId,
             },
             shapeMap,
-            fixationMap,
+            fixtureMap,
             cableMap,
           ),
         ]),
       ),
-    [shapeMap, fixationMap, cableMap],
+    [shapeMap, fixtureMap, cableMap],
   );
 
   const viewerRef = useRef<HTMLDivElement>(null);
@@ -200,20 +200,20 @@ export function TotemConfigurator() {
 
   // Derived selection values
   const selectedPiece =
-    selectedElement && selectedElement !== "fixation"
+    selectedElement && selectedElement !== "fixture"
       ? pieces.find((p) => p.uid === selectedElement)
       : null;
-  const fixationSelected = selectedElement === "fixation";
-  const activeColorId = fixationSelected
-    ? fixationColorId
+  const fixtureSelected = selectedElement === "fixture";
+  const activeColorId = fixtureSelected
+    ? fixtureColorId
     : selectedPiece?.colorId;
 
   // B1: Sync selection — clear if selected piece no longer exists.
-  // Never clear if selectedElement === 'fixation' (fixation is always present).
+  // Never clear if selectedElement === 'fixture' (fixture is always present).
   useEffect(() => {
     if (
       selectedElement &&
-      selectedElement !== "fixation" &&
+      selectedElement !== "fixture" &&
       !pieces.find((p) => p.uid === selectedElement)
     ) {
       setSelectedElement(null);
@@ -236,7 +236,7 @@ export function TotemConfigurator() {
     return variantMap.shapes[`${shapeId}-${colorId}`]?.available ?? false;
   }
 
-  function isFixationColorAvailable(fxId: string, colorId: string): boolean {
+  function isFixtureColorAvailable(fxId: string, colorId: string): boolean {
     if (!variantMap) return true;
     return variantMap.shapes[`${fxId}-${colorId}`]?.available ?? false;
   }
@@ -253,7 +253,7 @@ export function TotemConfigurator() {
     );
   }
 
-  function isFixationFullyUnavailable(fxId: string): boolean {
+  function isFixtureFullyUnavailable(fxId: string): boolean {
     if (!variantMap) return false;
     return TOTEM_COLORS.every(
       (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
@@ -266,7 +266,7 @@ export function TotemConfigurator() {
       preset.pieces.every((p) =>
         isColorAvailableForShape(p.shapeId, p.colorId),
       ) &&
-      isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
+      isFixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id) &&
       isCableAvailable(preset.cableId)
     );
   }
@@ -357,10 +357,10 @@ export function TotemConfigurator() {
 
   const zoom = ZOOM_STEPS[zoomIdx];
 
-  // B3: totalStackHeight includes fixation height so fitToViewer accounts for it
-  const fixationHeight = fixationMap.get(fixationId)?.height ?? 24;
+  // B3: totalStackHeight includes fixture height so fitToViewer accounts for it
+  const fixtureHeight = fixtureMap.get(fixtureId)?.height ?? 24;
   const totalStackHeight =
-    fixationHeight +
+    fixtureHeight +
     (pieces.length === 0
       ? 0
       : pieces.reduce(
@@ -420,7 +420,7 @@ export function TotemConfigurator() {
   }
 
   function applyColor(colorId: string) {
-    if (fixationSelected) setFixationColorId(colorId);
+    if (fixtureSelected) setFixtureColorId(colorId);
     else if (selectedPiece) setColorForPiece(selectedPiece.uid, colorId);
   }
 
@@ -477,10 +477,10 @@ export function TotemConfigurator() {
         flipped: p.flipped,
       })),
     );
-    setFixationId(preset.fixationId);
+    setFixtureId(preset.fixtureId);
     setCableId(preset.cableId);
     setSelectedElement(null);
-    setFixationColorId(TOTEM_COLORS[0].id);
+    setFixtureColorId(TOTEM_COLORS[0].id);
   }
 
   // R2: Shared handleDragStart — used by visual stack and list panel
@@ -502,7 +502,7 @@ export function TotemConfigurator() {
 
   const configAvailable =
     pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
-    isFixationColorAvailable(fixationId, fixationColorId) &&
+    isFixtureColorAvailable(fixtureId, fixtureColorId) &&
     isCableAvailable(cableId);
 
   const handleAddToCart = async () => {
@@ -510,16 +510,16 @@ export function TotemConfigurator() {
     if (!configAvailable) return;
     setIsAdding(true);
     try {
-      await addTotemToCart({ pieces, fixationId, fixationColorId, cableId });
+      await addTotemToCart({ pieces, fixtureId, fixtureColorId, cableId });
     } finally {
       setIsAdding(false);
     }
   };
 
   const totalPrice = calcTotemPrice(
-    { pieces, fixationId, fixationColorId, cableId },
+    { pieces, fixtureId, fixtureColorId, cableId },
     shapeMap,
-    fixationMap,
+    fixtureMap,
     cableMap,
   );
 
@@ -589,24 +589,24 @@ export function TotemConfigurator() {
               ref={visualPanelRef}
               className="relative w-full h-full flex flex-col items-center py-6 overflow-hidden sm:overflow-y-auto overscroll-contain"
             >
-              {/* Always-visible assembly: fixation → cable+shapes+bulb */}
+              {/* Always-visible assembly: fixture → cable+shapes+bulb */}
               <div className="flex flex-col items-center">
-                {/* Fixation block */}
+                {/* Fixture block */}
                 <div
                   className={cn(
                     "cursor-pointer transition-all flex-shrink-0",
-                    fixationSelected && "ring-2 ring-ink",
+                    fixtureSelected && "ring-2 ring-ink",
                   )}
                   style={{
                     width: 80 * zoom,
-                    height: fixationHeight * zoom,
+                    height: fixtureHeight * zoom,
                     backgroundColor:
-                      COLOR_MAP.get(fixationColorId)?.hex ?? "#E8E0CF",
+                      COLOR_MAP.get(fixtureColorId)?.hex ?? "#E8E0CF",
                     borderRadius: 4,
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedElement(fixationSelected ? null : "fixation");
+                    setSelectedElement(fixtureSelected ? null : "fixture");
                   }}
                 />
 
@@ -637,10 +637,10 @@ export function TotemConfigurator() {
                     />
                   )}
 
-                  {/* Gap spacer — always-visible cable segment below the fixation */}
+                  {/* Gap spacer — always-visible cable segment below the fixture */}
                   <div style={{ height: 36 * zoom, flexShrink: 0 }} />
 
-                  {/* Shape pieces — reversed so newest piece is nearest the fixation */}
+                  {/* Shape pieces — reversed so newest piece is nearest the fixture */}
                   {[...pieces].reverse().map((piece) => {
                     const shape = shapeMap.get(piece.shapeId);
                     const color = COLOR_MAP.get(piece.colorId);
@@ -745,7 +745,7 @@ export function TotemConfigurator() {
                 type="button"
                 aria-label="Move piece up"
                 disabled={
-                  fixationSelected ||
+                  fixtureSelected ||
                   !selectedElement ||
                   pieces.findIndex((p) => p.uid === selectedElement) <= 0
                 }
@@ -758,7 +758,7 @@ export function TotemConfigurator() {
                 type="button"
                 aria-label="Move piece down"
                 disabled={
-                  fixationSelected ||
+                  fixtureSelected ||
                   !selectedElement ||
                   pieces.findIndex((p) => p.uid === selectedElement) >=
                     pieces.length - 1
@@ -771,7 +771,7 @@ export function TotemConfigurator() {
               <button
                 type="button"
                 aria-label="Flip shape"
-                disabled={fixationSelected || !selectedElement}
+                disabled={fixtureSelected || !selectedElement}
                 onClick={() => selectedElement && flipPiece(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
@@ -780,7 +780,7 @@ export function TotemConfigurator() {
               <button
                 type="button"
                 aria-label="Remove piece"
-                disabled={fixationSelected || !selectedElement}
+                disabled={fixtureSelected || !selectedElement}
                 onClick={() => selectedElement && removeShape(selectedElement)}
                 className="p-3 text-muted hover:text-error disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
@@ -817,28 +817,28 @@ export function TotemConfigurator() {
                   className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
                   data-lenis-prevent-touch
                 >
-                  {/* Fixation row — always visible, non-removable */}
+                  {/* Fixture row — always visible, non-removable */}
                   <div
                     className={cn(
                       "flex items-center gap-3 px-3 py-3 cursor-pointer transition-colors border-b border-stroke",
-                      fixationSelected
+                      fixtureSelected
                         ? "bg-lighter"
                         : "[@media(hover:hover)]:hover:bg-lighter",
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedElement(fixationSelected ? null : "fixation");
+                      setSelectedElement(fixtureSelected ? null : "fixture");
                     }}
                   >
                     <div
                       className="w-3 h-3 flex-shrink-0"
                       style={{
                         backgroundColor:
-                          COLOR_MAP.get(fixationColorId)?.hex ?? "#E8E0CF",
+                          COLOR_MAP.get(fixtureColorId)?.hex ?? "#E8E0CF",
                       }}
                     />
                     <p className="text-xs sm:text-sm flex-1 min-w-0 truncate">
-                      {fixationMap.get(fixationId)?.name ?? fixationId}
+                      {fixtureMap.get(fixtureId)?.name ?? fixtureId}
                     </p>
                   </div>
 
@@ -975,10 +975,10 @@ export function TotemConfigurator() {
                   type="button"
                   onClick={() => {
                     setPieces([]);
-                    setFixationId(
-                      catalogFixations[0]?.id ?? TOTEM_FIXATIONS[0].id,
+                    setFixtureId(
+                      catalogFixtures[0]?.id ?? TOTEM_FIXTURES[0].id,
                     );
-                    setFixationColorId(TOTEM_COLORS[0].id);
+                    setFixtureColorId(TOTEM_COLORS[0].id);
                     setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
                     setSelectedElement(null);
                     setPendingClear(false);
@@ -1031,13 +1031,13 @@ export function TotemConfigurator() {
             className={cn(
               "flex flex-wrap gap-1.5 transition-opacity",
               !selectedPiece &&
-                !fixationSelected &&
+                !fixtureSelected &&
                 "opacity-30 pointer-events-none",
             )}
           >
             {TOTEM_COLORS.map((c) => {
-              const colorAvailable = fixationSelected
-                ? isFixationColorAvailable(fixationId, c.id)
+              const colorAvailable = fixtureSelected
+                ? isFixtureColorAvailable(fixtureId, c.id)
                 : selectedPiece
                   ? isColorAvailableForShape(selectedPiece.shapeId, c.id)
                   : true;
@@ -1239,23 +1239,23 @@ export function TotemConfigurator() {
             </div>
           )}
 
-          {/* ── Fixation catalog ── */}
+          {/* ── Fixture catalog ── */}
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-stroke" />
             <span className="text-sm tracking-tight text-muted px-2">
-              Fixation
+              Fixture
             </span>
             {/* <div className="flex-1 h-px bg-stroke" /> */}
           </div>
           <div className="grid grid-cols-3 gap-1">
-            {catalogFixations.map((f) => {
-              const unavailable = isFixationFullyUnavailable(f.id);
-              const isActive = fixationId === f.id;
+            {catalogFixtures.map((f) => {
+              const unavailable = isFixtureFullyUnavailable(f.id);
+              const isActive = fixtureId === f.id;
               return (
                 <button
                   key={f.id}
                   type="button"
-                  onClick={() => setFixationId(f.id)}
+                  onClick={() => setFixtureId(f.id)}
                   disabled={unavailable}
                   className={cn(
                     "relative bg-canvas border transition-colors text-left p-3 rounded-md",
@@ -1358,7 +1358,7 @@ export function TotemConfigurator() {
               through a central cable — no tools, no hardware.
             </p>
             <p className="text-sm text-muted leading-relaxed">
-              Choose your shapes, set the order, pick a finish. The fixation
+              Choose your shapes, set the order, pick a finish. The fixture
               mounts flush to ceiling or wall. Cable length determines how low
               the stack hangs.
             </p>

@@ -3,11 +3,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-const TYPE_FILTERS = [
-  { value: "Lighting", label: "Lighting" },
-  { value: "Furniture", label: "Furniture" },
-  { value: "Decor", label: "Décor" },
-  { value: "Accessories", label: "Accessories" },
+const TAG_FILTERS = [
+  { value: "totem-shape", label: "Shapes" },
+  { value: "totem-fixture", label: "Fixtures" },
+  { value: "totem-cable", label: "Cables" },
 ];
 
 const AVAILABILITY_FILTERS = [
@@ -19,7 +18,7 @@ export function ProductsFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const activeType = searchParams.get("type");
+  const activeTag = searchParams.get("tag");
   const activeAvail = searchParams.get("availability");
 
   const setParam = (key: string, value: string | null) => {
@@ -39,11 +38,11 @@ export function ProductsFilters() {
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-0.5 max-w-full">
-      {/* Type group */}
+      {/* Tag group */}
       <button
-        onClick={() => setParam("type", null)}
+        onClick={() => setParam("tag", null)}
         className={`shrink-0 px-4 py-2 text-base md:text-base border border-stroke rounded-full transition-colors ${
-          !activeType
+          !activeTag
             ? "border-ink bg-ink text-canvas"
             : "border-stroke bg-white text-muted hover:border-ink hover:text-ink"
         }`}
@@ -51,14 +50,14 @@ export function ProductsFilters() {
         All
       </button>
 
-      {TYPE_FILTERS.map((f) => (
+      {TAG_FILTERS.map((f) => (
         <button
           key={f.value}
           onClick={() =>
-            setParam("type", activeType === f.value ? null : f.value)
+            setParam("tag", activeTag === f.value ? null : f.value)
           }
           className={`shrink-0 px-4 py-2 text-base md:text-base border border-stroke rounded-full transition-colors ${
-            activeType === f.value
+            activeTag === f.value
               ? "border-ink bg-ink text-canvas"
               : "border-stroke bg-white text-muted hover:border-ink hover:text-ink"
           }`}

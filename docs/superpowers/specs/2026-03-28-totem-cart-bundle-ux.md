@@ -7,7 +7,7 @@
 
 ## Context
 
-The TOTEM configurator adds multiple Shopify cart lines per build (one per shape piece, one fixation, one cable), grouped by a `_build_id` line attribute and rendered together as a `TotemCartGroup` in the cart drawer.
+The TOTEM configurator adds multiple Shopify cart lines per build (one per shape piece, one fixture, one cable), grouped by a `_build_id` line attribute and rendered together as a `TotemCartGroup` in the cart drawer.
 
 Three UX problems need fixing:
 
@@ -46,7 +46,7 @@ Add hidden (underscore-prefixed) attributes to each line so the config can be re
 | Line type | New attributes |
 |-----------|---------------|
 | Shape | `_shape_id`, `_color_id`, `_flipped` |
-| Fixation | `_fixation_id`, `_fixation_color_id` |
+| fixture | `_fixture_id`, `_fixture_color_id` |
 | Cable | `_cable_id` |
 
 Shopify treats underscore-prefixed attributes as hidden (not shown on order receipts).
@@ -65,9 +65,9 @@ Shopify treats underscore-prefixed attributes as hidden (not shown on order rece
 
 **Edit button flow:**
 1. Read `_shape_id`, `_color_id`, `_flipped` from each Shape line → build `TotemPiece[]` (generate fresh `uid` per piece with `generateUid()`)
-2. Read `_fixation_id`, `_fixation_color_id` from the Fixation line
+2. Read `_fixture_id`, `_fixture_color_id` from the fixture line
 3. Read `_cable_id` from the Cable line
-4. Write to localStorage: `sf-totem-pieces`, `sf-totem-fixation`, `sf-totem-fixation-color`, `sf-totem-cable`
+4. Write to localStorage: `sf-totem-pieces`, `sf-totem-fixture`, `sf-totem-fixture-color`, `sf-totem-cable`
 5. Call `removeBundleItems(lines.map(l => l.id))` — single API call
 6. Call `closeCart()`
 7. `router.push('/products/totem')`

@@ -158,23 +158,23 @@ lines.push({
 });
 ```
 
-- [ ] **Step 6: Add hidden ID attributes to the fixation line**
+- [ ] **Step 6: Add hidden ID attributes to the fixture line**
 
-Replace the existing fixation `lines.push(...)` call:
+Replace the existing fixture `lines.push(...)` call:
 
 ```typescript
 lines.push({
-  merchandiseId: fixationVariant.id,
+  merchandiseId: fixtureVariant.id,
   quantity: 1,
   attributes: [
     { key: "_build_id", value: buildId },
     {
       key: "_build_label",
-      value: `Custom Totem · ${fixation?.name ?? config.fixationId} — ${fixationColorName}`,
+      value: `Custom Totem · ${fixture?.name ?? config.fixtureId} — ${fixtureColorName}`,
     },
-    { key: "Part", value: "Fixation" },
-    { key: "_fixation_id", value: config.fixationId },
-    { key: "_fixation_color_id", value: config.fixationColorId },
+    { key: "Part", value: "fixture" },
+    { key: "_fixture_id", value: config.fixtureId },
+    { key: "_fixture_color_id", value: config.fixtureColorId },
   ],
 });
 ```
@@ -255,7 +255,7 @@ function getLineLabel(line: ShopifyCartLine): {
   const part = line.attributes.find((a) => a.key === "Part")?.value;
   const productTitle = line.merchandise.product.title;
   const variantTitle = line.merchandise.title;
-  if (part === "Shape" || part === "Fixation") {
+  if (part === "Shape" || part === "fixture") {
     return { primary: productTitle, secondary: variantTitle };
   }
   return { primary: productTitle };
@@ -293,13 +293,13 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       ? `${shapeNames.slice(0, LIMIT).join(", ")} +${overflow} more`
       : shapeNames.join(", ");
 
-  const fixationLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
+  const fixtureLine = lines.find((l) => lineAttr(l, "Part") === "fixture");
   const cableLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
-  const fixationName = fixationLine
-    ? `${fixationLine.merchandise.product.title} · ${fixationLine.merchandise.title}`
+  const fixtureName = fixtureLine
+    ? `${fixtureLine.merchandise.product.title} · ${fixtureLine.merchandise.title}`
     : undefined;
   const cableName = cableLine?.merchandise.product.title;
-  const systemSummary = [fixationName, cableName].filter(Boolean).join(" · ");
+  const systemSummary = [fixtureName, cableName].filter(Boolean).join(" · ");
 
   async function confirmRemove() {
     setIsRemoving(true);
@@ -317,7 +317,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
     setIsEditing(true);
     try {
       const shapeLines = lines.filter((l) => lineAttr(l, "Part") === "Shape");
-      const fixLine = lines.find((l) => lineAttr(l, "Part") === "Fixation");
+      const fixLine = lines.find((l) => lineAttr(l, "Part") === "fixture");
       const cabLine = lines.find((l) => lineAttr(l, "Part") === "Cable");
 
       if (
@@ -325,8 +325,8 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           (l) => !lineAttr(l, "_shape_id") || !lineAttr(l, "_color_id"),
         ) ||
         !fixLine ||
-        !lineAttr(fixLine, "_fixation_id") ||
-        !lineAttr(fixLine, "_fixation_color_id") ||
+        !lineAttr(fixLine, "_fixture_id") ||
+        !lineAttr(fixLine, "_fixture_color_id") ||
         !cabLine ||
         !lineAttr(cabLine, "_cable_id")
       ) {
@@ -343,12 +343,12 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
 
       localStorage.setItem("sf-totem-pieces", JSON.stringify(pieces));
       localStorage.setItem(
-        "sf-totem-fixation",
-        JSON.stringify(lineAttr(fixLine!, "_fixation_id")),
+        "sf-totem-fixture",
+        JSON.stringify(lineAttr(fixLine!, "_fixture_id")),
       );
       localStorage.setItem(
-        "sf-totem-fixation-color",
-        JSON.stringify(lineAttr(fixLine!, "_fixation_color_id")),
+        "sf-totem-fixture-color",
+        JSON.stringify(lineAttr(fixLine!, "_fixture_color_id")),
       );
       localStorage.setItem(
         "sf-totem-cable",
@@ -490,5 +490,5 @@ cd /home/jira/Desktop/studiofile && git add src/components/cart/TotemCartGroup.t
 4. Click **"Cancel"** → returns to normal two-button state
 5. Click **"Remove bundle"** → **"Yes, remove"** → bundle disappears in a single update, one **"Bundle removed"** toast, no lag, no stacked toasts
 6. Add another bundle → open cart → expand → click **"Edit"**
-7. Cart closes, browser navigates to `/products/totem`, configurator opens pre-loaded with the exact shapes/colors/fixation/cable from the cart bundle. Bundle is gone from cart.
+7. Cart closes, browser navigates to `/products/totem`, configurator opens pre-loaded with the exact shapes/colors/fixture/cable from the cart bundle. Bundle is gone from cart.
 8. Run `PATH="$HOME/.nvm/versions/node/v24.14.0/bin:$PATH" npm run type-check` — zero errors

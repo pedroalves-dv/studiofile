@@ -208,7 +208,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 | `/api/products/batch` | GET | Batch fetch products by handle (wishlist, recently viewed) |
 | `/api/search/predictive` | GET | Predictive search dropdown |
 | `/api/search/products` | GET | Full product search with filters |
-| `/api/totem-catalog` | GET | TOTEM shape/fixation/cable catalog |
+| `/api/totem-catalog` | GET | TOTEM shape/fixture/cable catalog |
 | `/api/totem-variants` | GET | Shopify variant ID map for TOTEM (1h ISR) |
 | `/api/contact` | POST | Contact form (logs only — needs Resend/Postmark) |
 | `/api/newsletter` | POST | Newsletter signup (logs only — needs Klaviyo/Shopify) |
@@ -227,13 +227,13 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 
 ## TOTEM Configurator Architecture
 
-**Product concept**: Modular ceiling lamp. Users stack 3D-printed shapes, choose colors, fixation, and cable. Each module = one Shopify cart line. One Shopify product per module shape × one variant per color.
+**Product concept**: Modular ceiling lamp. Users stack 3D-printed shapes, choose colors, fixture, and cable. Each module = one Shopify cart line. One Shopify product per module shape × one variant per color.
 
 ### Data sources
 
 | Source | Role |
 | --- | --- |
-| `src/lib/totem-config.ts` | Static truth: shapes, colors, fixations, cables, presets, pricing, helper maps |
+| `src/lib/totem-config.ts` | Static truth: shapes, colors, fixtures, cables, presets, pricing, helper maps |
 | `src/lib/shopify/totem-variants.ts` | Server-side variant ID mapping (ISR 1h, by Shopify product tag) |
 | `/api/totem-catalog` | Serves catalog to configurator client |
 | `/api/totem-variants` | Serves variant map to `addTotemToCart()` |
@@ -241,7 +241,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 ### Data flow
 
 1. `TotemConfigurator` fetches catalog from `/api/totem-catalog` on mount
-2. User builds config (`pieces[]`, `fixationId`, `fixationColorId`, `cableId`)
+2. User builds config (`pieces[]`, `fixtureId`, `fixtureColorId`, `cableId`)
 3. `useCart().addTotemToCart(config)` fetches variant map from `/api/totem-variants`, validates stock, calls `createCart()` / `addToCart()` with multiple lines
 4. Each line carries hidden attributes (see below)
 5. `CartDrawer` groups lines by `_build_id` → renders `TotemCartGroup` per build
@@ -250,7 +250,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 
 - **All lines**: `_build_id` (shared UUID), `_build_label`
 - **Shape lines**: `_shape_id`, `_color_id`, `_flipped`
-- **Fixation line**: `_fixation_id`, `_fixation_color_id`
+- **fixture line**: `_fixture_id`, `_fixture_color_id`
 - **Cable line**: `_cable_id`
 - **Optional**: `_pieces_config` (stringified JSON snapshot for Edit flow fallback)
 
@@ -258,7 +258,7 @@ Use `border-stroke` not `border-border`. The token is named `stroke`.
 
 1. Read attributes from each line to reconstruct `TotemPiece[]`
 2. Generate new `uid` for each piece via `generateUid()`
-3. Write to localStorage: `sf-totem-pieces`, `sf-totem-fixation`, `sf-totem-fixation-color`, `sf-totem-cable`
+3. Write to localStorage: `sf-totem-pieces`, `sf-totem-fixture`, `sf-totem-fixture-color`, `sf-totem-cable`
 4. Call `removeBundleItems()` to delete old bundle lines
 5. Close cart drawer, navigate to `/products/totem`
 6. Configurator reads localStorage on mount and pre-populates the form

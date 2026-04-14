@@ -81,16 +81,16 @@ async function fetchVariantMapByTag(tag: string): Promise<Record<string, TotemVa
 }
 
 /**
- * Returns a combined variant map for all totem-shape and totem-fixation products.
+ * Returns a combined variant map for all totem-shape and totem-fixture products.
  * Key: "{handle}-{normalizedVariantTitle}" (e.g. "arch-blue", "rosette-chalk")
  * Value: { id: Shopify variant GID, available: boolean }
  */
-export async function getShapeAndFixationVariantMap(): Promise<Record<string, TotemVariantInfo>> {
-  const [shapes, fixations] = await Promise.all([
+export async function getShapeAndFixtureVariantMap(): Promise<Record<string, TotemVariantInfo>> {
+  const [shapes, fixtures] = await Promise.all([
     fetchVariantMapByTag('totem-shape'),
-    fetchVariantMapByTag('totem-fixation'),
+    fetchVariantMapByTag('totem-fixture'),
   ]);
-  return { ...shapes, ...fixations };
+  return { ...shapes, ...fixtures };
 }
 
 /**

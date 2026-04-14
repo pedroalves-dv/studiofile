@@ -9,7 +9,7 @@
 
 Three UX gaps in the TOTEM configurator's OOS handling:
 
-1. **Presets ignore OOS** — Preset cards can be applied even when one or more of their pieces, their fixation color, or their cable is out of stock. The add-to-cart guard catches it later, but the user has no upfront signal.
+1. **Presets ignore OOS** — Preset cards can be applied even when one or more of their pieces, their fixture color, or their cable is out of stock. The add-to-cart guard catches it later, but the user has no upfront signal.
 2. **Viewer whitespace deselects unexpectedly** — The viewer container has a catch-all `onClick` that clears selection on any non-interactive click. This makes the interaction feel fragile; clicking empty space loses your selected piece.
 3. **OOS color swatches lack feedback** — Unavailable colors are visually dimmed (`opacity-30`) but have no cursor feedback (`cursor-not-allowed` is invisible due to `pointer-events-none`) and no tooltip explaining why they're unclickable.
 
@@ -26,20 +26,20 @@ function isPresetAvailable(preset: TotemPreset): boolean {
   if (!variantMap) return true; // optimistic while loading
   return (
     preset.pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
-    isFixationColorAvailable(preset.fixationId, TOTEM_COLORS[0].id) &&
+    isfixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id) &&
     isCableAvailable(preset.cableId)
   );
 }
 ```
 
-**Why `TOTEM_COLORS[0].id` for fixation?** `applyPreset()` always calls `setFixationColorId(TOTEM_COLORS[0].id)` (line 465) — presets reset fixation color to "beige". So that is the effective fixation color for any preset.
+**Why `TOTEM_COLORS[0].id` for fixture?** `applyPreset()` always calls `setfixtureColorId(TOTEM_COLORS[0].id)` (line 465) — presets reset fixture color to "beige". So that is the effective fixture color for any preset.
 
 ### UI changes in the preset card
 
 Compute `const presetAvailable = isPresetAvailable(preset)` inside the `.map()`.
 
 When `!presetAvailable`:
-- Apply `opacity-60` to the entire card `<div>` (matches the visual weight of disabled shape/fixation buttons)
+- Apply `opacity-60` to the entire card `<div>` (matches the visual weight of disabled shape/fixture buttons)
 - Show an `"Out of stock"` text span below the price (small, `text-xs text-muted`)
 - Replace the "Use" `<button>` with a disabled variant:
   - Outer `<div className="cursor-not-allowed">` (receives pointer events since child is `pointer-events-none`)
@@ -116,7 +116,7 @@ useClickOutside(viewerRef, clearSelection);
 - `cursor-not-allowed` on the outer div — pointer events pass through child, outer div gets them, cursor applies correctly
 - `Tooltip` fires via the pointer events on the outer div layer
 
-This pattern is applied to **both** the fixation color picker and the piece color picker (both use the same `colorAvailable` flag logic).
+This pattern is applied to **both** the fixture color picker and the piece color picker (both use the same `colorAvailable` flag logic).
 
 ---
 

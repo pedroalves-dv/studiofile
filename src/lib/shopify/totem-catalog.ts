@@ -1,13 +1,13 @@
-// Server-side module: fetches Totem catalog (shapes, fixations, cables) from Shopify.
+// Server-side module: fetches Totem catalog (shapes, fixtures, cables) from Shopify.
 // Never import this file in client components — use /api/totem-catalog instead.
 import { storefront } from './client';
 import {
   TOTEM_SHAPES,
-  TOTEM_FIXATIONS,
+  TOTEM_FIXTURES,
   TOTEM_CABLES,
   CABLE_HEX_MAP,
   type TotemShape,
-  type TotemFixation,
+  type TotemFixture,
   type TotemCable,
 } from '../totem-config';
 import type { ShopifyMetafield } from './types';
@@ -139,21 +139,21 @@ export async function getTotemShapes(): Promise<TotemShape[]> {
 }
 
 /**
- * Fetches all products in the totem-fixations collection.
- * Falls back to TOTEM_FIXATIONS on any error or empty result.
+ * Fetches all products in the totem-fixtures collection.
+ * Falls back to TOTEM_FIXTURES on any error or empty result.
  */
-export async function getTotemFixations(): Promise<TotemFixation[]> {
+export async function getTotemFixtures(): Promise<TotemFixture[]> {
   try {
     const response = await storefront<CollectionResponse>(
       GET_TOTEM_COLLECTION,
-      { handle: 'totem-fixations' },
+      { handle: 'totem-fixtures' },
       { next: { revalidate: 3600 } },
     );
 
-    if (!response.collection) return TOTEM_FIXATIONS;
+    if (!response.collection) return TOTEM_FIXTURES;
 
     const mapped = response.collection.products.edges.map(({ node }) => {
-      const fallbackHeight = TOTEM_FIXATIONS.find((f) => f.id === node.handle)?.height ?? 24;
+      const fallbackHeight = TOTEM_FIXTURES.find((f) => f.id === node.handle)?.height ?? 24;
       return {
         id:     node.handle,
         name:   node.title,
@@ -162,10 +162,10 @@ export async function getTotemFixations(): Promise<TotemFixation[]> {
       };
     });
 
-    return mapped.length > 0 ? mapped : TOTEM_FIXATIONS;
+    return mapped.length > 0 ? mapped : TOTEM_FIXTURES;
   } catch (error) {
-    console.error('[totem-catalog] Failed to fetch totem-fixations:', error);
-    return TOTEM_FIXATIONS;
+    console.error('[totem-catalog] Failed to fetch totem-fixtures:', error);
+    return TOTEM_FIXTURES;
   }
 }
 
