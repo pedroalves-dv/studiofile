@@ -364,7 +364,7 @@
     padding-bottom: var(--page-pb);
   }
   .sticky-gallery-h {
-    height: calc(100dvh - var(--header-height) - (2 * (var(--page-pt))));
+    height: calc(100svh - var(--header-height) - (2 * (var(--page-pt))));
   }
   /* Layout utilities */
   .section-centered {

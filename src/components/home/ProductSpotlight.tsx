@@ -154,7 +154,7 @@ export function ProductSpotlight() {
         {/* ── MOBILE: stacked, each half breathes ── */}
         <div className="sm:hidden relative z-10 h-full flex flex-col px-site py-80 gap-2">
           {/* Top: configurator placeholder — flex-1 takes all available space */}
-          <div className="flex-1 relative bg-lighter overflow-hidden">
+          <div className="flex-1 relative bg-lighter overflow-hidden min-h-[300px]">
             <div className="absolute inset-0 flex items-center justify-center"></div>
           </div>
 
