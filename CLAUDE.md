@@ -13,6 +13,7 @@ Detailed instructions are offloaded to reduce context tokens:
 - **Design/UI**: See @.claude/rules/style.md
 - **Shopify/Auth**: See @.claude/rules/shopify.md
 - **TOTEM Logic**: See @.claude/rules/totem.md
+- **Mobile Layout**: See @.claude/rules/mobile.md
 - **Lessons**: See @.claude/rules/lessons.md
 
 ## Critical Commands
