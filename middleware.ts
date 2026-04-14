@@ -13,9 +13,9 @@ export function middleware(request: NextRequest) {
 
   // Soft-launch: redirect root to landing page REMOVE ON LAUNCH
   // ===================================
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/coming-soon", request.url));
-  }
+  // if (pathname === "/") {
+  //   return NextResponse.redirect(new URL("/coming-soon", request.url));
+  // }
 
   // ===================================
 
