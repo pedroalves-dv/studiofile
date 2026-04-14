@@ -52,11 +52,28 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     rafId = requestAnimationFrame(raf);
 
+    // Update --svh-100 on WIDTH change only (e.g. device rotation).
+    // Height-only changes are iOS bars appearing/hiding — deliberately ignored
+    // so layout never reacts to that oscillation.
+    let prevWidth = window.innerWidth;
+    const onViewportResize = () => {
+      const newWidth = window.innerWidth;
+      if (newWidth !== prevWidth) {
+        prevWidth = newWidth;
+        document.documentElement.style.setProperty(
+          "--svh-100",
+          `${window.innerHeight}px`,
+        );
+      }
+    };
+    window.addEventListener("resize", onViewportResize);
+
     return () => {
       running = false; // ✅ stops the recursive loop
       cancelAnimationFrame(rafId);
       instance.destroy();
       setLenis(null);
+      window.removeEventListener("resize", onViewportResize);
     };
   }, []);
 

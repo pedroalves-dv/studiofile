@@ -86,6 +86,7 @@ export function Hero() {
 
   useEffect(() => {
     let rafId: number;
+    let prevWidth = window.innerWidth;
 
     const update = () => {
       const el = containerRef.current;
@@ -93,15 +94,21 @@ export function Hero() {
 
       const isDesktop = window.innerWidth >= MOBILE_BREAKPOINT;
 
-      // svh = stable "small viewport" height — never changes with iOS chrome
+      // Desktop: set an explicit height so useScroll has a known range.
+      // Uses dvh so the parallax columns scale naturally on desktop resize.
+      // Mobile: no explicit height — children (mobile images) determine it.
       el.style.height = isDesktop ? `${SCROLL_ROWS * 100}dvh` : "";
 
       setScrollDistance(isDesktop ? window.innerHeight : 0);
     };
 
-    // Debounce via rAF: coalesces rapid resize events (iOS chrome toggle)
-    // into a single paint, preventing mid-scroll layout recalculation
+    // Only fire on WIDTH changes (real resize / device rotation).
+    // iOS bar appear/hide changes only innerHeight — deliberately ignored
+    // to prevent layout recalculation and Lenis jump.
     const onResize = () => {
+      const newWidth = window.innerWidth;
+      if (newWidth === prevWidth) return;
+      prevWidth = newWidth;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(update);
     };
@@ -204,7 +211,7 @@ export function Hero() {
       </div>
 
       {/* ── STICKY CONTENT (The "TOTEM" type) ── */}
-      <div className="sticky top-[var(--header-height)] h-[calc(100svh-var(--header-height))] w-full z-10 overflow-hidden">
+      <div className="sticky top-[var(--header-height)] sticky-hero-h w-full z-10 overflow-hidden">
         <div className="relative w-full h-full pb-safe md:pb-0">
           <HeroContent />
         </div>
@@ -274,7 +281,7 @@ export function Hero() {
 
       {/* ── MOBILE IMAGE COLUMN ── */}
       <div aria-hidden="true" className="md:hidden pointer-events-none">
-        <div className="relative w-full h-[100svh] overflow-hidden">
+        <div className="relative w-full h-screen-safe overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill
@@ -285,7 +292,7 @@ export function Hero() {
             unoptimized
           />
         </div>
-        <div className="relative w-full h-[100svh] overflow-hidden">
+        <div className="relative w-full h-screen-safe overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill
@@ -295,7 +302,7 @@ export function Hero() {
             unoptimized
           />
         </div>
-        <div className="relative w-full h-[100svh] overflow-hidden">
+        <div className="relative w-full h-screen-safe overflow-hidden">
           <Image
             src={PLACEHOLDER}
             fill

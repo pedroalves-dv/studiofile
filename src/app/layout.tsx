@@ -33,6 +33,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <head>
+        {/* Locks --svh-100 to the INITIAL viewport height before first paint.
+            This prevents layout jumps caused by iOS browser bars appearing/hiding,
+            which change window.innerHeight but should not affect layout sizing. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{document.documentElement.style.setProperty('--svh-100',window.innerHeight+'px')}catch(e){}`,
+          }}
+        />
         <link
           rel="preload"
           href="/fonts/Noka-Black.woff2"
