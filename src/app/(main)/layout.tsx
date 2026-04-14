@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { getCustomerToken } from "@/lib/shopify/auth";
+import { getCustomerToken, getCustomer } from "@/lib/shopify/auth";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { ToastProvider } from "@/components/common/Toast";
@@ -18,13 +18,14 @@ export default async function MainLayout({
   children: ReactNode;
 }) {
   const token = await getCustomerToken();
+  const customer = token ? await getCustomer(token) : null;
   return (
     <CartProvider>
       <WishlistProvider>
         <ToastProvider>
           <SmoothScroll>
             {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
-            <Header isLoggedIn={!!token} />
+            <Header isLoggedIn={!!customer} customer={customer} />
             {/* 2. This is the ONLY <main> tag.*/}
             <main
               id="main-content"

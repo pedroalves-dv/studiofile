@@ -25,6 +25,7 @@ import {
   ShoppingBagIcon,
   type ShoppingBagIconHandle,
 } from "@/components/ui/ShoppingBagIcon";
+import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -59,18 +60,23 @@ type PanelState = "closed" | "open" | "closing";
 
 interface HeaderProps {
   isLoggedIn?: boolean;
+  customer?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    email: string;
+  } | null;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Header({ isLoggedIn = false }: HeaderProps) {
+export function Header({ isLoggedIn = false, customer }: HeaderProps) {
   const menuIconRef = useRef<MenuIconHandle>(null);
   const userIconRef = useRef<UserIconHandle>(null);
   const userRoundCheckIconRef = useRef<UserRoundCheckIconHandle>(null);
   const cartIconRef = useRef<ShoppingBagIconHandle>(null);
   const heartIconRef = useRef<HeartIconHandle>(null);
   const accountRef = useRef<HTMLDivElement>(null);
-  const mobileAccountOverlayRef = useRef<HTMLElement>(null);
+
 
   // Timer refs — prevent stale closures and memory leaks
   const menuCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -85,7 +91,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
   const { success: toastSuccess, error: toastError } = useToast();
   const [isPendingLogout, startLogoutTransition] = useTransition();
   const { totalQuantity: cartCount, openCart, closeCart, isOpen } = useCart();
-  const { totalCount: wishlistCount, isOpen: isWishlistOpen, openDrawer: openWishlist, closeDrawer: closeWishlist } = useWishlist();
+  const {
+    totalCount: wishlistCount,
+    isOpen: isWishlistOpen,
+    openDrawer: openWishlist,
+    closeDrawer: closeWishlist,
+  } = useWishlist();
 
   const [menuState, setMenuState] = useState<PanelState>("closed");
   const [accountState, setAccountState] = useState<PanelState>("closed");
@@ -150,12 +161,12 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
 
   // ─── Outside click ──────────────────────────────────────────────────────────
 
-  useClickOutside([accountRef, mobileAccountOverlayRef], closeAccount);
+  useClickOutside([accountRef], closeAccount);
 
   // Locks scroll for both full-screen mobile overlays.
   // Note: isAccountOpen also locks scroll on desktop (small dropdown) — to
   // gate it to mobile only, add a useIsMobile hook and wrap isAccountOpen with it.
-  useScrollLock(isMobileMenuOpen || isAccountOpen);
+  useScrollLock(isMobileMenuOpen);
 
   // ─── Keyboard: Escape ───────────────────────────────────────────────────────
 
@@ -273,9 +284,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   !someIconActive && "group",
                 )}
               >
-                {/* Account / Login */}
+                {/* Account / Login — desktop only */}
                 {isLoggedIn ? (
-                  <div ref={accountRef} className="relative">
+                  <div ref={accountRef} className="relative hidden md:block">
                     <button
                       onClick={() => {
                         if (isAccountOpen || isClosingAccount) {
@@ -334,7 +345,9 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                             className="flex items-center justify-between w-full px-4 py-3 tracking-[-0.04em] text-lg text-ink hover:bg-accent hover:text-canvas rounded-md transition-colors font-medium disabled:opacity-35 disabled:pointer-events-none"
                           >
                             {isPendingLogout ? "Signing out..." : "Sign out"}
-                            {!isPendingLogout && <LogOut size={16} strokeWidth={2} />}
+                            {!isPendingLogout && (
+                              <LogOut size={16} strokeWidth={2} />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -344,7 +357,7 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                   <Link
                     href="/account/login"
                     className={cn(
-                      "relative h-full flex items-end",
+                      "relative h-full hidden md:flex items-end",
                       iconOpacity(false),
                     )}
                     aria-label="Sign in"
@@ -368,10 +381,14 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                     }
                   }}
                   className={cn(
-                    "hidden md:flex h-full relative items-end",
+                    "flex h-full relative items-end",
                     iconOpacity(isWishlistOpen),
                   )}
-                  aria-label={isWishlistOpen ? "Close wishlist" : `Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`}
+                  aria-label={
+                    isWishlistOpen
+                      ? "Close wishlist"
+                      : `Open wishlist${wishlistCount > 0 ? ` — ${wishlistCount} items` : ""}`
+                  }
                   onMouseEnter={() => heartIconRef.current?.startAnimation()}
                   onMouseLeave={() => heartIconRef.current?.stopAnimation()}
                 >
@@ -477,56 +494,28 @@ export function Header({ isLoggedIn = false }: HeaderProps) {
                 hasActiveLink && "opacity-35",
               )}
             >
-              {isLoggedIn ? "Account" : "Sign in"}
+              {isLoggedIn ? "My Account" : "Sign in"}
             </Link>
+            <button
+              type="button"
+              disabled={isPendingLogout}
+              onClick={() => {
+                closeMenu();
+                handleLogout();
+              }}
+              className={cn(
+                "flex w-fit text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                "transition-opacity duration-200",
+                "md:group-hover:opacity-35 md:hover:!opacity-100",
+                isPendingLogout && "opacity-35 pointer-events-none",
+              )}
+            >
+              {isPendingLogout ? "Signing out..." : "Sign out"}
+            </button>
           </div>
         </nav>
       )}
 
-      {/* Mobile Account Overlay */}
-      {(isAccountOpen || isClosingAccount) && (
-        <nav
-          ref={mobileAccountOverlayRef}
-          style={{
-            animation: `${isClosingAccount ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
-          }}
-          className="fixed top-[var(--header-height)] left-0 right-0 z-[45] md:hidden px-site pt-20 section-min-h bg-white flex flex-col"
-          aria-label="Account navigation"
-        >
-          <div className="group space-y-1">
-            {ACCOUNT_LINKS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeAccount}
-                className={cn(
-                  "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium ligatures text-ink",
-                  "transition-opacity duration-1000",
-                  "md:group-hover:opacity-35 md:hover:!opacity-100 md:group-hover:duration-200",
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-          <div className="py-6">
-            <div className="border-t border-stroke -mx-site" />
-          </div>
-          <button
-            type="button"
-            disabled={isPendingLogout}
-            onClick={handleLogout}
-            className={cn(
-              "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
-              "transition-opacity duration-200",
-              "md:group-hover:opacity-35 md:hover:!opacity-100",
-              hasActiveLink && "opacity-35",
-            )}
-          >
-            {isPendingLogout ? "Signing out..." : "Sign out"}
-          </button>
-        </nav>
-      )}
 
       {/* Spacer */}
       <div className="h-[var(--header-height)]" aria-hidden="true" />
