@@ -24,6 +24,7 @@ import { generateUid } from "@/lib/utils/uid";
 import {
   TOTEM_SHAPES,
   TOTEM_COLORS,
+  TOTEM_TEXTURES,
   TOTEM_FIXTURES,
   TOTEM_CABLES,
   TOTEM_PRESETS,
@@ -64,6 +65,10 @@ export function TotemConfigurator() {
   const [fixtureColorId, setFixtureColorId] = useLocalStorage(
     "sf-totem-fixture-color",
     TOTEM_COLORS[0].id,
+  );
+  const [fixtureTextureId, setFixtureTextureId] = useLocalStorage(
+    "sf-totem-fixture-texture",
+    TOTEM_TEXTURES[0].id,
   );
   const [cableId, setCableId] = useLocalStorage(
     "sf-totem-cable",
@@ -182,10 +187,12 @@ export function TotemConfigurator() {
                 uid: "",
                 shapeId: p.shapeId,
                 colorId: p.colorId,
+                textureId: p.textureId,
                 flipped: p.flipped,
               })),
               fixtureId: preset.fixtureId,
               fixtureColorId: TOTEM_COLORS[0].id,
+              fixtureTextureId: preset.fixtureTextureId,
               cableId: preset.cableId,
             },
             shapeMap,
@@ -206,6 +213,14 @@ export function TotemConfigurator() {
     piecesRef.current = pieces;
   }, [pieces]);
 
+  // Migrate old localStorage pieces that lack textureId (added when Texture option was introduced)
+  useEffect(() => {
+    setPieces((prev) =>
+      prev.map((p) => (p.textureId ? p : { ...p, textureId: "smooth" })),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Derived selection values
   const selectedPiece =
     selectedElement && selectedElement !== "fixture"
@@ -215,6 +230,9 @@ export function TotemConfigurator() {
   const activeColorId = fixtureSelected
     ? fixtureColorId
     : selectedPiece?.colorId;
+  const activeTextureId = fixtureSelected
+    ? fixtureTextureId
+    : selectedPiece?.textureId;
 
   // B1: Sync selection — clear if selected piece no longer exists.
   // Never clear if selectedElement === 'fixture' (fixture is always present).
@@ -239,14 +257,14 @@ export function TotemConfigurator() {
 
   /* ── Variant availability helpers ── */
 
-  function isColorAvailableForShape(shapeId: string, colorId: string): boolean {
+  function isColorAvailableForShape(shapeId: string, colorId: string, textureId: string): boolean {
     if (!variantMap) return true; // optimistic while loading
-    return variantMap.shapes[`${shapeId}-${colorId}`]?.available ?? false;
+    return variantMap.shapes[`${shapeId}-${colorId}-${textureId}`]?.available ?? false;
   }
 
-  function isFixtureColorAvailable(fxId: string, colorId: string): boolean {
+  function isFixtureColorAvailable(fxId: string, colorId: string, textureId: string): boolean {
     if (!variantMap) return true;
-    return variantMap.shapes[`${fxId}-${colorId}`]?.available ?? false;
+    return variantMap.shapes[`${fxId}-${colorId}-${textureId}`]?.available ?? false;
   }
 
   function isCableAvailable(id: string): boolean {
@@ -256,15 +274,19 @@ export function TotemConfigurator() {
 
   function isShapeFullyUnavailable(shapeId: string): boolean {
     if (!variantMap) return false;
-    return TOTEM_COLORS.every(
-      (c) => !variantMap.shapes[`${shapeId}-${c.id}`]?.available,
+    return TOTEM_COLORS.every((c) =>
+      TOTEM_TEXTURES.every(
+        (t) => !variantMap.shapes[`${shapeId}-${c.id}-${t.id}`]?.available,
+      ),
     );
   }
 
   function isFixtureFullyUnavailable(fxId: string): boolean {
     if (!variantMap) return false;
-    return TOTEM_COLORS.every(
-      (c) => !variantMap.shapes[`${fxId}-${c.id}`]?.available,
+    return TOTEM_COLORS.every((c) =>
+      TOTEM_TEXTURES.every(
+        (t) => !variantMap.shapes[`${fxId}-${c.id}-${t.id}`]?.available,
+      ),
     );
   }
 
@@ -272,9 +294,9 @@ export function TotemConfigurator() {
     if (!variantMap) return true; // optimistic while loading
     return (
       preset.pieces.every((p) =>
-        isColorAvailableForShape(p.shapeId, p.colorId),
+        isColorAvailableForShape(p.shapeId, p.colorId, p.textureId),
       ) &&
-      isFixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id) &&
+      isFixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id, preset.fixtureTextureId) &&
       isCableAvailable(preset.cableId)
     );
   }
@@ -404,15 +426,24 @@ export function TotemConfigurator() {
       toast.info("This shape is currently out of stock.");
       return;
     }
-    const defaultColorId = variantMap
-      ? (TOTEM_COLORS.find(
-          (c) => variantMap.shapes[`${shapeId}-${c.id}`]?.available,
-        )?.id ?? TOTEM_COLORS[0].id)
-      : TOTEM_COLORS[0].id;
+    // Find the first available color+texture combo, defaulting to smooth
+    let defaultColorId = TOTEM_COLORS[0].id;
+    let defaultTextureId = TOTEM_TEXTURES[0].id;
+    if (variantMap) {
+      outer: for (const c of TOTEM_COLORS) {
+        for (const t of TOTEM_TEXTURES) {
+          if (variantMap.shapes[`${shapeId}-${c.id}-${t.id}`]?.available) {
+            defaultColorId = c.id;
+            defaultTextureId = t.id;
+            break outer;
+          }
+        }
+      }
+    }
     const uid = generateUid();
     setPieces((prev) => [
       ...prev,
-      { uid, shapeId, colorId: defaultColorId, flipped: false },
+      { uid, shapeId, colorId: defaultColorId, textureId: defaultTextureId, flipped: false },
     ]);
   }
 
@@ -427,9 +458,20 @@ export function TotemConfigurator() {
     );
   }
 
+  function setTextureForPiece(uid: string, textureId: string) {
+    setPieces((prev) =>
+      prev.map((p) => (p.uid === uid ? { ...p, textureId } : p)),
+    );
+  }
+
   function applyColor(colorId: string) {
     if (fixtureSelected) setFixtureColorId(colorId);
     else if (selectedPiece) setColorForPiece(selectedPiece.uid, colorId);
+  }
+
+  function applyTexture(textureId: string) {
+    if (fixtureSelected) setFixtureTextureId(textureId);
+    else if (selectedPiece) setTextureForPiece(selectedPiece.uid, textureId);
   }
 
   function flipPiece(uid: string) {
@@ -482,6 +524,7 @@ export function TotemConfigurator() {
         uid: generateUid(),
         shapeId: p.shapeId,
         colorId: p.colorId,
+        textureId: p.textureId,
         flipped: p.flipped,
       })),
     );
@@ -489,6 +532,7 @@ export function TotemConfigurator() {
     setCableId(preset.cableId);
     setSelectedElement(null);
     setFixtureColorId(TOTEM_COLORS[0].id);
+    setFixtureTextureId(preset.fixtureTextureId);
   }
 
   // R2: Shared handleDragStart — used by visual stack and list panel
@@ -509,8 +553,8 @@ export function TotemConfigurator() {
   );
 
   const configAvailable =
-    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId)) &&
-    isFixtureColorAvailable(fixtureId, fixtureColorId) &&
+    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId, p.textureId ?? "smooth")) &&
+    isFixtureColorAvailable(fixtureId, fixtureColorId, fixtureTextureId) &&
     isCableAvailable(cableId);
 
   const handleAddToCart = async () => {
@@ -518,14 +562,14 @@ export function TotemConfigurator() {
     if (!configAvailable) return;
     setIsAdding(true);
     try {
-      await addTotemToCart({ pieces, fixtureId, fixtureColorId, cableId });
+      await addTotemToCart({ pieces, fixtureId, fixtureColorId, fixtureTextureId, cableId });
     } finally {
       setIsAdding(false);
     }
   };
 
   const totalPrice = calcTotemPrice(
-    { pieces, fixtureId, fixtureColorId, cableId },
+    { pieces, fixtureId, fixtureColorId, fixtureTextureId, cableId },
     shapeMap,
     fixtureMap,
     cableMap,
@@ -863,6 +907,7 @@ export function TotemConfigurator() {
                       const pieceAvailable = isColorAvailableForShape(
                         piece.shapeId,
                         piece.colorId,
+                        piece.textureId ?? "smooth",
                       );
                       return (
                         <div
@@ -987,6 +1032,7 @@ export function TotemConfigurator() {
                       catalogFixtures[0]?.id ?? TOTEM_FIXTURES[0].id,
                     );
                     setFixtureColorId(TOTEM_COLORS[0].id);
+                    setFixtureTextureId(TOTEM_TEXTURES[0].id);
                     setCableId(catalogCables[0]?.id ?? TOTEM_CABLES[0].id);
                     setSelectedElement(null);
                     setPendingClear(false);
@@ -1045,9 +1091,9 @@ export function TotemConfigurator() {
           >
             {TOTEM_COLORS.map((c) => {
               const colorAvailable = fixtureSelected
-                ? isFixtureColorAvailable(fixtureId, c.id)
+                ? isFixtureColorAvailable(fixtureId, c.id, fixtureTextureId)
                 : selectedPiece
-                  ? isColorAvailableForShape(selectedPiece.shapeId, c.id)
+                  ? isColorAvailableForShape(selectedPiece.shapeId, c.id, selectedPiece.textureId ?? "smooth")
                   : true;
               if (colorAvailable) {
                 return (
@@ -1085,6 +1131,33 @@ export function TotemConfigurator() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Texture selector */}
+          <div
+            className={cn(
+              "flex gap-1.5 mt-2 transition-opacity",
+              !selectedPiece && !fixtureSelected && "opacity-30 pointer-events-none",
+            )}
+          >
+            {TOTEM_TEXTURES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  applyTexture(t.id);
+                }}
+                className={cn(
+                  "text-xs px-2.5 py-1 border rounded-lg transition-colors",
+                  activeTextureId === t.id
+                    ? "border-ink text-ink"
+                    : "border-stroke text-muted hover:border-ink hover:text-ink",
+                )}
+              >
+                {t.name}
+              </button>
+            ))}
           </div>
         </div>
       </div>

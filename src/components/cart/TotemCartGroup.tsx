@@ -95,12 +95,14 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
           const raw = JSON.parse(piecesConfigStr) as Array<{
             shapeId: string;
             colorId: string;
+            textureId?: string;
             flipped: boolean;
           }>;
           pieces = raw.map((p) => ({
             uid: generateUid(),
             shapeId: p.shapeId,
             colorId: p.colorId,
+            textureId: p.textureId ?? "smooth",
             flipped: p.flipped,
           }));
           reconstructedFromSnapshot = true;
@@ -114,6 +116,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
             uid: generateUid(),
             shapeId: lineAttr(l, "_shape_id")!,
             colorId: lineAttr(l, "_color_id")!,
+            textureId: lineAttr(l, "_texture_id") ?? "smooth",
             flipped: lineAttr(l, "_flipped") === "true",
           })),
         );
@@ -128,6 +131,7 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
       notify("sf-totem-pieces", JSON.stringify(pieces));
       notify("sf-totem-fixture", JSON.stringify(lineAttr(fixLine, "_fixture_id")));
       notify("sf-totem-fixture-color", JSON.stringify(lineAttr(fixLine, "_fixture_color_id")));
+      notify("sf-totem-fixture-texture", JSON.stringify(lineAttr(fixLine, "_fixture_texture_id") ?? "smooth"));
       notify("sf-totem-cable", JSON.stringify(lineAttr(cabLine, "_cable_id")));
       closeCart();
       router.push("/products/totem");

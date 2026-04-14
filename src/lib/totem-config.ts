@@ -27,12 +27,23 @@ export interface TotemCable {
   hex: string;
 }
 
+export interface TotemTexture {
+  id: string;
+  name: string;
+}
+
+export const TOTEM_TEXTURES: TotemTexture[] = [
+  { id: "smooth", name: "Smooth" },
+  { id: "fuzzy",  name: "Fuzzy"  },
+];
+
 export interface TotemPreset {
   id: string;
   name: string;
   description: string;
-  pieces: Array<{ shapeId: string; colorId: string; flipped: boolean }>;
+  pieces: Array<{ shapeId: string; colorId: string; textureId: string; flipped: boolean }>;
   fixtureId: string;
+  fixtureTextureId: string;
   cableId: string;
 }
 
@@ -40,6 +51,7 @@ export interface TotemPiece {
   uid: string; // unique per piece instance, generated client-side
   shapeId: string;
   colorId: string;
+  textureId: string;
   flipped: boolean;
 }
 
@@ -47,6 +59,7 @@ export interface TotemBuildConfig {
   pieces: TotemPiece[];
   fixtureId: string;
   fixtureColorId: string;
+  fixtureTextureId: string;
   cableId: string;
 }
 
@@ -80,10 +93,11 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: "The Studio",
     description: "A minimal two-piece composition",
     pieces: [
-      { shapeId: "arch", colorId: "beige", flipped: false },
-      { shapeId: "dome", colorId: "beige", flipped: false },
+      { shapeId: "arch", colorId: "beige", textureId: "smooth", flipped: false },
+      { shapeId: "dome", colorId: "beige", textureId: "smooth", flipped: false },
     ],
     fixtureId: "rosette",
+    fixtureTextureId: "smooth",
     cableId: "black-textile",
   },
   {
@@ -91,11 +105,12 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: "The Salon",
     description: "A three-piece statement piece",
     pieces: [
-      { shapeId: "dome", colorId: "beige", flipped: false },
-      { shapeId: "arch", colorId: "beige", flipped: false },
-      { shapeId: "dome", colorId: "blue", flipped: false },
+      { shapeId: "dome", colorId: "beige", textureId: "smooth", flipped: false },
+      { shapeId: "arch", colorId: "beige", textureId: "smooth", flipped: false },
+      { shapeId: "dome", colorId: "blue",  textureId: "smooth", flipped: false },
     ],
     fixtureId: "rosette",
+    fixtureTextureId: "smooth",
     cableId: "brass",
   },
   {
@@ -103,13 +118,14 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: "The Atelier",
     description: "Five pieces, maximum drama",
     pieces: [
-      { shapeId: "dome", colorId: "blue", flipped: false },
-      { shapeId: "arch", colorId: "pink", flipped: false },
-      { shapeId: "dome", colorId: "beige", flipped: false },
-      { shapeId: "arch", colorId: "blue", flipped: false },
-      { shapeId: "arch", colorId: "blue", flipped: false },
+      { shapeId: "dome", colorId: "blue",  textureId: "smooth", flipped: false },
+      { shapeId: "arch", colorId: "pink",  textureId: "smooth", flipped: false },
+      { shapeId: "dome", colorId: "beige", textureId: "smooth", flipped: false },
+      { shapeId: "arch", colorId: "blue",  textureId: "smooth", flipped: false },
+      { shapeId: "arch", colorId: "blue",  textureId: "smooth", flipped: false },
     ],
     fixtureId: "canopy",
+    fixtureTextureId: "smooth",
     cableId: "black-textile",
   },
   {
@@ -117,10 +133,11 @@ export const TOTEM_PRESETS: TotemPreset[] = [
     name: "The Duo",
     description: "Two pieces, compact and refined",
     pieces: [
-      { shapeId: "arch", colorId: "beige", flipped: false },
-      { shapeId: "dome", colorId: "blue", flipped: false },
+      { shapeId: "arch", colorId: "beige", textureId: "smooth", flipped: false },
+      { shapeId: "dome", colorId: "blue",  textureId: "smooth", flipped: false },
     ],
     fixtureId: "rosette",
+    fixtureTextureId: "smooth",
     cableId: "transparent",
   },
 ];

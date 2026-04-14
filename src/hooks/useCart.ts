@@ -285,10 +285,11 @@ export function useCart() {
       }> = [];
 
       for (const piece of config.pieces) {
-        const key = `${piece.shapeId}-${piece.colorId}`;
+        const textureId = piece.textureId ?? "smooth";
+        const key = `${piece.shapeId}-${piece.colorId}-${textureId}`;
         const variant = shapes[key];
         if (!variant?.id || !variant.available) {
-          toast.error("One or more selected colors is out of stock.");
+          toast.error("One or more selected options is out of stock.");
           return;
         }
         const shape = TOTEM_SHAPES.find((s) => s.id === piece.shapeId);
@@ -305,12 +306,14 @@ export function useCart() {
             { key: "_part", value: "Shape" },
             { key: "_shape_id", value: piece.shapeId },
             { key: "_color_id", value: piece.colorId },
+            { key: "_texture_id", value: textureId },
             { key: "_flipped", value: String(piece.flipped) },
           ],
         });
       }
 
-      const fixtureKey = `${config.fixtureId}-${config.fixtureColorId}`;
+      const fixtureTextureId = config.fixtureTextureId ?? "smooth";
+      const fixtureKey = `${config.fixtureId}-${config.fixtureColorId}-${fixtureTextureId}`;
       const fixtureVariant = shapes[fixtureKey];
       if (!fixtureVariant?.id || !fixtureVariant.available) {
         toast.error("The selected fixture color is out of stock.");
@@ -331,6 +334,7 @@ export function useCart() {
           { key: "_part", value: "Fixture" },
           { key: "_fixture_id", value: config.fixtureId },
           { key: "_fixture_color_id", value: config.fixtureColorId },
+          { key: "_fixture_texture_id", value: fixtureTextureId },
           // Full pieces snapshot — lets handleEdit reconstruct order + counts exactly,
           // regardless of how Shopify consolidates duplicate shape lines.
           {
@@ -339,6 +343,7 @@ export function useCart() {
               config.pieces.map((p) => ({
                 shapeId: p.shapeId,
                 colorId: p.colorId,
+                textureId: p.textureId ?? "smooth",
                 flipped: p.flipped,
               })),
             ),
