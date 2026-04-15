@@ -17,7 +17,7 @@ export function CartNote() {
     <div>
       <button
         onClick={() => setIsExpanded((v) => !v)}
-        className="flex items-center gap-1 text-base text-muted hover:text-ink transition-colors"
+        className="flex items-center gap-1 text-sm sm:text-base text-muted hover:text-ink transition-colors"
       >
         Add order note
         <ChevronDown

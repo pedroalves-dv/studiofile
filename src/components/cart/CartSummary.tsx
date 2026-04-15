@@ -50,7 +50,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       )}
 
       {/* Taxes & shipping note */}
-      <p className="text-sm tracking-normal text-light">
+      <p className="text-xs sm:text-sm tracking-normal text-light">
         Taxes and shipping calculated at checkout
       </p>
 
@@ -67,7 +67,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
         <ArrowButton
           href={cart.checkoutUrl}
           label="Checkout"
-          className="w-full py-2.5 bg-ink text-white text-base font-medium rounded-md border border-ink flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 sm:py-2.5 bg-ink text-white text-base font-medium rounded-md border border-ink flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -76,7 +76,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
         <ArrowButton
           onClick={closeCart}
           label="Continue Shopping"
-          className="w-full py-2.5 bg-white text-ink text-base font-medium tracking-tighter rounded-md border border-ink disabled:opacity-50"
+          className="w-full py-2 sm:py-2.5 bg-white text-ink text-base font-medium tracking-tighter rounded-md border border-ink disabled:opacity-50"
         />
       </div>
     </div>
