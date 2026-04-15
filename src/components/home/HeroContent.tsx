@@ -155,9 +155,9 @@ export function HeroContent() {
       // ml and mr are needed to align the text on the website padding (px-site)
       // Because the side bearings of the letters create different paddings inside their bounding boxes.
       className={cn(
-        "relative overflow-hidden ml-[10px] mr-[5px]",
+        "relative overflow-hidden ml-[10px] mr-[5px] flex flex-col justify-center",
 
-        isHorizontal ? "h-full" : "section-h pt-6",
+        isHorizontal ? "h-full block" : "section-h pt-6",
       )}
     >
       {/* Measurement element (hidden) */}
