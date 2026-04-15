@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="px-site">
-      <section className="section-h page-pt page-pb">
+      <section className="section-min-h page-pt page-pb">
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_480px_1fr] gap-8 lg:gap-12 2xl:gap-20 items-start">
           {/* Hero */}
           <div className="space-y-6">
