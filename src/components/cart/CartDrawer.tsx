@@ -124,7 +124,7 @@ export function CartDrawer() {
 
         {/* Footer — summary only, always visible */}
         {hasItems && (
-          <div className="border-t border-stroke px-site">
+          <div className="border-t border-stroke px-2">
             <CartSummary cart={cart} />
           </div>
         )}

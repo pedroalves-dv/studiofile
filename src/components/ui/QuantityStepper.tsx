@@ -4,7 +4,7 @@ import { Minus, Plus } from "lucide-react";
 
 const sizes = {
   sm: {
-    button: "px-2 py-1",
+    button: "px-2.5 py-2",
     span: "px-2 py-1 text-xs min-w-[2rem]",
     icon: 12,
   },

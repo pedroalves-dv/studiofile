@@ -72,57 +72,58 @@ export function CartItem({ line }: CartItemProps) {
       </div>
 
       {/* Details */}
-      <div className="flex-1 min-w-0">
-        <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
-          {merchandise.product.title}
-        </p>
-        {merchandise.title !== "Default Title" && (
-          <p className="text-xs text-muted mt-0.5">{merchandise.title}</p>
-        )}
-        {line.attributes.filter((a) => !a.key.startsWith("_")).length > 0 && (
-          <p className="text-xs text-muted mt-0.5">
-            {line.attributes
-              .filter((a) => !a.key.startsWith("_"))
-              .map((a) => a.value)
-              .join(" · ")}
+      <div className="flex-1 min-w-0 grid grid-cols-[4fr_1fr]">
+        <div>
+          <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
+            {merchandise.product.title}
           </p>
-        )}
-        <p className="text-xs text-muted mt-1">
-          {formatPrice(
-            merchandise.price.amount,
-            merchandise.price.currencyCode,
+          {merchandise.title !== "Default Title" && (
+            <p className="text-xs text-muted mt-0.5">{merchandise.title}</p>
           )}
-        </p>
+          {line.attributes.filter((a) => !a.key.startsWith("_")).length > 0 && (
+            <p className="text-xs text-muted mt-0.5">
+              {line.attributes
+                .filter((a) => !a.key.startsWith("_"))
+                .map((a) => a.value)
+                .join(" · ")}
+            </p>
+          )}
+          <p className="text-xs text-muted mt-1">
+            {formatPrice(
+              merchandise.price.amount,
+              merchandise.price.currencyCode,
+            )}
+          </p>
 
-        {/* Out of stock warning */}
-        {!merchandise.availableForSale && (
-          <p className="text-xs text-error mt-1">Out of stock</p>
-        )}
+          {/* Out of stock warning */}
+          {!merchandise.availableForSale && (
+            <p className="text-xs text-error mt-1">Out of stock</p>
+          )}
 
-        {/* Quantity stepper + line total */}
-        <div className="flex items-center justify-between mt-2">
-          <QuantityStepper
-            value={localQuantity}
-            onChange={setLocalQuantity}
-            size="sm"
-            max={line.merchandise.quantityAvailable ?? 999}
-          />
-
-          <div className="flex items-center gap-3 leading-none">
-            <span className="text-base mt-0.5">
-              {formatPrice(
-                line.cost.totalAmount.amount,
-                line.cost.totalAmount.currencyCode,
-              )}
-            </span>
-            <button
-              onClick={() => removeItem(line.id)}
-              aria-label={`Remove ${merchandise.product.title}`}
-              className="flex items-center text-muted hover:text-error transition-colors"
-            >
-              <Trash2 size={16} />
-            </button>
+          {/* Quantity stepper + line total */}
+          <div className="flex items-center justify-between mt-1">
+            <QuantityStepper
+              value={localQuantity}
+              onChange={setLocalQuantity}
+              size="sm"
+              max={line.merchandise.quantityAvailable ?? 999}
+            />
           </div>
+        </div>
+        <div className="flex flex-col items-end justify-between">
+          <button
+            onClick={() => removeItem(line.id)}
+            aria-label={`Remove ${merchandise.product.title}`}
+            className="flex items-center text-muted hover:text-error transition-colors p-1"
+          >
+            <Trash2 size={20} />
+          </button>
+          <span className="text-lg -mb-1 pr-1">
+            {formatPrice(
+              line.cost.totalAmount.amount,
+              line.cost.totalAmount.currencyCode,
+            )}
+          </span>
         </div>
       </div>
     </div>

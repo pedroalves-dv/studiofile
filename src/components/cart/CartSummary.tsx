@@ -28,7 +28,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
     : 0;
 
   return (
-    <div className="flex flex-col gap-2 py-2">
+    <div className="flex flex-col gap-2 pt-2 pb-4">
       {/* Subtotal */}
       {hasDiscount && savings > 0 && (
         <div className="flex items-center justify-between">
@@ -41,7 +41,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
 
       {/* Discount row */}
       {hasDiscount && savings > 0 && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-2">
           <span className="text-sm text-success">Discount</span>
           <span className="text-sm text-success">
             -{formatPrice(savings.toString(), subtotal.currencyCode)}
@@ -50,12 +50,12 @@ export function CartSummary({ cart }: CartSummaryProps) {
       )}
 
       {/* Taxes & shipping note */}
-      <p className="text-xs sm:text-sm tracking-normal text-light">
+      <p className="text-xs sm:text-sm tracking-normal text-light px-2">
         Taxes and shipping calculated at checkout
       </p>
 
       {/* Total */}
-      <div className="flex items-center justify-between pt-3 border-t border-stroke -mx-site px-site">
+      <div className="flex items-center justify-between pt-3.5 border-t border-stroke -mx-site px-7">
         <span className="text-3xl tracking-tighter font-semibold">Total</span>
         <span className="text-3xl tracking-tighter font-semibold">
           {formatPrice(total.amount, total.currencyCode)}
@@ -63,20 +63,20 @@ export function CartSummary({ cart }: CartSummaryProps) {
       </div>
 
       {/* Checkout button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center px-2">
         <ArrowButton
           href={cart.checkoutUrl}
           label="Checkout"
-          className="w-full py-2 sm:py-2.5 bg-ink text-white text-base font-medium rounded-md border border-ink flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2.5 sm:py-3 bg-ink text-white text-lg font-medium rounded-lg border border-ink flex justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
       {/* Continue shopping */}
-      <div className="flex justify-center">
+      <div className="flex justify-center px-2">
         <ArrowButton
           onClick={closeCart}
           label="Continue Shopping"
-          className="w-full py-2 sm:py-2.5 bg-white text-ink text-base font-medium tracking-tighter rounded-md border border-ink disabled:opacity-50"
+          className="w-full py-2.5 sm:py-3 bg-white text-ink text-lg font-medium tracking-tighter rounded-lg border border-ink disabled:opacity-50"
         />
       </div>
     </div>
