@@ -28,11 +28,12 @@ export function CartDrawer() {
       setIsVisible(true);
       setIsClosing(false);
       if (mainElement) {
-        mainElement.style.willChange = "transform";
-        mainElement.style.transition =
-          "transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)";
-        mainElement.style.transformOrigin = "top center";
-        mainElement.style.transform = "scale(0.98)";
+        // TODO remove scaling logic to have same effect as wishlist drawer just sliding open.
+        // mainElement.style.willChange = "transform";
+        // mainElement.style.transition =
+        //   "transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)";
+        // mainElement.style.transformOrigin = "top center";
+        // mainElement.style.transform = "scale(0.98)";
       }
     } else if (isVisible) {
       lenis?.start();

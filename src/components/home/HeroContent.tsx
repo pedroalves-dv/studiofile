@@ -177,7 +177,7 @@ export function HeroContent() {
         // Using h-full here caused Motion's layout projection to snapshot 0px on initial
         // mount (% heights resolve late), then animate to the real height — producing the
         // ghost gap above the type on load.
-        isHorizontal ? "h-full block" : "sticky-hero-h",
+        isHorizontal ? "h-full justify-start" : "sticky-hero-h",
       )}
       // On mobile, override the svh-based CSS height with the px value locked at
       // mount. Chrome iOS recalculates svh when the toolbar shows/hides; the

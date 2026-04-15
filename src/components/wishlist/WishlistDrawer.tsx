@@ -12,6 +12,7 @@ import { useLenis } from "@/components/common/SmoothScroll";
 import { formatPrice } from "@/lib/utils/format";
 import type { WishlistItem } from "@/context/WishlistContext";
 import type { ShopifyProduct } from "@/lib/shopify/types";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -82,14 +83,16 @@ function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
           <p className="text-xs text-muted">
             {formatPrice(price.amount, price.currencyCode)}
           </p>
-          {hasVariant && item.selectedOptions && item.selectedOptions.length > 0 && (
-            <>
-              <span className="text-xs text-muted">·</span>
-              <p className="text-xs text-muted">
-                {item.selectedOptions.map((o) => o.value).join(" / ")}
-              </p>
-            </>
-          )}
+          {hasVariant &&
+            item.selectedOptions &&
+            item.selectedOptions.length > 0 && (
+              <>
+                <span className="text-xs text-muted">·</span>
+                <p className="text-xs text-muted">
+                  {item.selectedOptions.map((o) => o.value).join(" / ")}
+                </p>
+              </>
+            )}
         </div>
 
         {/* CTA */}
@@ -195,14 +198,17 @@ export function WishlistDrawer() {
           {isLoading && <WishlistSkeleton />}
 
           {!isLoading && items.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full gap-8 text-center pb-24">
-              <Heart size={48} className="text-light" strokeWidth={1.5} />
-              <p className="tracking-[-1px] text-5xl">
-                Your wishlist is empty.
-              </p>
-              <Button onClick={closeDrawer} asChild>
-                <Link href="/products">Browse Products</Link>
-              </Button>
+            <div className="flex flex-col h-full px-site">
+              <div className="py-6">
+                <p className="text-6xl sm:text-7xl font-medium tracking-[-0.06em] leading-[0.9]">
+                  Your wishlist is empty
+                </p>
+              </div>
+              <ArrowButton
+                href="/products"
+                label="Browse products"
+                className="w-fit px-6 py-2 bg-white text-ink text-base font-medium tracking-[-0.03em] rounded-lg border border-ink disabled:opacity-50"
+              />
             </div>
           )}
 

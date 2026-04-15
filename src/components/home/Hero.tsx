@@ -99,7 +99,7 @@ export function Hero() {
       // Desktop: set an explicit height so useScroll has a known range.
       // Uses dvh so the parallax columns scale naturally on desktop resize.
       // Mobile: no explicit height — children (mobile images) determine it.
-      el.style.height = isDesktop ? `${SCROLL_ROWS * 100}dvh` : "";
+      el.style.height = isDesktop ? `${SCROLL_ROWS * 100}vh` : "";
 
       setScrollDistance(isDesktop ? window.innerHeight : 0);
     };
@@ -132,7 +132,7 @@ export function Hero() {
   const parallaxProps = { scrollYProgress, scrollDistance };
 
   return (
-    <section ref={containerRef} className="relative w-full">
+    <section ref={containerRef} className="relative w-full [overflow:clip]">
       {/* ── BACKGROUND LAYER ── */}
       <div className="hidden md:flex absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Column 1 */}
@@ -213,8 +213,14 @@ export function Hero() {
       </div>
 
       {/* ── STICKY CONTENT (The "TOTEM" type) ── */}
-      <div className="sticky top-[var(--header-height)] sticky-hero-h w-full z-10 overflow-hidden">
-        <div className="relative w-full h-full">
+      {/* h-0 on the outer wrapper delays the sticky release point to the very end
+          of the section (scroll ≈ section_height) instead of at the start of the
+          last viewport (scroll ≈ section_height − element_height). The visual
+          height lives in the inner div, which overflows the 0-height wrapper
+          (overflow:visible is the CSS default). overflow-hidden moves inward to
+          preserve the drop-in animation clipping. */}
+      <div className="sticky top-[var(--header-height)] h-0 w-full z-10">
+        <div className="sticky-hero-h relative w-full overflow-hidden">
           <HeroContent />
         </div>
       </div>
