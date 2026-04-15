@@ -232,14 +232,14 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
   return (
     <>
       {/* Backdrop for mobile menu */}
-      {(isMobileMenuOpen || isClosingMenu) && (
+      {/* {(isMobileMenuOpen || isClosingMenu) && (
         <div
           className="fixed inset-0 backdrop-blur-md z-40 md:hidden"
           onClick={() => {
             if (!isClosingMenu) closeMenu();
           }}
         />
-      )}
+      )} */}
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-[var(--header-height)] bg-canvas">
@@ -459,7 +459,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-12 bg-white flex flex-col overflow-y-auto"
+          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-6 bg-white flex flex-col overflow-y-auto"
           aria-label="Mobile navigation"
         >
           <div className="group ">
