@@ -38,6 +38,19 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       smoothWheel: !reduced,
     });
 
+    // --stable-svh: a CSS variable locked to window.innerHeight at mount time.
+    // Chrome iOS recalculates svh when the address bar shows/hides (violating the
+    // spec). CSS classes that should be stable (section-min-h, h-screen-safe, etc.)
+    // use var(--stable-svh, 100svh) so they stop reacting to toolbar changes.
+    // We update it alongside the Lenis guard so orientation/real resizes still work.
+    const setStableSvh = () => {
+      document.documentElement.style.setProperty(
+        "--stable-svh",
+        `${window.innerHeight}px`,
+      );
+    };
+    setStableSvh();
+
     // Prevent Lenis from recalculating scroll limits on height-only resize events
     // (iOS address bar showing/hiding changes window.innerHeight but not width).
     //
@@ -55,6 +68,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       const currentWidth = window.innerWidth;
       if (currentWidth === prevResizeWidth) return;
       prevResizeWidth = currentWidth;
+      setStableSvh(); // keep --stable-svh in sync on real resize / orientation change
       debouncedResize();
     };
     window.addEventListener("resize", guardedResize);
