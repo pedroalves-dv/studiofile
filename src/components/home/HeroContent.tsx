@@ -66,13 +66,24 @@ export function HeroContent() {
   /**
    * Resize recalculation without triggering FLIP
    */
+  const lastWidth = useRef(
+    typeof window !== "undefined" ? window.innerWidth : 0,
+  );
+
   useIsomorphicLayoutEffect(() => {
     if (!isHorizontal) return;
+
     const onResize = () => {
-      const layout = computeLayout();
-      if (!layout || !h1Ref.current) return;
-      h1Ref.current.style.fontSize = `${layout.fontSize}px`;
-      h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+      const currentWidth = window.innerWidth;
+
+      // ONLY recalculate if the width changed (ignores address bar height changes)
+      if (currentWidth !== lastWidth.current) {
+        lastWidth.current = currentWidth;
+        const layout = computeLayout();
+        if (!layout || !h1Ref.current) return;
+        h1Ref.current.style.fontSize = `${layout.fontSize}px`;
+        h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+      }
     };
 
     window.addEventListener("resize", onResize);
@@ -145,8 +156,7 @@ export function HeroContent() {
       // Because the side bearings of the letters create different paddings inside their bounding boxes.
       className={cn(
         "relative overflow-hidden ml-[10px] mr-[5px]",
-        // padding top "pt" is another hack to vertically center the animation up to phase 2,
-        // h-full and section centered arent enough. further fixing might be required
+
         isHorizontal ? "h-full" : "section-h pt-6",
       )}
     >
