@@ -240,6 +240,12 @@
     overflow-x: hidden;
   }
 
+  @media (max-width: 767px) {
+    body {
+      border-right: none;
+    }
+  }
+
   #main-content {
     /* Remove will-change from here if it's always on */
     transition: filter 0.4s ease-out;
@@ -313,7 +319,7 @@
       Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
       × 0.92           : small breathing room for descenders / address bar bounce
     */
-      font-size: calc((100svh - var(--header-height) + 8rem) / 5 * 0.92);
+      font-size: calc((100svh - var(--header-height) + 8rem) / 5);
     }
   }
   /* Typography utilities */

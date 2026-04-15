@@ -157,7 +157,7 @@ export function HeroContent() {
       className={cn(
         "relative overflow-hidden ml-[10px] mr-[5px] flex flex-col justify-center",
 
-        isHorizontal ? "h-full block" : "section-h pt-6",
+        isHorizontal ? "h-full block" : "section-h",
       )}
     >
       {/* Measurement element (hidden) */}
@@ -207,7 +207,7 @@ export function HeroContent() {
         className={`flex leading-none text-ink font-display hero-stack-fit ${
           isHorizontal
             ? "flex-row"
-            : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-8 sm:-space-y-10"
+            : "flex-col items-center mx-auto text-10xl sm:text-11xl -space-y-6 sm:-space-y-8"
         }`}
         style={
           fontSize
@@ -243,6 +243,7 @@ export function HeroContent() {
                 scaleX: 0.95,
               }}
               custom={i}
+              className="h-[0.85em]"
               style={{
                 willChange: "transform, opacity",
                 WebkitFontSmoothing: "antialiased",

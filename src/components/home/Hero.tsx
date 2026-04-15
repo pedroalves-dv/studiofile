@@ -285,7 +285,7 @@ export function Hero() {
           <Image
             src={PLACEHOLDER}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100dvw, 50dvw"
             className="object-cover"
             alt=""
             priority
@@ -296,7 +296,7 @@ export function Hero() {
           <Image
             src={PLACEHOLDER}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100dvw, 50dvw"
             className="object-cover"
             alt=""
             unoptimized
@@ -306,7 +306,7 @@ export function Hero() {
           <Image
             src={PLACEHOLDER}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100dvw, 50dvw"
             className="object-cover"
             alt=""
             unoptimized
