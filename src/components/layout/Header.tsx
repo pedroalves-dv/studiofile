@@ -459,10 +459,10 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site pt-20 overflow-y-auto bg-white flex flex-col space-y-6"
+          className="fixed section-min-h top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site pt-12 overflow-y-auto bg-white flex flex-col"
           aria-label="Mobile navigation"
         >
-          <div className="group space-y-1">
+          <div className="group ">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -487,7 +487,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
               href={isLoggedIn ? "/account" : "/account/login"}
               onClick={closeMenu}
               className={cn(
-                "flex w-full text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                "flex w-full text-left text-6xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
                 "transition-opacity duration-200",
                 "md:group-hover:opacity-35 md:hover:!opacity-100",
                 hasActiveLink && "opacity-35",
@@ -503,7 +503,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
                 handleLogout();
               }}
               className={cn(
-                "flex w-fit text-left text-7xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                "flex w-fit text-left text-6xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
                 "transition-opacity duration-200",
                 "md:group-hover:opacity-35 md:hover:!opacity-100",
                 isPendingLogout && "opacity-35 pointer-events-none",
