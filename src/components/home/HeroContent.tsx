@@ -71,18 +71,22 @@ export function HeroContent() {
   );
 
   useIsomorphicLayoutEffect(() => {
-    if (!isHorizontal) return;
-
     const onResize = () => {
       const currentWidth = window.innerWidth;
+      if (currentWidth === lastWidth.current) return; // Skip if only height changed (address bar)
 
-      // ONLY recalculate if the width changed (ignores address bar height changes)
-      if (currentWidth !== lastWidth.current) {
-        lastWidth.current = currentWidth;
+      lastWidth.current = currentWidth;
+
+      if (isHorizontal) {
+        // Desktop: Recalculate the horizontal fit
         const layout = computeLayout();
         if (!layout || !h1Ref.current) return;
         h1Ref.current.style.fontSize = `${layout.fontSize}px`;
         h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+      } else {
+        // Mobile/Vertical: Do nothing or lock a specific value
+        // This prevents the "jump" because we aren't letting the
+        // browser re-flow based on height changes.
       }
     };
 

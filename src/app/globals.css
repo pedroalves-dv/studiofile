@@ -319,7 +319,9 @@
       Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
       × 0.92           : small breathing room for descenders / address bar bounce
     */
+
       font-size: calc((100svh - var(--header-height) + 8rem) / 5);
+      -webkit-text-size-adjust: 100%;
     }
   }
   /* Typography utilities */
