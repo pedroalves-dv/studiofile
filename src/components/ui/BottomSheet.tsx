@@ -73,7 +73,7 @@ export function BottomSheet({
       <div
         className="fixed bottom-0 left-0 right-0 flex flex-col bg-canvas"
         style={{
-          height: "calc(100dvh - var(--header-height))",
+          height: "calc(100svh - var(--header-height))",
           animation: `${isClosing ? "sheetSlideDown" : "sheetSlideUp"} ${CLOSE_DURATION}ms ease-in-out forwards`,
         }}
         onTouchStart={(e) => {

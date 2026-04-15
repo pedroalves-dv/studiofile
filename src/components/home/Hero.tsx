@@ -99,7 +99,7 @@ export function Hero() {
       // Desktop: set an explicit height so useScroll has a known range.
       // Uses dvh so the parallax columns scale naturally on desktop resize.
       // Mobile: no explicit height — children (mobile images) determine it.
-      el.style.height = isDesktop ? `${SCROLL_ROWS * 100}dvh` : "";
+      el.style.height = isDesktop ? `${SCROLL_ROWS * 100}svh` : "";
 
       setScrollDistance(isDesktop ? window.innerHeight : 0);
     };
