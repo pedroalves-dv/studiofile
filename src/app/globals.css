@@ -1,3 +1,5 @@
+/* src/app/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -302,7 +304,9 @@
       Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
       × 0.92           : small breathing room for descenders / address bar bounce
     */
-      font-size: calc((100svh - var(--header-height) + 8rem) / 5 * 0.92);
+
+      /* font-size: calc((100svh - var(--header-height) + 8rem) / 5); */
+      -webkit-text-size-adjust: 100%;
     }
   }
 }
@@ -311,19 +315,6 @@
    UTILITY CLASSES
    ========================================== */
 @layer components {
-  /* Mobile hero: scale stacked letters to fit svh exactly */
-  @media (max-width: 767px) {
-    .hero-stack-fit {
-      /*
-      Available height : 100svh - header
-      Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
-      × 0.92           : small breathing room for descenders / address bar bounce
-    */
-
-      /* font-size: calc((100svh - var(--header-height) + 8rem) / 5); */
-      -webkit-text-size-adjust: 100%;
-    }
-  }
   /* Typography utilities */
   .text-label {
     font-size: 0.75rem;
