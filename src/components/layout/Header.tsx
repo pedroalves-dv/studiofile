@@ -459,7 +459,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-6 bg-white flex flex-col overflow-y-auto justify-center"
+          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-6 bg-white flex flex-col overflow-y-auto"
           aria-label="Mobile navigation"
         >
           <div className="group ">
@@ -495,22 +495,24 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
             >
               {isLoggedIn ? "My Account" : "Sign in"}
             </Link>
-            <button
-              type="button"
-              disabled={isPendingLogout}
-              onClick={() => {
-                closeMenu();
-                handleLogout();
-              }}
-              className={cn(
-                "flex w-fit text-left text-6xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
-                "transition-opacity duration-200",
-                "md:group-hover:opacity-35 md:hover:!opacity-100",
-                isPendingLogout && "opacity-35 pointer-events-none",
-              )}
-            >
-              {isPendingLogout ? "Signing out..." : "Sign out"}
-            </button>
+            {isLoggedIn && (
+              <button
+                type="button"
+                disabled={isPendingLogout}
+                onClick={() => {
+                  closeMenu();
+                  handleLogout();
+                }}
+                className={cn(
+                  "flex w-fit text-left text-6xl tracking-[-0.07em] leading-[4rem] font-medium text-ink ligatures",
+                  "transition-opacity duration-200",
+                  "md:group-hover:opacity-35 md:hover:!opacity-100",
+                  isPendingLogout && "opacity-35 pointer-events-none",
+                )}
+              >
+                {isPendingLogout ? "Signing out..." : "Sign out"}
+              </button>
+            )}
           </div>
         </nav>
       )}

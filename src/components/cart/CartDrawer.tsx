@@ -1,4 +1,3 @@
-// src/components/cart/CartDrawer.tsx
 "use client";
 
 import { X } from "lucide-react";
@@ -61,6 +60,8 @@ export function CartDrawer() {
     }
   }, [isOpen, lenis, isVisible]);
 
+  const hasItems = cart && cart.lines.length > 0;
+
   return (
     <Dialog open={isVisible} onOpenChange={closeCart}>
       <div
@@ -82,9 +83,9 @@ export function CartDrawer() {
         {/* Free shipping bar */}
         <FreeShippingBar cart={cart} />
 
-        {/* Body */}
+        {/* Body — scrollable, includes items + discount + note */}
         <div className="flex-1 overflow-y-auto py-4 px-site" data-lenis-prevent>
-          {!cart || cart.lines.length === 0 ? (
+          {!hasItems ? (
             <EmptyCart />
           ) : (
             (() => {
@@ -108,17 +109,21 @@ export function CartDrawer() {
                   {Array.from(groups.entries()).map(([buildId, groupLines]) => (
                     <TotemCartGroup key={buildId} lines={groupLines} />
                   ))}
+
+                  {/* Discount + note scroll with items */}
+                  <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-stroke">
+                    <DiscountInput />
+                    <CartNote />
+                  </div>
                 </>
               );
             })()
           )}
         </div>
 
-        {/* Footer — sticky */}
-        {cart && cart.lines.length > 0 && (
-          <div className="border-t border-stroke px-site py-4 flex flex-col gap-4">
-            <DiscountInput />
-            <CartNote />
+        {/* Footer — summary only, always visible */}
+        {hasItems && (
+          <div className="border-t border-stroke px-site py-4">
             <CartSummary cart={cart} />
           </div>
         )}
