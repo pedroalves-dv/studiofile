@@ -82,25 +82,25 @@ export function ProductSpotlight() {
         <div className="absolute inset-0 bg-black/45" aria-hidden />
 
         {/* ── MOBILE ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-site pt-80 pb-safe gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site section-min-h py-60 justify-center gap-2">
           <FadeUp delay={0.05}>
             <p
               className="font-medium tracking-[-0.05em] leading-[1] text-white"
-              style={{ fontSize: "clamp(3.2rem, 16.5vw, 6rem)" }}
+              style={{ fontSize: "clamp(3.2rem, 17vw, 6rem)" }}
             >
               Introducing
             </p>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p
-              className="relative font-medium tracking-[-0.06em] leading-[0.9] text-white"
-              style={{ fontSize: "clamp(3.2rem, 16.5vw, 6rem)" }}
+              className="relative font-medium tracking-[-0.06em] leading-[0.9] text-white mb-5"
+              style={{ fontSize: "clamp(3.2rem, 17vw, 6rem)" }}
             >
               <TotemLetters delay={0.2} />
               <span className="text-[0.3em] absolute top-1 ml-2">©</span>
             </p>
           </FadeUp>
-          <DrawLine delay={0.5} light />
+          {/* <DrawLine delay={0.5} light /> */}
           <FadeUp delay={0.55}>
             <p
               className="font-medium tracking-[-0.05em] leading-[0.95] text-white/40 pb-12"
@@ -164,23 +164,23 @@ export function ProductSpotlight() {
         aria-label="TOTEM configurator"
       >
         {/* ── MOBILE: stacked, each half breathes ── */}
-        <div className="sm:hidden relative z-10 h-full flex flex-col px-site pt-80 pb-safe gap-2">
+        <div className="sm:hidden relative z-10 h-full flex flex-col px-site">
           {/* Top: configurator placeholder — flex-1 takes all available space */}
-          <div className="flex-1 relative bg-lighter overflow-hidden min-h-[300px]">
+          <div className="flex-1 relative bg-lighter overflow-hidden section-min-h">
             <div className="absolute inset-0 flex items-center justify-center"></div>
           </div>
 
           {/* Bottom: fixed-height CTA block — doesn't squish */}
-          <div className="shrink-0 px-site pt-8 pb-10 flex flex-col gap-5">
+          <div className="shrink-0 px-site flex flex-col section-min-h justify-center">
             <FadeUp delay={0.05}>
               <p
-                className="font-medium tracking-[-0.05em] leading-[0.9] text-ink"
-                style={{ fontSize: "clamp(3.2rem, 16.5vw, 6rem)" }}
+                className="font-medium tracking-[-0.05em] leading-[0.9] text-ink mb-5"
+                style={{ fontSize: "clamp(3.2rem, 17vw, 6rem)" }}
               >
                 Build your own
               </p>
             </FadeUp>
-            <DrawLine delay={0.5} />
+            {/* <DrawLine delay={0.5} /> */}
             <FadeUp delay={0.2}>
               <p
                 className="font-medium tracking-[-0.05em] leading-[0.95] text-ink/40 pb-12"
@@ -230,7 +230,7 @@ export function ProductSpotlight() {
               </FadeUp>
               <FadeUp delay={0.32}>
                 <p
-                  className="text-sm text-light tracking-[-0.04em] leading-[0.92] pb-12"
+                  className="text-sm text-light tracking-[-0.04em] leading-[0.92] pb-14"
                   style={{ fontSize: "clamp(2.2rem, 11vw, 3.5rem)" }}
                 >
                   Choose your modules, colors, and finish —{" "}

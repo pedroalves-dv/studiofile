@@ -52,11 +52,11 @@ export default function BrandStory() {
   }, []);
 
   const pClassName =
-    "z-10 text-4xl lg:text-7xl xl:text-8xl leading-[1] font-medium tracking-[-0.1rem] md:tracking-[-0.2rem] lg:tracking-[-0.3rem] xl:tracking-[-0.4rem] text-ink text-justify ligatures";
+    "z-10 text-5xl lg:text-7xl xl:text-8xl leading-[1] font-medium tracking-[-0.2rem] md:tracking-[-0.2rem] lg:tracking-[-0.3rem] xl:tracking-[-0.4rem] text-ink text-justify ligatures";
 
   return (
     <section
-      className="relative pt-20 pb-safe overflow-hidden"
+      className="relative sm:pt-20 pb-safe overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* Cursor-following hover image */}
