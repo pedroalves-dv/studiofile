@@ -16,6 +16,15 @@ export function HeroContent() {
   const [isHorizontal, setIsHorizontal] = useState(false);
   const [fontSize, setFontSize] = useState<number | null>(null);
   const [marginLeft, setMarginLeft] = useState(0);
+  // Locked once at mount — Chrome iOS recalculates svh when the address bar
+  // appears/disappears despite svh being spec'd as stable. We measure the
+  // container's actual rendered height (bars always visible at page load) and
+  // derive the font size from it. Inline styles override the CSS svh calc and
+  // never update, so the type stays the same size during scroll.
+  const [mobileLayout, setMobileLayout] = useState<{
+    height: number;
+    fontSize: number;
+  } | null>(null);
 
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,6 +71,17 @@ export function HeroContent() {
   const lastWidth = useRef(
     typeof window !== "undefined" ? window.innerWidth : 0,
   );
+
+  // Lock mobile font size + container height once at mount.
+  useIsomorphicLayoutEffect(() => {
+    if (window.innerWidth >= MOBILE_BREAKPOINT) return;
+    const container = containerRef.current;
+    if (!container) return;
+    const h = container.getBoundingClientRect().height;
+    const remPx =
+      parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    setMobileLayout({ height: h, fontSize: ((h + 8 * remPx) / 5) * 0.92 });
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     const h1 = h1Ref.current;
@@ -159,6 +179,14 @@ export function HeroContent() {
         // ghost gap above the type on load.
         isHorizontal ? "h-full block" : "sticky-hero-h",
       )}
+      // On mobile, override the svh-based CSS height with the px value locked at
+      // mount. Chrome iOS recalculates svh when the toolbar shows/hides; the
+      // inline style takes precedence and never updates.
+      style={
+        mobileLayout && !isHorizontal
+          ? { height: `${mobileLayout.height}px` }
+          : undefined
+      }
     >
       {/* Measurement element (hidden) */}
       <div
@@ -219,7 +247,9 @@ export function HeroContent() {
                 fontVariantLigatures: "none",
                 textRendering: "geometricPrecision",
               }
-            : {}
+            : mobileLayout && !isHorizontal
+              ? { fontSize: `${mobileLayout.fontSize}px` }
+              : {}
         }
       >
         {LETTERS.map((letter, i) => {
