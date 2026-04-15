@@ -147,14 +147,17 @@ export function HeroContent() {
 
   return (
     <motion.div
-      layout
       ref={containerRef}
       // ml and mr are needed to align the text on the website padding (px-site)
       // Because the side bearings of the letters create different paddings inside their bounding boxes.
       className={cn(
         "relative overflow-hidden ml-[10px] mr-[5px] flex flex-col justify-center",
 
-        isHorizontal ? "h-full block" : "h-full",
+        // sticky-hero-h gives an explicit svh-based height matching the sticky parent.
+        // Using h-full here caused Motion's layout projection to snapshot 0px on initial
+        // mount (% heights resolve late), then animate to the real height — producing the
+        // ghost gap above the type on load.
+        isHorizontal ? "h-full block" : "sticky-hero-h",
       )}
     >
       {/* Measurement element (hidden) */}

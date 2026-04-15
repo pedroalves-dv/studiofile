@@ -20,5 +20,23 @@
 
 **Solution**:
 - Use `svh` for all `min-height` section utilities and image-block heights. `svh` is stable (never changes with chrome).
-- Content containers inside a `svh`-height sticky parent should use `h-full`, not a viewport-unit class.
+- Content containers inside a `svh`-height sticky parent should use an explicit `calc(100svh - var(--header-height))` class (e.g. `sticky-hero-h`), NOT `h-full`. Motion's `layout` projection snapshots `h-full` as 0px at initial mount before the parent's height is computed, then animates to the real height — creating a ghost gap.
+- Do NOT put `layout` on the outer wrapper `motion.div` if it has no layout change of its own. Only inner elements (`motion.h1`, `motion.span`) need `layout` for the FLIP animation.
 - Use CSS `calc()` with `svh` for font sizes that depend on viewport height (e.g. `.hero-stack-fit`). Never use `window.innerHeight` for font sizing — it changes and causes jumps.
+
+## Lenis — Ignore height-only resize events to prevent address-bar scroll jumps
+
+**Mistake**: Lenis v1 calls `this.resize()` on every `window resize` event, including height-only events (iOS address bar showing/hiding). Even with all CSS using `svh`, Lenis recalculates `limit = scrollHeight − window.innerHeight`. When `innerHeight` changes alone, `limit` shifts → scroll progress shifts → visual jump.
+
+**Solution**: After creating the Lenis instance, patch `instance.resize` to only fire when `window.innerWidth` changes (real resize / device rotation):
+```ts
+const originalResize = instance.resize.bind(instance);
+let prevResizeWidth = window.innerWidth;
+instance.resize = () => {
+  const currentWidth = window.innerWidth;
+  if (currentWidth === prevResizeWidth) return;
+  prevResizeWidth = currentWidth;
+  originalResize();
+};
+```
+This is in `src/components/common/SmoothScroll.tsx`. Never remove this guard.

@@ -38,6 +38,19 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       smoothWheel: !reduced,
     });
 
+    // Prevent Lenis from recalculating scroll limits on height-only resize events
+    // (iOS address bar appearing/disappearing changes window.innerHeight but not
+    // window.innerWidth). Without this guard, Lenis shifts its scroll progress
+    // every time the address bar toggles, causing visible content jumps.
+    const originalResize = instance.resize.bind(instance);
+    let prevResizeWidth = window.innerWidth;
+    instance.resize = () => {
+      const currentWidth = window.innerWidth;
+      if (currentWidth === prevResizeWidth) return;
+      prevResizeWidth = currentWidth;
+      originalResize();
+    };
+
     setLenis(instance);
 
     // ✅ FIX: track running state so the recursive RAF stops on unmount
