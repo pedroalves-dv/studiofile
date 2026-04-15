@@ -29,9 +29,6 @@ export function HeroContent() {
     const container = containerRef.current;
     if (!measure || !container) return null;
 
-    // Before change
-    // const padding = parseFloat(getComputedStyle(container).paddingLeft);
-    // const contentWidth = container.clientWidth - padding * 2;
     const contentWidth = container.clientWidth;
 
     const getInkRect = (el: Element): DOMRect => {
@@ -55,11 +52,6 @@ export function HeroContent() {
     const fs = (100 * contentWidth) / inkWidth100;
     const ml = -(leftBearing100 * (fs / 100));
 
-    // Before change
-    // return {
-    //   fontSize: Math.round(fs * 1000) / 1000,
-    //   marginLeft: Math.round(ml),
-    // };
     return { fontSize: fs, marginLeft: ml };
   }, []);
 
@@ -71,22 +63,44 @@ export function HeroContent() {
   );
 
   useIsomorphicLayoutEffect(() => {
+    const h1 = h1Ref.current;
+    if (!h1) return;
+
+    const updateMobileSize = () => {
+      // Only run this if we are in the vertical/mobile state
+      if (!isHorizontal && window.innerWidth < MOBILE_BREAKPOINT) {
+        const headerHeight =
+          parseInt(
+            getComputedStyle(document.documentElement).getPropertyValue(
+              "--header-height",
+            ),
+          ) || 0;
+
+        // We use innerHeight ONCE. This captures the height at that moment.
+        const availHeight = window.innerHeight - headerHeight;
+        const staticFontSize = ((availHeight + 128) / 5) * 0.92; // 128px is roughly 8rem
+
+        h1.style.fontSize = `${staticFontSize}px`;
+      }
+    };
+
+    // Run immediately on mount
+    updateMobileSize();
+
     const onResize = () => {
       const currentWidth = window.innerWidth;
-      if (currentWidth === lastWidth.current) return; // Skip if only height changed (address bar)
-
+      if (currentWidth === lastWidth.current) return;
       lastWidth.current = currentWidth;
 
       if (isHorizontal) {
-        // Desktop: Recalculate the horizontal fit
         const layout = computeLayout();
-        if (!layout || !h1Ref.current) return;
-        h1Ref.current.style.fontSize = `${layout.fontSize}px`;
-        h1Ref.current.style.marginLeft = `${layout.marginLeft}px`;
+        if (layout) {
+          h1.style.fontSize = `${layout.fontSize}px`;
+          h1.style.marginLeft = `${layout.marginLeft}px`;
+        }
       } else {
-        // Mobile/Vertical: Do nothing or lock a specific value
-        // This prevents the "jump" because we aren't letting the
-        // browser re-flow based on height changes.
+        // If the user rotates their phone, recalculate the mobile size
+        updateMobileSize();
       }
     };
 
