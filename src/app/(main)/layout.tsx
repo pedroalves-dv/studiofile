@@ -26,10 +26,7 @@ export default async function MainLayout({
             {/* 1. Keep the Header outside the main flow if it's fixed/sticky */}
             <Header isLoggedIn={!!customer} customer={customer} />
             {/* 2. This is the ONLY <main> tag.*/}
-            <main
-              id="main-content"
-              className="relative flex flex-col min-h-screen"
-            >
+            <main id="main-content" className="relative flex flex-col">
               <div className="flex-1">{children}</div>
               <FooterBackground />
               <Footer />
