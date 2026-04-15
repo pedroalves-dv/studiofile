@@ -459,7 +459,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
           style={{
             animation: `${isClosingMenu ? "navSlideUp" : "navSlideDown"} ${CLOSE_DURATION}ms ease-in-out forwards`,
           }}
-          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-6 bg-white flex flex-col overflow-y-auto"
+          className="fixed top-[var(--header-height)] bottom-0 left-0 right-0 z-[45] md:hidden px-site py-6 bg-white flex flex-col overflow-y-auto justify-center"
           aria-label="Mobile navigation"
         >
           <div className="group ">
