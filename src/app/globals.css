@@ -320,7 +320,7 @@
       × 0.92           : small breathing room for descenders / address bar bounce
     */
 
-      font-size: calc((100svh - var(--header-height) + 8rem) / 5);
+      /* font-size: calc((100svh - var(--header-height) + 8rem) / 5); */
       -webkit-text-size-adjust: 100%;
     }
   }
