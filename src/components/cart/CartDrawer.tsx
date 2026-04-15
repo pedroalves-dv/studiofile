@@ -111,7 +111,7 @@ export function CartDrawer() {
                   ))}
 
                   {/* Discount + note scroll with items */}
-                  <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-stroke">
+                  <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-stroke -mx-site px-site">
                     <DiscountInput />
                     <CartNote />
                   </div>
@@ -123,7 +123,7 @@ export function CartDrawer() {
 
         {/* Footer — summary only, always visible */}
         {hasItems && (
-          <div className="border-t border-stroke px-site py-4">
+          <div className="border-t border-stroke px-site">
             <CartSummary cart={cart} />
           </div>
         )}

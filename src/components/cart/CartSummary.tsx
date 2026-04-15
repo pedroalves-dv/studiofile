@@ -28,14 +28,16 @@ export function CartSummary({ cart }: CartSummaryProps) {
     : 0;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2 py-2">
       {/* Subtotal */}
-      <div className="flex items-center justify-between">
-        <span className="text-base text-muted">Subtotal</span>
-        <span className="text-base">
-          {formatPrice(subtotal.amount, subtotal.currencyCode)}
-        </span>
-      </div>
+      {hasDiscount && savings > 0 && (
+        <div className="flex items-center justify-between">
+          <span className="text-base text-muted">Subtotal</span>
+          <span className="text-base">
+            {formatPrice(subtotal.amount, subtotal.currencyCode)}
+          </span>
+        </div>
+      )}
 
       {/* Discount row */}
       {hasDiscount && savings > 0 && (
@@ -48,7 +50,7 @@ export function CartSummary({ cart }: CartSummaryProps) {
       )}
 
       {/* Taxes & shipping note */}
-      <p className="text-sm text-light">
+      <p className="text-sm tracking-normal text-light">
         Taxes and shipping calculated at checkout
       </p>
 

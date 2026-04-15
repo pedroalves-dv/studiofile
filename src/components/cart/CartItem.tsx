@@ -55,7 +55,7 @@ export function CartItem({ line }: CartItemProps) {
   const { merchandise } = line;
 
   return (
-    <div className="flex gap-4 py-4 border-b border-stroke last:border-b-0">
+    <div className="flex gap-4 p-2 border border-stroke rounded-lg">
       {/* Thumbnail */}
       <div className="flex-shrink-0 w-24 aspect-square bg-stone-100 relative overflow-hidden">
         {merchandise.image ? (
