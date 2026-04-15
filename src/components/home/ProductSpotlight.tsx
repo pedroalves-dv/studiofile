@@ -131,17 +131,17 @@ export function ProductSpotlight() {
           </FadeUp>
           <FadeUp delay={0.2}>
             <p
-              className="relative font-medium tracking-[-0.06em] leading-[0.88] text-white"
+              className="relative font-medium tracking-[-0.06em] leading-[0.88] text-white pb-6"
               style={{ fontSize: "clamp(4rem, 9vw, 9rem)" }}
             >
               <TotemLetters delay={0.2} />{" "}
               <span className="text-[0.3em] absolute top-2 ml-2">©</span>
             </p>
           </FadeUp>
-          <DrawLine delay={0.52} light />
+          {/* <DrawLine delay={0.52} light /> */}
           <FadeUp delay={0.58}>
             <p
-              className="font-medium tracking-[-0.06em] leading-[0.88] text-white/35 pb-12"
+              className="font-medium tracking-[-0.06em] leading-[0.88] text-white/35 pb-14"
               style={{ fontSize: "clamp(3.5rem, 7.5vw, 7.5rem)" }}
             >
               A <span className="text-white">modular lamp</span> that adapts to
@@ -230,7 +230,7 @@ export function ProductSpotlight() {
               </FadeUp>
               <FadeUp delay={0.32}>
                 <p
-                  className="text-sm text-light tracking-[-0.04em] leading-[0.92] pb-14"
+                  className="text-sm font-medium text-light tracking-[-0.04em] leading-[0.92] pb-14"
                   style={{ fontSize: "clamp(2.2rem, 11vw, 3.5rem)" }}
                 >
                   Choose your modules, colors, and finish —{" "}

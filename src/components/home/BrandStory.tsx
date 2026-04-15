@@ -56,7 +56,7 @@ export default function BrandStory() {
 
   return (
     <section
-      className="relative sm:pt-20 pb-safe overflow-hidden"
+      className="relative py-20 overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* Cursor-following hover image */}
@@ -75,7 +75,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 1 */}
-      <div className="section-min-h flex items-center px-site">
+      <div className="section-min-h flex items-center px-site py-20">
         <AnimatedParagraph className={pClassName}>
           We are a design studio founded in{" "}
           <HoverWord
@@ -109,7 +109,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 2 */}
-      <div className="section-min-h flex items-center px-site">
+      <div className="section-min-h flex items-center px-site py-20">
         <AnimatedParagraph className={pClassName}>
           Our objects blend{" "}
           <span className="text-accent">architectural thinking</span> with a
@@ -120,7 +120,7 @@ export default function BrandStory() {
       </div>
 
       {/* Paragraph 3 */}
-      <div className="section-min-h flex items-center px-site">
+      <div className="section-min-h flex items-center px-site py-20">
         <AnimatedParagraph className={pClassName}>
           Each piece is{" "}
           <HoverWord
