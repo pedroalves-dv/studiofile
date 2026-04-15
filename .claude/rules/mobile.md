@@ -11,19 +11,22 @@ Three CSS units exist specifically to handle mobile browser chrome (address bar 
 | `100lvh` | Largest possible viewport (chrome always hidden) | Rarely useful directly |
 
 **The golden rule:**
-- Outer shell / section → `dvh`
-- Inner content / sticky panels → `svh`
+- Outer shell / section → `svh` for min-heights (stable, no Lenis jumps)
+- Inner content / sticky panels → `svh` (never clipped)
+- `dvh` only for isolated, non-layout-shifting elements (e.g. exact-height sticky panels that don't affect page total height)
+
+> **Warning**: Using `dvh` on `min-height` sections or image-block heights causes the page to grow mid-scroll as browser chrome hides. This desyncs Lenis and causes visible section jumps. Always prefer `svh` for layout-contributing heights.
 
 ## Established Utility Classes
 
 | Class | Value | Purpose |
 |---|---|---|
-| `.section-h` | `height: calc(100dvh - var(--header-height))` | Full-height section |
-| `.section-min-h` | `min-height: calc(100dvh - var(--header-height))` | Min-height section, content can grow |
+| `.section-h` | `height: calc(100dvh - var(--header-height))` | Full-height section (desktop only — avoid on mobile scroll flow) |
+| `.section-min-h` | `min-height: calc(100svh - var(--header-height))` | Min-height section, content can grow — `svh` keeps page height stable |
 | `.section-centered` | `min-height: calc(100svh - var(--header-height))` | Content centering — always fits |
 | `.sticky-hero-h` | `height: calc(100svh - var(--header-height))` | Hero sticky panel — never clipped |
 | `.sticky-gallery-h` | `height: calc(100svh - var(--header-height) - (2 * var(--page-pt)))` | Product gallery sticky |
-| `.h-screen-safe` | `height: 100dvh` | Full-viewport image blocks |
+| `.h-screen-safe` | `height: 100svh` | Full-viewport image blocks — `svh` prevents layout shifts |
 | `.pb-safe` | `padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem)` | Home indicator clearance only |
 
 ## Rules

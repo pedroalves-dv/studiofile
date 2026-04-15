@@ -300,12 +300,11 @@
   @media (max-width: 767px) {
     .hero-stack-fit {
       /*
-      Available height : 100svh - header
+      Available height : 100svh - header  (svh = stable, never changes with chrome)
       Stack formula    : total = 5×fs - 4×(2rem)  →  fs = (avail + 8rem) / 5
-      × 0.92           : small breathing room for descenders / address bar bounce
+      × 0.92           : small breathing room for descenders
     */
-
-      /* font-size: calc((100svh - var(--header-height) + 8rem) / 5); */
+      font-size: calc((100svh - var(--header-height) + 8rem) / 5 * 0.92);
       -webkit-text-size-adjust: 100%;
     }
   }
@@ -398,8 +397,10 @@
     height: calc(100dvh - var(--header-height));
   }
 
+  /* svh (not dvh): prevents sections from growing mid-scroll when chrome hides,
+     which would shift Lenis scroll position and cause layout jumps on mobile. */
   .section-min-h {
-    min-height: calc(100dvh - var(--header-height));
+    min-height: calc(100svh - var(--header-height));
   }
 
   /* Content inside sections uses svh — always fits even when browser chrome is fully visible */
@@ -416,9 +417,9 @@
     height: calc(100svh - var(--header-height));
   }
 
-  /* Mobile full-viewport image blocks — dvh so they breathe with the viewport */
+  /* Mobile full-viewport image blocks — svh keeps total page height stable during scroll */
   .h-screen-safe {
-    height: 100dvh;
+    height: 100svh;
   }
 
   /* Bottom padding for home indicator (notch iPhones).

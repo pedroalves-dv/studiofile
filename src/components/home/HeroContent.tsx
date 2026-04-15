@@ -67,27 +67,8 @@ export function HeroContent() {
     const h1 = h1Ref.current;
     if (!h1) return;
 
-    const updateMobileSize = () => {
-      // Only run this if we are in the vertical/mobile state
-      if (!isHorizontal && window.innerWidth < MOBILE_BREAKPOINT) {
-        const headerHeight =
-          parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue(
-              "--header-height",
-            ),
-          ) || 0;
-
-        // We use innerHeight ONCE. This captures the height at that moment.
-        const availHeight = window.innerHeight - headerHeight;
-        const staticFontSize = ((availHeight + 128) / 5) * 0.92; // 128px is roughly 8rem
-
-        h1.style.fontSize = `${staticFontSize}px`;
-      }
-    };
-
-    // Run immediately on mount
-    updateMobileSize();
-
+    // Mobile font size is handled entirely by CSS (.hero-stack-fit uses svh calc).
+    // Only the desktop FLIP case needs JS to measure exact glyph ink width.
     const onResize = () => {
       const currentWidth = window.innerWidth;
       if (currentWidth === lastWidth.current) return;
@@ -99,9 +80,6 @@ export function HeroContent() {
           h1.style.fontSize = `${layout.fontSize}px`;
           h1.style.marginLeft = `${layout.marginLeft}px`;
         }
-      } else {
-        // If the user rotates their phone, recalculate the mobile size
-        updateMobileSize();
       }
     };
 
@@ -176,7 +154,7 @@ export function HeroContent() {
       className={cn(
         "relative overflow-hidden ml-[10px] mr-[5px] flex flex-col justify-center",
 
-        isHorizontal ? "h-full block" : "section-h",
+        isHorizontal ? "h-full block" : "h-full",
       )}
     >
       {/* Measurement element (hidden) */}
