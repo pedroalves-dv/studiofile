@@ -84,7 +84,7 @@ export function CartDrawer() {
         <FreeShippingBar cart={cart} />
 
         {/* Body — scrollable, includes items + discount + note */}
-        <div className="flex-1 overflow-y-auto py-4 px-site" data-lenis-prevent>
+        <div className="flex-1 overflow-y-auto py-2 px-2" data-lenis-prevent>
           {!hasItems ? (
             <EmptyCart />
           ) : (
@@ -111,7 +111,7 @@ export function CartDrawer() {
                   ))}
 
                   {/* Discount + note scroll with items */}
-                  <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-stroke -mx-site px-site">
+                  <div className="flex flex-col gap-4 mt-2 pt-4 border-t border-stroke -mx-2 px-site">
                     <DiscountInput />
                     <CartNote />
                   </div>
