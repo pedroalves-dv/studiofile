@@ -39,21 +39,28 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     });
 
     // Prevent Lenis from recalculating scroll limits on height-only resize events
-    // (iOS address bar appearing/disappearing changes window.innerHeight but not
-    // window.innerWidth). Without this guard, Lenis shifts its scroll progress
-    // every time the address bar toggles, causing visible content jumps.
-    const originalResize = instance.resize.bind(instance);
+    // (iOS address bar showing/hiding changes window.innerHeight but not width).
+    //
+    // Lenis stores `debouncedResize = debounce(this.resize, 250)` at Dimensions
+    // construction time and registers *that* as the window listener. Patching
+    // `instance.resize` after the fact does nothing — the listener already holds
+    // a reference to debouncedResize. We must remove and replace it directly.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const debouncedResize = (instance.dimensions as any).debouncedResize as (
+      ...args: unknown[]
+    ) => void;
+    window.removeEventListener("resize", debouncedResize as EventListener);
     let prevResizeWidth = window.innerWidth;
-    instance.resize = () => {
+    const guardedResize = () => {
       const currentWidth = window.innerWidth;
       if (currentWidth === prevResizeWidth) return;
       prevResizeWidth = currentWidth;
-      originalResize();
+      debouncedResize();
     };
+    window.addEventListener("resize", guardedResize);
 
     setLenis(instance);
 
-    // ✅ FIX: track running state so the recursive RAF stops on unmount
     let rafId: number;
     let running = true;
 
@@ -66,7 +73,8 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     rafId = requestAnimationFrame(raf);
 
     return () => {
-      running = false; // ✅ stops the recursive loop
+      window.removeEventListener("resize", guardedResize);
+      running = false;
       cancelAnimationFrame(rafId);
       instance.destroy();
       setLenis(null);

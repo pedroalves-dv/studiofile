@@ -28,15 +28,21 @@
 
 **Mistake**: Lenis v1 calls `this.resize()` on every `window resize` event, including height-only events (iOS address bar showing/hiding). Even with all CSS using `svh`, Lenis recalculates `limit = scrollHeight − window.innerHeight`. When `innerHeight` changes alone, `limit` shifts → scroll progress shifts → visual jump.
 
-**Solution**: After creating the Lenis instance, patch `instance.resize` to only fire when `window.innerWidth` changes (real resize / device rotation):
+**Second mistake (harder)**: Patching `instance.resize` after construction does nothing. Lenis stores `this.debouncedResize = debounce(this.resize, 250)` inside the `Dimensions` constructor and registers *that closure* as the window listener. Replacing `instance.resize` after the fact never affects the listener.
+
+**Solution**: Remove Lenis's registered listener directly and replace it with a width-guarded version:
 ```ts
-const originalResize = instance.resize.bind(instance);
+const debouncedResize = (instance.dimensions as any).debouncedResize as EventListener;
+window.removeEventListener("resize", debouncedResize);
 let prevResizeWidth = window.innerWidth;
-instance.resize = () => {
+const guardedResize = () => {
   const currentWidth = window.innerWidth;
   if (currentWidth === prevResizeWidth) return;
   prevResizeWidth = currentWidth;
-  originalResize();
+  debouncedResize();
 };
+window.addEventListener("resize", guardedResize);
+// In cleanup:
+window.removeEventListener("resize", guardedResize);
 ```
 This is in `src/components/common/SmoothScroll.tsx`. Never remove this guard.
