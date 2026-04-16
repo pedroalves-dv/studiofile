@@ -204,7 +204,7 @@ export function ProductSpotlight() {
         <div className="hidden sm:grid h-full grid-cols-[3fr_2fr]">
           {/* Left: configurator preview */}
           <motion.div
-            className="relative h-full bg-lighter overflow-hidden"
+            className="relative h-full bg-canvas overflow-hidden"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: false, amount: 0.2 }}
@@ -215,7 +215,7 @@ export function ProductSpotlight() {
           </motion.div>
 
           {/* Right: text + CTA — justify-between pushes label up, CTA down */}
-          <div className="flex flex-col justify-between px-8 py-60">
+          <div className="flex flex-col justify-between px-8 py-60 bg-green-200">
             {/* Bottom anchor: headline + descriptor + CTA */}
             <div className="flex flex-col gap-5">
               <FadeUp delay={0.2}>
@@ -230,7 +230,7 @@ export function ProductSpotlight() {
               </FadeUp>
               <FadeUp delay={0.32}>
                 <p
-                  className="text-sm font-medium text-light tracking-[-0.04em] leading-[0.92] pb-14"
+                  className="text-sm font-medium text-canvas tracking-[-0.04em] leading-[0.92] pb-14"
                   style={{ fontSize: "clamp(2.2rem, 11vw, 3.5rem)" }}
                 >
                   Choose your modules, colors, and finish —{" "}
