@@ -1,3 +1,4 @@
+// src/componenents/ui/Dialog.tsx
 "use client";
 
 import { ReactNode, useEffect, useRef } from "react";

@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Dialog } from "@/components/ui/Dialog";
+// ❌ Remove: import { Dialog } from "@/components/ui/Dialog";
 import { useCart } from "@/hooks/useCart";
 import { useLenis } from "@/components/common/SmoothScroll";
 import { CartItem } from "./CartItem";
@@ -21,57 +21,54 @@ export function CartDrawer() {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    const mainElement = document.getElementById("main-content");
-
     if (isOpen) {
       lenis?.stop();
       setIsVisible(true);
       setIsClosing(false);
-      if (mainElement) {
-        // TODO remove scaling logic to have same effect as wishlist drawer just sliding open.
-        // mainElement.style.willChange = "transform";
-        // mainElement.style.transition =
-        //   "transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)";
-        // mainElement.style.transformOrigin = "top center";
-        // mainElement.style.transform = "scale(0.98)";
-      }
     } else if (isVisible) {
       lenis?.start();
-      let styleTimer: NodeJS.Timeout | undefined;
-      if (mainElement) {
-        mainElement.style.transform = "scale(1)";
-        styleTimer = setTimeout(() => {
-          mainElement.style.transform = "";
-          mainElement.style.willChange = "";
-          mainElement.style.transition = "";
-          mainElement.style.transformOrigin = "";
-          lenis?.resize();
-        }, 400);
-      }
       setIsClosing(true);
       const closeTimer = setTimeout(() => {
         setIsVisible(false);
         setIsClosing(false);
       }, 150);
-
-      return () => {
-        clearTimeout(styleTimer);
-        clearTimeout(closeTimer);
-      };
+      return () => clearTimeout(closeTimer);
     }
   }, [isOpen, lenis, isVisible]);
 
+  // ✅ Scroll lock + Escape key — replaces Dialog
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeCart();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [isOpen, closeCart]);
+
   const hasItems = cart && cart.lines.length > 0;
 
+  if (!isVisible) return null;
+
   return (
-    <Dialog open={isVisible} onOpenChange={closeCart}>
+    <>
+      {/* ✅ Desktop-only backdrop — invisible, just catches outside clicks */}
+      <div className="hidden sm:block fixed inset-0 z-40" onClick={closeCart} />
+
+      {/* Drawer — z-50 sits above the backdrop */}
       <div
-        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke sm:shadow-[-25px_30px_60px_-20px_rgba(0,0,0,0.03)]"
+        role="dialog"
+        aria-modal="true"
+        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke sm:shadow-[-25px_30px_60px_-20px_rgba(0,0,0,0.03)] z-50"
         style={{
           animation: `${isClosing ? "navSlideUp" : "navSlideDown"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}
       >
-        {/* Header */}
+        {/* ✅ Everything below here is identical to your original */}
         <div className="flex items-center justify-between py-4 border-b border-stroke px-site">
           <h2 className="text-3xl font-semibold text-ink tracking-[-0.03em] leading-none translate-y-[2px]">
             Cart {cart?.totalQuantity ? `(${cart.totalQuantity})` : ""}
@@ -81,10 +78,8 @@ export function CartDrawer() {
           </button>
         </div>
 
-        {/* Free shipping bar */}
         <FreeShippingBar cart={cart} />
 
-        {/* Body — scrollable, includes items + discount + note */}
         <div className="flex-1 overflow-y-auto py-2 px-2" data-lenis-prevent>
           {!hasItems ? (
             <EmptyCart />
@@ -110,8 +105,6 @@ export function CartDrawer() {
                   {Array.from(groups.entries()).map(([buildId, groupLines]) => (
                     <TotemCartGroup key={buildId} lines={groupLines} />
                   ))}
-
-                  {/* Discount + note scroll with items */}
                   <div className="flex flex-col gap-4 mt-2 pt-4 border-t border-stroke -mx-2 px-site">
                     <DiscountInput />
                     <CartNote />
@@ -122,13 +115,12 @@ export function CartDrawer() {
           )}
         </div>
 
-        {/* Footer — summary only, always visible */}
         {hasItems && (
           <div className="border-t border-stroke px-2">
             <CartSummary cart={cart} />
           </div>
         )}
       </div>
-    </Dialog>
+    </>
   );
 }
