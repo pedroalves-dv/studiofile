@@ -7,6 +7,7 @@ import {
   createCart,
   addToCart,
   updateCartLine,
+  updateCartLines,
   removeFromCart,
   applyDiscountCode,
   removeDiscountCode,
@@ -23,7 +24,7 @@ import {
   type TotemBuildConfig,
 } from "@/lib/totem-config";
 import { CURRENCY_CODE } from "@/lib/constants";
-import type { MoneyV2, ShopifyCart } from "@/lib/shopify/types";
+import type { MoneyV2, ShopifyCart, ShopifyCartLine } from "@/lib/shopify/types";
 
 export function useCart() {
   const { state, dispatch, cartIconRef, pendingCartRef, hasUserActionRef } =
@@ -172,6 +173,38 @@ export function useCart() {
       toast.success("Item removed");
     } catch {
       toast.error("Failed to remove item.");
+    } finally {
+      dispatch({ type: "SET_LOADING", loading: false });
+    }
+  };
+
+  const updateBundleQuantity = async (
+    bundleLines: ShopifyCartLine[],
+    currentBundleQty: number,
+    newBundleQty: number,
+  ) => {
+    if (!state.cartId) return;
+    dispatch({ type: "SET_LOADING", loading: true });
+    try {
+      hasUserActionRef.current = true;
+      const updates = bundleLines.map((line) => ({
+        id: line.id,
+        quantity: Math.round((line.quantity / currentBundleQty) * newBundleQty),
+      }));
+      const result = await updateCartLines(state.cartId, updates);
+      if (result.error) {
+        if (result.error.toLowerCase().includes("does not exist")) {
+          dispatch({ type: "CLEAR_CART" });
+          localStorage.removeItem("sf-cart-id");
+          toast.error("Your cart expired. Please add your items again.");
+        } else {
+          toast.error(result.error);
+        }
+        return;
+      }
+      dispatch({ type: "SET_CART", cart: result.cart });
+    } catch {
+      toast.error("Failed to update bundle quantity.");
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }
@@ -402,6 +435,7 @@ export function useCart() {
     addItem,
     updateItem,
     removeItem,
+    updateBundleQuantity,
     removeBundleItems,
     applyDiscount,
     removeDiscount,

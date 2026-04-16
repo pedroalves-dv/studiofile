@@ -135,6 +135,25 @@ export async function updateCartLine(
   }
 }
 
+export async function updateCartLines(
+  cartId: string,
+  updates: Array<{ id: string; quantity: number }>,
+): Promise<CartResult> {
+  try {
+    const response = await storefront<CartLineUpdateResponse>(
+      CART_LINES_UPDATE,
+      { cartId, lines: updates },
+      { cache: "no-store" },
+    );
+    if (response.cartLinesUpdate.userErrors.length > 0) {
+      return { error: response.cartLinesUpdate.userErrors[0].message };
+    }
+    return { cart: normalizeCart(response.cartLinesUpdate.cart) };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to update cart" };
+  }
+}
+
 export async function removeFromCart(
   cartId: string,
   lineIds: string[],

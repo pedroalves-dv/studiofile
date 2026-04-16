@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { formatPrice } from "@/lib/utils/format";
@@ -39,19 +39,63 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const { removeBundleItems, closeCart } = useCart();
+  const { updateBundleQuantity, removeBundleItems, closeCart } = useCart();
   const router = useRouter();
   const toast = useToast();
 
   const busy = isRemoving || isEditing;
+
+  // Derive bundle multiplier from fixture line (always qty=1 per bundle at creation)
+  const fixtureLine = lines.find((l) => lineAttr(l, "_part") === "Fixture");
+  const currentBundleQty = fixtureLine?.quantity ?? 1;
+
+  const shapeLines = lines.filter((l) => lineAttr(l, "_part") === "Shape");
+  const piecesPerBundle = Math.round(
+    shapeLines.reduce((sum, l) => sum + l.quantity, 0) / currentBundleQty,
+  );
+
+  const [localBundleQty, setLocalBundleQty] = useState(currentBundleQty);
+  const updateBundleQtyRef = useRef(updateBundleQuantity);
+  updateBundleQtyRef.current = updateBundleQuantity;
+
+  // Always-fresh ref to lines — avoids putting `lines` in effect deps (which would
+  // restart the debounce timer on every SET_LOADING re-render from CartDrawer).
+  const linesRef = useRef(lines);
+  linesRef.current = lines;
+
+  const pendingRef = useRef<{ currentQty: number; newQty: number } | null>(null);
+
+  // Sync from Shopify when no pending local change
+  useEffect(() => {
+    if (!pendingRef.current) setLocalBundleQty(currentBundleQty);
+  }, [currentBundleQty]);
+
+  // Debounced API call — only reruns on qty value changes, NOT on lines reference changes
+  useEffect(() => {
+    if (localBundleQty === currentBundleQty) {
+      pendingRef.current = null;
+      return;
+    }
+    pendingRef.current = { currentQty: currentBundleQty, newQty: localBundleQty };
+    const timer = setTimeout(() => {
+      pendingRef.current = null;
+      updateBundleQtyRef.current(linesRef.current, currentBundleQty, localBundleQty);
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+      if (pendingRef.current) {
+        const { currentQty, newQty } = pendingRef.current;
+        updateBundleQtyRef.current(linesRef.current, currentQty, newQty);
+        pendingRef.current = null;
+      }
+    };
+  }, [localBundleQty, currentBundleQty]); // ← no `lines`: ref handles freshness
 
   const totalAmount = lines.reduce(
     (sum, line) => sum + parseFloat(line.cost.totalAmount.amount),
     0,
   );
   const currencyCode = lines[0]?.cost.totalAmount.currencyCode ?? "EUR";
-
-  const totalPieces = lines.reduce((sum, line) => sum + line.quantity, 0);
 
   async function confirmRemove() {
     setIsRemoving(true);
@@ -169,19 +213,19 @@ export function TotemCartGroup({ lines }: TotemCartGroupProps) {
         <div className="flex-1 min-w-0 grid grid-cols-[4fr_1fr]">
           <div>
             <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
-              TOTEM
+              {localBundleQty > 1 ? `TOTEM ×${localBundleQty}` : "TOTEM"}
             </p>
             <p className="text-xs text-muted mt-0.5">Custom Modular Lamp</p>
             <p className="text-xs text-muted mt-1">
-              {totalPieces} piece{totalPieces !== 1 ? "s" : ""}
+              {piecesPerBundle} piece{piecesPerBundle !== 1 ? "s" : ""}
             </p>
             <div className="flex items-center justify-between mt-1">
               <QuantityStepper
-                value={1}
-                onChange={() => {}}
+                value={localBundleQty}
+                onChange={setLocalBundleQty}
                 size="sm"
                 min={1}
-                max={1}
+                max={10}
               />
             </div>
           </div>
