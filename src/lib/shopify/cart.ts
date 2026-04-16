@@ -13,6 +13,10 @@ import {
 import { GET_CART } from "./queries";
 import type { ShopifyCart, ShopifyCartLine } from "./types";
 
+export type CartResult =
+  | { cart: ShopifyCart; error?: never }
+  | { cart?: never; error: string };
+
 // --- HELPERS ---
 
 interface RawCart extends Omit<ShopifyCart, "lines"> {
@@ -75,72 +79,79 @@ interface CartLine {
 
 // --- EXPORTED ACTIONS ---
 
-export async function createCart(lines?: CartLine[]): Promise<ShopifyCart> {
-  const input = { lines: lines || [] };
-  const response = await storefront<CreateCartResponse>(
-    CART_CREATE,
-    { input },
-    { cache: "no-store" },
-  );
-  if (response.cartCreate.userErrors.length > 0) {
-    throw new Error(response.cartCreate.userErrors[0].message);
+export async function createCart(lines?: CartLine[]): Promise<CartResult> {
+  try {
+    const input = { lines: lines || [] };
+    const response = await storefront<CreateCartResponse>(
+      CART_CREATE,
+      { input },
+      { cache: "no-store" },
+    );
+    if (response.cartCreate.userErrors.length > 0) {
+      return { error: response.cartCreate.userErrors[0].message };
+    }
+    return { cart: normalizeCart(response.cartCreate.cart) };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to create cart" };
   }
-  return normalizeCart(response.cartCreate.cart);
 }
 
 export async function addToCart(
   cartId: string,
   lines: CartLine[],
-): Promise<ShopifyCart> {
-  const response = await storefront<CartResponse>(
-    CART_LINES_ADD,
-    {
-      cartId,
-      lines,
-    },
-    { cache: "no-store" },
-  );
-  if (response.cartLinesAdd.userErrors.length > 0) {
-    throw new Error(response.cartLinesAdd.userErrors[0].message);
+): Promise<CartResult> {
+  try {
+    const response = await storefront<CartResponse>(
+      CART_LINES_ADD,
+      { cartId, lines },
+      { cache: "no-store" },
+    );
+    if (response.cartLinesAdd.userErrors.length > 0) {
+      return { error: response.cartLinesAdd.userErrors[0].message };
+    }
+    return { cart: normalizeCart(response.cartLinesAdd.cart) };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to add to cart" };
   }
-  return normalizeCart(response.cartLinesAdd.cart);
 }
 
 export async function updateCartLine(
   cartId: string,
   lineId: string,
   quantity: number,
-): Promise<ShopifyCart> {
-  const response = await storefront<CartLineUpdateResponse>(
-    CART_LINES_UPDATE,
-    {
-      cartId,
-      lines: [{ id: lineId, quantity }],
-    },
-    { cache: "no-store" },
-  );
-  if (response.cartLinesUpdate.userErrors.length > 0) {
-    throw new Error(response.cartLinesUpdate.userErrors[0].message);
+): Promise<CartResult> {
+  try {
+    const response = await storefront<CartLineUpdateResponse>(
+      CART_LINES_UPDATE,
+      { cartId, lines: [{ id: lineId, quantity }] },
+      { cache: "no-store" },
+    );
+    if (response.cartLinesUpdate.userErrors.length > 0) {
+      return { error: response.cartLinesUpdate.userErrors[0].message };
+    }
+    return { cart: normalizeCart(response.cartLinesUpdate.cart) };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to update cart" };
   }
-  return normalizeCart(response.cartLinesUpdate.cart);
 }
 
 export async function removeFromCart(
   cartId: string,
   lineIds: string[],
-): Promise<ShopifyCart> {
-  const response = await storefront<CartRemoveResponse>(
-    CART_LINES_REMOVE,
-    {
-      cartId,
-      lineIds,
-    },
-    { cache: "no-store" },
-  );
-  if (response.cartLinesRemove.userErrors.length > 0) {
-    throw new Error(response.cartLinesRemove.userErrors[0].message);
+): Promise<CartResult> {
+  try {
+    const response = await storefront<CartRemoveResponse>(
+      CART_LINES_REMOVE,
+      { cartId, lineIds },
+      { cache: "no-store" },
+    );
+    if (response.cartLinesRemove.userErrors.length > 0) {
+      return { error: response.cartLinesRemove.userErrors[0].message };
+    }
+    return { cart: normalizeCart(response.cartLinesRemove.cart) };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to remove from cart" };
   }
-  return normalizeCart(response.cartLinesRemove.cart);
 }
 
 export async function applyDiscountCode(

@@ -11,7 +11,7 @@ import {
   Dispatch,
 } from "react";
 import type { ShopifyCart } from "@/lib/shopify/types";
-import { getCart } from "@/lib/shopify/cart";
+import { getCart, type CartResult } from "@/lib/shopify/cart";
 
 const CART_ID_KEY = "sf-cart-id";
 
@@ -45,7 +45,7 @@ interface CartContextType {
   dispatch: Dispatch<CartAction>;
   cartIconRef: React.RefObject<HTMLButtonElement | null>;
   /** Holds an in-flight createCart promise so concurrent first-adds share one cart. */
-  pendingCartRef: React.MutableRefObject<Promise<ShopifyCart> | null>;
+  pendingCartRef: React.MutableRefObject<Promise<CartResult> | null>;
   /** Set to true by any user-initiated cart action before dispatching SET_CART.
    * Hydration effect checks this to avoid overwriting a more-recent user action. */
   hasUserActionRef: React.MutableRefObject<boolean>;
@@ -96,7 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const cartIconRef = useRef<HTMLButtonElement>(null);
-  const pendingCartRef = useRef<Promise<ShopifyCart> | null>(null);
+  const pendingCartRef = useRef<Promise<CartResult> | null>(null);
   // Tracks whether the initial cart validation has completed.
   // Prevents the persistence effect from clearing localStorage during the first render
   // when state.cartId is still null (before getCart resolves).

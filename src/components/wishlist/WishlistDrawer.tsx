@@ -132,7 +132,7 @@ export function WishlistDrawer() {
   const { isOpen, closeDrawer, items } = useWishlist();
   const lenis = useLenis();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 

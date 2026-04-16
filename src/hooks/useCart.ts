@@ -38,30 +38,33 @@ export function useCart() {
     }>,
   ): Promise<ShopifyCart> {
     try {
+      let result;
+
       if (state.cartId) {
-        return await addToCart(state.cartId, lines);
+        result = await addToCart(state.cartId, lines);
+      } else if (pendingCartRef.current) {
+        const pendingResult = await pendingCartRef.current;
+        if (pendingResult.error) throw new Error(pendingResult.error);
+        result = await addToCart(pendingResult.cart.id, lines);
+      } else {
+        const promise = createCart(lines);
+        pendingCartRef.current = promise;
+        result = await promise;
       }
 
-      if (pendingCartRef.current) {
-        const existingCart = await pendingCartRef.current;
-        return await addToCart(existingCart.id, lines);
+      if (result.error) {
+        if (result.error.toLowerCase().includes("does not exist")) {
+          console.warn("Cart expired or invalid. Creating fresh cart...");
+          dispatch({ type: "CLEAR_CART" });
+          localStorage.removeItem("sf-cart-id");
+          const fresh = await createCart(lines);
+          if (fresh.error) throw new Error(fresh.error);
+          return fresh.cart;
+        }
+        throw new Error(result.error);
       }
 
-      const promise = createCart(lines);
-      pendingCartRef.current = promise;
-      const newCart = await promise;
-      return newCart;
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message.toLowerCase().includes("does not exist")
-      ) {
-        console.warn("Cart expired or invalid. Creating fresh cart...");
-        dispatch({ type: "CLEAR_CART" });
-        localStorage.removeItem("sf-cart-id");
-        return await createCart(lines);
-      }
-      throw error;
+      return result.cart;
     } finally {
       pendingCartRef.current = null;
     }
@@ -86,32 +89,29 @@ export function useCart() {
         return isSameVariant && isNotBundle;
       });
 
-      let updatedCart: ShopifyCart;
       hasUserActionRef.current = true;
+      let updatedCart: ShopifyCart;
+
       if (existingLine && state.cartId) {
-        try {
-          updatedCart = await updateCartLine(
-            state.cartId,
-            existingLine.id,
-            existingLine.quantity + quantity,
-          );
-        } catch (innerErr) {
-          if (
-            innerErr instanceof Error &&
-            innerErr.message.toLowerCase().includes("does not exist")
-          ) {
+        const result = await updateCartLine(
+          state.cartId,
+          existingLine.id,
+          existingLine.quantity + quantity,
+        );
+        if (result.error) {
+          if (result.error.toLowerCase().includes("does not exist")) {
             // Cart expired mid-session — clear stale state and add as a fresh cart
             dispatch({ type: "CLEAR_CART" });
             localStorage.removeItem("sf-cart-id");
             updatedCart = await createOrAdd([{ merchandiseId: variantId, quantity }]);
           } else {
-            throw innerErr;
+            throw new Error(result.error);
           }
+        } else {
+          updatedCart = result.cart;
         }
       } else {
-        updatedCart = await createOrAdd([
-          { merchandiseId: variantId, quantity },
-        ]);
+        updatedCart = await createOrAdd([{ merchandiseId: variantId, quantity }]);
       }
 
       dispatch({ type: "SET_CART", cart: updatedCart });
@@ -130,22 +130,23 @@ export function useCart() {
     dispatch({ type: "SET_LOADING", loading: true });
     try {
       hasUserActionRef.current = true;
-      let updatedCart: ShopifyCart;
-      if (quantity === 0) {
-        updatedCart = await removeFromCart(state.cartId, [lineId]);
-      } else {
-        updatedCart = await updateCartLine(state.cartId, lineId, quantity);
+      const result =
+        quantity === 0
+          ? await removeFromCart(state.cartId, [lineId])
+          : await updateCartLine(state.cartId, lineId, quantity);
+      if (result.error) {
+        if (result.error.toLowerCase().includes("does not exist")) {
+          dispatch({ type: "CLEAR_CART" });
+          localStorage.removeItem("sf-cart-id");
+          toast.error("Your cart expired. Please add your items again.");
+        } else {
+          toast.error(result.error);
+        }
+        return;
       }
-      dispatch({ type: "SET_CART", cart: updatedCart });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message.toLowerCase().includes("does not exist")) {
-        dispatch({ type: "CLEAR_CART" });
-        localStorage.removeItem("sf-cart-id");
-        toast.error("Your cart expired. Please add your items again.");
-      } else {
-        toast.error("Failed to update cart.");
-      }
+      dispatch({ type: "SET_CART", cart: result.cart });
+    } catch {
+      toast.error("Failed to update cart.");
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }
@@ -156,18 +157,21 @@ export function useCart() {
     dispatch({ type: "SET_LOADING", loading: true });
     try {
       hasUserActionRef.current = true;
-      const updatedCart = await removeFromCart(state.cartId, [lineId]);
-      dispatch({ type: "SET_CART", cart: updatedCart });
-      toast.success("Item removed");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message.toLowerCase().includes("does not exist")) {
-        dispatch({ type: "CLEAR_CART" });
-        localStorage.removeItem("sf-cart-id");
-        toast.error("Your cart expired. Please add your items again.");
-      } else {
-        toast.error("Failed to remove item.");
+      const result = await removeFromCart(state.cartId, [lineId]);
+      if (result.error) {
+        if (result.error.toLowerCase().includes("does not exist")) {
+          dispatch({ type: "CLEAR_CART" });
+          localStorage.removeItem("sf-cart-id");
+          toast.error("Your cart expired. Please add your items again.");
+        } else {
+          toast.error(result.error);
+        }
+        return;
       }
+      dispatch({ type: "SET_CART", cart: result.cart });
+      toast.success("Item removed");
+    } catch {
+      toast.error("Failed to remove item.");
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }
@@ -178,18 +182,21 @@ export function useCart() {
     dispatch({ type: "SET_LOADING", loading: true });
     try {
       hasUserActionRef.current = true;
-      const updatedCart = await removeFromCart(state.cartId, lineIds);
-      dispatch({ type: "SET_CART", cart: updatedCart });
-      toast.success("Bundle removed");
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message.toLowerCase().includes("does not exist")) {
-        dispatch({ type: "CLEAR_CART" });
-        localStorage.removeItem("sf-cart-id");
-        toast.error("Your cart expired. Please add your items again.");
-      } else {
-        toast.error("Could not remove bundle. Please try again.");
+      const result = await removeFromCart(state.cartId, lineIds);
+      if (result.error) {
+        if (result.error.toLowerCase().includes("does not exist")) {
+          dispatch({ type: "CLEAR_CART" });
+          localStorage.removeItem("sf-cart-id");
+          toast.error("Your cart expired. Please add your items again.");
+        } else {
+          toast.error(result.error);
+        }
+        return;
       }
+      dispatch({ type: "SET_CART", cart: result.cart });
+      toast.success("Bundle removed");
+    } catch {
+      toast.error("Could not remove bundle. Please try again.");
     } finally {
       dispatch({ type: "SET_LOADING", loading: false });
     }

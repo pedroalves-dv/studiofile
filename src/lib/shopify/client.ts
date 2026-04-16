@@ -48,14 +48,12 @@ export async function storefront<T>(
         response.status,
       );
 
-      if (process.env.NODE_ENV === "development") {
-        console.error("Shopify API Request Failed:", {
-          status: response.status,
-          statusText: response.statusText,
-          query,
-          variables,
-        });
-      }
+      console.error("Shopify API Request Failed:", {
+        status: response.status,
+        statusText: response.statusText,
+        query,
+        variables,
+      });
 
       throw error;
     }
@@ -70,13 +68,11 @@ export async function storefront<T>(
         data.errors,
       );
 
-      if (process.env.NODE_ENV === "development") {
-        console.error("GraphQL Errors:", {
-          errors: data.errors,
-          query,
-          variables,
-        });
-      }
+      console.error("GraphQL Errors:", {
+        errors: data.errors,
+        query,
+        variables,
+      });
 
       throw error;
     }
@@ -84,9 +80,7 @@ export async function storefront<T>(
     if (!data.data) {
       const error = new ShopifyError("No data returned from Shopify API");
 
-      if (process.env.NODE_ENV === "development") {
-        console.error("Empty response from Shopify API:", { query, variables });
-      }
+      console.error("Empty response from Shopify API:", { query, variables });
 
       throw error;
     }
@@ -102,9 +96,7 @@ export async function storefront<T>(
       undefined,
     );
 
-    if (process.env.NODE_ENV === "development") {
-      console.error("Shopify API Error:", error);
-    }
+    console.error("Shopify API Error:", error);
 
     throw shopifyError;
   }
