@@ -55,6 +55,17 @@ export function ArrowButton({
   );
 
   if (href) {
+    if (href.startsWith("http")) {
+      return (
+        <a
+          href={href}
+          onClick={onClick}
+          className={cn("group relative", className)}
+        >
+          {inner}
+        </a>
+      );
+    }
     return (
       <Link
         href={href}
