@@ -100,12 +100,18 @@ export function CartDrawer() {
               }
               return (
                 <>
-                  {ungrouped.map((line) => (
-                    <CartItem key={line.id} line={line} />
-                  ))}
-                  {Array.from(groups.entries()).map(([buildId, groupLines]) => (
-                    <TotemCartGroup key={buildId} lines={groupLines} />
-                  ))}
+                  {" "}
+                  <div className="flex flex-col gap-2">
+                    {ungrouped.map((line) => (
+                      <CartItem key={line.id} line={line} />
+                    ))}
+
+                    {Array.from(groups.entries()).map(
+                      ([buildId, groupLines]) => (
+                        <TotemCartGroup key={buildId} lines={groupLines} />
+                      ),
+                    )}
+                  </div>
                   <div className="flex flex-col gap-4 mt-2 pt-4 border-t border-stroke -mx-2 px-site">
                     <DiscountInput />
                     <CartNote />
