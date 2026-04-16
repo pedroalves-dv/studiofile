@@ -408,6 +408,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
                       openCart();
                       if (isMobileMenuOpen) closeMenu();
                       if (isAccountOpen) closeAccount();
+                      if (isWishlistOpen) closeWishlist();
                     }
                   }}
                   className={cn("h-full flex relative", iconOpacity(isOpen))}
