@@ -279,7 +279,7 @@ export function Header({ isLoggedIn = false, customer }: HeaderProps) {
               {/* Icons */}
               <div
                 className={cn(
-                  "flex gap-12 sm:gap-8",
+                  "flex gap-10 sm:gap-8",
                   !someIconActive && "group",
                 )}
               >
