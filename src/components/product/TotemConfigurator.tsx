@@ -257,14 +257,27 @@ export function TotemConfigurator() {
 
   /* ── Variant availability helpers ── */
 
-  function isColorAvailableForShape(shapeId: string, colorId: string, textureId: string): boolean {
+  function isColorAvailableForShape(
+    shapeId: string,
+    colorId: string,
+    textureId: string,
+  ): boolean {
     if (!variantMap) return true; // optimistic while loading
-    return variantMap.shapes[`${shapeId}-${colorId}-${textureId}`]?.available ?? false;
+    return (
+      variantMap.shapes[`${shapeId}-${colorId}-${textureId}`]?.available ??
+      false
+    );
   }
 
-  function isFixtureColorAvailable(fxId: string, colorId: string, textureId: string): boolean {
+  function isFixtureColorAvailable(
+    fxId: string,
+    colorId: string,
+    textureId: string,
+  ): boolean {
     if (!variantMap) return true;
-    return variantMap.shapes[`${fxId}-${colorId}-${textureId}`]?.available ?? false;
+    return (
+      variantMap.shapes[`${fxId}-${colorId}-${textureId}`]?.available ?? false
+    );
   }
 
   function isCableAvailable(id: string): boolean {
@@ -296,7 +309,11 @@ export function TotemConfigurator() {
       preset.pieces.every((p) =>
         isColorAvailableForShape(p.shapeId, p.colorId, p.textureId),
       ) &&
-      isFixtureColorAvailable(preset.fixtureId, TOTEM_COLORS[0].id, preset.fixtureTextureId) &&
+      isFixtureColorAvailable(
+        preset.fixtureId,
+        TOTEM_COLORS[0].id,
+        preset.fixtureTextureId,
+      ) &&
       isCableAvailable(preset.cableId)
     );
   }
@@ -443,7 +460,13 @@ export function TotemConfigurator() {
     const uid = generateUid();
     setPieces((prev) => [
       ...prev,
-      { uid, shapeId, colorId: defaultColorId, textureId: defaultTextureId, flipped: false },
+      {
+        uid,
+        shapeId,
+        colorId: defaultColorId,
+        textureId: defaultTextureId,
+        flipped: false,
+      },
     ]);
   }
 
@@ -553,7 +576,9 @@ export function TotemConfigurator() {
   );
 
   const configAvailable =
-    pieces.every((p) => isColorAvailableForShape(p.shapeId, p.colorId, p.textureId ?? "smooth")) &&
+    pieces.every((p) =>
+      isColorAvailableForShape(p.shapeId, p.colorId, p.textureId ?? "smooth"),
+    ) &&
     isFixtureColorAvailable(fixtureId, fixtureColorId, fixtureTextureId) &&
     isCableAvailable(cableId);
 
@@ -562,7 +587,13 @@ export function TotemConfigurator() {
     if (!configAvailable) return;
     setIsAdding(true);
     try {
-      await addTotemToCart({ pieces, fixtureId, fixtureColorId, fixtureTextureId, cableId });
+      await addTotemToCart({
+        pieces,
+        fixtureId,
+        fixtureColorId,
+        fixtureTextureId,
+        cableId,
+      });
     } finally {
       setIsAdding(false);
     }
@@ -799,9 +830,10 @@ export function TotemConfigurator() {
                 disabled={
                   fixtureSelected ||
                   !selectedElement ||
-                  pieces.findIndex((p) => p.uid === selectedElement) <= 0
+                  pieces.findIndex((p) => p.uid === selectedElement) >=
+                    pieces.length - 1 // was <= 0
                 }
-                onClick={() => selectedElement && moveUp(selectedElement)}
+                onClick={() => selectedElement && moveDown(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronUp size={18} />
@@ -812,10 +844,9 @@ export function TotemConfigurator() {
                 disabled={
                   fixtureSelected ||
                   !selectedElement ||
-                  pieces.findIndex((p) => p.uid === selectedElement) >=
-                    pieces.length - 1
+                  pieces.findIndex((p) => p.uid === selectedElement) <= 0 // was >= pieces.length - 1
                 }
-                onClick={() => selectedElement && moveDown(selectedElement)}
+                onClick={() => selectedElement && moveUp(selectedElement)}
                 className="p-3 text-muted hover:text-ink disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronDown size={18} />
@@ -1093,7 +1124,11 @@ export function TotemConfigurator() {
               const colorAvailable = fixtureSelected
                 ? isFixtureColorAvailable(fixtureId, c.id, fixtureTextureId)
                 : selectedPiece
-                  ? isColorAvailableForShape(selectedPiece.shapeId, c.id, selectedPiece.textureId ?? "smooth")
+                  ? isColorAvailableForShape(
+                      selectedPiece.shapeId,
+                      c.id,
+                      selectedPiece.textureId ?? "smooth",
+                    )
                   : true;
               if (colorAvailable) {
                 return (
@@ -1137,7 +1172,9 @@ export function TotemConfigurator() {
           <div
             className={cn(
               "flex gap-1.5 mt-2 transition-opacity",
-              !selectedPiece && !fixtureSelected && "opacity-30 pointer-events-none",
+              !selectedPiece &&
+                !fixtureSelected &&
+                "opacity-30 pointer-events-none",
             )}
           >
             {TOTEM_TEXTURES.map((t) => (
