@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { X, Heart } from "lucide-react";
-import { Dialog } from "@/components/ui/Dialog";
+import { X } from "lucide-react";
+// ❌ Remove: import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "@/hooks/useCart";
@@ -14,7 +14,7 @@ import type { WishlistItem } from "@/context/WishlistContext";
 import type { ShopifyProduct } from "@/lib/shopify/types";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
+// ─── Skeleton ──────────────────────────────────────────────────────────────────
 
 function WishlistSkeleton() {
   return (
@@ -35,7 +35,7 @@ function WishlistSkeleton() {
   );
 }
 
-// ─── Item ─────────────────────────────────────────────────────────────────────
+// ─── Item ──────────────────────────────────────────────────────────────────────
 
 interface WishlistItemRowProps {
   product: ShopifyProduct;
@@ -51,7 +51,6 @@ function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
 
   return (
     <div className="flex gap-4 p-2 border border-stroke rounded-lg mb-2">
-      {/* Thumbnail */}
       <Link
         href={`/products/${product.handle}`}
         onClick={onClose}
@@ -72,7 +71,6 @@ function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
         </div>
       </Link>
 
-      {/* Info */}
       <div className="flex flex-1 flex-col justify-between">
         <Link href={`/products/${product.handle}`} onClick={onClose}>
           <p className="text-2xl font-semibold tracking-tighter leading-none text-ink truncate">
@@ -94,8 +92,6 @@ function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
               </>
             )}
         </div>
-
-        {/* CTA */}
         {hasVariant ? (
           <Button
             variant="primary"
@@ -119,7 +115,6 @@ function WishlistItemRow({ product, item, onClose }: WishlistItemRowProps) {
         )}
       </div>
 
-      {/* Remove */}
       <button
         onClick={() => removeItem(product.handle)}
         aria-label={`Remove ${product.title} from wishlist`}
@@ -141,12 +136,14 @@ export function WishlistDrawer() {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
-  // Mirror CartDrawer: lenis stop/start + slide animation states
   useEffect(() => {
     if (isOpen) {
       lenis?.stop();
       setIsVisible(true);
       setIsClosing(false);
+      // ✅ Set loading immediately on open so the first render shows the
+      // skeleton rather than a blank frame — this fixes the flash
+      setIsLoading(items.length > 0);
     } else if (isVisible) {
       lenis?.start();
       setIsClosing(true);
@@ -156,9 +153,22 @@ export function WishlistDrawer() {
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, lenis, isVisible]);
+  }, [isOpen, lenis, isVisible, items.length]);
 
-  // Fetch product data when drawer opens
+  // ✅ Scroll lock + Escape — mirrors CartDrawer, replaces Dialog
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeDrawer();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [isOpen, closeDrawer]);
+
   useEffect(() => {
     if (!isOpen || items.length === 0) {
       setProducts([]);
@@ -175,10 +185,20 @@ export function WishlistDrawer() {
       .catch(() => setIsLoading(false));
   }, [isOpen, items]);
 
+  if (!isVisible) return null;
+
   return (
-    <Dialog open={isVisible} onOpenChange={closeDrawer}>
+    <>
+      {/* ✅ Desktop-only backdrop for click-outside — mirrors CartDrawer */}
       <div
-        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke sm:shadow-[-25px_30px_60px_-20px_rgba(0,0,0,0.03)]"
+        className="hidden sm:block fixed inset-0 z-40"
+        onClick={closeDrawer}
+      />
+
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="w-full fixed top-[var(--header-height)] bottom-0 right-0 max-w-md flex flex-col bg-canvas sm:border-x sm:border-stroke sm:shadow-[-25px_30px_60px_-20px_rgba(0,0,0,0.03)] z-50"
         style={{
           animation: `${isClosing ? "navSlideUp" : "navSlideDown"} 150ms ease-in-out${isClosing ? " forwards" : ""}`,
         }}
@@ -227,6 +247,6 @@ export function WishlistDrawer() {
             })}
         </div>
       </div>
-    </Dialog>
+    </>
   );
 }
