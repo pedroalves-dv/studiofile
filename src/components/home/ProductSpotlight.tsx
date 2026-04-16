@@ -78,14 +78,14 @@ export function ProductSpotlight() {
         aria-label="Introducing TOTEM"
       >
         {/* Background — swap for next/image */}
-        <div className="absolute inset-0 bg-stone-900" aria-hidden />
-        <div className="absolute inset-0 bg-black/45" aria-hidden />
+        <div className="absolute inset-0 bg-yellow-300" aria-hidden />
+        <div className="absolute inset-0 bg-yellow" aria-hidden />
 
         {/* ── MOBILE ── */}
         <div className="sm:hidden relative z-10 h-full flex flex-col px-site section-min-h py-60 justify-center gap-2">
           <FadeUp delay={0.05}>
             <p
-              className="font-medium tracking-[-0.05em] leading-[1] text-white"
+              className="font-medium tracking-[-0.06em] leading-[1] text-ink"
               style={{ fontSize: "clamp(3.2rem, 17vw, 6rem)" }}
             >
               Introducing
@@ -93,7 +93,7 @@ export function ProductSpotlight() {
           </FadeUp>
           <FadeUp delay={0.2}>
             <p
-              className="relative font-medium tracking-[-0.06em] leading-[0.9] text-white mb-5"
+              className="relative font-medium tracking-[-0.08em] leading-[0.9] text-ink mb-5"
               style={{ fontSize: "clamp(3.2rem, 17vw, 6rem)" }}
             >
               <TotemLetters delay={0.2} />
@@ -103,11 +103,11 @@ export function ProductSpotlight() {
           {/* <DrawLine delay={0.5} light /> */}
           <FadeUp delay={0.55}>
             <p
-              className="font-medium tracking-[-0.05em] leading-[0.95] text-white/40 pb-12"
+              className="font-medium tracking-[-0.06em] leading-[0.95] text-canvas pb-12"
               style={{ fontSize: "clamp(3rem, 12.8vw, 4.5rem)" }}
             >
-              The <span className="text-white">modular lamp</span> that adapts
-              to you.
+              A <span className="text-ink">modular lamp</span> that adapts to
+              you.
             </p>
           </FadeUp>
           <FadeUp delay={0.65} once={true}>
@@ -123,16 +123,16 @@ export function ProductSpotlight() {
         <div className="hidden sm:flex relative z-10 h-full flex-col justify-start px-site py-60 max-w-5xl gap-1">
           <FadeUp delay={0.05}>
             <p
-              className="font-medium tracking-[-0.06em] leading-[0.92] text-white"
-              style={{ fontSize: "clamp(4rem, 9vw, 9rem)" }}
+              className="font-medium tracking-[-0.06em] leading-[0.92] text-ink"
+              style={{ fontSize: "clamp(5rem, 12vw, 12rem)" }}
             >
               Introducing
             </p>
           </FadeUp>
           <FadeUp delay={0.2}>
             <p
-              className="relative font-medium tracking-[-0.06em] leading-[0.88] text-white pb-6"
-              style={{ fontSize: "clamp(4rem, 9vw, 9rem)" }}
+              className="relative font-medium tracking-[-0.09em] leading-[0.88] text-ink pb-6"
+              style={{ fontSize: "clamp(5rem, 12vw, 15rem)" }}
             >
               <TotemLetters delay={0.2} />{" "}
               <span className="text-[0.3em] absolute top-2 ml-2">©</span>
@@ -141,10 +141,10 @@ export function ProductSpotlight() {
           {/* <DrawLine delay={0.52} light /> */}
           <FadeUp delay={0.58}>
             <p
-              className="font-medium tracking-[-0.06em] leading-[0.88] text-white/35 pb-14"
-              style={{ fontSize: "clamp(3.5rem, 7.5vw, 7.5rem)" }}
+              className="font-medium tracking-[-0.055em] leading-[0.88] text-white pb-14 w-[50vw]"
+              style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
             >
-              A <span className="text-white">modular lamp</span> that adapts to
+              A <span className="text-ink">modular lamp</span> that adapts to
               you.
             </p>
           </FadeUp>

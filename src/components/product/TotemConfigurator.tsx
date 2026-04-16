@@ -1200,8 +1200,8 @@ export function TotemConfigurator() {
       </div>
 
       {/* ── Section B: Shape catalog with mode tabs ── */}
-      <div className="flex flex-col gap-6">
-        <h1 className="hidden sm:block text-left sm:text-7xl font-display uppercase tracking-[-0.04em] sm:-ml-[5px] sm:leading-[0.9] whitespace-nowrap pb-4">
+      <div className="flex flex-col">
+        <h1 className="hidden sm:block text-left text-9xl font-display uppercase tracking-[-0.04em] -ml-[5px] leading-[0.9] whitespace-nowrap mb-2">
           TOTEM
         </h1>
         <div className="flex flex-col gap-4">
@@ -1213,10 +1213,10 @@ export function TotemConfigurator() {
                 type="button"
                 onClick={() => setMode(tab)}
                 className={cn(
-                  "text-base tracking-tight py-1 px-3 border rounded-lg transition-colors",
+                  "text-lg font-medium tracking-[-0.04em] py-2 px-5 border rounded-full transition-colors",
                   mode === tab
-                    ? "border-ink text-ink"
-                    : "border-transparent text-light hover:text-ink",
+                    ? "border-stroke bg-ink text-canvas"
+                    : "border-stroke text-light hover:text-ink hover:border-ink",
                 )}
               >
                 {tab === "build" ? "Custom" : "Models"}
@@ -1225,9 +1225,9 @@ export function TotemConfigurator() {
           </div>
 
           {/* Build your own tab */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-stroke" />
-            <span className="text-sm tracking-tight text-muted px-2">
+          <div className="flex items-center">
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
+            <span className="text-base tracking-tight text-muted -mb-3">
               Shapes
             </span>
           </div>
@@ -1252,20 +1252,22 @@ export function TotemConfigurator() {
                         className={`group relative bg-canvas border border-stroke rounded-lg hover:border-ink transition-colors text-left flex flex-col${unavailable ? " opacity-40 cursor-not-allowed" : ""}`}
                       >
                         {/* image placeholder  */}
-                        <div className="aspect-square w-full rounded-lg transition-colors bg-lighter" />
+                        <div className="aspect-square w-full rounded-t-lg transition-colors bg-lighter" />
                         {/* bottom label  */}
-                        <div className="px-3 py-2.5 flex items-end justify-between gap-2 border-t border-stroke">
+                        <div className="px-3 py-2 flex items-end justify-between border-t border-stroke">
                           <div>
-                            <p className="text-sm">{shape.name}</p>
-                            <p className="text-xs text-muted">€{shape.price}</p>
+                            <p className="text-lg">{shape.name}</p>
+                            <p className="text-base text-muted">
+                              €{shape.price}
+                            </p>
                           </div>
                           {unavailable ? (
-                            <span className="text-xs text-muted">
+                            <span className="text-base text-muted">
                               Out of stock
                             </span>
                           ) : (
                             <Plus
-                              size={14}
+                              size={18}
                               className="shrink-0 text-muted group-hover:text-ink transition-colors mb-0.5"
                             />
                           )}
@@ -1357,9 +1359,9 @@ export function TotemConfigurator() {
           )}
 
           {/* ── Fixture catalog ── */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-stroke" />
-            <span className="text-sm tracking-tight text-muted px-2">
+          <div className="flex items-center gap-4">
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
+            <span className="text-base tracking-tight text-muted -mb-3">
               Fixture
             </span>
           </div>
@@ -1394,9 +1396,9 @@ export function TotemConfigurator() {
           </div>
 
           {/* ── Cable ── */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-stroke" />
-            <span className="text-sm tracking-tight text-muted px-2">
+          <div className="flex items-center gap-4">
+            {/* <div className="flex-1 h-px bg-stroke" /> */}
+            <span className="text-base tracking-tight text-muted -mb-3">
               Cable
             </span>
           </div>
@@ -1424,14 +1426,14 @@ export function TotemConfigurator() {
         </div>
 
         {/* ── Section C: Price + Add to Cart ── */}
-        <div className="flex flex-col gap-6 border-t border-stroke pt-6">
-          <div className="flex items-center justify-between gap-6">
+        <div className="h-full flex flex-col gap-6 pt-6">
+          <div className="h-full flex items-center justify-between gap-16">
             <div>
-              <p className="text-3xl font-semibold tracking-tighter text-ink">
+              <p className="text-6xl font-semibold tracking-tighter text-ink">
                 €{totalPrice}
               </p>
               <p
-                className={`text-xs text-muted mt-0.5 transition-opacity ${pieces.length > 0 ? "opacity-100" : "opacity-0"}`}
+                className={`text-xs text-muted transition-opacity text-end ${pieces.length > 0 ? "opacity-100" : "opacity-0"}`}
               >
                 {pieces.length} piece{pieces.length === 1 ? "" : "s"}
               </p>
@@ -1441,7 +1443,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full h-full px-8 py-2.5 bg-ink text-white text-lg font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : !configAvailable ? (
@@ -1449,7 +1451,7 @@ export function TotemConfigurator() {
                 <ArrowButton
                   label="Add to Cart"
                   disabled
-                  className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full h-full px-8 py-2.5 bg-ink text-white text-lg font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
                 />
               </Tooltip>
             ) : (
@@ -1457,7 +1459,7 @@ export function TotemConfigurator() {
                 label={isAdding ? "Adding to Cart…" : "Add to Cart"}
                 onClick={handleAddToCart}
                 disabled={isAdding || variantMapLoading}
-                className="w-fit px-8 py-2.5 bg-ink text-white text-base font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full h-full py-4 bg-ink text-white text-xl font-medium tracking-[-0.04em] border border-ink flex justify-center rounded-lg transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
               />
             )}
           </div>
